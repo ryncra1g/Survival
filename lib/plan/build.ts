@@ -196,7 +196,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   week.push(`Test or install CO alarms: ${n(a.floors + (a.hasBasement ? 1 : 0) + 1)} (one per level plus outside sleeping areas).`);
   week.push(`Store your first 3 days of water: ${n(w.threeDayGal)} gallons.`);
   week.push("Turn on Wireless Emergency Alerts and sign up for your county's alert system.");
-  week.push("Write the family communications plan (section 11) and pick an out-of-area contact.");
+  week.push("Write the family communications plan (see Communications) and pick an out-of-area contact.");
   week.push(`Set aside ${usd(cp.cash.total)} in small bills.`);
   if (!apt) week.push("Find and label your main water shutoff, gas shutoff and electrical panel.");
   if (a.hasPrescriptions) week.push("Ask your pharmacist or doctor how to keep an extra supply of daily prescriptions on hand.");
@@ -256,19 +256,19 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     "Get cash and refill prescriptions if you can.",
     ...(a.vehicleFuels.length ? ["Fuel or charge vehicles."] : []),
     ...(hasGen ? ["Test-start the generator outdoors; stage fuel and cords."] : []),
-    ...(winter ? ["Set up your warm room before the cold arrives (section 5)."] : []),
+    ...(winter ? ["Set up your warm room before the cold arrives (see Heat & warmth)."] : []),
     ...(cp.pets ? ["Bring pets inside and stage their food, meds and carrier."] : []),
     "Check on elderly or disabled neighbors.",
   ];
   const triggers: { if: string; then: string }[] = [
     { if: "A CO alarm sounds or anyone has headache, dizziness or nausea", then: "Everyone outside to fresh air now. Call 911. Don't go back in until responders say it's safe." },
     { if: `Power is out more than ${n(c.food.fridgeSafeHours)} hours`, then: "Discard refrigerated perishables that rose above 40°F. Keep the freezer closed (a full freezer holds about 48 hours)." },
-    { if: "A boil-water notice is issued or tap water looks/smells wrong", then: "Use stored water; disinfect any other water (section 4)." },
+    { if: "A boil-water notice is issued or tap water looks/smells wrong", then: "Use stored water; disinfect any other water (see Water)." },
     ...(winter
       ? [
           { if: `Indoor temperature drops below ${n(c.heat.warmRoomAtF)}°F`, then: "Move everyone into the warm room; close off the rest of the house." },
           { if: `Indoor temperature drops below ${n(c.heat.evacuateAtF)}°F with no safe heat source`, then: cp.evacuation ? "Go to your fallback location or a warming center." : "Go to a warming center, shelter, or friends/family with power." },
-          { if: "Outdoor temperature forecast below 20°F during an outage", then: "Start the pipe-freeze protocol (section 5)." },
+          { if: "Outdoor temperature forecast below 20°F during an outage", then: "Start the pipe-freeze protocol (see Heat & warmth)." },
         ]
       : []),
     ...(cp.flags.medicalDevicePriority
@@ -276,7 +276,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       : []),
     ...(cp.flags.wellPumpPriority ? [{ if: "Well pump has no power", then: "Switch to stored water now; ration flushing; power the pump only through the transfer switch." }] : []),
     { if: "Officials issue an evacuation order for your zone", then: cp.evacuation ? "Leave. Take go-bags and pets to your fallback location." : "Leave. Take go-bags and pets to the shelter or destination officials name." },
-    { if: "Sewage backs up or toilets can't flush", then: "Stop flushing; switch to the two-bucket toilet (section 9)." },
+    { if: "Sewage backs up or toilets can't flush", then: "Stop flushing; switch to the two-bucket toilet (see Sanitation)." },
     ...(atLeast(prof.hurricane, "moderate") ? [{ if: "A hurricane watch is issued", then: "Do the Day 0 checklist; put up window protection; decide stay vs. go before the warning." }] : []),
   ];
   S.push({

@@ -53,3 +53,13 @@
 - **Experiment:** A/B test the front-page headline and button wording ("Build my free plan" vs "Get my emergency checklist"). The admin dashboard would need a variant column.
 - **Printable fridge checklist:** a one-page PDF of the "This week" list, as a reason to come back to the email.
 - **Declined on purpose:** weapons and tactical content (Hank's request). This is a hard guardrail from the original spec.
+
+## Update: email-first restored
+
+At the owner's request, the email is asked for **first** again, on the front page. To keep the drop-off low, the form is the first thing on the screen on phones, and it carries one promise and one button ("Build my free plan"). It also works without JavaScript. The preview of the household's numbers moved to the last question screen.
+
+Polish added after the review:
+- A one-page **fridge checklist** PDF (this week's steps, the storm/outage checklist, if/then decisions, blank contact lines, CO rule). It's on the plan page and attached to the plan email.
+- The plan email now opens with "Start here: your first 3 steps".
+- A **Day 1** "3 things to do today" email (opt-in, like the other follow-ups).
+- "About N min left" on each question screen.

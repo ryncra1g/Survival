@@ -9,7 +9,7 @@ export const maxDuration = 300;
 
 /**
  * Daily follow-ups (Vercel Cron). Opt-in only: confirmed, follow-ups on, not unsubscribed.
- * Day 3 and Day 30 after the latest plan; seasonal "winter" in November and "hurricane" in June
+ * Day 1, Day 3 and Day 30 after the latest plan; seasonal "winter" in November and "hurricane" in June
  * based on the plan's ZIP hazard profile. Each kind is sent at most once (per year for seasonal).
  */
 export async function GET(req: Request) {
@@ -25,6 +25,7 @@ export async function GET(req: Request) {
     const ageDays = (now.getTime() - new Date(plan.created_at).getTime()) / 86_400_000;
     const profile = (plan.computed_quantities as ComputedPlan).profile;
     const due: [FollowupKind, string][] = [];
+    if (ageDays >= 1 && ageDays < 3) due.push(["day1", "followup_day1"]);
     if (ageDays >= 3 && ageDays < 10) due.push(["day3", "followup_day3"]);
     if (ageDays >= 30 && ageDays < 40) due.push(["day30", "followup_day30"]);
     if (month === 11 && atLeast(profile.winter, "moderate")) due.push(["winter", `seasonal_winter_${year}`]);

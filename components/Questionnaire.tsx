@@ -1,11 +1,9 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnswersSchema, DEFAULT_ANSWERS, LABELS, type Answers, type PetGroupT } from "@/lib/answers/schema";
 import { DEFAULT_CONSTANTS } from "@/lib/rules/constants";
 import { computeFood, computeWater, household } from "@/lib/rules/engine";
-import { Turnstile } from "./Turnstile";
 
 type Draft = Answers & { _step?: number };
 
@@ -368,13 +366,6 @@ const SCREENS: Screen[] = [
 
 const LOADING_STEPS = ["Checking your area's hazards", "Calculating water and food", "Running the fuel math", "Fitting gear to your budget", "Writing your plan"];
 
-export interface Contact {
-  email: string;
-  consent: true;
-  turnstileToken?: string;
-  website?: string;
-}
-
 /** Numbers from the rules engine shown on the email screen, so people see what they're getting. */
 function Teaser({ a }: { a: Answers }) {
   const w = computeWater(a, DEFAULT_CONSTANTS);
@@ -388,7 +379,7 @@ function Teaser({ a }: { a: Answers }) {
   ];
   return (
     <div className="card p-4">
-      <p className="text-sm text-muted">Your {{ 3: "72-hour", 14: "2-week", 30: "30-day", 90: "90-day" }[a.scenarioDays]} plan for {h.people} {h.people === 1 ? "person" : "people"}{a.pets.length ? " + pets" : ""} includes:</p>
+      <p className="text-sm text-muted">Almost done. Your {{ 3: "72-hour", 14: "2-week", 30: "30-day", 90: "90-day" }[a.scenarioDays]} plan for {h.people} {h.people === 1 ? "person" : "people"}{a.pets.length ? " + pets" : ""} includes:</p>
       <dl className="mt-3 grid grid-cols-3 gap-2 text-center">
         {stats.map(([v, l]) => (
           <div key={l} className="rounded-lg bg-brand-soft p-2">
@@ -403,23 +394,8 @@ function Teaser({ a }: { a: Answers }) {
   );
 }
 
-/**
- * `needsEmail`: show the "where should we send it?" screen after the last question.
- * `onGenerate` replaces the server round-trip (standalone demo build): the caller builds the plan.
- */
-export function Questionnaire({
-  id,
-  initial,
-  needsEmail = false,
-  siteKey = "",
-  onGenerate,
-}: {
-  id: string;
-  initial: Record<string, unknown>;
-  needsEmail?: boolean;
-  siteKey?: string;
-  onGenerate?: (answers: Answers, contact?: Contact) => Promise<void>;
-}) {
+/** `onGenerate` replaces the server round-trip (standalone demo build): the caller builds the plan. */
+export function Questionnaire({ id, initial, onGenerate }: { id: string; initial: Record<string, unknown>; onGenerate?: (answers: Answers) => Promise<void> }) {
   const router = useRouter();
   const [a, setA] = useState<Draft>(() => ({ ...DEFAULT_ANSWERS, ...(initial as Partial<Draft>) }) as Draft);
   const visible = useMemo(() => SCREENS.filter((s) => !s.show || s.show(a)), [a]);
@@ -427,12 +403,6 @@ export function Questionnaire({
   const [error, setError] = useState("");
   const [generating, setGenerating] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
-  const [atGate, setAtGate] = useState(false);
-  const [email, setEmail] = useState("");
-  const [consent, setConsent] = useState(false);
-  const [website, setWebsite] = useState("");
-  const [token, setToken] = useState("");
-  const onToken = useCallback((t: string) => setToken(t), []);
   const heading = useRef<HTMLHeadingElement>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -462,7 +432,7 @@ export function Questionnaire({
 
   useEffect(() => {
     heading.current?.focus();
-  }, [step, atGate]);
+  }, [step]);
 
   const screen = visible[Math.min(step, visible.length - 1)];
   const set = (patch: Partial<Draft>) => {
@@ -472,7 +442,7 @@ export function Questionnaire({
   const last = step >= visible.length - 1;
   const parsedAnswers = () => AnswersSchema.safeParse({ ...a, _step: undefined });
 
-  async function build(contact?: Contact) {
+  async function build() {
     const parsed = parsedAnswers();
     if (!parsed.success) return setError(parsed.error.issues[0]?.message ?? "Please check your answers.");
     setGenerating(true);
@@ -480,15 +450,14 @@ export function Questionnaire({
     try {
       if (onGenerate) {
         await new Promise((r) => setTimeout(r, 1500));
-        await onGenerate(parsed.data, contact);
+        await onGenerate(parsed.data);
         return;
       }
-      const r = await fetch(`/api/questionnaire/${id}/generate`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ answers: parsed.data, contact }) });
-      const j = (await r.json()) as { planId?: string; error?: string; demoLink?: string };
+      const r = await fetch(`/api/questionnaire/${id}/generate`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ answers: parsed.data }) });
+      const j = (await r.json()) as { planId?: string; error?: string };
       if (!r.ok || !j.planId) throw new Error(j.error ?? "Couldn't build the plan.");
       try {
         localStorage.removeItem(`rp_q_${id}`);
-        if (j.demoLink) sessionStorage.setItem("rp_demo_link", j.demoLink);
       } catch {}
       router.push(`/plan/${j.planId}`);
     } catch (e) {
@@ -505,15 +474,7 @@ export function Questionnaire({
     if (!last) return setStep(step + 1);
     const parsed = parsedAnswers();
     if (!parsed.success) return setError(parsed.error.issues[0]?.message ?? "Please check your answers.");
-    if (needsEmail) return setAtGate(true);
     await build();
-  }
-
-  async function submitEmail(e: React.FormEvent) {
-    e.preventDefault();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return setError("Enter a valid email address.");
-    if (!consent) return setError("Tick the box so we can send your plan.");
-    await build({ email: email.trim(), consent: true, turnstileToken: token || undefined, website: website || undefined });
   }
 
   if (generating) {
@@ -530,49 +491,22 @@ export function Questionnaire({
     );
   }
 
-  if (atGate) {
-    const parsed = parsedAnswers();
-    return (
-      <div className="mx-auto max-w-xl px-4 py-6">
-        <div className="h-2 rounded-full bg-brand" aria-hidden />
-        <h1 ref={heading} tabIndex={-1} className="mt-6 text-2xl font-bold outline-none">Your plan is ready. Where should we send it?</h1>
-        <p className="mt-2 text-muted">You&apos;ll see it on screen right away. We&apos;ll also email it with a printable PDF and a link to update it later.</p>
-        <div className="mt-5">{parsed.success && <Teaser a={parsed.data} />}</div>
-        <form onSubmit={submitEmail} className="mt-5 space-y-4" noValidate>
-          <div>
-            <label htmlFor="gate-email" className="block font-semibold">Email</label>
-            <input id="gate-email" type="email" inputMode="email" autoComplete="email" className="input mt-2" value={email} onChange={(e) => { setError(""); setEmail(e.target.value); }} />
-          </div>
-          <div aria-hidden="true" className="absolute -left-[9999px]">
-            <label htmlFor="website">Website</label>
-            <input id="website" tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
-          </div>
-          <label className="flex gap-3 items-start cursor-pointer">
-            <input id="gate-consent" type="checkbox" className="mt-1 size-5 shrink-0 accent-[var(--brand)]" checked={consent} onChange={(e) => { setError(""); setConsent(e.target.checked); }} />
-            <span>Send me my plan and occasional preparedness updates. <span className="text-sm text-muted">Unsubscribe any time. <Link href="/privacy" className="underline">Privacy policy</Link>.</span></span>
-          </label>
-          <Turnstile siteKey={siteKey} onToken={onToken} />
-          {error && <p role="alert" className="text-danger font-medium">{error}</p>}
-          <button className="btn w-full text-lg">Show my plan</button>
-          <p className="text-xs text-muted text-center">No spam. We never sell your email. Your answers are encrypted.</p>
-        </form>
-        <button type="button" className="mt-4 text-sm underline text-muted" onClick={() => setAtGate(false)}>Back to my answers</button>
-      </div>
-    );
-  }
-
-  const pct = Math.round(((step + 1) / (visible.length + (needsEmail ? 1 : 0))) * 100);
+  const pct = Math.round(((step + 1) / visible.length) * 100);
   return (
     <div className="mx-auto max-w-xl px-4 py-6">
       <div className="flex items-center justify-between text-sm text-muted">
         <span>Step {step + 1} of {visible.length}</span>
-        <span>Saved automatically</span>
+        <span>{last ? "Last step" : `About ${Math.max(1, Math.round(((visible.length - step) * 25) / 60))} min left`} · Saved</span>
       </div>
       <div className="mt-2 h-2 rounded-full bg-line overflow-hidden" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label="Progress">
         <div className="h-full bg-brand transition-all" style={{ width: `${pct}%` }} />
       </div>
       <h1 ref={heading} tabIndex={-1} className="mt-6 text-2xl font-bold outline-none">{screen.title}</h1>
       <div className="mt-5 space-y-6">{screen.render({ a, set })}</div>
+      {last && (() => {
+        const p = parsedAnswers();
+        return p.success ? <div className="mt-8"><Teaser a={p.data} /></div> : null;
+      })()}
       {error && <p role="alert" className="mt-4 text-danger font-medium">{error}</p>}
       <div className="mt-8 flex gap-3 sticky bottom-0 bg-bg py-3">
         <button type="button" className="btn-ghost" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0}>Back</button>

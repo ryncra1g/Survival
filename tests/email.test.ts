@@ -40,7 +40,7 @@ describe("emails", () => {
       renderPlanEmail(r.document, { ...meta, planUrl: "x", pdfAttached: true }),
       renderConfirmEmail("https://link", meta),
       renderLoginEmail("https://link", meta),
-      ...(["day3", "day30", "winter", "hurricane"] as const).map((k) => renderFollowupEmail(k, "https://plan", meta)),
+      ...(["day1", "day3", "day30", "winter", "hurricane"] as const).map((k) => renderFollowupEmail(k, "https://plan", meta)),
     ];
     for (const e of all) {
       expect(e.html).toContain(meta.mailingAddress);

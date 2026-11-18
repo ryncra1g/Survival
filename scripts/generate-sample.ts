@@ -31,3 +31,5 @@ fs.writeFileSync(path.join(out, "sample-plan.txt"), email.text);
 fs.writeFileSync(path.join(out, "sample-plan.pdf"), await renderPlanPdf(r.document));
 console.log(`writer=${r.document.writer} llmAttempts=${r.llm.attempts} rejected=${r.llm.rejected.length}`);
 console.log(`email html: ${(Buffer.byteLength(email.html) / 1024).toFixed(1)} KB`);
+const { renderFridgeChecklist } = await import("@/lib/pdf/FridgeChecklist");
+fs.writeFileSync(path.join(out, "sample-fridge-checklist.pdf"), await renderFridgeChecklist(r.document));

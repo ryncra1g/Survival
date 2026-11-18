@@ -9,7 +9,6 @@ export async function clientIp(): Promise<string> {
 
 export const LIMITS = {
   signupPerIpHour: 8,
-  startPerIpHour: 30,
   loginPerEmailHour: 5,
   generatePerUserDay: 8,
   generatePerIpHour: 20,

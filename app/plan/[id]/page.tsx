@@ -42,6 +42,7 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
 
       <div className="mt-4 flex flex-wrap gap-3 no-print">
         <a href={`/api/plans/${plan.id}/pdf`} className="btn">Download PDF</a>
+        <a href={`/api/plans/${plan.id}/checklist`} className="btn-ghost">Fridge checklist</a>
         <PrintButton />
         {session?.scope === "full" && <Link href="/account" className="btn-ghost">Edit answers</Link>}
       </div>

@@ -22,7 +22,7 @@ const s = StyleSheet.create({
   bulletRow: { flexDirection: "row", marginVertical: 1.5 },
   bulletDot: { width: 10 },
   checkRow: { flexDirection: "row", marginVertical: 2, alignItems: "flex-start" },
-  box: { width: 8, height: 8, borderWidth: 1, borderColor: ink, marginRight: 6, marginTop: 1.5 },
+  box: { width: 8, height: 8, flexShrink: 0, borderWidth: 1, borderColor: ink, marginRight: 6, marginTop: 1.5 },
   caption: { fontFamily: "Helvetica-Bold", color: muted, fontSize: 8.5, marginTop: 6, marginBottom: 2 },
   table: { borderTopWidth: 1, borderTopColor: line, marginVertical: 3 },
   tr: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: line },

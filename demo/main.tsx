@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Questionnaire } from "@/components/Questionnaire";
 import { FirstSteps, PlanView } from "@/components/PlanView";
+import { EmailStart } from "@/components/EmailStart";
+import { Landing } from "@/components/Landing";
 import type { Answers } from "@/lib/answers/schema";
 import { SEED_CATALOG } from "@/lib/catalog/seed";
 import { assembleDocument, buildDraft } from "@/lib/plan/build";
@@ -25,31 +27,14 @@ function makePlan(a: Answers): PlanDocument {
   return doc;
 }
 
-type View = { kind: "home" } | { kind: "build"; key: number } | { kind: "plan"; doc: PlanDocument; sample: boolean; email?: string };
+type View = { kind: "home" } | { kind: "build"; key: number; email: string } | { kind: "plan"; doc: PlanDocument; sample: boolean; email?: string };
 
-function Home({ onStart, onSample }: { onStart: () => void; onSample: () => void }) {
+function Home({ onStart, onSample }: { onStart: (email: string) => void; onSample: () => void }) {
   return (
-    <div className="mx-auto max-w-2xl px-4 py-12 sm:py-20">
-      <h1 className="text-3xl sm:text-5xl font-bold leading-tight text-balance">Your family&apos;s emergency plan and supply list, built for your home in 5 minutes.</h1>
-      <p className="mt-4 text-lg text-muted">Tap through a few questions. Get exactly how much water, food and fuel your household needs, and what to do first.</p>
-      <div className="mt-8 flex flex-col sm:flex-row sm:items-center gap-4">
-        <button type="button" className="btn text-lg" onClick={onStart}>Build my free plan</button>
-        <span className="text-sm text-muted">Free · No account · Takes about 5 minutes</span>
-      </div>
-      <ul className="mt-10 space-y-3">
-        {[
-          "Exact amounts for your household: gallons, pounds, diapers, fuel",
-          "A week-by-week checklist that fits your budget",
-          "Steps for your area's hazards, with generator and CO safety built in",
-        ].map((t) => (
-          <li key={t} className="flex gap-3"><span aria-hidden className="text-brand font-bold">✓</span><span>{t}</span></li>
-        ))}
-      </ul>
-      <p className="mt-10 text-sm text-muted">
-        Based on guidance from Ready.gov, FEMA, the CDC and the Red Cross.{" "}
-        <button type="button" className="underline" onClick={onSample}>See a sample plan</button>
-      </p>
-    </div>
+    <Landing
+      form={<EmailStart onStart={onStart} />}
+      footer={<button type="button" className="underline" onClick={onSample}>See a sample plan</button>}
+    />
   );
 }
 
@@ -59,11 +44,11 @@ function App() {
     window.scrollTo(0, 0);
   }, [view]);
 
-  const start = () => {
+  const start = (email: string) => {
     try {
       localStorage.removeItem("rp_q_demo");
     } catch {}
-    setView({ kind: "build", key: Date.now() });
+    setView({ kind: "build", key: Date.now(), email });
   };
 
   return (
@@ -77,13 +62,15 @@ function App() {
       <main id="main">
         {view.kind === "home" && <Home onStart={start} onSample={() => setView({ kind: "plan", doc: makePlan(SAMPLE_HOUSEHOLD), sample: true })} />}
         {view.kind === "build" && (
-          <Questionnaire
-            key={view.key}
-            id="demo"
-            initial={{}}
-            needsEmail
-            onGenerate={async (a, contact) => setView({ kind: "plan", doc: makePlan(a), sample: false, email: contact?.email })}
-          />
+          <>
+            <p className="mx-auto max-w-xl px-4 pt-4 text-sm text-muted">In the live app, a confirmation email would now be on its way to <strong className="break-all">{view.email}</strong>.</p>
+            <Questionnaire
+              key={view.key}
+              id="demo"
+              initial={{}}
+              onGenerate={async (a) => setView({ kind: "plan", doc: makePlan(a), sample: false, email: view.email })}
+            />
+          </>
         )}
         {view.kind === "plan" && (
           <div className="mx-auto max-w-3xl px-4 py-6">
@@ -92,10 +79,10 @@ function App() {
                 {view.sample ? (
                   <><strong>Sample plan:</strong> a Long Island family of four with a dog, gas heat and no generator, planning for 90 days.</>
                 ) : (
-                  <>In the live app, this plan and a printable PDF would now be emailed to <strong className="break-all">{view.email}</strong>. This demo doesn&apos;t send anything.</>
+                  <>In the live app, this plan, a printable PDF and a fridge checklist would be emailed to <strong className="break-all">{view.email}</strong>. This demo doesn&apos;t send anything.</>
                 )}
               </p>
-              <button type="button" className="btn" onClick={start}>{view.sample ? "Build your own plan" : "Start over"}</button>
+              <button type="button" className="btn" onClick={() => setView({ kind: "home" })}>{view.sample ? "Build your own plan" : "Start over"}</button>
             </div>
             <h1 className="text-3xl font-bold">{view.doc.title}</h1>
             <p className="mt-1 text-muted">{view.doc.subtitle}</p>

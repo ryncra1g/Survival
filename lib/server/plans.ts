@@ -4,6 +4,7 @@ import { generatePlan } from "@/lib/plan/generate";
 import type { PlanDocument } from "@/lib/plan/document";
 import { renderPlanEmail } from "@/lib/email/render";
 import { renderPlanPdf } from "@/lib/pdf/PlanPdf";
+import { renderFridgeChecklist } from "@/lib/pdf/FridgeChecklist";
 import { loadConstants } from "./config";
 import { env, isDemo } from "./env";
 import { metaFor, sendEmail } from "./mailer";
@@ -44,7 +45,11 @@ export async function emailPlan(plan: PlanRow, user: UserRow): Promise<boolean> 
   const pdf = await renderPlanPdf(doc);
   const pdfPath = await storePdf(plan.id, user.id, pdf);
   const m = renderPlanEmail(doc, { ...metaFor(user.id), planUrl: `${env.appUrl}/plan/${plan.id}`, pdfAttached: true });
-  const ok = await sendEmail({ to: user.email, userId: user.id, type: "plan", ...m, attachments: [{ filename: "ReadyPlan.pdf", content: pdf }] });
+  const ok = await sendEmail({ to: user.email, userId: user.id, type: "plan", ...m, attachments: [
+      { filename: "ReadyPlan.pdf", content: pdf },
+      { filename: "ReadyPlan-fridge-checklist.pdf", content: await renderFridgeChecklist(doc) },
+    ],
+  });
   if (ok) await store.updatePlan(plan.id, { emailed_at: new Date().toISOString(), ...(pdfPath ? { pdf_url: pdfPath } : {}) });
   return ok;
 }

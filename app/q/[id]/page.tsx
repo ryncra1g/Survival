@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { DemoLinkBanner } from "@/components/DemoLinkBanner";
 import { Questionnaire } from "@/components/Questionnaire";
 import { canAccessQuestionnaire } from "@/lib/server/access";
 import { getSession } from "@/lib/server/session";
@@ -12,5 +13,10 @@ export default async function QPage({ params }: { params: Promise<{ id: string }
   const session = await getSession();
   const q = /^[0-9a-f-]{36}$/i.test(id) ? await store.getQuestionnaire(id) : null;
   if (!q || !(await canAccessQuestionnaire(session, q))) notFound();
-  return <Questionnaire id={id} initial={q.answers} needsEmail={!q.user_id} siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ""} />;
+  return (
+    <>
+      <div className="mx-auto max-w-xl px-4"><DemoLinkBanner /></div>
+      <Questionnaire id={id} initial={q.answers} />
+    </>
+  );
 }

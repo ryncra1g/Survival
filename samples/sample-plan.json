@@ -140,7 +140,7 @@
             },
             {
               "id": "week-4",
-              "text": "Write the family communications plan (section 11) and pick an out-of-area contact."
+              "text": "Write the family communications plan (see Communications) and pick an out-of-area contact."
             },
             {
               "id": "week-5",
@@ -296,7 +296,7 @@
             },
             {
               "id": "day0-33",
-              "text": "Set up your warm room before the cold arrives (section 5)."
+              "text": "Set up your warm room before the cold arrives (see Heat & warmth)."
             },
             {
               "id": "day0-34",
@@ -321,7 +321,7 @@
             },
             {
               "if": "A boil-water notice is issued or tap water looks/smells wrong",
-              "then": "Use stored water; disinfect any other water (section 4)."
+              "then": "Use stored water; disinfect any other water (see Water)."
             },
             {
               "if": "Indoor temperature drops below 55°F",
@@ -333,7 +333,7 @@
             },
             {
               "if": "Outdoor temperature forecast below 20°F during an outage",
-              "then": "Start the pipe-freeze protocol (section 5)."
+              "then": "Start the pipe-freeze protocol (see Heat & warmth)."
             },
             {
               "if": "Officials issue an evacuation order for your zone",
@@ -341,7 +341,7 @@
             },
             {
               "if": "Sewage backs up or toilets can't flush",
-              "then": "Stop flushing; switch to the two-bucket toilet (section 9)."
+              "then": "Stop flushing; switch to the two-bucket toilet (see Sanitation)."
             },
             {
               "if": "A hurricane watch is issued",

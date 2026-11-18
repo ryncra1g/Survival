@@ -4,8 +4,7 @@ import { hmac, hmacEqual, randomToken } from "./crypto";
 import { env, isProd } from "./env";
 
 /**
- * Signed session cookie (HMAC-SHA256). Three scopes:
- *  - "anon": started the questionnaire, no email yet (uid is ""). Sees only its own questionnaire.
+ * Signed session cookie (HMAC-SHA256). Two scopes:
  *  - "draft": created at email signup before the address is confirmed. Can only see
  *    questionnaires/plans created by this same session (nonce), so typing someone else's
  *    email never exposes their data.
@@ -14,11 +13,11 @@ import { env, isProd } from "./env";
 export interface Session {
   uid: string;
   nonce: string;
-  scope: "anon" | "draft" | "full";
+  scope: "draft" | "full";
   exp: number;
 }
 const NAME = "rp_session";
-const DAYS = { anon: 2, draft: 2, full: 30 };
+const DAYS = { draft: 2, full: 30 };
 
 export function encodeSession(s: Session): string {
   const body = Buffer.from(JSON.stringify(s)).toString("base64url");

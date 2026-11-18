@@ -72,8 +72,9 @@ export function renderPlanEmail(doc: PlanDocument, meta: EmailMeta & { planUrl: 
     .join("");
   const body = `<h1 style="margin:0 0 4px;font-size:22px">${esc(doc.title)}</h1><p style="margin:0;color:${C.muted};font-size:14px">${esc(doc.subtitle)}</p>
 ${button(meta.planUrl, "Open your plan")}
-<p style="margin:0 0 8px;font-size:13px;color:${C.muted}">${meta.pdfAttached ? "A printable PDF is attached. " : ""}Sections: ${toc}</p>
+<p style="margin:0 0 8px;font-size:13px;color:${C.muted}">${meta.pdfAttached ? "Attached: your full plan as a PDF, plus a one-page checklist for the fridge. " : ""}Sections: ${toc}</p>
 <p style="margin:8px 0;font-size:13px;color:${C.muted};border:1px solid ${C.line};padding:8px;border-radius:4px">${esc(doc.disclaimer)}</p>
+${firstSteps(doc)}
 ${doc.affiliateDisclosure ? `<p style="margin:8px 0;font-size:13px;color:${C.muted}"><strong>Affiliate disclosure:</strong> ${esc(doc.affiliateDisclosure)}</p>` : ""}
 ${sections}
 <h2 style="margin:24px 0 4px;font-size:16px">Sources</h2><ul style="margin:4px 0;padding-left:20px;font-size:13px">${doc.sources.map((s) => `<li><a href="${esc(s.url)}" style="color:${C.info}">${esc(s.name)}</a></li>`).join("")}</ul>`;
@@ -82,6 +83,17 @@ ${sections}
     html: shell(doc.title, body, { ...meta, preheader: doc.sections[0]?.summary }),
     text: planToText(doc, meta),
   };
+}
+
+/** The first three "This week" items, so the email opens with something doable today. */
+export function firstStepItems(doc: PlanDocument): string[] {
+  const b = doc.sections.find((x) => x.id === "priorities")?.blocks.find((x) => x.type === "checklist");
+  return b && b.type === "checklist" ? b.items.slice(0, 3).map((i) => i.text) : [];
+}
+function firstSteps(doc: PlanDocument): string {
+  const items = firstStepItems(doc);
+  if (!items.length) return "";
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:12px 0"><tr><td style="border:2px solid ${C.brand};border-radius:8px;padding:12px 14px"><p style="margin:0 0 6px;font-weight:700;font-size:16px">Start here: your first 3 steps</p><ol style="margin:0;padding-left:20px">${items.map((t) => `<li style="margin:4px 0">${esc(t)}</li>`).join("")}</ol></td></tr></table>`;
 }
 
 /** e.g. "Your 90-day emergency plan for Long Island is ready" */
@@ -110,8 +122,8 @@ export function planToText(doc: PlanDocument, meta: EmailMeta & { planUrl: strin
 }
 
 export function renderConfirmEmail(link: string, meta: EmailMeta) {
-  const body = `<h1 style="margin:0 0 8px;font-size:22px">Get your plan + PDF</h1><p>Tap the button to confirm this is your email. We'll send your full plan with a printable PDF right away, and the same link lets you come back and update it.</p>${button(link, "Send me my plan")}<p style="font-size:13px;color:${C.muted}">This link expires in 7 days. If you didn't request a ReadyPlan, ignore this email — you won't hear from us again.</p>`;
-  return { subject: "One tap to get your plan + printable PDF", html: shell("Confirm your email", body, meta), text: `Confirm your email and get your ReadyPlan: ${link}\n\nIf you didn't request this, ignore this email.\n\n${meta.mailingAddress}\nUnsubscribe: ${meta.unsubscribeUrl}` };
+  const body = `<h1 style="margin:0 0 8px;font-size:22px">One tap to get your plan by email</h1><p>Finish your questions on screen — your plan appears as soon as you're done. Tap below to confirm this is your email and we'll send the plan with a printable PDF. The same link lets you come back and update it.</p>${button(link, "Confirm & send my plan")}<p style="font-size:13px;color:${C.muted}">This link expires in 7 days. If you didn't request a ReadyPlan, ignore this email — you won't hear from us again.</p>`;
+  return { subject: "Confirm your email to get your plan + PDF", html: shell("Confirm your email", body, meta), text: `Confirm your email and get your ReadyPlan: ${link}\n\nIf you didn't request this, ignore this email.\n\n${meta.mailingAddress}\nUnsubscribe: ${meta.unsubscribeUrl}` };
 }
 
 export function renderLoginEmail(link: string, meta: EmailMeta) {
@@ -119,9 +131,10 @@ export function renderLoginEmail(link: string, meta: EmailMeta) {
   return { subject: "Your ReadyPlan sign-in link", html: shell("Sign in", body, meta), text: `Open your ReadyPlan: ${link}\n\n${meta.mailingAddress}` };
 }
 
-export type FollowupKind = "day3" | "day30" | "winter" | "hurricane";
+export type FollowupKind = "day1" | "day3" | "day30" | "winter" | "hurricane";
 export function renderFollowupEmail(kind: FollowupKind, planUrl: string, meta: EmailMeta) {
   const copy: Record<FollowupKind, { subject: string; h: string; p: string[] }> = {
+    day1: { subject: "3 things to do today", h: "Your 3 steps for today", p: ["Most of your plan can wait. These three can't: test your CO alarms, store your first 3 days of water, and pick an out-of-area contact everyone can text.", "Each takes under 20 minutes."] },
     day3: { subject: "Did you finish your 'This week' list?", h: "Quick check-in", p: ["Three days ago you made your ReadyPlan. How's the 'This week' list going?", "If you only do one thing today: test your CO alarms and fill your first 3 days of water."] },
     day30: { subject: "Time for Phase 2: power and food", h: "Phase 2 reminder", p: ["It's been a month. If Phase 1 (CO alarms, water, heat) is done, Phase 2 is power and food.", "Your plan has the exact food list and fuel math for your household."] },
     winter: { subject: "Your ReadyPlan winter check", h: "Winter check", p: ["Cold weather is coming. Test CO alarms, check your heat plan and warm room, insulate exposed pipes, and refresh propane and sleeping bags.", "Never run a generator or grill indoors or in a garage."] },
