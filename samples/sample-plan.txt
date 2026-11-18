@@ -19,6 +19,7 @@ Backup power | None
 Vehicles | Gasoline, Gasoline
 Fallback location | Raw land, ~120 miles
 Budget | $1,500–5,000
+Gear level | Well prepared: items default to Standard level; change any item to go cheaper or bigger
 Local hazard profile (approximate, by ZIP prefix)
 Hazard | Rating
 Winter storms / cold | moderate
@@ -49,8 +50,8 @@ Phase 1 shopping list (life safety)
 - Carbon monoxide alarm × 4 (Typical $20–$40 each): UL 2034 listed, battery or plug-in with battery backup, digital readout; one per floor and outside each sleeping area
 - 7-gallon water container × 8 (Typical $20–$35 each): Food-grade HDPE (#2), BPA-free, with spigot; stack no more than 2 high
 - Bathtub water bladder  (Typical $25–$40 each): Food-grade liner that fills a bathtub (~100 gal) when a storm is forecast
+- Gravity bag filter  (Typical $90–$140 each): Hang-and-forget gravity bag, 0.2-micron hollow fiber, filters several liters per minute for a family
 - Unscented household bleach  (Typical $4–$8 each): Regular, unscented 6–8.25% sodium hypochlorite; no splash-less or scented types; replace yearly
-- Hollow-fiber water filter  (Typical $35–$90 each): 0.1-micron hollow fiber (removes bacteria & protozoa; boil or disinfect for viruses); gravity or squeeze
 - Headlamps + LED lanterns × 4 (Typical $15–$30 each): AA/AAA headlamp per person (≥200 lumens) + 2 LED lanterns; no candles
 - AA/AAA battery stock  (Typical $20–$40 each): Bulk alkaline or rechargeable NiMH (pre-charged); store at room temperature
 - NOAA weather radio  (Typical $50–$80 each): NOAA Weather Radio with SAME alerts, hand-crank + USB charging
@@ -64,7 +65,7 @@ Phase 1 shopping list (life safety)
 - Pipe insulation & faucet covers  (Typical $20–$50 each): Foam pipe sleeves for exposed pipes + outdoor faucet covers
 This month
 [ ] Finish stored water: 54 gallons (8 7-gal jugs).
-[ ] Buy Phase 1 gear: carbon monoxide alarm, 7-gallon water container, bathtub water bladder, unscented household bleach, hollow-fiber water filter, headlamps + led lanterns, aa/aaa battery stock, noaa weather radio, usb power bank, family first aid kit, fire extinguisher, fridge/freezer thermometers, indoor-rated portable propane heater, 1-lb propane cylinders (heater fuel), cold-rated sleeping bags, pipe insulation & faucet covers.
+[ ] Buy Phase 1 gear: carbon monoxide alarm, 7-gallon water container, bathtub water bladder, gravity bag filter, unscented household bleach, headlamps + led lanterns, aa/aaa battery stock, noaa weather radio, usb power bank, family first aid kit, fire extinguisher, fridge/freezer thermometers, indoor-rated portable propane heater, 1-lb propane cylinders (heater fuel), cold-rated sleeping bags, pipe insulation & faucet covers.
 [ ] Build a 2-week pantry from the food list (about 98 thousand calories).
 [ ] Get a licensed electrician's quote for a generator power inlet + interlock (or transfer switch) so the generator can safely run your furnace.
 [ ] Do the pipe-freeze prep in section 5 (insulate exposed pipes, know how to drain lines).
@@ -230,6 +231,9 @@ Day 3–14 | Pantry and canned food, ready-to-eat items.
 Day 15+ | Bulk staples: rice, beans, oats, pasta with oil, peanut butter, canned protein and produce.
 - Store staples in sealed food-grade buckets or mylar, cool and dry.
 - Include comfort foods, spices, and a manual can opener.
+Food level: store it yourself, or buy ready-made
+[x] Bulk staples you store yourself: $1,234
+[ ] Freeze-dried long-term food: $7,700–$12,100
 Where to keep it
 - Basement: water and canned food on shelves at least a foot off the floor (your area floods); nothing you'd need in a flood down there.
 - Garage: water jugs and bulk staples in sealed bins, away from the car's exhaust, chemicals and direct sun; not for anything that spoils in heat.
@@ -344,6 +348,12 @@ Sanitation | Bucket toilet kit, bags, shovel, toilet paper |
 Power | Power station, solar panel, charging cables | 
 Food | Pantry + staples for the first week, cooler | 
 Tools | Saw, hatchet, work gloves, headlamps | 
+Bug-out kit: pick a level for each (Essential, Standard or Premium)
+- FRS walkie-talkies  (Typical $25–$45 each): License-free FRS pair, AA or rechargeable, for family use within about a mile
+- Go-bag from a backpack you own × 2 (Typical $20–$40 each): Any sturdy backpack + the go-bag checklist; buy only the missing pieces (headlamp, water bottle, first aid)
+- Basic vehicle kit  (Typical $35–$70 each): Jumper cables, tire gauge, flashlight, blanket, paper map
+- Tarp shelter kit  (Typical $50–$100 each): Two 10×12 ft heavy tarps, 100 ft paracord, stakes, ground cloth; quick rain-and-wind shelter
+- Water transport for off-grid site  (Typical $40–$90 each): 2–4 collapsible or rigid 5–7 gal containers dedicated to the vehicle/land site
 Vehicle kit
 [ ] Jump starter, tire inflator, tow strap
 [ ] Paper road map with 2 routes marked
@@ -365,7 +375,7 @@ Go-bag (one per person)
 !! Tents and fumes: Never use a heater, stove, grill or generator inside a tent or vehicle. Cook and run generators in the open, away from where people sleep.
 
 17. BUDGET BY PHASE
-Within your $1,500–5,000 range we planned around $3,250. Phase 1 buys life safety first; the whole list comes to about $3,390.
+Within your $1,500–5,000 range we planned around $3,250. Phase 1 buys life safety first; the whole list comes to about $3,407.
 
 Item | Qty | Est. cost | Note
 Phase 1 — life safety (CO alarms, water, heat) |  |  | 
@@ -374,8 +384,8 @@ Phase 1 — life safety (CO alarms, water, heat) |  |  |
   Carbon monoxide alarm | × 4 | $80–$160 | Essential
   7-gallon water container | × 8 | $160–$280 | 
   Bathtub water bladder |  | $25–$40 | 
+  Gravity bag filter |  | $90–$140 | 
   Unscented household bleach |  | $4–$8 | Essential
-  Hollow-fiber water filter |  | $35–$90 | 
   Headlamps + LED lanterns | × 4 | $60–$120 | Essential
   AA/AAA battery stock |  | $20–$40 | 
   NOAA weather radio |  | $50–$80 | 
@@ -387,25 +397,25 @@ Phase 1 — life safety (CO alarms, water, heat) |  |  |
   1-lb propane cylinders (heater fuel) |  | $30–$50 | 
   Cold-rated sleeping bags | × 4 | $160–$360 | 
   Pipe insulation & faucet covers |  | $20–$50 | 
-  Phase 1 subtotal (target $975) |  | ~$1,608 | 
+  Phase 1 subtotal (target $975) |  | ~$1,660 | 
 Phase 2 — power & food |  |  | 
   Food staples, first 30 days |  | $411 | 
   Pet food (54 lb) |  | $81 | 
   Small inverter generator |  | $550–$1,200 | 
   Generator cord + outdoor extension cords |  | $60–$120 | 
   5-gallon gas cans + stabilizer | × 6 | $180–$270 | 
-  Flood kit |  | $50–$150 | 
-  Phase 2 subtotal (target $1,625) |  | ~$1,782 | 
+  Multi-day cooler |  | $40–$90 | 
+  Phase 2 subtotal (target $1,625) |  | ~$1,747 | 
 Phase 3 — comfort, solar, comms |  |  | 
   Food staples, days 31–90 (build up with each grocery trip) |  | $823 | Ongoing, from grocery budget
   Phase 3 subtotal (target $650) |  | ~$0 | 
-Total (midpoint estimate) |  | ~$3,390 | Planning budget $3,250
+Total (midpoint estimate) |  | ~$3,407 | Planning budget $3,250
 Plus ongoing food build-up |  | ~$823 | Spread over grocery trips
 Next purchases when budget allows
 Item | Qty | Est. cost | Phase
 Generator inlet + interlock (electrician-installed) |  | $500–$1,500 | Phase 2
+Flood kit |  | $50–$150 | Phase 2
 20-lb propane cylinders | × 2 | $100–$140 | Phase 2
-Multi-day cooler |  | $40–$90 | Phase 2
 Food storage buckets |  | $40–$90 | Phase 2
 Emergency toilet kit |  | $25–$50 | Phase 2
 Window protection |  | $150–$600 | Phase 2
@@ -413,15 +423,15 @@ Battery backup sump pump |  | $250–$500 | Phase 2
 Pet go-kit |  | $30–$100 | Phase 2
 Portable power station (quiet hours) |  | $400–$900 | Phase 3
 Portable solar panel |  | $300–$650 | Phase 3
-GMRS/FRS handheld radios |  | $60–$150 | Phase 3
-Countertop gravity filter |  | $250–$450 | Phase 3
+FRS walkie-talkies |  | $25–$45 | Phase 3
 Fire/water-resistant document pouch |  | $20–$60 | Phase 3
 Kids comfort & activity kit |  | $20–$50 | Phase 3
-Go-bag backpack | × 2 | $80–$240 | Phase 3
-Vehicle emergency kit |  | $100–$200 | Phase 3
-Family tent + tarps |  | $150–$450 | Phase 3
+Go-bag from a backpack you own | × 2 | $40–$80 | Phase 3
+Basic vehicle kit |  | $35–$70 | Phase 3
+Tarp shelter kit |  | $50–$100 | Phase 3
 Water transport for off-grid site |  | $40–$90 | Phase 3
-!! What to cut first: If money is tight, delay flood kit, pipe insulation & faucet covers, cold-rated sleeping bags. Never cut CO alarms, stored water, or your heat plan. Buy food a little at a time with each grocery trip.
+!! Go cheaper or bigger, item by item: Items with levels (water, power, filters, radios, go-bags, shelter, vehicle kit, food) can each be switched to Essential, Standard or Premium in Recommended gear. Totals update when you switch.
+!! What to cut first: If money is tight, delay multi-day cooler, pipe insulation & faucet covers, cold-rated sleeping bags. Never cut CO alarms, stored water, or your heat plan. Buy food a little at a time with each grocery trip.
 
 18. RECOMMENDED GEAR
 Buy to the spec, not the brand. The example models are just a starting point for comparing.
@@ -429,8 +439,8 @@ Buy to the spec, not the brand. The example models are just a starting point for
 - Carbon monoxide alarm × 4 (Typical $20–$40 each): UL 2034 listed, battery or plug-in with battery backup, digital readout; one per floor and outside each sleeping area
 - 7-gallon water container × 8 (Typical $20–$35 each): Food-grade HDPE (#2), BPA-free, with spigot; stack no more than 2 high
 - Bathtub water bladder  (Typical $25–$40 each): Food-grade liner that fills a bathtub (~100 gal) when a storm is forecast
+- Gravity bag filter  (Typical $90–$140 each): Hang-and-forget gravity bag, 0.2-micron hollow fiber, filters several liters per minute for a family
 - Unscented household bleach  (Typical $4–$8 each): Regular, unscented 6–8.25% sodium hypochlorite; no splash-less or scented types; replace yearly
-- Hollow-fiber water filter  (Typical $35–$90 each): 0.1-micron hollow fiber (removes bacteria & protozoa; boil or disinfect for viruses); gravity or squeeze
 - Headlamps + LED lanterns × 4 (Typical $15–$30 each): AA/AAA headlamp per person (≥200 lumens) + 2 LED lanterns; no candles
 - AA/AAA battery stock  (Typical $20–$40 each): Bulk alkaline or rechargeable NiMH (pre-charged); store at room temperature
 - NOAA weather radio  (Typical $50–$80 each): NOAA Weather Radio with SAME alerts, hand-crank + USB charging
@@ -445,10 +455,10 @@ Buy to the spec, not the brand. The example models are just a starting point for
 - Small inverter generator  (Typical $550–$1,200 each): 2,200–2,500 W inverter with CO auto-shutoff (runs fridge, furnace blower via inlet, charging)
 - Generator cord + outdoor extension cords  (Typical $60–$120 each): L14-30 generator cord (for an inlet) or 12-gauge outdoor-rated extension cords long enough to keep the generator 20+ ft from the house
 - 5-gallon gas cans + stabilizer × 6 (Typical $30–$45 each): Approved 5-gal cans + fuel stabilizer; store in a detached shed or well-ventilated area away from ignition sources
-- Flood kit  (Typical $50–$150 each): Waterproof bins for documents/valuables on an upper shelf, sandbags or water-activated flood barriers for door thresholds
-- Generator inlet + interlock (electrician-installed)  (Typical $500–$1,500 each): Power inlet box + panel interlock kit or transfer switch, installed by a licensed electrician (permit where required)
-- 20-lb propane cylinders × 2 (Typical $50–$70 each): Filled 20-lb cylinders with OPD valves; store outdoors upright
 - Multi-day cooler  (Typical $40–$90 each): Rotomolded or 5-day-rated cooler, 45–70 qt
+- Generator inlet + interlock (electrician-installed)  (Typical $500–$1,500 each): Power inlet box + panel interlock kit or transfer switch, installed by a licensed electrician (permit where required)
+- Flood kit  (Typical $50–$150 each): Waterproof bins for documents/valuables on an upper shelf, sandbags or water-activated flood barriers for door thresholds
+- 20-lb propane cylinders × 2 (Typical $50–$70 each): Filled 20-lb cylinders with OPD valves; store outdoors upright
 - Food storage buckets  (Typical $40–$90 each): Food-grade 5-gal buckets with gamma seal lids, mylar bags and oxygen absorbers for rice/beans/oats
 - Emergency toilet kit  (Typical $25–$50 each): 5-gal bucket toilet seat + heavy-duty liners + absorbent (cat litter or sawdust); two-bucket setup
 - Window protection  (Typical $150–$600 each): Pre-cut 5/8" exterior plywood with clips, or code-approved storm panels
@@ -456,13 +466,12 @@ Buy to the spec, not the brand. The example models are just a starting point for
 - Pet go-kit  (Typical $30–$100 each): Collapsible bowls, spare leash/harness, crate or carrier, waste bags, copy of vaccination records
 - Portable power station (quiet hours)  (Typical $400–$900 each): 1–2 kWh LiFePO4, pure sine wave; covers overnight fridge/phone/CPAP loads so the generator can be off
 - Portable solar panel  (Typical $300–$650 each): 200–400 W folding panel matched to your power station's input (voltage/connector)
-- GMRS/FRS handheld radios  (Typical $60–$150 each): Pair of FRS (license-free) or GMRS radios (FCC license, no exam) for neighborhood/family comms
-- Countertop gravity filter  (Typical $250–$450 each): Gravity system with independent test results (NSF/ANSI 53 or P231 where available), ≥2 gal/hour
+- FRS walkie-talkies  (Typical $25–$45 each): License-free FRS pair, AA or rechargeable, for family use within about a mile
 - Fire/water-resistant document pouch  (Typical $20–$60 each): Fire- and water-resistant pouch or small safe for copies of IDs, insurance, prescriptions list
 - Kids comfort & activity kit  (Typical $20–$50 each): Cards, coloring, books, small toys, glow sticks; kept in a labeled bin
-- Go-bag backpack × 2 (Typical $40–$120 each): 30–40 L pack per adult; small pack per child with ID card, snacks, comfort item
-- Vehicle emergency kit  (Typical $100–$200 each): Lithium jump starter, 12 V tire inflator, tow strap, reflective triangles, paper road atlas
-- Family tent + tarps  (Typical $150–$450 each): 3-season (or 4-season for winter) family tent, 2 heavy tarps, paracord, stakes
+- Go-bag from a backpack you own × 2 (Typical $20–$40 each): Any sturdy backpack + the go-bag checklist; buy only the missing pieces (headlamp, water bottle, first aid)
+- Basic vehicle kit  (Typical $35–$70 each): Jumper cables, tire gauge, flashlight, blanket, paper map
+- Tarp shelter kit  (Typical $50–$100 each): Two 10×12 ft heavy tarps, 100 ft paracord, stakes, ground cloth; quick rain-and-wind shelter
 - Water transport for off-grid site  (Typical $40–$90 each): 2–4 collapsible or rigid 5–7 gal containers dedicated to the vehicle/land site
 Catalog last reviewed: 2026-11-01. Check prices, recalls and current reviews before you buy.
 

@@ -1,12 +1,22 @@
 import type { Block, PlanDocument } from "@/lib/plan/document";
 import { Checklist } from "./Checklist";
 import { ChecksProvider } from "./ChecksContext";
+import { LevelChips } from "./LevelChips";
 import { SectionNav } from "./SectionNav";
 
 const toneCls = { danger: "border-danger text-danger", warning: "border-warn text-warn", info: "border-info text-info" } as const;
 
-function BlockView({ b, planId, buyHref }: { b: Block; planId: string; buyHref?: (itemId: string) => string }) {
+type ChooseFn = (group: string, level: "essential" | "standard" | "premium") => void;
+
+function BlockView({ b, planId, buyHref, sectionId, onChoose }: { b: Block; planId: string; buyHref?: (itemId: string) => string; sectionId: string; onChoose?: ChooseFn }) {
   switch (b.type) {
+    case "levelchoice":
+      return (
+        <div className="my-4">
+          <h3 className="font-semibold">{b.caption}</h3>
+          <LevelChips planId={planId} group={b.group} levels={b.levels} back={sectionId} onChoose={onChoose} />
+        </div>
+      );
     case "products":
       return (
         <div className="my-4">
@@ -21,6 +31,7 @@ function BlockView({ b, planId, buyHref }: { b: Block; planId: string; buyHref?:
                   </p>
                   {!b.compact && <p className="text-sm text-muted mt-0.5">{i.spec}</p>}
                   <p className="text-sm mt-0.5">{i.price}{!b.compact && i.models.length ? ` · e.g. ${i.models.join("; ")}` : ""}</p>
+                  {!b.compact && i.levels && i.group && <LevelChips planId={planId} group={i.group} levels={i.levels} back={sectionId} onChoose={onChoose} />}
                 </div>
                 {i.buyable && (
                   <a href={buyHref ? buyHref(i.itemId) : `/go/${encodeURIComponent(i.itemId)}?p=${planId}&src=web`} target="_blank" rel="sponsored nofollow noopener" className="btn-ghost shrink-0 text-brand min-h-[40px]" aria-label={`Buy ${i.name} (opens a store, affiliate link)`}>
@@ -120,12 +131,15 @@ export function PlanView({
   buyHref,
   checks,
   sync = false,
+  onChoose,
 }: {
   doc: PlanDocument;
   planId: string;
   buyHref?: (itemId: string) => string;
   checks?: Record<string, boolean>;
   sync?: boolean;
+  /** Demo only: switch a level without a server. */
+  onChoose?: ChooseFn;
 }) {
   return (
     <ChecksProvider planId={planId} initial={checks} sync={sync}>
@@ -141,7 +155,7 @@ export function PlanView({
               <span className="mt-2 block p-3 rounded bg-brand-soft">{s.summary}</span>
             </summary>
             <div className="px-4 sm:px-6 pb-5">
-              {s.blocks.map((b, i) => <BlockView key={i} b={b} planId={planId} buyHref={buyHref} />)}
+              {s.blocks.map((b, i) => <BlockView key={i} b={b} planId={planId} buyHref={buyHref} sectionId={s.id} onChoose={onChoose} />)}
             </div>
           </details>
         ))}

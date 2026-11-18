@@ -43,13 +43,18 @@ const th = (v: string, w = "") => `<th class="c"${w ? ` width="${w}"` : ""}>${es
 /** Tracked Buy link: /go/<itemId>?p=<planId>&src=email */
 export const goPath = (itemId: string, planId?: string, src = "web") => `/go/${encodeURIComponent(itemId)}?${planId ? `p=${encodeURIComponent(planId)}&` : ""}src=${src}`;
 
+const levelLine = (levels?: { level: string; price: string; selected: boolean }[]) =>
+  levels ? `<br><span style="color:${C.muted};font-size:12px">Levels: ${levels.map((l) => `${l.selected ? "<strong>" : ""}${esc(l.level[0].toUpperCase() + l.level.slice(1))} ${esc(l.price)}${l.selected ? "</strong>" : ""}`).join(" · ")}</span>` : "";
+
 function block(b: Block, ctx: { appUrl: string; planId?: string } = { appUrl: "" }): string {
   switch (b.type) {
+    case "levelchoice":
+      return `<p style="margin:10px 0 4px;font-weight:600">${esc(b.caption)}</p><p style="margin:0 0 8px;font-size:13px">${b.levels.map((l) => `${l.selected ? "<strong>✓ " : ""}${esc(l.name)}: ${esc(l.price)}${l.selected ? "</strong>" : ""}`).join("<br>")}</p>`;
     case "products":
       return `${b.caption ? `<p style="margin:12px 0 4px;font-size:13px;font-weight:600;color:${C.muted}">${esc(b.caption)}</p>` : ""}<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:6px 0"><tr>${th("Item")}${th("Price")}${th("")}</tr>${b.items
         .map(
           (i) =>
-            `<tr><td class="c"><strong>${esc(i.name)}</strong>${i.qty ? ` ${esc(i.qty)}` : ""}${i.later ? " <em>(later)</em>" : ""}<br><span style="color:${C.muted}">${esc(i.spec)}</span></td><td class="c">${esc(i.price)}</td><td class="c">${i.buyable ? (i.emailSafe ? `<a href="${esc(ctx.appUrl + goPath(i.itemId, ctx.planId, "email"))}" style="color:${C.brand};font-weight:700">Buy</a>` : ctx.planId ? `<a href="${esc(`${ctx.appUrl}/plan/${ctx.planId}#priorities`)}" style="color:${C.brand};font-weight:700">Shop</a>` : "") : ""}</td></tr>`,
+            `<tr><td class="c"><strong>${esc(i.name)}</strong>${i.qty ? ` ${esc(i.qty)}` : ""}${i.later ? " <em>(later)</em>" : ""}<br><span style="color:${C.muted}">${esc(i.spec)}</span>${levelLine(i.levels)}</td><td class="c">${esc(i.price)}</td><td class="c">${i.buyable ? (i.emailSafe ? `<a href="${esc(ctx.appUrl + goPath(i.itemId, ctx.planId, "email"))}" style="color:${C.brand};font-weight:700">Buy</a>` : ctx.planId ? `<a href="${esc(`${ctx.appUrl}/plan/${ctx.planId}#priorities`)}" style="color:${C.brand};font-weight:700">Shop</a>` : "") : ""}</td></tr>`,
         )
         .join("")}</table>`;
     case "paragraph":
@@ -124,6 +129,7 @@ export function planToText(doc: PlanDocument, meta: EmailMeta & { planUrl: strin
       if (b.type === "table") lines.push(...(b.caption ? [b.caption] : []), b.columns.join(" | "), ...b.rows.map((r) => r.join(" | ")));
       if (b.type === "ifthen") lines.push(...b.rows.map((r) => `IF ${r.if} -> ${r.then}`));
       if (b.type === "callout") lines.push(`!! ${b.title}: ${b.text}`);
+      if (b.type === "levelchoice") lines.push(b.caption, ...b.levels.map((l) => `${l.selected ? "[x]" : "[ ]"} ${l.name}: ${l.price}`));
       if (b.type === "products") lines.push(...(b.caption ? [b.caption] : []), ...b.items.map((i) => `- ${i.name} ${i.qty} (${i.price}): ${i.spec}${i.buyable && i.emailSafe ? ` — buy: ${meta.appUrl}${goPath(i.itemId, meta.planId, "email")}` : ""}`));
     }
     lines.push("");

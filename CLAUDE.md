@@ -16,6 +16,9 @@ optionally emails it, and can buy gear through tracked affiliate links. See READ
 - **Every answer must change the plan, and the plan must never sell what someone already has.**
   `tests/pathways.test.ts` enforces it (58 single-answer changes + 68 pairwise households covering all
   1,844 answer pairs); see docs/PATHWAYS.md. A new question or answer needs a line there.
+- **Gear levels (à la carte):** items in a `group` are a slot with `level` essential/standard/premium; the budget sets the
+  default (`budget.defaultLevel`), `answers.gearChoices` overrides it, and `excludes` removes items a choice replaces.
+  `tests/levels.test.ts` loops every slot × level for the 10 personas. New slots go in `GEAR_SLOTS` (lib/answers/schema.ts).
 - Don't commit secrets, `.env*`, or `.data/`.
 
 ## Commands

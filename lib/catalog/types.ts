@@ -57,8 +57,12 @@ export const CatalogItemSchema = z.object({
   qty: z.union([z.number().int().positive(), z.string()]),
   tags: z.array(z.string()),
   essential: z.boolean().default(false),
-  /** Items sharing a group are alternatives: the engine picks the best one that fits the budget. */
+  /** Items sharing a group are alternatives (a "slot"): the engine picks one level; people can switch à la carte. */
   group: z.string().optional(),
+  /** Level within a group: essential (cheapest that does the job), standard, premium. */
+  level: z.enum(["essential", "standard", "premium"]).optional(),
+  /** Item ids that no longer apply when this item is chosen (e.g. a standby generator replaces gas cans). */
+  excludes: z.array(z.string()).optional(),
   /** Only include this item if an item from this group was included (e.g. gas cans need a generator). */
   requiresGroup: z.string().optional(),
   /** With requiresGroup: bought together with the group item (budget-checked as one bundle). */
@@ -70,3 +74,6 @@ export const CatalogItemSchema = z.object({
 });
 
 export type CatalogItem = z.infer<typeof CatalogItemSchema>;
+export const LEVELS = ["essential", "standard", "premium"] as const;
+export type Level = (typeof LEVELS)[number];
+export const LEVEL_LABEL: Record<Level, string> = { essential: "Essential", standard: "Standard", premium: "Premium" };

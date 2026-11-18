@@ -24,13 +24,13 @@ const seed: Seed[] = [
     id: "water-jug", category: "Water", name: "7-gallon water container",
     spec: "Food-grade HDPE (#2), BPA-free, with spigot; stack no more than 2 high",
     models: ["Reliance Aqua-Tainer 7 gal", "Scepter 7 gal water container"], priceLow: 20, priceHigh: 35, tier: 1, phase: 1, priority: 2,
-    qty: "water_jugs", tags: [], group: "water",
+    qty: "water_jugs", tags: [], group: "water", level: "standard",
   },
   {
     id: "water-gallons", category: "Water", name: "Gallon water jugs or refilled bottles (low-cost)",
     spec: "Store-bought 1-gallon water, or clean 2-liter soda bottles refilled with tap water (not milk jugs); upgrade to 7-gal jugs later",
     models: ["Any store-brand gallon water"], priceLow: 1, priceHigh: 1.5, tier: 1, phase: 1, priority: 2,
-    qty: "water_gallons", tags: [], essential: true, group: "water",
+    qty: "water_gallons", tags: [], essential: true, group: "water", level: "essential",
   },
   {
     id: "water-drum", category: "Water", name: "55-gallon water drum kit",
@@ -52,13 +52,13 @@ const seed: Seed[] = [
     id: "filter-basic", category: "Water", name: "Hollow-fiber water filter",
     spec: "0.1-micron hollow fiber (removes bacteria & protozoa; boil or disinfect for viruses); gravity or squeeze",
     models: ["Sawyer Squeeze", "LifeStraw Family 2.0"], priceLow: 35, priceHigh: 90, tier: 1, phase: 1, priority: 6,
-    qty: 1, tags: ["needs_filter"],
+    qty: 1, tags: ["needs_filter"], group: "filter", level: "essential", essential: true,
   },
   {
     id: "filter-gravity", category: "Water", name: "Countertop gravity filter",
     spec: "Gravity system with independent test results (NSF/ANSI 53 or P231 where available), ≥2 gal/hour",
     models: ["Berkey-style gravity system", "LifeStraw Community"], priceLow: 250, priceHigh: 450, tier: 3, phase: 3, priority: 4,
-    qty: 1, tags: ["needs_filter"],
+    qty: 1, tags: ["needs_filter"], group: "filter", level: "premium",
   },
   {
     id: "lights", category: "Light", name: "Headlamps + LED lanterns",
@@ -168,13 +168,13 @@ const seed: Seed[] = [
     id: "generator-dual", category: "Power", name: "Dual-fuel inverter generator",
     spec: "3,500–4,500 W running, inverter (clean power), gasoline + propane, built-in CO auto-shutoff, ≤ 65 dBA",
     models: ["Champion 4500W dual-fuel inverter", "Westinghouse iGen4500DF"], priceLow: 900, priceHigh: 1500, tier: 3, phase: 2, priority: 2,
-    qty: 1, tags: ["recommend_generator"], group: "generator",
+    qty: 1, tags: ["recommend_generator"], group: "generator", level: "standard",
   },
   {
     id: "generator-small", category: "Power", name: "Small inverter generator",
     spec: "2,200–2,500 W inverter with CO auto-shutoff (runs fridge, furnace blower via inlet, charging)",
     models: ["Champion 2500W inverter", "Honda EU2200i"], priceLow: 550, priceHigh: 1200, tier: 2, phase: 2, priority: 3,
-    qty: 1, tags: ["recommend_generator"], group: "generator", notes: "Picked instead of the dual-fuel model when the budget is tighter",
+    qty: 1, tags: ["recommend_generator"], group: "generator", level: "essential", notes: "Picked instead of the dual-fuel model when the budget is tighter",
   },
   {
     id: "inlet-interlock", category: "Power", name: "Generator inlet + interlock (electrician-installed)",
@@ -204,7 +204,7 @@ const seed: Seed[] = [
     id: "power-station", category: "Power", name: "Portable power station",
     spec: "1–2 kWh LiFePO4, pure sine wave, ≥1,500 W output; runs lights, phones, router, fans indoors with no fumes",
     models: ["EcoFlow DELTA 2", "Anker SOLIX C1000"], priceLow: 400, priceHigh: 900, tier: 2, phase: 2, priority: 3,
-    qty: 1, tags: ["apartment"], group: "battery",
+    qty: 1, tags: ["apartment"], group: "battery-apt", level: "standard",
   },
   {
     id: "camp-stove", category: "Cooking", name: "Two-burner propane camp stove (outdoor use only)",
@@ -252,6 +252,105 @@ const seed: Seed[] = [
     models: ["Geek Aire rechargeable fan", "Treva battery fan"], priceLow: 30, priceHigh: 80, tier: 1, phase: 2, priority: 14,
     qty: 1, tags: ["hot_climate"],
   },
+  // ---------------- À la carte levels: essential / premium alternatives ----------------
+  {
+    id: "water-bricks", category: "Water", name: "Stackable water bricks",
+    spec: "Rigid 3.5-gal stackable BPA-free bricks with spigot caps; stack 4–5 high in a closet or under shelves",
+    models: ["WaterBrick 3.5 gal", "Augason Farms stackable"], priceLow: 25, priceHigh: 35, tier: 3, phase: 1, priority: 2,
+    qty: "water_bricks", tags: [], group: "water", level: "premium",
+  },
+  {
+    id: "generator-standby", category: "Power", name: "Whole-home standby generator (professionally installed)",
+    spec: "14–24 kW standby unit on a pad outdoors, natural gas or propane, automatic transfer switch, installed with permits by licensed electrician and plumber",
+    models: ["Generac Guardian 22 kW", "Kohler 20RESCL"], priceLow: 9000, priceHigh: 18000, tier: 4, phase: 2, priority: 2,
+    qty: 1, tags: ["recommend_generator", "house_or_townhouse"], group: "generator", level: "premium",
+    excludes: ["gas-cans", "gen-cord", "propane-20", "inlet-interlock"], notes: "Range includes typical installation",
+  },
+  {
+    id: "power-station-small", category: "Power", name: "Small power station",
+    spec: "300–700 Wh LiFePO4 with AC outlets; phones, lights, router and a fan for a day or two",
+    models: ["Jackery Explorer 300 Plus", "EcoFlow River 2 Pro"], priceLow: 200, priceHigh: 450, tier: 1, phase: 2, priority: 3,
+    qty: 1, tags: ["apartment"], group: "battery-apt", level: "essential",
+  },
+  {
+    id: "power-station-large", category: "Power", name: "Large expandable power station",
+    spec: "3–4 kWh expandable LiFePO4, 3,000 W+ output; runs a fridge, CPAP and lights for days, pairs with solar",
+    models: ["EcoFlow DELTA Pro", "Anker SOLIX F3800"], priceLow: 2200, priceHigh: 3800, tier: 4, phase: 2, priority: 3,
+    qty: 1, tags: ["apartment"], group: "battery-apt", level: "premium",
+  },
+  {
+    id: "power-station-house-large", category: "Power", name: "Large expandable power station (quiet hours)",
+    spec: "3–4 kWh expandable LiFePO4; covers overnight loads silently and pairs with solar panels",
+    models: ["EcoFlow DELTA Pro", "Anker SOLIX F3800"], priceLow: 2200, priceHigh: 3800, tier: 4, phase: 3, priority: 1,
+    qty: 1, tags: ["house_or_townhouse", "!owns_solar"], group: "battery-house", level: "premium",
+  },
+  {
+    id: "filter-gravity-bag", category: "Water", name: "Gravity bag filter",
+    spec: "Hang-and-forget gravity bag, 0.2-micron hollow fiber, filters several liters per minute for a family",
+    models: ["Platypus GravityWorks 4L", "Sawyer Gravity system"], priceLow: 90, priceHigh: 140, tier: 2, phase: 1, priority: 6,
+    qty: 1, tags: ["needs_filter"], group: "filter", level: "standard",
+  },
+  {
+    id: "frs-radios", category: "Communications", name: "FRS walkie-talkies",
+    spec: "License-free FRS pair, AA or rechargeable, for family use within about a mile",
+    models: ["Motorola Talkabout T110", "Cobra RX100"], priceLow: 25, priceHigh: 45, tier: 1, phase: 3, priority: 3,
+    qty: 1, tags: [], group: "two-way", level: "essential",
+  },
+  {
+    id: "sat-messenger", category: "Communications", name: "Satellite messenger",
+    spec: "Two-way satellite texting and SOS with no cell service; needs a monthly plan (about $15–65/mo)",
+    models: ["Garmin inReach Mini 2", "ZOLEO"], priceLow: 200, priceHigh: 400, tier: 3, phase: 3, priority: 3,
+    qty: 1, tags: [], group: "two-way", level: "premium",
+  },
+  {
+    id: "go-bag-basic", category: "Evacuation", name: "Go-bag from a backpack you own",
+    spec: "Any sturdy backpack + the go-bag checklist; buy only the missing pieces (headlamp, water bottle, first aid)",
+    models: ["Any backpack you already own"], priceLow: 20, priceHigh: 40, tier: 1, phase: 3, priority: 7,
+    qty: "adults", tags: ["evacuation"], group: "go-bag", level: "essential",
+  },
+  {
+    id: "go-bag-kit", category: "Evacuation", name: "Premium pre-packed go-bag",
+    spec: "Pre-packed 72-hour kit in a weatherproof pack: water filter, stove (outdoor use), shelter, first aid, light, power bank",
+    models: ["Uncharted Supply Co. The Seventy2", "Preppi PREPPI72"], priceLow: 300, priceHigh: 450, tier: 3, phase: 3, priority: 7,
+    qty: "adults", tags: ["evacuation"], group: "go-bag", level: "premium",
+  },
+  {
+    id: "tarp-shelter", category: "Evacuation", name: "Tarp shelter kit",
+    spec: "Two 10×12 ft heavy tarps, 100 ft paracord, stakes, ground cloth; quick rain-and-wind shelter",
+    models: ["Any heavy-duty poly tarp kit"], priceLow: 50, priceHigh: 100, tier: 1, phase: 3, priority: 9,
+    qty: 1, tags: ["raw_land"], group: "shelter", level: "essential",
+  },
+  {
+    id: "canvas-tent", category: "Evacuation", name: "Canvas bell or cabin tent",
+    spec: "Four-season canvas tent for long stays, breathable and warmer than nylon; sized for the whole household",
+    models: ["White Duck Regatta bell tent", "Kodiak Canvas Flex-Bow"], priceLow: 600, priceHigh: 1400, tier: 3, phase: 3, priority: 9,
+    qty: 1, tags: ["raw_land"], group: "shelter", level: "premium",
+  },
+  {
+    id: "vehicle-kit-basic", category: "Evacuation", name: "Basic vehicle kit",
+    spec: "Jumper cables, tire gauge, flashlight, blanket, paper map",
+    models: ["Any roadside emergency kit"], priceLow: 35, priceHigh: 70, tier: 1, phase: 3, priority: 8,
+    qty: 1, tags: ["vehicles", "evacuation"], group: "vehicle-kit", level: "essential",
+  },
+  {
+    id: "vehicle-kit-premium", category: "Evacuation", name: "Recovery + cargo kit",
+    spec: "Lithium jump starter, 12 V compressor, traction boards, recovery strap and shackles, rooftop cargo box for gear",
+    models: ["MAXTRAX traction boards", "Thule Force XT cargo box"], priceLow: 700, priceHigh: 1500, tier: 3, phase: 3, priority: 8,
+    qty: 1, tags: ["vehicles", "evacuation"], group: "vehicle-kit", level: "premium",
+  },
+  {
+    id: "food-freeze-dried", category: "Food", name: "Freeze-dried long-term food",
+    spec: "25-year shelf-life freeze-dried meals, about 2,000 kcal per person-day; no rotation needed, just add hot water",
+    models: ["Mountain House buckets", "Augason Farms 30-day kit"], priceLow: 700, priceHigh: 1100, tier: 4, phase: 2, priority: 1,
+    qty: "freeze_dried_units", tags: [], group: "food", level: "premium", notes: "Priced per 1-person, 30-day supply",
+  },
+  // ---------------- Luxury track ----------------
+  {
+    id: "raw-land-cabin", category: "Evacuation", name: "Small cabin or insulated shed on your land",
+    spec: "Prefab shed or tiny cabin on piers with a rain-catchment barrel and a bucket-toilet corner; check local zoning and permits first",
+    models: ["Local shed builder or prefab kit"], priceLow: 8000, priceHigh: 25000, tier: 4, phase: 3, priority: 20,
+    qty: 1, tags: ["raw_land"], notes: "Luxury option; no Buy link",
+  },
   // ---------------- Phase 3: comfort, solar, comms ----------------
   {
     id: "solar-panel", category: "Power", name: "Portable solar panel",
@@ -263,13 +362,13 @@ const seed: Seed[] = [
     id: "power-station-house", category: "Power", name: "Portable power station (quiet hours)",
     spec: "1–2 kWh LiFePO4, pure sine wave; covers overnight fridge/phone/CPAP loads so the generator can be off",
     models: ["EcoFlow DELTA 2", "Jackery Explorer 1000 v2"], priceLow: 400, priceHigh: 900, tier: 3, phase: 3, priority: 1,
-    qty: 1, tags: ["house_or_townhouse", "!owns_solar"], group: "battery",
+    qty: 1, tags: ["house_or_townhouse", "!owns_solar"], group: "battery-house", level: "standard",
   },
   {
     id: "gmrs", category: "Communications", name: "GMRS/FRS handheld radios",
     spec: "Pair of FRS (license-free) or GMRS radios (FCC license, no exam) for neighborhood/family comms",
     models: ["Midland GXT1000VP4", "Motorola Talkabout T470"], priceLow: 60, priceHigh: 150, tier: 2, phase: 3, priority: 3,
-    qty: 1, tags: [],
+    qty: 1, tags: [], group: "two-way", level: "standard",
   },
   {
     id: "docs-pouch", category: "Documents", name: "Fire/water-resistant document pouch",
@@ -289,17 +388,17 @@ const seed: Seed[] = [
   {
     id: "go-bag", category: "Evacuation", name: "Go-bag backpack",
     spec: "30–40 L pack per adult; small pack per child with ID card, snacks, comfort item",
-    models: ["Osprey Daylite", "REI Ruckpack 40"], priceLow: 40, priceHigh: 120, tier: 1, phase: 3, priority: 7, qty: "adults", tags: ["evacuation"],
+    models: ["Osprey Daylite", "REI Ruckpack 40"], priceLow: 40, priceHigh: 120, tier: 1, phase: 3, priority: 7, qty: "adults", tags: ["evacuation"], group: "go-bag", level: "standard",
   },
   {
     id: "vehicle-kit", category: "Evacuation", name: "Vehicle emergency kit",
     spec: "Lithium jump starter, 12 V tire inflator, tow strap, reflective triangles, paper road atlas",
-    models: ["NOCO Boost GB40", "AstroAI tire inflator"], priceLow: 100, priceHigh: 200, tier: 1, phase: 3, priority: 8, qty: 1, tags: ["vehicles", "evacuation"],
+    models: ["NOCO Boost GB40", "AstroAI tire inflator"], priceLow: 100, priceHigh: 200, tier: 1, phase: 3, priority: 8, qty: 1, tags: ["vehicles", "evacuation"], group: "vehicle-kit", level: "standard",
   },
   {
     id: "tent", category: "Evacuation", name: "Family tent + tarps",
     spec: "3-season (or 4-season for winter) family tent, 2 heavy tarps, paracord, stakes",
-    models: ["Coleman Skydome 6", "REI Base Camp 6"], priceLow: 150, priceHigh: 450, tier: 2, phase: 3, priority: 9, qty: 1, tags: ["raw_land"],
+    models: ["Coleman Skydome 6", "REI Base Camp 6"], priceLow: 150, priceHigh: 450, tier: 2, phase: 3, priority: 9, qty: 1, tags: ["raw_land"], group: "shelter", level: "standard",
   },
   {
     id: "raw-land-water", category: "Evacuation", name: "Water transport for off-grid site",

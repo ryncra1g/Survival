@@ -36,7 +36,7 @@ function makePlan(a: Answers): PlanDocument {
   return doc;
 }
 
-type View = { kind: "home" } | { kind: "build"; key: number } | { kind: "plan"; doc: PlanDocument; sample: boolean };
+type View = { kind: "home" } | { kind: "build"; key: number } | { kind: "plan"; doc: PlanDocument; sample: boolean; answers: Answers };
 
 function Home({ onStart, onSample }: { onStart: () => void; onSample: () => void }) {
   return <Landing cta={<StartButton onStart={onStart} />} footer={<button type="button" className="underline" onClick={onSample}>See a sample plan</button>} />;
@@ -46,7 +46,7 @@ function App() {
   const [view, setView] = useState<View>({ kind: "home" });
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [view]);
+  }, [view.kind]);
 
   const start = () => {
     try {
@@ -64,9 +64,9 @@ function App() {
         </div>
       </header>
       <main id="main">
-        {view.kind === "home" && <Home onStart={start} onSample={() => setView({ kind: "plan", doc: makePlan(SAMPLE_HOUSEHOLD), sample: true })} />}
+        {view.kind === "home" && <Home onStart={start} onSample={() => setView({ kind: "plan", doc: makePlan(SAMPLE_HOUSEHOLD), sample: true, answers: SAMPLE_HOUSEHOLD })} />}
         {view.kind === "build" && (
-          <Questionnaire key={view.key} id="demo" initial={{}} onGenerate={async (a) => setView({ kind: "plan", doc: makePlan(a), sample: false })} />
+          <Questionnaire key={view.key} id="demo" initial={{}} onGenerate={async (a) => setView({ kind: "plan", doc: makePlan(a), sample: false, answers: a })} />
         )}
         {view.kind === "plan" && (
           <div className="mx-auto max-w-3xl px-4 py-6">
@@ -86,7 +86,15 @@ function App() {
             {!view.sample && <div className="mt-5"><EmailMyPlan planId="demo" onSubmit={() => {}} /></div>}
             <p className="mt-4 text-sm text-muted border border-line rounded p-3">{view.doc.disclaimer}</p>
             {view.doc.affiliateDisclosure && <p className="mt-2 text-sm text-muted"><strong>Affiliate disclosure:</strong> {view.doc.affiliateDisclosure}</p>}
-            <PlanView doc={view.doc} planId={view.sample ? "sample" : "demo"} buyHref={demoBuyHref} />
+            <PlanView
+              doc={view.doc}
+              planId={view.sample ? "sample" : "demo"}
+              buyHref={demoBuyHref}
+              onChoose={(group, level) => {
+                const answers = { ...view.answers, gearChoices: { ...(view.answers.gearChoices ?? {}), [group]: level } } as Answers;
+                setView({ ...view, answers, doc: makePlan(answers) });
+              }}
+            />
           </div>
         )}
       </main>

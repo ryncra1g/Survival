@@ -70,7 +70,10 @@ export function documentStrings(doc: PlanDocument): string[] {
           break;
         case "products":
           if (b.caption) s.push(b.caption);
-          for (const i of b.items) s.push(i.name, i.spec, ...i.models);
+          for (const i of b.items) s.push(i.name, i.spec, ...i.models, ...(i.levels ?? []).map((l) => l.name));
+          break;
+        case "levelchoice":
+          s.push(b.caption, ...b.levels.map((l) => l.name));
           break;
       }
     }

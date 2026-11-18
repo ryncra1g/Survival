@@ -61,6 +61,10 @@
             [
               "Budget",
               "$1,500–5,000"
+            ],
+            [
+              "Gear level",
+              "Well prepared: items default to Standard level; change any item to go cheaper or bigger"
             ]
           ]
         },
@@ -193,6 +197,27 @@
               "qty": "× 8",
               "buyable": false,
               "emailSafe": false,
+              "group": "water",
+              "levels": [
+                {
+                  "level": "essential",
+                  "name": "Gallon water jugs or refilled bottles (low-cost)",
+                  "price": "$54–$81",
+                  "selected": false
+                },
+                {
+                  "level": "standard",
+                  "name": "7-gallon water container",
+                  "price": "$160–$280",
+                  "selected": true
+                },
+                {
+                  "level": "premium",
+                  "name": "Stackable water bricks",
+                  "price": "$400–$560",
+                  "selected": false
+                }
+              ],
               "later": false
             },
             {
@@ -210,6 +235,42 @@
               "later": false
             },
             {
+              "itemId": "filter-gravity-bag",
+              "name": "Gravity bag filter",
+              "category": "Water",
+              "spec": "Hang-and-forget gravity bag, 0.2-micron hollow fiber, filters several liters per minute for a family",
+              "models": [
+                "Platypus GravityWorks 4L",
+                "Sawyer Gravity system"
+              ],
+              "price": "Typical $90–$140 each",
+              "qty": "",
+              "buyable": false,
+              "emailSafe": false,
+              "group": "filter",
+              "levels": [
+                {
+                  "level": "essential",
+                  "name": "Hollow-fiber water filter",
+                  "price": "$35–$90",
+                  "selected": false
+                },
+                {
+                  "level": "standard",
+                  "name": "Gravity bag filter",
+                  "price": "$90–$140",
+                  "selected": true
+                },
+                {
+                  "level": "premium",
+                  "name": "Countertop gravity filter",
+                  "price": "$250–$450",
+                  "selected": false
+                }
+              ],
+              "later": false
+            },
+            {
               "itemId": "bleach",
               "name": "Unscented household bleach",
               "category": "Water",
@@ -218,21 +279,6 @@
                 "Any store brand"
               ],
               "price": "Typical $4–$8 each",
-              "qty": "",
-              "buyable": false,
-              "emailSafe": false,
-              "later": false
-            },
-            {
-              "itemId": "filter-basic",
-              "name": "Hollow-fiber water filter",
-              "category": "Water",
-              "spec": "0.1-micron hollow fiber (removes bacteria & protozoa; boil or disinfect for viruses); gravity or squeeze",
-              "models": [
-                "Sawyer Squeeze",
-                "LifeStraw Family 2.0"
-              ],
-              "price": "Typical $35–$90 each",
               "qty": "",
               "buyable": false,
               "emailSafe": false,
@@ -415,7 +461,7 @@
             },
             {
               "id": "month-10",
-              "text": "Buy Phase 1 gear: carbon monoxide alarm, 7-gallon water container, bathtub water bladder, unscented household bleach, hollow-fiber water filter, headlamps + led lanterns, aa/aaa battery stock, noaa weather radio, usb power bank, family first aid kit, fire extinguisher, fridge/freezer thermometers, indoor-rated portable propane heater, 1-lb propane cylinders (heater fuel), cold-rated sleeping bags, pipe insulation & faucet covers."
+              "text": "Buy Phase 1 gear: carbon monoxide alarm, 7-gallon water container, bathtub water bladder, gravity bag filter, unscented household bleach, headlamps + led lanterns, aa/aaa battery stock, noaa weather radio, usb power bank, family first aid kit, fire extinguisher, fridge/freezer thermometers, indoor-rated portable propane heater, 1-lb propane cylinders (heater fuel), cold-rated sleeping bags, pipe insulation & faucet covers."
             },
             {
               "id": "month-11",
@@ -1125,6 +1171,25 @@
           ]
         },
         {
+          "type": "levelchoice",
+          "group": "food",
+          "caption": "Food level: store it yourself, or buy ready-made",
+          "levels": [
+            {
+              "level": "essential",
+              "name": "Bulk staples you store yourself",
+              "price": "$1,234",
+              "selected": true
+            },
+            {
+              "level": "premium",
+              "name": "Freeze-dried long-term food",
+              "price": "$7,700–$12,100",
+              "selected": false
+            }
+          ]
+        },
+        {
           "type": "subheading",
           "text": "Where to keep it"
         },
@@ -1558,6 +1623,168 @@
           ]
         },
         {
+          "type": "products",
+          "caption": "Bug-out kit: pick a level for each (Essential, Standard or Premium)",
+          "items": [
+            {
+              "itemId": "frs-radios",
+              "name": "FRS walkie-talkies",
+              "category": "Communications",
+              "spec": "License-free FRS pair, AA or rechargeable, for family use within about a mile",
+              "models": [
+                "Motorola Talkabout T110",
+                "Cobra RX100"
+              ],
+              "price": "Typical $25–$45 each",
+              "qty": "",
+              "buyable": false,
+              "emailSafe": false,
+              "group": "two-way",
+              "levels": [
+                {
+                  "level": "essential",
+                  "name": "FRS walkie-talkies",
+                  "price": "$25–$45",
+                  "selected": false
+                },
+                {
+                  "level": "standard",
+                  "name": "GMRS/FRS handheld radios",
+                  "price": "$60–$150",
+                  "selected": false
+                },
+                {
+                  "level": "premium",
+                  "name": "Satellite messenger",
+                  "price": "$200–$400",
+                  "selected": false
+                }
+              ],
+              "later": true
+            },
+            {
+              "itemId": "go-bag-basic",
+              "name": "Go-bag from a backpack you own",
+              "category": "Evacuation",
+              "spec": "Any sturdy backpack + the go-bag checklist; buy only the missing pieces (headlamp, water bottle, first aid)",
+              "models": [
+                "Any backpack you already own"
+              ],
+              "price": "Typical $20–$40 each",
+              "qty": "× 2",
+              "buyable": false,
+              "emailSafe": false,
+              "group": "go-bag",
+              "levels": [
+                {
+                  "level": "essential",
+                  "name": "Go-bag from a backpack you own",
+                  "price": "$40–$80",
+                  "selected": false
+                },
+                {
+                  "level": "standard",
+                  "name": "Go-bag backpack",
+                  "price": "$80–$240",
+                  "selected": false
+                },
+                {
+                  "level": "premium",
+                  "name": "Premium pre-packed go-bag",
+                  "price": "$600–$900",
+                  "selected": false
+                }
+              ],
+              "later": true
+            },
+            {
+              "itemId": "vehicle-kit-basic",
+              "name": "Basic vehicle kit",
+              "category": "Evacuation",
+              "spec": "Jumper cables, tire gauge, flashlight, blanket, paper map",
+              "models": [
+                "Any roadside emergency kit"
+              ],
+              "price": "Typical $35–$70 each",
+              "qty": "",
+              "buyable": false,
+              "emailSafe": false,
+              "group": "vehicle-kit",
+              "levels": [
+                {
+                  "level": "essential",
+                  "name": "Basic vehicle kit",
+                  "price": "$35–$70",
+                  "selected": false
+                },
+                {
+                  "level": "standard",
+                  "name": "Vehicle emergency kit",
+                  "price": "$100–$200",
+                  "selected": false
+                },
+                {
+                  "level": "premium",
+                  "name": "Recovery + cargo kit",
+                  "price": "$700–$1,500",
+                  "selected": false
+                }
+              ],
+              "later": true
+            },
+            {
+              "itemId": "tarp-shelter",
+              "name": "Tarp shelter kit",
+              "category": "Evacuation",
+              "spec": "Two 10×12 ft heavy tarps, 100 ft paracord, stakes, ground cloth; quick rain-and-wind shelter",
+              "models": [
+                "Any heavy-duty poly tarp kit"
+              ],
+              "price": "Typical $50–$100 each",
+              "qty": "",
+              "buyable": false,
+              "emailSafe": false,
+              "group": "shelter",
+              "levels": [
+                {
+                  "level": "essential",
+                  "name": "Tarp shelter kit",
+                  "price": "$50–$100",
+                  "selected": false
+                },
+                {
+                  "level": "standard",
+                  "name": "Family tent + tarps",
+                  "price": "$150–$450",
+                  "selected": false
+                },
+                {
+                  "level": "premium",
+                  "name": "Canvas bell or cabin tent",
+                  "price": "$600–$1,400",
+                  "selected": false
+                }
+              ],
+              "later": true
+            },
+            {
+              "itemId": "raw-land-water",
+              "name": "Water transport for off-grid site",
+              "category": "Evacuation",
+              "spec": "2–4 collapsible or rigid 5–7 gal containers dedicated to the vehicle/land site",
+              "models": [
+                "Reliance Aqua-Tainer 7 gal",
+                "Scepter 5 gal"
+              ],
+              "price": "Typical $40–$90 each",
+              "qty": "",
+              "buyable": false,
+              "emailSafe": false,
+              "later": true
+            }
+          ]
+        },
+        {
           "type": "subheading",
           "text": "Vehicle kit"
         },
@@ -1651,7 +1878,7 @@
       "id": "budget",
       "number": 17,
       "title": "Budget by phase",
-      "summary": "Within your $1,500–5,000 range we planned around $3,250. Phase 1 buys life safety first; the whole list comes to about $3,390.",
+      "summary": "Within your $1,500–5,000 range we planned around $3,250. Phase 1 buys life safety first; the whole list comes to about $3,407.",
       "blocks": [
         {
           "type": "table",
@@ -1699,16 +1926,16 @@
               ""
             ],
             [
+              "  Gravity bag filter",
+              "",
+              "$90–$140",
+              ""
+            ],
+            [
               "  Unscented household bleach",
               "",
               "$4–$8",
               "Essential"
-            ],
-            [
-              "  Hollow-fiber water filter",
-              "",
-              "$35–$90",
-              ""
             ],
             [
               "  Headlamps + LED lanterns",
@@ -1779,7 +2006,7 @@
             [
               "  Phase 1 subtotal (target $975)",
               "",
-              "~$1,608",
+              "~$1,660",
               ""
             ],
             [
@@ -1819,15 +2046,15 @@
               ""
             ],
             [
-              "  Flood kit",
+              "  Multi-day cooler",
               "",
-              "$50–$150",
+              "$40–$90",
               ""
             ],
             [
               "  Phase 2 subtotal (target $1,625)",
               "",
-              "~$1,782",
+              "~$1,747",
               ""
             ],
             [
@@ -1851,7 +2078,7 @@
             [
               "Total (midpoint estimate)",
               "",
-              "~$3,390",
+              "~$3,407",
               "Planning budget $3,250"
             ],
             [
@@ -1879,15 +2106,15 @@
               "Phase 2"
             ],
             [
-              "20-lb propane cylinders",
-              "× 2",
-              "$100–$140",
+              "Flood kit",
+              "",
+              "$50–$150",
               "Phase 2"
             ],
             [
-              "Multi-day cooler",
-              "",
-              "$40–$90",
+              "20-lb propane cylinders",
+              "× 2",
+              "$100–$140",
               "Phase 2"
             ],
             [
@@ -1933,15 +2160,9 @@
               "Phase 3"
             ],
             [
-              "GMRS/FRS handheld radios",
+              "FRS walkie-talkies",
               "",
-              "$60–$150",
-              "Phase 3"
-            ],
-            [
-              "Countertop gravity filter",
-              "",
-              "$250–$450",
+              "$25–$45",
               "Phase 3"
             ],
             [
@@ -1957,21 +2178,21 @@
               "Phase 3"
             ],
             [
-              "Go-bag backpack",
+              "Go-bag from a backpack you own",
               "× 2",
-              "$80–$240",
+              "$40–$80",
               "Phase 3"
             ],
             [
-              "Vehicle emergency kit",
+              "Basic vehicle kit",
               "",
-              "$100–$200",
+              "$35–$70",
               "Phase 3"
             ],
             [
-              "Family tent + tarps",
+              "Tarp shelter kit",
               "",
-              "$150–$450",
+              "$50–$100",
               "Phase 3"
             ],
             [
@@ -1985,8 +2206,14 @@
         {
           "type": "callout",
           "tone": "info",
+          "title": "Go cheaper or bigger, item by item",
+          "text": "Items with levels (water, power, filters, radios, go-bags, shelter, vehicle kit, food) can each be switched to Essential, Standard or Premium in Recommended gear. Totals update when you switch."
+        },
+        {
+          "type": "callout",
+          "tone": "info",
           "title": "What to cut first",
-          "text": "If money is tight, delay flood kit, pipe insulation & faucet covers, cold-rated sleeping bags. Never cut CO alarms, stored water, or your heat plan. Buy food a little at a time with each grocery trip."
+          "text": "If money is tight, delay multi-day cooler, pipe insulation & faucet covers, cold-rated sleeping bags. Never cut CO alarms, stored water, or your heat plan. Buy food a little at a time with each grocery trip."
         }
       ]
     },
@@ -2027,6 +2254,27 @@
               "qty": "× 8",
               "buyable": false,
               "emailSafe": false,
+              "group": "water",
+              "levels": [
+                {
+                  "level": "essential",
+                  "name": "Gallon water jugs or refilled bottles (low-cost)",
+                  "price": "$54–$81",
+                  "selected": false
+                },
+                {
+                  "level": "standard",
+                  "name": "7-gallon water container",
+                  "price": "$160–$280",
+                  "selected": true
+                },
+                {
+                  "level": "premium",
+                  "name": "Stackable water bricks",
+                  "price": "$400–$560",
+                  "selected": false
+                }
+              ],
               "later": false
             },
             {
@@ -2044,6 +2292,42 @@
               "later": false
             },
             {
+              "itemId": "filter-gravity-bag",
+              "name": "Gravity bag filter",
+              "category": "Water",
+              "spec": "Hang-and-forget gravity bag, 0.2-micron hollow fiber, filters several liters per minute for a family",
+              "models": [
+                "Platypus GravityWorks 4L",
+                "Sawyer Gravity system"
+              ],
+              "price": "Typical $90–$140 each",
+              "qty": "",
+              "buyable": false,
+              "emailSafe": false,
+              "group": "filter",
+              "levels": [
+                {
+                  "level": "essential",
+                  "name": "Hollow-fiber water filter",
+                  "price": "$35–$90",
+                  "selected": false
+                },
+                {
+                  "level": "standard",
+                  "name": "Gravity bag filter",
+                  "price": "$90–$140",
+                  "selected": true
+                },
+                {
+                  "level": "premium",
+                  "name": "Countertop gravity filter",
+                  "price": "$250–$450",
+                  "selected": false
+                }
+              ],
+              "later": false
+            },
+            {
               "itemId": "bleach",
               "name": "Unscented household bleach",
               "category": "Water",
@@ -2052,21 +2336,6 @@
                 "Any store brand"
               ],
               "price": "Typical $4–$8 each",
-              "qty": "",
-              "buyable": false,
-              "emailSafe": false,
-              "later": false
-            },
-            {
-              "itemId": "filter-basic",
-              "name": "Hollow-fiber water filter",
-              "category": "Water",
-              "spec": "0.1-micron hollow fiber (removes bacteria & protozoa; boil or disinfect for viruses); gravity or squeeze",
-              "models": [
-                "Sawyer Squeeze",
-                "LifeStraw Family 2.0"
-              ],
-              "price": "Typical $35–$90 each",
               "qty": "",
               "buyable": false,
               "emailSafe": false,
@@ -2247,6 +2516,27 @@
               "qty": "",
               "buyable": false,
               "emailSafe": false,
+              "group": "generator",
+              "levels": [
+                {
+                  "level": "essential",
+                  "name": "Small inverter generator",
+                  "price": "$790–$1,590",
+                  "selected": true
+                },
+                {
+                  "level": "standard",
+                  "name": "Dual-fuel inverter generator",
+                  "price": "$1,140–$1,890",
+                  "selected": false
+                },
+                {
+                  "level": "premium",
+                  "name": "Whole-home standby generator (professionally installed)",
+                  "price": "$9,000–$18,000",
+                  "selected": false
+                }
+              ],
               "later": false
             },
             {
@@ -2280,15 +2570,15 @@
               "later": false
             },
             {
-              "itemId": "flood-kit",
-              "name": "Flood kit",
-              "category": "Flood",
-              "spec": "Waterproof bins for documents/valuables on an upper shelf, sandbags or water-activated flood barriers for door thresholds",
+              "itemId": "coolers",
+              "name": "Multi-day cooler",
+              "category": "Food",
+              "spec": "Rotomolded or 5-day-rated cooler, 45–70 qt",
               "models": [
-                "Quick Dam water-activated bags",
-                "Sterilite latching totes"
+                "Coleman Xtreme 70 qt",
+                "Igloo MaxCold"
               ],
-              "price": "Typical $50–$150 each",
+              "price": "Typical $40–$90 each",
               "qty": "",
               "buyable": false,
               "emailSafe": false,
@@ -2310,6 +2600,21 @@
               "later": true
             },
             {
+              "itemId": "flood-kit",
+              "name": "Flood kit",
+              "category": "Flood",
+              "spec": "Waterproof bins for documents/valuables on an upper shelf, sandbags or water-activated flood barriers for door thresholds",
+              "models": [
+                "Quick Dam water-activated bags",
+                "Sterilite latching totes"
+              ],
+              "price": "Typical $50–$150 each",
+              "qty": "",
+              "buyable": false,
+              "emailSafe": false,
+              "later": true
+            },
+            {
               "itemId": "propane-20",
               "name": "20-lb propane cylinders",
               "category": "Fuel",
@@ -2320,21 +2625,6 @@
               ],
               "price": "Typical $50–$70 each",
               "qty": "× 2",
-              "buyable": false,
-              "emailSafe": false,
-              "later": true
-            },
-            {
-              "itemId": "coolers",
-              "name": "Multi-day cooler",
-              "category": "Food",
-              "spec": "Rotomolded or 5-day-rated cooler, 45–70 qt",
-              "models": [
-                "Coleman Xtreme 70 qt",
-                "Igloo MaxCold"
-              ],
-              "price": "Typical $40–$90 each",
-              "qty": "",
               "buyable": false,
               "emailSafe": false,
               "later": true
@@ -2427,6 +2717,21 @@
               "qty": "",
               "buyable": false,
               "emailSafe": false,
+              "group": "battery-house",
+              "levels": [
+                {
+                  "level": "standard",
+                  "name": "Portable power station (quiet hours)",
+                  "price": "$400–$900",
+                  "selected": false
+                },
+                {
+                  "level": "premium",
+                  "name": "Large expandable power station (quiet hours)",
+                  "price": "$2,200–$3,800",
+                  "selected": false
+                }
+              ],
               "later": true
             },
             {
@@ -2445,33 +2750,39 @@
               "later": true
             },
             {
-              "itemId": "gmrs",
-              "name": "GMRS/FRS handheld radios",
+              "itemId": "frs-radios",
+              "name": "FRS walkie-talkies",
               "category": "Communications",
-              "spec": "Pair of FRS (license-free) or GMRS radios (FCC license, no exam) for neighborhood/family comms",
+              "spec": "License-free FRS pair, AA or rechargeable, for family use within about a mile",
               "models": [
-                "Midland GXT1000VP4",
-                "Motorola Talkabout T470"
+                "Motorola Talkabout T110",
+                "Cobra RX100"
               ],
-              "price": "Typical $60–$150 each",
+              "price": "Typical $25–$45 each",
               "qty": "",
               "buyable": false,
               "emailSafe": false,
-              "later": true
-            },
-            {
-              "itemId": "filter-gravity",
-              "name": "Countertop gravity filter",
-              "category": "Water",
-              "spec": "Gravity system with independent test results (NSF/ANSI 53 or P231 where available), ≥2 gal/hour",
-              "models": [
-                "Berkey-style gravity system",
-                "LifeStraw Community"
+              "group": "two-way",
+              "levels": [
+                {
+                  "level": "essential",
+                  "name": "FRS walkie-talkies",
+                  "price": "$25–$45",
+                  "selected": false
+                },
+                {
+                  "level": "standard",
+                  "name": "GMRS/FRS handheld radios",
+                  "price": "$60–$150",
+                  "selected": false
+                },
+                {
+                  "level": "premium",
+                  "name": "Satellite messenger",
+                  "price": "$200–$400",
+                  "selected": false
+                }
               ],
-              "price": "Typical $250–$450 each",
-              "qty": "",
-              "buyable": false,
-              "emailSafe": false,
               "later": true
             },
             {
@@ -2504,48 +2815,108 @@
               "later": true
             },
             {
-              "itemId": "go-bag",
-              "name": "Go-bag backpack",
+              "itemId": "go-bag-basic",
+              "name": "Go-bag from a backpack you own",
               "category": "Evacuation",
-              "spec": "30–40 L pack per adult; small pack per child with ID card, snacks, comfort item",
+              "spec": "Any sturdy backpack + the go-bag checklist; buy only the missing pieces (headlamp, water bottle, first aid)",
               "models": [
-                "Osprey Daylite",
-                "REI Ruckpack 40"
+                "Any backpack you already own"
               ],
-              "price": "Typical $40–$120 each",
+              "price": "Typical $20–$40 each",
               "qty": "× 2",
               "buyable": false,
               "emailSafe": false,
+              "group": "go-bag",
+              "levels": [
+                {
+                  "level": "essential",
+                  "name": "Go-bag from a backpack you own",
+                  "price": "$40–$80",
+                  "selected": false
+                },
+                {
+                  "level": "standard",
+                  "name": "Go-bag backpack",
+                  "price": "$80–$240",
+                  "selected": false
+                },
+                {
+                  "level": "premium",
+                  "name": "Premium pre-packed go-bag",
+                  "price": "$600–$900",
+                  "selected": false
+                }
+              ],
               "later": true
             },
             {
-              "itemId": "vehicle-kit",
-              "name": "Vehicle emergency kit",
+              "itemId": "vehicle-kit-basic",
+              "name": "Basic vehicle kit",
               "category": "Evacuation",
-              "spec": "Lithium jump starter, 12 V tire inflator, tow strap, reflective triangles, paper road atlas",
+              "spec": "Jumper cables, tire gauge, flashlight, blanket, paper map",
               "models": [
-                "NOCO Boost GB40",
-                "AstroAI tire inflator"
+                "Any roadside emergency kit"
               ],
-              "price": "Typical $100–$200 each",
+              "price": "Typical $35–$70 each",
               "qty": "",
               "buyable": false,
               "emailSafe": false,
+              "group": "vehicle-kit",
+              "levels": [
+                {
+                  "level": "essential",
+                  "name": "Basic vehicle kit",
+                  "price": "$35–$70",
+                  "selected": false
+                },
+                {
+                  "level": "standard",
+                  "name": "Vehicle emergency kit",
+                  "price": "$100–$200",
+                  "selected": false
+                },
+                {
+                  "level": "premium",
+                  "name": "Recovery + cargo kit",
+                  "price": "$700–$1,500",
+                  "selected": false
+                }
+              ],
               "later": true
             },
             {
-              "itemId": "tent",
-              "name": "Family tent + tarps",
+              "itemId": "tarp-shelter",
+              "name": "Tarp shelter kit",
               "category": "Evacuation",
-              "spec": "3-season (or 4-season for winter) family tent, 2 heavy tarps, paracord, stakes",
+              "spec": "Two 10×12 ft heavy tarps, 100 ft paracord, stakes, ground cloth; quick rain-and-wind shelter",
               "models": [
-                "Coleman Skydome 6",
-                "REI Base Camp 6"
+                "Any heavy-duty poly tarp kit"
               ],
-              "price": "Typical $150–$450 each",
+              "price": "Typical $50–$100 each",
               "qty": "",
               "buyable": false,
               "emailSafe": false,
+              "group": "shelter",
+              "levels": [
+                {
+                  "level": "essential",
+                  "name": "Tarp shelter kit",
+                  "price": "$50–$100",
+                  "selected": false
+                },
+                {
+                  "level": "standard",
+                  "name": "Family tent + tarps",
+                  "price": "$150–$450",
+                  "selected": false
+                },
+                {
+                  "level": "premium",
+                  "name": "Canvas bell or cabin tent",
+                  "price": "$600–$1,400",
+                  "selected": false
+                }
+              ],
               "later": true
             },
             {

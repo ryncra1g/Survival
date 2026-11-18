@@ -19,6 +19,10 @@ export const Skill = z.enum(["first_aid", "camping", "tools"]);
 export const BackupPower = z.enum(["none", "portable_generator", "standby_generator", "solar_battery"]);
 export const FallbackType = z.enum(["friends_family", "second_property", "raw_land"]);
 
+/** À la carte gear slots a person can set to essential / standard / premium. */
+export const GEAR_SLOTS = ["water", "generator", "battery-apt", "battery-house", "filter", "two-way", "go-bag", "shelter", "vehicle-kit", "food"] as const;
+export const GearLevel = z.enum(["essential", "standard", "premium"]);
+
 export const PetGroup = z.object({
   type: z.enum(["dog", "cat", "other"]),
   count: z.number().int().min(1).max(10),
@@ -58,6 +62,8 @@ export const AnswersSchema = z
     }),
     budget: Budget,
     skills: z.array(Skill).max(3),
+    /** À la carte overrides, e.g. { generator: "premium", water: "essential" }. Optional. */
+    gearChoices: z.partialRecord(z.enum(GEAR_SLOTS), GearLevel).optional(),
   })
   .superRefine((a, ctx) => {
     if (a.evacuation.mode === "fallback" && (!a.evacuation.locationType || !a.evacuation.distanceMiles)) {

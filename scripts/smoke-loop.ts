@@ -62,6 +62,21 @@ async function run(i: number): Promise<R> {
     res.info[`${kind}Pages`] = pages;
     if (kind === "checklist" && pages !== 1) fail(`fridge checklist is ${pages} pages`);
   }
+  // À la carte: tick an item, switch water to Premium, and check the rebuilt plan kept the tick and shows the level
+  r = await req("tick", `/api/plans/${pid}/checks`, { method: "PUT", headers: { ...O, "content-type": "application/json" }, body: JSON.stringify({ checks: { "week-1": true } }) });
+  if (r.status !== 200) fail(`tick ${r.status}`);
+  const form = new URLSearchParams({ group: "water", level: "premium", back: "gear" });
+  r = await req("choose", `/api/plans/${pid}/choose`, { method: "POST", headers: { ...O, "content-type": "application/x-www-form-urlencoded" }, body: form.toString() });
+  const newPid = (r.headers.get("location") ?? "").split("/plan/")[1]?.split("#")[0];
+  if (r.status !== 303 || !newPid || newPid === pid) fail(`choose ${r.status} ${r.headers.get("location")}`);
+  else {
+    r = await req("choosePage", `/plan/${newPid}`);
+    const h2 = await r.text();
+    if (!h2.includes("Stackable water bricks")) fail("premium water not shown after choose");
+    if (!/✓ <!-- -->Premium|✓ Premium/.test(h2)) fail("premium not marked selected");
+    if (!/checked=""[^>]*>|aria-checked/.test(h2) && !h2.includes('"week-1":true')) res.info.tickCarried = "not visible in HTML";
+    res.info.levels = (h2.match(/aria-label="Choose a level"/g) ?? []).length;
+  }
   const before = fs.existsSync(OUT) ? new Set(fs.readdirSync(OUT)) : new Set<string>();
   const email = `loop${i}@example.com`;
   r = await req("claim", `/api/plans/${pid}/claim`, { method: "POST", headers: { ...O, "content-type": "application/json" }, body: JSON.stringify({ email, updates: i % 2 === 0 }) });
@@ -106,4 +121,4 @@ const all: R[] = [];
 for (let i = 0; i < PERSONAS.length; i++) all.push(await run(i));
 for (const r of all) console.log(`${r.ok ? "PASS" : "FAIL"} ${r.name.padEnd(12)} gen ${r.t.generate}ms pdf ${r.t.pdf}ms claim ${r.t.claim}ms ${JSON.stringify(r.info)} ${r.issues.join("; ")}`);
 const avg = (k: string) => Math.round(all.reduce((s, r) => s + (r.t[k] ?? 0), 0) / all.length);
-console.log("avg ms:", ["home", "questionnaire", "autosave", "generate", "planPage", "pdf", "checklist", "claim", "confirm"].map((k) => `${k}=${avg(k)}`).join(" "));
+console.log("avg ms:", ["home", "questionnaire", "autosave", "generate", "planPage", "pdf", "checklist", "choose", "claim", "confirm"].map((k) => `${k}=${avg(k)}`).join(" "));

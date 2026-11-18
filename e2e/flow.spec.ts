@@ -227,3 +227,16 @@ test("unconfirmed emails with a plan get exactly one reminder", async ({ page, r
   expect((await (await request.get("/api/cron/emails", auth)).json()).sent.confirm_reminder).toBe(1);
   expect((await (await request.get("/api/cron/emails", auth)).json()).sent.confirm_reminder).toBeUndefined();
 });
+
+test("à la carte: switch a gear item's level from the plan", async ({ page }) => {
+  const planId = await quickPlan(page);
+  await page.goto(`/plan/${planId}#gear`);
+  const gear = page.locator("details#gear");
+  await expect(gear).toHaveAttribute("open", "");
+  const premiumWater = gear.getByRole("button", { name: /Switch to Premium: Stackable water bricks/ });
+  await premiumWater.click();
+  await expect(page).toHaveURL(/\/plan\/[0-9a-f-]{36}#gear/);
+  expect(page.url()).not.toContain(planId);
+  await expect(page.locator("details#gear").getByText("Stackable water bricks").first()).toBeVisible();
+  await expect(page.locator("details#gear [aria-current=true]").filter({ hasText: "Premium" }).first()).toBeVisible();
+});

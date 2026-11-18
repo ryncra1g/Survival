@@ -100,9 +100,23 @@ function BlockView({ b }: { b: Block }) {
           {b.caption ? <Text style={s.caption} minPresenceAhead={60}>{pdfSafe(b.caption)}</Text> : null}
           <Table
             columns={["Item", "Look for", "Examples", "Price"]}
-            rows={b.items.map((i) => [`${i.category}: ${i.name}${i.qty ? ` ${i.qty}` : ""}${i.later ? " (later)" : ""}`, i.spec, i.models.join("; "), i.price])}
+            rows={b.items.map((i) => [
+              `${i.category}: ${i.name}${i.qty ? ` ${i.qty}` : ""}${i.later ? " (later)" : ""}`,
+              i.spec + (i.levels ? `\nLevels: ${i.levels.map((l) => `${l.selected ? "[x] " : ""}${l.level[0].toUpperCase() + l.level.slice(1)} ${l.price}`).join(" · ")}` : ""),
+              i.models.join("; "),
+              i.price,
+            ])}
             widths={[3, 5, 3, 2]}
           />
+        </View>
+      );
+    case "levelchoice":
+      return (
+        <View>
+          <Text style={s.caption}>{pdfSafe(b.caption)}</Text>
+          {b.levels.map((l) => (
+            <Text key={l.level} style={s.p}>{l.selected ? "[x] " : "[ ] "}{pdfSafe(l.name)}: {pdfSafe(l.price)}</Text>
+          ))}
         </View>
       );
     case "callout":

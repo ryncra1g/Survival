@@ -16,7 +16,8 @@ For each item decide, from the owner's info:
 - `phase` 1 (life safety) / 2 (power & food) / 3 (comfort, solar, comms) and `priority` within the phase
 - `qty`: a number or one of `co_alarms`, `water_jugs`, `water_drums`, `people`, `adults`, `floors`, `gas_cans`
 - `tags` (all must be active for the household; `!tag` = must not): see `CATALOG_TAGS` in `lib/catalog/types.ts`
-- `group` for alternatives (engine picks the best that fits the budget), `requiresGroup`/`bundle` for accessories
+- `group` + `level` (essential / standard / premium) to make it one level of an à la carte slot; add new slot names to `GEAR_SLOTS` in `lib/answers/schema.ts`
+- `excludes` for items a choice replaces (e.g. a standby generator excludes gas cans); `requiresGroup`/`bundle` for accessories
 - `affiliateUrl`: a direct product link if the owner has one (Amazon links are kept out of emails automatically)
 
 Use "don't sell what they have" tags: `!owns_solar`, `!owns_generator`, or restrict with `house_or_townhouse` for anything fuel-burning. Then add the rule to the pairwise test in `tests/pathways.test.ts` if it's a new kind of ownership.

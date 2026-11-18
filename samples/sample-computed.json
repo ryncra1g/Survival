@@ -344,21 +344,21 @@
   },
   "budget": {
     "planningAmount": 3250,
-    "totalMid": 3390,
+    "totalMid": 3407,
     "phases": [
       {
         "phase": 1,
         "target": 975,
-        "includedMid": 1608,
-        "includedLow": 1146,
-        "includedHigh": 2067
+        "includedMid": 1660,
+        "includedLow": 1201,
+        "includedHigh": 2117
       },
       {
         "phase": 2,
         "target": 1625,
-        "includedMid": 1782,
-        "includedLow": 1332,
-        "includedHigh": 2232
+        "includedMid": 1747,
+        "includedLow": 1322,
+        "includedHigh": 2172
       },
       {
         "phase": 3,
@@ -454,6 +454,7 @@
           "qty": "water_jugs",
           "tags": [],
           "group": "water",
+          "level": "standard",
           "affiliateUrl": null,
           "active": true
         },
@@ -495,6 +496,40 @@
       },
       {
         "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "filter-gravity-bag",
+          "category": "Water",
+          "name": "Gravity bag filter",
+          "spec": "Hang-and-forget gravity bag, 0.2-micron hollow fiber, filters several liters per minute for a family",
+          "models": [
+            "Platypus GravityWorks 4L",
+            "Sawyer Gravity system"
+          ],
+          "priceLow": 90,
+          "priceHigh": 140,
+          "tier": 2,
+          "phase": 1,
+          "priority": 6,
+          "qty": 1,
+          "tags": [
+            "needs_filter"
+          ],
+          "group": "filter",
+          "level": "standard",
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 90,
+        "high": 140,
+        "mid": 115,
+        "phase": 1,
+        "status": "included"
+      },
+      {
+        "item": {
           "essential": true,
           "notes": "",
           "reviewedAt": "2026-11-01",
@@ -519,38 +554,6 @@
         "low": 4,
         "high": 8,
         "mid": 6,
-        "phase": 1,
-        "status": "included"
-      },
-      {
-        "item": {
-          "essential": false,
-          "notes": "",
-          "reviewedAt": "2026-11-01",
-          "id": "filter-basic",
-          "category": "Water",
-          "name": "Hollow-fiber water filter",
-          "spec": "0.1-micron hollow fiber (removes bacteria & protozoa; boil or disinfect for viruses); gravity or squeeze",
-          "models": [
-            "Sawyer Squeeze",
-            "LifeStraw Family 2.0"
-          ],
-          "priceLow": 35,
-          "priceHigh": 90,
-          "tier": 1,
-          "phase": 1,
-          "priority": 6,
-          "qty": 1,
-          "tags": [
-            "needs_filter"
-          ],
-          "affiliateUrl": null,
-          "active": true
-        },
-        "qty": 1,
-        "low": 35,
-        "high": 90,
-        "mid": 63,
         "phase": 1,
         "status": "included"
       },
@@ -917,6 +920,7 @@
             "recommend_generator"
           ],
           "group": "generator",
+          "level": "essential",
           "affiliateUrl": null,
           "active": true
         },
@@ -1002,31 +1006,28 @@
           "essential": false,
           "notes": "",
           "reviewedAt": "2026-11-01",
-          "id": "flood-kit",
-          "category": "Flood",
-          "name": "Flood kit",
-          "spec": "Waterproof bins for documents/valuables on an upper shelf, sandbags or water-activated flood barriers for door thresholds",
+          "id": "coolers",
+          "category": "Food",
+          "name": "Multi-day cooler",
+          "spec": "Rotomolded or 5-day-rated cooler, 45–70 qt",
           "models": [
-            "Quick Dam water-activated bags",
-            "Sterilite latching totes"
+            "Coleman Xtreme 70 qt",
+            "Igloo MaxCold"
           ],
-          "priceLow": 50,
-          "priceHigh": 150,
+          "priceLow": 40,
+          "priceHigh": 90,
           "tier": 1,
           "phase": 2,
-          "priority": 6,
+          "priority": 9,
           "qty": 1,
-          "tags": [
-            "flood",
-            "house_or_townhouse"
-          ],
+          "tags": [],
           "affiliateUrl": null,
           "active": true
         },
         "qty": 1,
-        "low": 50,
-        "high": 150,
-        "mid": 100,
+        "low": 40,
+        "high": 90,
+        "mid": 65,
         "phase": 2,
         "status": "included"
       }
@@ -1073,6 +1074,40 @@
           "essential": false,
           "notes": "",
           "reviewedAt": "2026-11-01",
+          "id": "flood-kit",
+          "category": "Flood",
+          "name": "Flood kit",
+          "spec": "Waterproof bins for documents/valuables on an upper shelf, sandbags or water-activated flood barriers for door thresholds",
+          "models": [
+            "Quick Dam water-activated bags",
+            "Sterilite latching totes"
+          ],
+          "priceLow": 50,
+          "priceHigh": 150,
+          "tier": 1,
+          "phase": 2,
+          "priority": 6,
+          "qty": 1,
+          "tags": [
+            "flood",
+            "house_or_townhouse"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 50,
+        "high": 150,
+        "mid": 100,
+        "phase": 2,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
           "id": "propane-20",
           "category": "Fuel",
           "name": "20-lb propane cylinders",
@@ -1099,37 +1134,6 @@
         "low": 100,
         "high": 140,
         "mid": 120,
-        "phase": 2,
-        "status": "deferred",
-        "reason": "Doesn't fit the remaining budget — buy next"
-      },
-      {
-        "item": {
-          "essential": false,
-          "notes": "",
-          "reviewedAt": "2026-11-01",
-          "id": "coolers",
-          "category": "Food",
-          "name": "Multi-day cooler",
-          "spec": "Rotomolded or 5-day-rated cooler, 45–70 qt",
-          "models": [
-            "Coleman Xtreme 70 qt",
-            "Igloo MaxCold"
-          ],
-          "priceLow": 40,
-          "priceHigh": 90,
-          "tier": 1,
-          "phase": 2,
-          "priority": 9,
-          "qty": 1,
-          "tags": [],
-          "affiliateUrl": null,
-          "active": true
-        },
-        "qty": 1,
-        "low": 40,
-        "high": 90,
-        "mid": 65,
         "phase": 2,
         "status": "deferred",
         "reason": "Doesn't fit the remaining budget — buy next"
@@ -1321,7 +1325,8 @@
             "house_or_townhouse",
             "!owns_solar"
           ],
-          "group": "battery",
+          "group": "battery-house",
+          "level": "standard",
           "affiliateUrl": null,
           "active": true
         },
@@ -1371,61 +1376,30 @@
           "essential": false,
           "notes": "",
           "reviewedAt": "2026-11-01",
-          "id": "gmrs",
+          "id": "frs-radios",
           "category": "Communications",
-          "name": "GMRS/FRS handheld radios",
-          "spec": "Pair of FRS (license-free) or GMRS radios (FCC license, no exam) for neighborhood/family comms",
+          "name": "FRS walkie-talkies",
+          "spec": "License-free FRS pair, AA or rechargeable, for family use within about a mile",
           "models": [
-            "Midland GXT1000VP4",
-            "Motorola Talkabout T470"
+            "Motorola Talkabout T110",
+            "Cobra RX100"
           ],
-          "priceLow": 60,
-          "priceHigh": 150,
-          "tier": 2,
+          "priceLow": 25,
+          "priceHigh": 45,
+          "tier": 1,
           "phase": 3,
           "priority": 3,
           "qty": 1,
           "tags": [],
+          "group": "two-way",
+          "level": "essential",
           "affiliateUrl": null,
           "active": true
         },
         "qty": 1,
-        "low": 60,
-        "high": 150,
-        "mid": 105,
-        "phase": 3,
-        "status": "deferred",
-        "reason": "Doesn't fit the remaining budget — buy next"
-      },
-      {
-        "item": {
-          "essential": false,
-          "notes": "",
-          "reviewedAt": "2026-11-01",
-          "id": "filter-gravity",
-          "category": "Water",
-          "name": "Countertop gravity filter",
-          "spec": "Gravity system with independent test results (NSF/ANSI 53 or P231 where available), ≥2 gal/hour",
-          "models": [
-            "Berkey-style gravity system",
-            "LifeStraw Community"
-          ],
-          "priceLow": 250,
-          "priceHigh": 450,
-          "tier": 3,
-          "phase": 3,
-          "priority": 4,
-          "qty": 1,
-          "tags": [
-            "needs_filter"
-          ],
-          "affiliateUrl": null,
-          "active": true
-        },
-        "qty": 1,
-        "low": 250,
-        "high": 450,
-        "mid": 350,
+        "low": 25,
+        "high": 45,
+        "mid": 35,
         "phase": 3,
         "status": "deferred",
         "reason": "Doesn't fit the remaining budget — buy next"
@@ -1498,16 +1472,15 @@
           "essential": false,
           "notes": "",
           "reviewedAt": "2026-11-01",
-          "id": "go-bag",
+          "id": "go-bag-basic",
           "category": "Evacuation",
-          "name": "Go-bag backpack",
-          "spec": "30–40 L pack per adult; small pack per child with ID card, snacks, comfort item",
+          "name": "Go-bag from a backpack you own",
+          "spec": "Any sturdy backpack + the go-bag checklist; buy only the missing pieces (headlamp, water bottle, first aid)",
           "models": [
-            "Osprey Daylite",
-            "REI Ruckpack 40"
+            "Any backpack you already own"
           ],
-          "priceLow": 40,
-          "priceHigh": 120,
+          "priceLow": 20,
+          "priceHigh": 40,
           "tier": 1,
           "phase": 3,
           "priority": 7,
@@ -1515,13 +1488,15 @@
           "tags": [
             "evacuation"
           ],
+          "group": "go-bag",
+          "level": "essential",
           "affiliateUrl": null,
           "active": true
         },
         "qty": 2,
-        "low": 80,
-        "high": 240,
-        "mid": 160,
+        "low": 40,
+        "high": 80,
+        "mid": 60,
         "phase": 3,
         "status": "deferred",
         "reason": "Doesn't fit the remaining budget — buy next"
@@ -1531,16 +1506,15 @@
           "essential": false,
           "notes": "",
           "reviewedAt": "2026-11-01",
-          "id": "vehicle-kit",
+          "id": "vehicle-kit-basic",
           "category": "Evacuation",
-          "name": "Vehicle emergency kit",
-          "spec": "Lithium jump starter, 12 V tire inflator, tow strap, reflective triangles, paper road atlas",
+          "name": "Basic vehicle kit",
+          "spec": "Jumper cables, tire gauge, flashlight, blanket, paper map",
           "models": [
-            "NOCO Boost GB40",
-            "AstroAI tire inflator"
+            "Any roadside emergency kit"
           ],
-          "priceLow": 100,
-          "priceHigh": 200,
+          "priceLow": 35,
+          "priceHigh": 70,
           "tier": 1,
           "phase": 3,
           "priority": 8,
@@ -1549,13 +1523,15 @@
             "vehicles",
             "evacuation"
           ],
+          "group": "vehicle-kit",
+          "level": "essential",
           "affiliateUrl": null,
           "active": true
         },
         "qty": 1,
-        "low": 100,
-        "high": 200,
-        "mid": 150,
+        "low": 35,
+        "high": 70,
+        "mid": 53,
         "phase": 3,
         "status": "deferred",
         "reason": "Doesn't fit the remaining budget — buy next"
@@ -1565,30 +1541,31 @@
           "essential": false,
           "notes": "",
           "reviewedAt": "2026-11-01",
-          "id": "tent",
+          "id": "tarp-shelter",
           "category": "Evacuation",
-          "name": "Family tent + tarps",
-          "spec": "3-season (or 4-season for winter) family tent, 2 heavy tarps, paracord, stakes",
+          "name": "Tarp shelter kit",
+          "spec": "Two 10×12 ft heavy tarps, 100 ft paracord, stakes, ground cloth; quick rain-and-wind shelter",
           "models": [
-            "Coleman Skydome 6",
-            "REI Base Camp 6"
+            "Any heavy-duty poly tarp kit"
           ],
-          "priceLow": 150,
-          "priceHigh": 450,
-          "tier": 2,
+          "priceLow": 50,
+          "priceHigh": 100,
+          "tier": 1,
           "phase": 3,
           "priority": 9,
           "qty": 1,
           "tags": [
             "raw_land"
           ],
+          "group": "shelter",
+          "level": "essential",
           "affiliateUrl": null,
           "active": true
         },
         "qty": 1,
-        "low": 150,
-        "high": 450,
-        "mid": 300,
+        "low": 50,
+        "high": 100,
+        "mid": 75,
         "phase": 3,
         "status": "deferred",
         "reason": "Doesn't fit the remaining budget — buy next"
@@ -1629,9 +1606,283 @@
     ],
     "staleHidden": [],
     "cutFirst": [
-      "Flood kit",
+      "Multi-day cooler",
       "Pipe insulation & faucet covers",
       "Cold-rated sleeping bags"
+    ],
+    "slots": [
+      {
+        "group": "water",
+        "chosen": "water-jug",
+        "chosenLevel": "standard",
+        "byChoice": false,
+        "options": [
+          {
+            "level": "essential",
+            "itemId": "water-gallons",
+            "name": "Gallon water jugs or refilled bottles (low-cost)",
+            "qty": 54,
+            "low": 54,
+            "high": 81
+          },
+          {
+            "level": "standard",
+            "itemId": "water-jug",
+            "name": "7-gallon water container",
+            "qty": 8,
+            "low": 160,
+            "high": 280
+          },
+          {
+            "level": "premium",
+            "itemId": "water-bricks",
+            "name": "Stackable water bricks",
+            "qty": 16,
+            "low": 400,
+            "high": 560
+          }
+        ]
+      },
+      {
+        "group": "filter",
+        "chosen": "filter-gravity-bag",
+        "chosenLevel": "standard",
+        "byChoice": false,
+        "options": [
+          {
+            "level": "essential",
+            "itemId": "filter-basic",
+            "name": "Hollow-fiber water filter",
+            "qty": 1,
+            "low": 35,
+            "high": 90
+          },
+          {
+            "level": "standard",
+            "itemId": "filter-gravity-bag",
+            "name": "Gravity bag filter",
+            "qty": 1,
+            "low": 90,
+            "high": 140
+          },
+          {
+            "level": "premium",
+            "itemId": "filter-gravity",
+            "name": "Countertop gravity filter",
+            "qty": 1,
+            "low": 250,
+            "high": 450
+          }
+        ]
+      },
+      {
+        "group": "generator",
+        "chosen": "generator-small",
+        "chosenLevel": "essential",
+        "byChoice": false,
+        "options": [
+          {
+            "level": "essential",
+            "itemId": "generator-small",
+            "name": "Small inverter generator",
+            "qty": 1,
+            "low": 790,
+            "high": 1590
+          },
+          {
+            "level": "standard",
+            "itemId": "generator-dual",
+            "name": "Dual-fuel inverter generator",
+            "qty": 1,
+            "low": 1140,
+            "high": 1890
+          },
+          {
+            "level": "premium",
+            "itemId": "generator-standby",
+            "name": "Whole-home standby generator (professionally installed)",
+            "qty": 1,
+            "low": 9000,
+            "high": 18000
+          }
+        ]
+      },
+      {
+        "group": "battery-house",
+        "chosen": null,
+        "chosenLevel": null,
+        "byChoice": false,
+        "options": [
+          {
+            "level": "standard",
+            "itemId": "power-station-house",
+            "name": "Portable power station (quiet hours)",
+            "qty": 1,
+            "low": 400,
+            "high": 900
+          },
+          {
+            "level": "premium",
+            "itemId": "power-station-house-large",
+            "name": "Large expandable power station (quiet hours)",
+            "qty": 1,
+            "low": 2200,
+            "high": 3800
+          }
+        ]
+      },
+      {
+        "group": "two-way",
+        "chosen": null,
+        "chosenLevel": null,
+        "byChoice": false,
+        "options": [
+          {
+            "level": "essential",
+            "itemId": "frs-radios",
+            "name": "FRS walkie-talkies",
+            "qty": 1,
+            "low": 25,
+            "high": 45
+          },
+          {
+            "level": "standard",
+            "itemId": "gmrs",
+            "name": "GMRS/FRS handheld radios",
+            "qty": 1,
+            "low": 60,
+            "high": 150
+          },
+          {
+            "level": "premium",
+            "itemId": "sat-messenger",
+            "name": "Satellite messenger",
+            "qty": 1,
+            "low": 200,
+            "high": 400
+          }
+        ]
+      },
+      {
+        "group": "go-bag",
+        "chosen": null,
+        "chosenLevel": null,
+        "byChoice": false,
+        "options": [
+          {
+            "level": "essential",
+            "itemId": "go-bag-basic",
+            "name": "Go-bag from a backpack you own",
+            "qty": 2,
+            "low": 40,
+            "high": 80
+          },
+          {
+            "level": "standard",
+            "itemId": "go-bag",
+            "name": "Go-bag backpack",
+            "qty": 2,
+            "low": 80,
+            "high": 240
+          },
+          {
+            "level": "premium",
+            "itemId": "go-bag-kit",
+            "name": "Premium pre-packed go-bag",
+            "qty": 2,
+            "low": 600,
+            "high": 900
+          }
+        ]
+      },
+      {
+        "group": "vehicle-kit",
+        "chosen": null,
+        "chosenLevel": null,
+        "byChoice": false,
+        "options": [
+          {
+            "level": "essential",
+            "itemId": "vehicle-kit-basic",
+            "name": "Basic vehicle kit",
+            "qty": 1,
+            "low": 35,
+            "high": 70
+          },
+          {
+            "level": "standard",
+            "itemId": "vehicle-kit",
+            "name": "Vehicle emergency kit",
+            "qty": 1,
+            "low": 100,
+            "high": 200
+          },
+          {
+            "level": "premium",
+            "itemId": "vehicle-kit-premium",
+            "name": "Recovery + cargo kit",
+            "qty": 1,
+            "low": 700,
+            "high": 1500
+          }
+        ]
+      },
+      {
+        "group": "shelter",
+        "chosen": null,
+        "chosenLevel": null,
+        "byChoice": false,
+        "options": [
+          {
+            "level": "essential",
+            "itemId": "tarp-shelter",
+            "name": "Tarp shelter kit",
+            "qty": 1,
+            "low": 50,
+            "high": 100
+          },
+          {
+            "level": "standard",
+            "itemId": "tent",
+            "name": "Family tent + tarps",
+            "qty": 1,
+            "low": 150,
+            "high": 450
+          },
+          {
+            "level": "premium",
+            "itemId": "canvas-tent",
+            "name": "Canvas bell or cabin tent",
+            "qty": 1,
+            "low": 600,
+            "high": 1400
+          }
+        ]
+      },
+      {
+        "group": "food",
+        "chosen": "food-diy",
+        "chosenLevel": "essential",
+        "byChoice": false,
+        "options": [
+          {
+            "level": "essential",
+            "itemId": "food-diy",
+            "name": "Bulk staples you store yourself",
+            "qty": 1,
+            "low": 1234,
+            "high": 1234
+          },
+          {
+            "level": "premium",
+            "itemId": "food-freeze-dried",
+            "name": "Freeze-dried long-term food",
+            "qty": 11,
+            "low": 7700,
+            "high": 12100
+          }
+        ]
+      }
     ]
   }
 }

@@ -121,16 +121,16 @@ describe("pairwise: what people have (or don't) steers products, skills and cons
       // never unsafe
       expect(lintDocument(r.document), why).toEqual([]);
       // don't sell what they already have
-      if (a.backupPower !== "none") expect(gen.length, why).toBe(0);
-      if (a.backupPower === "solar_battery") expect(offered(r, "solar-panel") || offered(r, "power-station-house"), why).toBe(false);
-      if (a.hasFiltration) expect(offered(r, "filter-basic") || offered(r, "filter-gravity"), why).toBe(false);
+      if (a.backupPower !== "none") expect(gen.length + r.computed.budget.slots.filter((x) => x.group === "generator").length, why).toBe(0);
+      if (a.backupPower === "solar_battery") expect(offered(r, "solar-panel") || r.computed.budget.slots.some((x) => x.group === "battery-house"), why).toBe(false);
+      if (a.hasFiltration) expect(r.computed.budget.slots.some((x) => x.group === "filter"), why).toBe(false);
       if (a.backupPower === "standby_generator") expect(offered(r, "well-switch"), why).toBe(false);
       // but do cover what they lack
       if (a.poweredDevices.length) expect(picked(r, "med-battery"), why).toBe(true);
       if (a.waterSource === "well" && a.backupPower !== "standby_generator") expect(offered(r, "well-switch"), why).toBe(true);
-      if (!a.hasFiltration && a.scenarioDays > 14) expect(offered(r, "filter-basic"), why).toBe(true);
+      if (!a.hasFiltration && a.scenarioDays > 14) expect(r.computed.budget.slots.some((x) => x.group === "filter" && x.chosen), why).toBe(true);
       // essentials: CO alarms and some water container always bought; power bank, radio, first aid always at least offered
-      expect(picked(r, "co-alarm") && (picked(r, "water-jug") || picked(r, "water-gallons")), why).toBe(true);
+      expect(picked(r, "co-alarm") && r.computed.budget.picks.some((p) => p.item.group === "water"), why).toBe(true);
       for (const id of ["power-bank", "radio", "first-aid"]) expect(offered(r, id), `${id} ${why}`).toBe(true);
       // generous budgets get the sturdy jugs, not the low-cost fallback
       if (a.budget === "5000_plus") expect(picked(r, "water-gallons"), why).toBe(false);
@@ -142,12 +142,13 @@ describe("pairwise: what people have (or don't) steers products, skills and cons
       expect(section(r, "evacuation"), why).toBe(a.evacuation.mode === "fallback");
       if (!a.pets.length) expect(offered(r, "pet-kit"), why).toBe(false);
       if (!a.childrenAges.length) expect(offered(r, "morale-kit"), why).toBe(false);
-      if (a.evacuation.mode !== "fallback") expect(offered(r, "go-bag") || offered(r, "tent"), why).toBe(false);
-      if (a.evacuation.locationType !== "raw_land") expect(offered(r, "tent"), why).toBe(false);
+      const slot = (g: string) => r.computed.budget.slots.some((x) => x.group === g);
+      if (a.evacuation.mode !== "fallback") expect(slot("go-bag") || slot("shelter"), why).toBe(false);
+      if (a.evacuation.locationType !== "raw_land") expect(slot("shelter") || offered(r, "raw-land-cabin"), why).toBe(false);
       // vehicles
       if (a.evacuation.mode === "fallback") expect(/Fuel per vehicle/.test(t), why).toBe(a.vehicleFuels.length > 0);
       if (a.evacuation.mode === "fallback" && !a.vehicleFuels.length) expect(t, why).toMatch(/No car: plan your ride now/);
-      if (!a.vehicleFuels.length) expect(offered(r, "vehicle-kit"), why).toBe(false);
+      if (!a.vehicleFuels.length) expect(slot("vehicle-kit"), why).toBe(false);
       // skills: what they know changes what they're told to learn
       expect(t, why).toMatch(a.skills.includes("first_aid") ? /refresh CPR every 2 years/ : /take a Red Cross First Aid\/CPR class/);
       expect(t, why).toMatch(a.skills.includes("tools") ? /do the DIY jobs yourself/ : /show you the gas, water and main electrical shutoffs/);

@@ -115,6 +115,8 @@ export const DEFAULT_CONSTANTS = {
     tierByBudget: { under_500: 1, "500_1500": 2, "1500_5000": 3, "5000_plus": 4 } as Record<string, number>,
     /** Items may push the total this far over the planning amount (0.05 = 5%) before being deferred. */
     overageTolerance: 0.05,
+    /** Default gear level per budget (people can change any slot à la carte). */
+    defaultLevel: { under_500: "essential", "500_1500": "standard", "1500_5000": "standard", "5000_plus": "premium" } as Record<string, string>,
   },
   catalog: {
     /** Items not reviewed within this many days are hidden from plans and flagged in admin. */
@@ -221,6 +223,7 @@ export const RuleConstantsSchema = z.object({
     phaseShare: z.record(z.string(), num),
     tierByBudget: z.record(z.string(), num),
     overageTolerance: z.number().min(0).max(0.5),
+    defaultLevel: z.record(z.string(), z.enum(["essential", "standard", "premium"])),
   }),
   catalog: z.object({ staleAfterDays: z.number().positive() }),
   heat: z.object({ warmRoomAtF: z.number(), evacuateAtF: z.number(), pipeFreezeRiskOutdoorF: z.number() }),

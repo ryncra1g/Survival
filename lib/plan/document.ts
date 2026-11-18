@@ -1,5 +1,13 @@
 import { z } from "zod";
 
+const LevelOptionSchema = z.object({
+  level: z.enum(["essential", "standard", "premium"]),
+  name: z.string(),
+  price: z.string(),
+  selected: z.boolean(),
+});
+export type LevelOption = z.infer<typeof LevelOptionSchema>;
+
 /** The one plan structure rendered on screen, in the PDF and in the email. */
 export const BlockSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("paragraph"), text: z.string() }),
@@ -19,6 +27,8 @@ export const BlockSchema = z.discriminatedUnion("type", [
     text: z.string(),
   }),
   z.object({ type: z.literal("subheading"), text: z.string() }),
+  /** A level chooser for a slot that isn't a single product row (e.g. food: bulk staples vs freeze-dried). */
+  z.object({ type: z.literal("levelchoice"), group: z.string(), caption: z.string(), levels: z.array(LevelOptionSchema) }),
   /** Gear with optional Buy buttons. Renderers build the tracked link from itemId (/go/<itemId>). */
   z.object({
     type: z.literal("products"),
@@ -35,6 +45,9 @@ export const BlockSchema = z.discriminatedUnion("type", [
         price: z.string(),
         qty: z.string(),
         buyable: z.boolean(),
+        /** À la carte: the slot this item fills and every level's price (the chosen one is selected). */
+        group: z.string().optional(),
+        levels: z.array(LevelOptionSchema).optional(),
         /** False for Amazon links (not allowed in email/PDF); emails link back to the plan page instead. */
         emailSafe: z.boolean().default(false),
         later: z.boolean(),

@@ -438,6 +438,24 @@ export interface BudgetPhase {
   includedLow: number;
   includedHigh: number;
 }
+export type SlotLevel = "essential" | "standard" | "premium";
+const LEVEL_RANK: Record<SlotLevel, number> = { essential: 0, standard: 1, premium: 2 };
+export interface SlotOption {
+  level: SlotLevel;
+  itemId: string;
+  name: string;
+  qty: number;
+  low: number;
+  high: number;
+}
+/** One à la carte gear slot: the level chosen (by budget default or by the person) and every level's price. */
+export interface Slot {
+  group: string;
+  chosen: string | null;
+  chosenLevel: SlotLevel | null;
+  byChoice: boolean;
+  options: SlotOption[];
+}
 export interface BudgetResult {
   planningAmount: number;
   totalMid: number;
@@ -448,6 +466,7 @@ export interface BudgetResult {
   deferred: GearPick[];
   staleHidden: string[];
   cutFirst: string[];
+  slots: Slot[];
 }
 
 export function isStale(item: CatalogItem, now: Date, c: RuleConstants): boolean {
@@ -455,13 +474,17 @@ export function isStale(item: CatalogItem, now: Date, c: RuleConstants): boolean
   return (now.getTime() - reviewed.getTime()) / 86_400_000 > c.catalog.staleAfterDays;
 }
 
-export function resolveQty(item: CatalogItem, ctx: { water: WaterResult; power: PowerResult; h: Household; a: Answers }): number {
+export function resolveQty(item: CatalogItem, ctx: { water: WaterResult; power: PowerResult; h: Household; a: Answers; foodKcal: number }): number {
   if (typeof item.qty === "number") return item.qty;
   switch (item.qty) {
     case "co_alarms":
       return ctx.a.floors + (ctx.a.hasBasement ? 1 : 0) + 1;
     case "water_jugs":
       return ctx.water.jugs;
+    case "water_bricks":
+      return Math.ceil(Math.max(0, ctx.water.storedGal - ctx.water.drums * 55) / 3.5);
+    case "freeze_dried_units":
+      return Math.ceil(ctx.foodKcal / (2000 * 30));
     case "water_gallons":
       return Math.max(0, ctx.water.storedGal - ctx.water.drums * 55);
     case "water_drums":
@@ -488,12 +511,16 @@ export function computeBudget(
   c: RuleConstants,
   catalog: CatalogItem[],
   tags: Set<string>,
-  ctx: { water: WaterResult; power: PowerResult; h: Household; a: Answers },
+  ctx: { water: WaterResult; power: PowerResult; h: Household; a: Answers; foodKcal: number },
   consumables: ConsumableLine[],
   now: Date,
 ): BudgetResult {
   const planningAmount = c.budget.planningAmount[a.budget];
   const tier = c.budget.tierByBudget[a.budget];
+  const choices = (a.gearChoices ?? {}) as Record<string, SlotLevel>;
+  const defaultRank = LEVEL_RANK[(c.budget.defaultLevel[a.budget] ?? "standard") as SlotLevel];
+  const excluded = new Set<string>();
+  const slots: Slot[] = [];
   const staleHidden: string[] = [];
   // Life-safety (phase 1) items above the budget tier still show under "next purchases" instead of vanishing.
   const aboveTier: CatalogItem[] = [];
@@ -503,7 +530,9 @@ export function computeBudget(
       staleHidden.push(it.id);
       return false;
     }
-    if (it.tier > tier && !it.essential && it.phase === 1 && !it.group) aboveTier.push(it);
+    if (it.group === "food") return choices.food === "premium";
+    if (it.group) return true; // every level of a slot is listed; the default level depends on the budget
+    if (it.tier > tier && !it.essential && it.phase === 1) aboveTier.push(it);
     return it.tier <= tier || it.essential;
   });
 
@@ -518,7 +547,7 @@ export function computeBudget(
     } else entries.push({ kind: "gear", phase: it.phase, priority: it.priority, items: [it] });
   }
   for (const g of groups.values()) {
-    g.sort((x, y) => y.tier - x.tier || y.priceHigh - x.priceHigh); // best first
+    g.sort((x, y) => LEVEL_RANK[y.level ?? "standard"] - LEVEL_RANK[x.level ?? "standard"] || y.priceHigh - x.priceHigh); // best first
     entries.push({ kind: "gear", phase: Math.min(...g.map((x) => x.phase)) as 1 | 2 | 3, priority: Math.min(...g.map((x) => x.priority)), items: g });
   }
   // consumables slot in at the top of their phase
@@ -544,7 +573,7 @@ export function computeBudget(
       phaseHigh[e.phase] += e.line.cost;
       continue;
     }
-    if (e.items.every((it) => bundled.has(it.id))) continue;
+    if (e.items.every((it) => bundled.has(it.id) || excluded.has(it.id))) continue;
     const options = e.items.map((item) => {
       const qty = resolveQty(item, ctx);
       const low = item.priceLow * qty;
@@ -563,7 +592,7 @@ export function computeBudget(
     const bundleFor = (o: (typeof viable)[number]) =>
       o.item.group
         ? candidates
-            .filter((it) => it.bundle && it.requiresGroup === o.item.group)
+            .filter((it) => it.bundle && it.requiresGroup === o.item.group && !(o.item.excludes ?? []).includes(it.id))
             .map((item) => {
               const qty = resolveQty(item, ctx);
               const low = item.priceLow * qty;
@@ -573,8 +602,29 @@ export function computeBudget(
             .filter((b) => b.qty > 0)
         : [];
     const ceiling = planningAmount * (1 + c.budget.overageTolerance);
-    const fit = viable.find((o) => o.item.essential || spent + o.mid + bundleFor(o).reduce((t, b) => t + b.mid, 0) <= ceiling);
+    const group = e.items[0].group;
+    const choice = group ? choices[group] : undefined;
+    const chosenByPerson = choice ? viable.find((o) => o.item.level === choice) : undefined;
+    // Default: the budget's level or lower, best first; a person's own choice always wins (even over budget).
+    const atOrBelow = group ? viable.filter((o) => LEVEL_RANK[o.item.level ?? "standard"] <= defaultRank) : viable;
+    const fit =
+      chosenByPerson ??
+      atOrBelow.find((o) => o.item.essential || spent + o.mid + bundleFor(o).reduce((t, b) => t + b.mid, 0) <= ceiling);
+    if (group)
+      slots.push({
+        group,
+        chosen: fit?.item.id ?? null,
+        chosenLevel: (fit?.item.level as SlotLevel) ?? null,
+        byChoice: !!chosenByPerson,
+        options: [...viable]
+          .sort((x, y) => LEVEL_RANK[x.item.level ?? "standard"] - LEVEL_RANK[y.item.level ?? "standard"])
+          .map((o) => {
+            const b = bundleFor(o);
+            return { level: (o.item.level ?? "standard") as SlotLevel, itemId: o.item.id, name: o.item.name, qty: o.qty, low: o.low + b.reduce((t, x) => t + x.low, 0), high: o.high + b.reduce((t, x) => t + x.high, 0) };
+          }),
+      });
     if (fit) {
+      for (const ex of fit.item.excludes ?? []) excluded.add(ex);
       for (const x of [fit, ...bundleFor(fit)]) {
         picks.push({ ...x, status: "included" });
         if (x.item.group) includedGroups.add(x.item.group);
@@ -585,7 +635,8 @@ export function computeBudget(
         bundled.add(x.item.id);
       }
     } else {
-      const cheapest = [...viable].sort((x, y) => x.mid - y.mid)[0];
+      const pool = atOrBelow.length ? atOrBelow : viable;
+      const cheapest = [...pool].sort((x, y) => x.mid - y.mid)[0];
       if (cheapest.item.group) deferredGroups.add(cheapest.item.group);
       deferred.push({ ...cheapest, status: "deferred", reason: "Doesn't fit the remaining budget — buy next" });
     }
@@ -612,7 +663,9 @@ export function computeBudget(
     .slice(0, 3)
     .map((p) => p.item.name);
   const ongoingCost = consumables.filter((l) => l.ongoing).reduce((t, l) => t + l.cost, 0);
-  return { planningAmount, totalMid: round(spent, 0), phases, consumables, ongoingCost, picks, deferred, staleHidden, cutFirst };
+  // Excluded items (e.g. gas cans with a standby generator) never show as picks or next purchases.
+  const keep = (p: GearPick) => !excluded.has(p.item.id);
+  return { planningAmount, totalMid: round(spent, 0), phases, consumables, ongoingCost, picks: picks.filter(keep), deferred: deferred.filter(keep), staleHidden, cutFirst, slots };
 }
 
 // ---------------------------------------------------------------- top level
@@ -685,7 +738,29 @@ export function computePlan(a: Answers, c: RuleConstants, catalog: CatalogItem[]
     consumables.push({ key: "food_rest", label: `Food staples, days ${p2Days + 1}–${a.scenarioDays} (build up with each grocery trip)`, phase: 3, cost: food.cost - p2Cost, ongoing: true });
   if (pets) consumables.push({ key: "pet_food", label: `Pet food (${pets.foodLbs} lb)`, phase: 2, cost: pets.cost });
 
-  const budget = computeBudget(a, c, catalog, tags, { water, power, h, a }, consumables, now);
+  // Food slot: DIY bulk staples (default) or freeze-dried long-term food (premium, by choice only).
+  const freezeDried = a.gearChoices?.food === "premium";
+  const cons = freezeDried ? consumables.filter((l) => l.key !== "food" && l.key !== "food_rest") : consumables;
+  const ctx = { water, power, h, a, foodKcal: food.totalKcal };
+  const budget = computeBudget(a, c, catalog, tags, ctx, cons, now);
+  const fd = catalog.find((i) => i.id === "food-freeze-dried" && i.active);
+  if (fd) {
+    const qty = resolveQty(fd, ctx);
+    const others = budget.slots.filter((s) => s.group !== "food");
+    budget.slots = [
+      ...others,
+      {
+        group: "food",
+        chosen: freezeDried ? fd.id : "food-diy",
+        chosenLevel: freezeDried ? "premium" : "essential",
+        byChoice: freezeDried,
+        options: [
+          { level: "essential", itemId: "food-diy", name: "Bulk staples you store yourself", qty: 1, low: food.cost, high: food.cost },
+          { level: "premium", itemId: fd.id, name: fd.name, qty, low: fd.priceLow * qty, high: fd.priceHigh * qty },
+        ],
+      },
+    ];
+  }
 
   return {
     rulesVersion: RULES_VERSION,

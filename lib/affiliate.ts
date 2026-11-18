@@ -4,7 +4,7 @@ import type { CatalogItem } from "@/lib/catalog/types";
 export function buyUrl(item: Pick<CatalogItem, "affiliateUrl" | "models" | "name">, amazonTag: string): string | null {
   if (item.affiliateUrl) return item.affiliateUrl;
   if (!amazonTag) return null;
-  const query = item.models[0] && !/^any\b/i.test(item.models[0]) && !/local supplier|device-maker/i.test(item.models[0]) ? item.models[0] : item.name;
+  const query = item.models[0] && !/^any\b/i.test(item.models[0]) && !/local supplier|device-maker|^local\b|already own/i.test(item.models[0]) ? item.models[0] : item.name;
   return `https://www.amazon.com/s?k=${encodeURIComponent(query)}&tag=${encodeURIComponent(amazonTag)}`;
 }
 

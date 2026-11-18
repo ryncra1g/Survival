@@ -117,6 +117,12 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   const tokens = buildTokens(cp);
   const S: SectionDraft[] = [];
   const isBuyable = (p: GearPick) => !!buyUrl(p.item, c.affiliate.amazonTag);
+  const LEVEL_NAME = { essential: "Essential", standard: "Standard", premium: "Premium" } as const;
+  const levelsFor = (group?: string) => {
+    const slot = group ? cp.budget.slots.find((x) => x.group === group) : undefined;
+    if (!slot || slot.options.length < 2) return undefined;
+    return slot.options.map((o) => ({ level: o.level, name: o.name, price: usdRange(o.low, o.high), selected: o.itemId === slot.chosen }));
+  };
   const productsBlock = (picks: GearPick[], later: (p: GearPick) => boolean, caption?: string, compact?: boolean): Block => ({
     type: "products",
     caption,
@@ -131,6 +137,8 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       qty: p.qty > 1 ? `× ${n(p.qty)}` : "",
       buyable: isBuyable(p),
       emailSafe: emailSafeBuyUrl(p.item, c.affiliate.amazonTag),
+      group: p.item.group,
+      levels: levelsFor(p.item.group),
       later: later(p),
     })),
   });
@@ -172,6 +180,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
           ["Vehicles", a.vehicleFuels.length ? a.vehicleFuels.map((v) => LABELS.fuel[v]).join(", ") : "None"],
           ["Fallback location", cp.evacuation ? `${LABELS.fallback[cp.evacuation.locationType]}, ~${n(cp.evacuation.distanceMiles)} miles` : "Shelter in place only"],
           ["Budget", LABELS.budget[a.budget]],
+          ["Gear level", `${{ under_500: "Starter", "500_1500": "Ready", "1500_5000": "Well prepared", "5000_plus": "Premium" }[a.budget]}: items default to ${{ essential: "Essential", standard: "Standard", premium: "Premium" }[(c.budget.defaultLevel[a.budget] ?? "standard") as "essential"]} level; change any item to go cheaper or bigger`],
         ],
       },
       {
@@ -606,6 +615,9 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         ],
       },
       { type: "bullets", items: ["Store staples in sealed food-grade buckets or mylar, cool and dry.", "Include comfort foods, spices, and a manual can opener.", ...(a.pets.some((p) => p.specialDiet) ? ["Stock your pet's special diet separately (see Pets)."] : [])] },
+      ...(levelsFor("food")
+        ? [{ type: "levelchoice" as const, group: "food", caption: "Food level: store it yourself, or buy ready-made", levels: levelsFor("food")! }]
+        : []),
       { type: "subheading", text: "Where to keep it" },
       { type: "bullets", items: storeTips },
     ],
@@ -840,6 +852,11 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
               { type: "callout" as const, tone: "warning" as const, title: "No car: plan your ride now", text: "Ask a family member, friend or neighbor now to take you, and agree on the trigger that means \"come get us\". Save the number for your county's evacuation-assistance or special-needs transport line, and know the nearest public pickup point. Leave on the first warning, not the order: rides and roads disappear fast." },
             ]),
         { type: "table", caption: rawLand ? "Raw-land gear (nothing is there — bring it all)" : "What to bring", columns: ["Category", "Gear", "Note"], rows: gearRows },
+        productsBlock(
+          [...cp.budget.picks, ...cp.budget.deferred].filter((p) => p.item.category === "Evacuation" || p.item.group === "two-way"),
+          (p) => p.status === "deferred",
+          "Bug-out kit: pick a level for each (Essential, Standard or Premium)",
+        ),
         ...(ev.vehicles ? [{ type: "subheading" as const, text: "Vehicle kit" }] : []),
         ...(ev.vehicles ? [check("veh", ["Jump starter, tire inflator, tow strap", "Paper road map with 2 routes marked", "Blankets, water, snacks", "Phone chargers", "Flashlight, reflective triangles", ...(a.vehicleFuels.some((v) => v !== "ev") ? ["Never store spare gasoline inside the car cabin"] : [])])] : []),
         { type: "subheading", text: ev.vehicles ? "Go-bag (one per person)" : "Go-bag (one per person; pack light enough to carry and walk with)" },
@@ -871,6 +888,12 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     blocks: [
       { type: "table", columns: ["Item", "Qty", "Est. cost", "Note"], rows: budgetRows },
       ...(deferredRows.length ? [{ type: "table" as const, caption: "Next purchases when budget allows", columns: ["Item", "Qty", "Est. cost", "Phase"], rows: deferredRows }] : []),
+      {
+        type: "callout",
+        tone: "info",
+        title: "Go cheaper or bigger, item by item",
+        text: "Items with levels (water, power, filters, radios, go-bags, shelter, vehicle kit, food) can each be switched to Essential, Standard or Premium in Recommended gear. Totals update when you switch.",
+      },
       {
         type: "callout",
         tone: "info",

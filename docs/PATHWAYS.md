@@ -56,3 +56,25 @@ Every answer changes the plan. Three kinds of change: **products** (what's recom
 2. Make it change the plan (product tag, skill, or consideration).
 3. Add a line to `VARIANTS` and, if it has several values, a field to `FIELDS` in `tests/pathways.test.ts`.
 4. Add any "don't sell what they have" or "cover what they lack" rule to the pairwise test.
+
+## Levels (à la carte)
+Each gear "slot" has up to three levels. The budget sets the default, and people can switch any slot on the plan page. Each switch rebuilds the plan; quantities still come from the rules, and checklist ticks carry over.
+
+| Slot | Essential | Standard | Premium |
+|---|---|---|---|
+| Water storage | Gallon jugs / refilled bottles | 7-gal jugs | Stackable water bricks |
+| Generator (house) | Small inverter + cans + cord | Dual-fuel inverter + cans + cord | Whole-home standby, installed (replaces cans, cord, inlet) |
+| Battery (apartment) | 300–700 Wh station | 1–2 kWh station | 3–4 kWh expandable station |
+| Battery (house) | — | 1–2 kWh station | 3–4 kWh expandable station |
+| Water filter | Squeeze filter | Gravity bag | Countertop gravity system |
+| Two-way comms | FRS walkie-talkies | GMRS radios | Satellite messenger |
+| Go-bag (fallback households) | Backpack you own + missing pieces | 30–40 L pack | Pre-packed premium 72-hour kit |
+| Shelter (raw land) | Tarp kit | Family tent | Canvas bell/cabin tent |
+| Vehicle kit (fallback + car) | Basic kit | Jump starter, inflator, strap | Recovery + rooftop cargo kit |
+| Food | Bulk staples you store yourself | — | Freeze-dried 25-year food |
+
+**Default level by budget:** under $500 → Essential; $500–5,000 → Standard; $5,000+ → Premium. When a level doesn't fit the remaining budget, the next level down is used. A person's own choice always wins, even over budget.
+
+**Luxury track:** households with $5,000+ and raw land also see a small cabin or insulated shed (no Buy link).
+
+**Tested by:** `tests/levels.test.ts` (each of the 10 households × every slot × every level, 138 rebuilds) and `npm run smoke`, which switches water to Premium on a live server for each household.
