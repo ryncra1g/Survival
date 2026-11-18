@@ -5,15 +5,25 @@ async function pick(page: Page, name: string | RegExp) {
 }
 const next = (page: Page) => page.getByRole("button", { name: /^(Next|Build my plan)$/ }).click();
 
-test("phone: email → questionnaire → plan → confirm → email + PDF → edit → export → delete", async ({ page, request }) => {
+import fs from "node:fs";
+const SAMPLE = JSON.parse(fs.readFileSync("samples/sample-answers.json", "utf8"));
+
+/** Start a plan and sign up through the API (shares the page's cookies). Returns the demo confirm link. */
+async function quickSignup(page: Page, email: string): Promise<string> {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Build my free plan" }).click();
+  await expect(page).toHaveURL(/\/q\//);
+  const id = page.url().split("/q/")[1];
+  const r = await page.request.post(`/api/questionnaire/${id}/generate`, { data: { answers: SAMPLE, contact: { email, consent: true } }, headers: { origin: "http://localhost:3100" } });
+  expect(r.status()).toBe(200);
+  return (await r.json()).demoLink;
+}
+
+test("phone: questionnaire → email at end → plan → confirm → email + PDF → edit → export → delete", async ({ page, request }) => {
   const started = Date.now();
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Your family's emergency plan");
-  await page.getByRole("link", { name: "Build my plan" }).click();
-
-  await page.getByLabel("Email").fill("family@example.com");
-  await page.getByRole("checkbox").check();
-  await page.getByRole("button", { name: "Start my plan" }).click();
+  await page.getByRole("button", { name: "Build my free plan" }).click();
   await expect(page).toHaveURL(/\/q\//);
 
   // 1 location
@@ -56,10 +66,23 @@ test("phone: email → questionnaire → plan → confirm → email + PDF → ed
   await next(page);
   await next(page);
 
+  // Email gate with a preview of the household's real numbers
+  await expect(page.getByRole("heading", { name: /Where should we send it/ })).toBeVisible();
+  await expect(page.getByText("54 gal")).toBeVisible();
+  await page.getByRole("button", { name: "Show my plan" }).click();
+  await expect(page.locator("p[role=alert]")).toContainText("valid email");
+  await page.getByLabel("Email").fill("family@example.com");
+  await page.getByRole("button", { name: "Show my plan" }).click();
+  await expect(page.locator("p[role=alert]")).toContainText("Tick the box");
+  await page.getByRole("checkbox").check();
+  await page.getByRole("button", { name: "Show my plan" }).click();
+
   await expect(page).toHaveURL(/\/plan\//, { timeout: 60_000 });
   const planUrl = page.url();
   expect(Date.now() - started).toBeLessThan(5 * 60_000);
   await expect(page.getByRole("heading", { name: "1. Household snapshot & planning assumptions" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Start here: your first 3 steps" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Your area's hazards/ })).toBeVisible();
   await expect(page.getByText("54 gal (14 days)")).toBeVisible();
   await expect(page.getByText(/check your inbox for our confirmation email/)).toBeVisible();
   await expect(page.getByRole("heading", { name: /Evacuation/ })).toBeVisible();
@@ -113,21 +136,23 @@ test("cron requires the secret and the admin area is hidden", async ({ request }
   expect((await request.get("/admin")).status()).toBe(404);
 });
 
-test("bad origin and honeypot are rejected", async ({ request }) => {
-  const r1 = await request.post("/api/signup", { data: { email: "x@example.com", consent: true }, headers: { origin: "https://evil.example" } });
+test("bad origin and honeypot are rejected", async ({ page }) => {
+  const r1 = await page.request.post("/api/start", { headers: { origin: "https://evil.example" } });
   expect(r1.status()).toBe(403);
-  const r2 = await request.post("/api/signup", { data: { email: "x@example.com", consent: true, website: "spam" }, headers: { origin: "http://localhost:3100" } });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Build my free plan" }).click();
+  await expect(page).toHaveURL(/\/q\//);
+  const id = page.url().split("/q/")[1];
+  const r2 = await page.request.post(`/api/questionnaire/${id}/generate`, { data: { answers: SAMPLE, contact: { email: "x@example.com", consent: true, website: "spam" } }, headers: { origin: "http://localhost:3100" } });
   expect(r2.status()).toBe(400);
+  // no email at all → refused
+  const r3 = await page.request.post(`/api/questionnaire/${id}/generate`, { data: { answers: SAMPLE }, headers: { origin: "http://localhost:3100" } });
+  expect(r3.status()).toBe(400);
 });
 
 test("admin: dashboard, catalog and rule constants (no redeploy)", async ({ page }) => {
-  await page.goto("/start");
-  await page.getByLabel("Email").fill("admin@example.com");
-  await page.getByRole("checkbox").check();
-  await page.getByRole("button", { name: "Start my plan" }).click();
-  await expect(page).toHaveURL(/\/q\//);
-  const link = await page.evaluate(() => sessionStorage.getItem("rp_demo_link"));
-  await page.goto(link!);
+  const link = await quickSignup(page, "admin@example.com");
+  await page.goto(link);
   await page.goto("/admin");
   await expect(page.getByRole("heading", { name: "Admin" })).toBeVisible();
   await expect(page.getByText("Signups")).toBeVisible();

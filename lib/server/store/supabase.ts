@@ -65,7 +65,14 @@ export const supabaseStore: Store = {
     const row: Record<string, unknown> = { updated_at: new Date().toISOString() };
     if (patch.answers) row.answers_json = seal(patch.answers);
     if (patch.complete !== undefined) row.complete = patch.complete;
+    if (patch.user_id !== undefined) row.user_id = patch.user_id;
     must(await db().from("questionnaires").update(row).eq("id", id));
+  },
+  async deleteStaleAnonQuestionnaires(days) {
+    const cutoff = new Date(Date.now() - days * 86_400_000).toISOString();
+    const r = await db().from("questionnaires").delete({ count: "exact" }).is("user_id", null).lt("updated_at", cutoff);
+    if (r.error) throw new Error(r.error.message);
+    return r.count ?? 0;
   },
   async listQuestionnaires(userId) {
     return (must(await db().from("questionnaires").select("*").eq("user_id", userId)) as QDb[]).map(qOut);

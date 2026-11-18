@@ -95,3 +95,19 @@ export function PlanView({ doc, planId }: { doc: PlanDocument; planId: string })
     </article>
   );
 }
+
+/** The three most important actions, up top, so the plan starts with something doable today. */
+export function FirstSteps({ doc }: { doc: PlanDocument }) {
+  const pr = doc.sections.find((s) => s.id === "priorities");
+  const week = pr?.blocks.find((b) => b.type === "checklist");
+  if (!week || week.type !== "checklist") return null;
+  return (
+    <section aria-labelledby="first-steps" className="mt-5 rounded-xl border-2 border-brand p-4 sm:p-5">
+      <h2 id="first-steps" className="text-lg font-bold">Start here: your first 3 steps</h2>
+      <ol className="mt-3 space-y-2 list-decimal pl-5">
+        {week.items.slice(0, 3).map((i) => <li key={i.id}>{i.text}</li>)}
+      </ol>
+      <a href="#priorities" className="mt-3 inline-block text-sm underline no-print">See the full priority list</a>
+    </section>
+  );
+}

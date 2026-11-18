@@ -47,7 +47,7 @@ This week
 [ ] Keep every gas/diesel vehicle above half a tank from now on.
 This month
 [ ] Finish stored water: 54 gallons (8 7-gal jugs).
-[ ] Buy Phase 1 gear: carbon monoxide alarm, 7-gallon water container, bathtub water bladder, unscented household bleach, hollow-fiber water filter, headlamps + led lanterns, aa/aaa battery stock, noaa weather radio, family first aid kit, fire extinguisher, fridge/freezer thermometers, indoor-rated portable propane heater, 1-lb propane cylinders (heater fuel), cold-rated sleeping bags, pipe insulation & faucet covers.
+[ ] Buy Phase 1 gear: carbon monoxide alarm, 7-gallon water container, bathtub water bladder, unscented household bleach, hollow-fiber water filter, headlamps + led lanterns, aa/aaa battery stock, noaa weather radio, usb power bank, family first aid kit, fire extinguisher, fridge/freezer thermometers, indoor-rated portable propane heater, 1-lb propane cylinders (heater fuel), cold-rated sleeping bags, pipe insulation & faucet covers.
 [ ] Build a 2-week pantry from the food list (about 98 thousand calories).
 [ ] Get a licensed electrician's quote for a generator power inlet + interlock (or transfer switch) so the generator can safely run your furnace.
 [ ] Do the pipe-freeze prep in section 5 (insulate exposed pipes, know how to drain lines).
@@ -61,7 +61,7 @@ Within 60 days
 [ ] Assemble the sanitation kit (two-bucket toilet, bags, absorbent).
 [ ] Pre-cut and label window protection.
 Within 90 days
-[ ] Phase 3 items: comfort and communications upgrades.
+[ ] Phase 3 items: fire/water-resistant document pouch.
 [ ] Run a 'lights-out weekend': live off your plan for 24–48 hours and fix what breaks.
 [ ] Drive the route to your raw land and back; note fuel stops and alternates.
 [ ] Put the maintenance calendar on your phone.
@@ -89,7 +89,25 @@ IF Officials issue an evacuation order for your zone -> Leave. Take go-bags and 
 IF Sewage backs up or toilets can't flush -> Stop flushing; switch to the two-bucket toilet (section 9).
 IF A hurricane watch is issued -> Do the Day 0 checklist; put up window protection; decide stay vs. go before the warning.
 
-4. WATER
+4. YOUR AREA'S HAZARDS
+These are the hazards rated moderate or higher for the Long Island area, with the steps to take before and during each one.
+
+Hurricane (high risk)
+[ ] Look up your evacuation zone (county emergency site).
+[ ] Photograph your home and belongings for insurance.
+[ ] Know where to shut off power, gas and water.
+IF A hurricane watch is issued (about 48 hours out) -> Run the Day 0 checklist, fuel up, put up window protection, decide stay or go.
+IF You're told to evacuate, or you live in a mobile home or low-lying zone -> Leave early — before the warning. Roads jam fast.
+IF The eye passes and it goes calm -> Stay inside; the back half of the storm is coming.
+Flooding (high risk)
+[ ] Check whether you're in a flood zone at FEMA's Flood Map Service Center.
+[ ] Flood damage usually isn't covered by homeowners insurance; flood policies have a 30-day wait.
+[ ] Keep documents and valuables in waterproof bins up high.
+IF A flash flood warning is issued -> Move to higher ground now. Don't wait for water to rise.
+IF Water covers a road -> Turn around. Six inches of moving water can knock you down; a foot can float a car.
+IF Water is entering your home -> Turn off electricity at the main breaker only if you're dry and safe; otherwise leave it and get out.
+
+5. WATER
 Your household uses about 3.85 gallons a day. Store 54 gallons (14 days). After that, filter and disinfect collected water for the remaining 76 days.
 
 Daily need (drinking + basic cooking/hygiene)
@@ -113,7 +131,7 @@ IF Stored water runs low -> Collect rain or surface water, filter it, then disin
 - Replace tap-filled water every 6 months (mark the date).
 - Use a 0.1-micron filter for bacteria/protozoa, then disinfect for viruses.
 
-5. HEAT & WARMTH
+6. HEAT & WARMTH
 Winter is the most dangerous part of an outage in the Long Island area. Your plan uses a layered approach: keep the main heat running safely if you can, then shrink to one warm room, then relocate if it gets too cold.
 
 Your natural gas heat needs electricity for the blower, ignition or circulator pump. The safest way to keep it running is a generator (recommended below) connected through a licensed electrician's power inlet and interlock (or a transfer switch). Furnaces draw roughly 400–800 W running, so a 2,500 W+ inverter generator can handle it along with the fridge.
@@ -134,7 +152,7 @@ IF Warm room still too cold -> Use the indoor-rated propane heater in that room 
 IF House below 45°F and dropping -> Relocate to a warming center, friends/family, or your fallback location.
 !! Carbon monoxide: Never run a generator, grill, camp stove, charcoal or any fuel-burning device not rated for indoor use inside your home, garage, basement, crawlspace, tent or on a balcony — not even with doors or windows open. Keep generators outdoors at least 20 feet from doors, windows and vents, with the exhaust pointed away from buildings. Put battery-powered or battery-backup CO alarms on every level and outside sleeping areas. If a CO alarm sounds or anyone feels dizzy, headachy or nauseous, get everyone outside to fresh air right away and call 911.
 
-6. POWER & FUEL MATH
+7. POWER & FUEL MATH
 Plan on about 12 generator hours a day, burning 3–4.8 gallons of gasoline. Stored fuel of 30 gallons lasts about 6.3–10 days.
 
 You don't have backup power yet. A dual-fuel inverter generator is the best value for your home; a battery power station covers quiet overnight loads.
@@ -157,7 +175,7 @@ IF Utility lines down near home -> Stay 35+ ft away and call the utility.
 !! Connecting a generator to your house: Never back-feed your house through a dryer outlet or any double-male ("suicide") cord — it can electrocute you, your neighbors and utility line workers, and start fires. Power house circuits only through a power inlet with an interlock or a transfer switch installed by a licensed electrician. Until then, plug appliances directly into the generator with outdoor-rated extension cords.
 !! Carbon monoxide: Never run a generator, grill, camp stove, charcoal or any fuel-burning device not rated for indoor use inside your home, garage, basement, crawlspace, tent or on a balcony — not even with doors or windows open. Keep generators outdoors at least 20 feet from doors, windows and vents, with the exhaust pointed away from buildings. Put battery-powered or battery-backup CO alarms on every level and outside sleeping areas. If a CO alarm sounds or anyone feels dizzy, headachy or nauseous, get everyone outside to fresh air right away and call 911.
 
-7. FOOD
+8. FOOD
 Your household needs about 7,000 calories a day — 630,000 for the full 90 days. The staples below provide it for roughly $1,234. Eat perishables first, then pantry food, then bulk staples.
 
 Daily calories
@@ -188,7 +206,7 @@ Day 15+ | Bulk staples: rice, beans, oats, pasta with oil, peanut butter, canned
 - Store staples in sealed food-grade buckets or mylar, cool and dry.
 - Include comfort foods, spices, and a manual can opener.
 
-8. COOKING & REFRIGERATION
+9. COOKING & REFRIGERATION
 Plan how you'll cook without power and when to throw out fridge food. The four-hour rule keeps everyone from getting sick.
 
 A gas range usually works in an outage if you light the burners with a match (check your manual; ovens with electronic controls usually won't work). Run the range hood or crack a window, and keep the CO alarm working.
@@ -198,7 +216,7 @@ IF Running a generator -> Run fridge/freezer 1–2 hours at a time; keep doors s
 IF Cooler use -> Keep it in the shade and packed with ice; check with a thermometer.
 !! Cook outdoors only: Grills, camp stoves and charcoal give off carbon monoxide. Use them outdoors only — never inside, in a garage or on an enclosed porch.
 
-9. SANITATION, HYGIENE & DIAPERS
+10. SANITATION, HYGIENE & DIAPERS
 Store 52 rolls of toilet paper and 540 diapers (6 a day). If toilets can't flush, switch to a two-bucket toilet.
 
 Supply | Amount
@@ -217,7 +235,7 @@ IF Sewer backing up or officials say don't flush -> Line the toilet or a bucket 
 - Wash hands with soap and water, or sanitizer when water is short.
 - Keep human waste away from food and water areas.
 
-10. FIRST AID & MEDICATIONS
+11. FIRST AID & MEDICATIONS
 Keep a stocked first aid kit and a written list of everyone's medications and allergies. Talk to your doctor or pharmacist about keeping an extra supply.
 
 [ ] Family first aid kit (bandages, gauze, tape, elastic wrap, gloves, shears, tweezers, thermometer).
@@ -228,7 +246,7 @@ Keep a stocked first aid kit and a written list of everyone's medications and al
 [ ] Take a Red Cross First Aid/CPR class.
 !! Medications: ReadyPlan never gives medication doses. For any medicine — for people or pets — follow the label or your doctor, pharmacist or vet.
 
-11. COMMUNICATIONS, CASH & DOCUMENTS
+12. COMMUNICATIONS, CASH & DOCUMENTS
 Agree on how your family will reach each other, keep $1,200 in small bills, and keep copies of key documents in a waterproof pouch.
 
 Family communications plan (fill in)
@@ -244,7 +262,7 @@ School/daycare pickup | Who picks up, and the school's emergency plan
 - Cash: $1,200 ($600 per adult) in small bills; card readers fail in outages.
 - Documents: copies of IDs, insurance policies, deeds/leases, medication list, pet records, and photos of your home's contents — in a waterproof pouch, plus an encrypted cloud copy.
 
-12. SECURITY & NEIGHBORS
+13. SECURITY & NEIGHBORS
 Keep a low profile and build a small neighbor pod. Neighbors who look out for each other are the best security in a long outage.
 
 - Low profile: don't post about your supplies; keep stored items out of sight; use curtains at night if you have lights when others don't.
@@ -253,7 +271,7 @@ Keep a low profile and build a small neighbor pod. Neighbors who look out for ea
 - Neighbor pod: swap numbers with 3–5 nearby households, share skills (medical, tools, childcare), and check on older neighbors.
 - If you feel unsafe, leave and call 911. Supplies can be replaced; people can't.
 
-13. KIDS & MORALE
+14. KIDS & MORALE
 Kids cope better when they have a routine and a job. Keep things predictable and give them a role in the plan.
 
 [ ] Keep meal, nap and bedtime routines as close to normal as you can.
@@ -264,7 +282,7 @@ Kids cope better when they have a routine and a job. Keep things predictable and
 [ ] Talk simply and honestly; limit news exposure; ask how they're feeling.
 [ ] Toddlers: baby gates and covers near any heater or stove; extra outfits and sleep sacks for cold nights.
 
-14. PETS
+15. PETS
 Store 54 pounds of pet food and add 0.35 gallons of water a day for your pets. Keep records and a carrier ready.
 
 Pet | Food for scenario | Water/day
@@ -275,7 +293,7 @@ Pet | Food for scenario | Water/day
 [ ] Know which shelters and hotels on your route accept pets.
 !! Pet medications: ReadyPlan never gives medication doses. For any medicine — for people or pets — follow the label or your doctor, pharmacist or vet.
 
-15. EVACUATION / BUG-OUT PLAN
+16. EVACUATION / BUG-OUT PLAN
 Your fallback is your raw land, about 120 miles away. Leave early on clear triggers, keep each tank above 7.2 gallons, and keep go-bags ready.
 
 IF Mandatory evacuation order for your zone -> Leave immediately.
@@ -318,8 +336,8 @@ Go-bag (one per person)
 [ ] Pet food, leash, records
 !! Tents and fumes: Never use a heater, stove, grill or generator inside a tent or vehicle. Cook and run generators in the open, away from where people sleep.
 
-16. BUDGET BY PHASE
-Within your $1,500–5,000 range we planned around $3,250. Phase 1 buys life safety first; the whole list comes to about $3,220.
+17. BUDGET BY PHASE
+Within your $1,500–5,000 range we planned around $3,250. Phase 1 buys life safety first; the whole list comes to about $3,223.
 
 Item | Qty | Est. cost | Note
 Phase 1 — life safety (CO alarms, water, heat) |  |  | 
@@ -333,6 +351,7 @@ Phase 1 — life safety (CO alarms, water, heat) |  |  |
   Headlamps + LED lanterns | × 4 | $60–$120 | Essential
   AA/AAA battery stock |  | $20–$40 | 
   NOAA weather radio |  | $50–$80 | 
+  USB power bank | × 2 | $50–$90 | 
   Family first aid kit |  | $30–$80 | 
   Fire extinguisher | × 3 | $90–$180 | 
   Fridge/freezer thermometers |  | $8–$15 | 
@@ -340,42 +359,43 @@ Phase 1 — life safety (CO alarms, water, heat) |  |  |
   1-lb propane cylinders (heater fuel) |  | $30–$50 | 
   Cold-rated sleeping bags | × 4 | $160–$360 | 
   Pipe insulation & faucet covers |  | $20–$50 | 
-  Phase 1 subtotal (target $975) |  | ~$1,538 | 
+  Phase 1 subtotal (target $975) |  | ~$1,608 | 
 Phase 2 — power & food |  |  | 
   Food staples, first 30 days |  | $411 | 
   Pet food (54 lb) |  | $81 | 
-  Small inverter generator |  | $550–$1,200 | 
-  Generator cord + outdoor extension cords |  | $60–$120 | 
-  5-gallon gas cans + stabilizer | × 6 | $180–$270 | 
-  Phase 2 subtotal (target $1,625) |  | ~$1,682 | 
+  Flood kit |  | $50–$150 | 
+  Multi-day cooler |  | $40–$90 | 
+  Food storage buckets |  | $40–$90 | 
+  Emergency toilet kit |  | $25–$50 | 
+  Window protection |  | $150–$600 | 
+  Battery backup sump pump |  | $250–$500 | 
+  Pet go-kit |  | $30–$100 | 
+  Phase 2 subtotal (target $1,625) |  | ~$1,575 | 
 Phase 3 — comfort, solar, comms |  |  | 
   Food staples, days 31–90 (build up with each grocery trip) |  | $823 | Ongoing, from grocery budget
-  Phase 3 subtotal (target $650) |  | ~$0 | 
-Total (midpoint estimate) |  | ~$3,220 | Planning budget $3,250
+  Fire/water-resistant document pouch |  | $20–$60 | 
+  Phase 3 subtotal (target $650) |  | ~$40 | 
+Total (midpoint estimate) |  | ~$3,223 | Planning budget $3,250
 Plus ongoing food build-up |  | ~$823 | Spread over grocery trips
 Next purchases when budget allows
 Item | Qty | Est. cost | Phase
+Small inverter generator |  | $550–$1,200 | Phase 2
 Generator inlet + interlock (electrician-installed) |  | $500–$1,500 | Phase 2
+Generator cord + outdoor extension cords |  | $60–$120 | Phase 2
+5-gallon gas cans + stabilizer | × 6 | $180–$270 | Phase 2
 20-lb propane cylinders | × 2 | $100–$140 | Phase 2
-Multi-day cooler |  | $40–$90 | Phase 2
-Food storage buckets |  | $40–$90 | Phase 2
-Emergency toilet kit |  | $25–$50 | Phase 2
-Window protection |  | $150–$600 | Phase 2
-Battery backup sump pump |  | $250–$500 | Phase 2
-Pet go-kit |  | $30–$100 | Phase 2
 Portable power station (quiet hours) |  | $400–$900 | Phase 3
 Portable solar panel |  | $300–$650 | Phase 3
 GMRS/FRS handheld radios |  | $60–$150 | Phase 3
 Countertop gravity filter |  | $250–$450 | Phase 3
-Fire/water-resistant document pouch |  | $20–$60 | Phase 3
 Kids comfort & activity kit |  | $20–$50 | Phase 3
 Go-bag backpack | × 2 | $80–$240 | Phase 3
 Vehicle emergency kit |  | $100–$200 | Phase 3
 Family tent + tarps |  | $150–$450 | Phase 3
 Water transport for off-grid site |  | $40–$90 | Phase 3
-!! What to cut first: If money is tight, delay pipe insulation & faucet covers, cold-rated sleeping bags, 1-lb propane cylinders (heater fuel). Never cut CO alarms, stored water, or your heat plan. Buy food a little at a time with each grocery trip.
+!! What to cut first: If money is tight, delay fire/water-resistant document pouch, pet go-kit, battery backup sump pump. Never cut CO alarms, stored water, or your heat plan. Buy food a little at a time with each grocery trip.
 
-17. RECOMMENDED GEAR
+18. RECOMMENDED GEAR
 Buy to the spec, not the brand. The example models are just a starting point for comparing.
 
 Category | Look for | Examples | Price range
@@ -387,6 +407,7 @@ Water: Hollow-fiber water filter | 0.1-micron hollow fiber (removes bacteria & p
 Light: Headlamps + LED lanterns | AA/AAA headlamp per person (≥200 lumens) + 2 LED lanterns; no candles | Black Diamond Astro; Energizer Vision headlamp | $15–$30 each
 Light: AA/AAA battery stock | Bulk alkaline or rechargeable NiMH (pre-charged); store at room temperature | Amazon Basics bulk; Panasonic eneloop | $20–$40 each
 Communications: NOAA weather radio | NOAA Weather Radio with SAME alerts, hand-crank + USB charging | Midland ER310; Eton FRX3 | $50–$80 each
+Power: USB power bank | 20,000 mAh or larger, USB-C PD; one per adult keeps phones running 3–4 days | Anker PowerCore 20K; INIU 20000 mAh | $25–$45 each
 First aid: Family first aid kit | 200+ piece kit with trauma pads, gauze, tape, elastic wrap, gloves, thermometer, tweezers, shears | Adventure Medical Kits Family; American Red Cross Deluxe Family Kit | $30–$80 each
 Life safety: Fire extinguisher | ABC-rated, 2-A:10-B:C or larger, rechargeable metal valve; one per floor + kitchen | First Alert PRO5; Kidde Pro 210 | $30–$60 each
 Food: Fridge/freezer thermometers | Appliance thermometers to check the 40°F / 0°F food-safety lines | Rubbermaid appliance thermometer | $8–$15 each
@@ -394,22 +415,23 @@ Heat: Indoor-rated portable propane heater | Rated for indoor use, with oxygen d
 Heat: 1-lb propane cylinders (heater fuel) | DOT-approved 1-lb cylinders; store outdoors or in a detached shed, never in living space | Coleman 1-lb propane | $30–$50 each
 Heat: Cold-rated sleeping bags | Rated 0–20°F (EN/ISO comfort rating where listed), one per person | TETON Sports Celsius 0°F; Coleman North Rim 0°F | $40–$90 each
 Heat: Pipe insulation & faucet covers | Foam pipe sleeves for exposed pipes + outdoor faucet covers | Frost King foam sleeves | $20–$50 each
-Power: Small inverter generator | 2,200–2,500 W inverter with CO auto-shutoff (runs fridge, furnace blower via inlet, charging) | Champion 2500W inverter; Honda EU2200i | $550–$1,200 each
-Power: Generator cord + outdoor extension cords | L14-30 generator cord (for an inlet) or 12-gauge outdoor-rated extension cords long enough to keep the generator 20+ ft from the house | Conntek L14-30 25 ft; Southwire 12/3 outdoor cord | $60–$120 each
-Fuel: 5-gallon gas cans + stabilizer | Approved 5-gal cans + fuel stabilizer; store in a detached shed or well-ventilated area away from ignition sources | Scepter SmartControl 5 gal; STA-BIL Storage | $30–$45 each
-Power: Generator inlet + interlock (electrician-installed) | Power inlet box + panel interlock kit or transfer switch, installed by a licensed electrician (permit where required) | Reliance Controls PB30 inlet; Panel-maker interlock kit | $500–$1,500 each
-Fuel: 20-lb propane cylinders | Filled 20-lb cylinders with OPD valves; store outdoors upright | Blue Rhino exchange; Worthington 20 lb | $50–$70 each
+Flood: Flood kit | Waterproof bins for documents/valuables on an upper shelf, sandbags or water-activated flood barriers for door thresholds | Quick Dam water-activated bags; Sterilite latching totes | $50–$150 each
 Food: Multi-day cooler | Rotomolded or 5-day-rated cooler, 45–70 qt | Coleman Xtreme 70 qt; Igloo MaxCold | $40–$90 each
 Food: Food storage buckets | Food-grade 5-gal buckets with gamma seal lids, mylar bags and oxygen absorbers for rice/beans/oats | Gamma Seal lid kit; ShieldPro mylar kit | $40–$90 each
 Sanitation: Emergency toilet kit | 5-gal bucket toilet seat + heavy-duty liners + absorbent (cat litter or sawdust); two-bucket setup | Reliance Luggable Loo; Camco bucket toilet seat | $25–$50 each
 Storm: Window protection | Pre-cut 5/8" exterior plywood with clips, or code-approved storm panels | PlyLox window clips; Storm panel kits | $150–$600 each
 Storm: Battery backup sump pump | Battery backup sump pump with alarm and deep-cycle battery | Basement Watchdog Big Dog; Wayne ESP25 | $250–$500 each
 Pets: Pet go-kit | Collapsible bowls, spare leash/harness, crate or carrier, waste bags, copy of vaccination records | Kurgo collapsible bowls; Any airline-style carrier | $30–$100 each
+Documents: Fire/water-resistant document pouch | Fire- and water-resistant pouch or small safe for copies of IDs, insurance, prescriptions list | SentrySafe document bag; ROLOWAY fireproof pouch | $20–$60 each
+Power: Small inverter generator | 2,200–2,500 W inverter with CO auto-shutoff (runs fridge, furnace blower via inlet, charging) | Champion 2500W inverter; Honda EU2200i | $550–$1,200 each
+Power: Generator inlet + interlock (electrician-installed) | Power inlet box + panel interlock kit or transfer switch, installed by a licensed electrician (permit where required) | Reliance Controls PB30 inlet; Panel-maker interlock kit | $500–$1,500 each
+Power: Generator cord + outdoor extension cords | L14-30 generator cord (for an inlet) or 12-gauge outdoor-rated extension cords long enough to keep the generator 20+ ft from the house | Conntek L14-30 25 ft; Southwire 12/3 outdoor cord | $60–$120 each
+Fuel: 5-gallon gas cans + stabilizer | Approved 5-gal cans + fuel stabilizer; store in a detached shed or well-ventilated area away from ignition sources | Scepter SmartControl 5 gal; STA-BIL Storage | $30–$45 each
+Fuel: 20-lb propane cylinders | Filled 20-lb cylinders with OPD valves; store outdoors upright | Blue Rhino exchange; Worthington 20 lb | $50–$70 each
 Power: Portable power station (quiet hours) | 1–2 kWh LiFePO4, pure sine wave; covers overnight fridge/phone/CPAP loads so the generator can be off | EcoFlow DELTA 2; Jackery Explorer 1000 v2 | $400–$900 each
 Power: Portable solar panel | 200–400 W folding panel matched to your power station's input (voltage/connector) | EcoFlow 220W bifacial; Jackery SolarSaga 200W | $300–$650 each
 Communications: GMRS/FRS handheld radios | Pair of FRS (license-free) or GMRS radios (FCC license, no exam) for neighborhood/family comms | Midland GXT1000VP4; Motorola Talkabout T470 | $60–$150 each
 Water: Countertop gravity filter | Gravity system with independent test results (NSF/ANSI 53 or P231 where available), ≥2 gal/hour | Berkey-style gravity system; LifeStraw Community | $250–$450 each
-Documents: Fire/water-resistant document pouch | Fire- and water-resistant pouch or small safe for copies of IDs, insurance, prescriptions list | SentrySafe document bag; ROLOWAY fireproof pouch | $20–$60 each
 Kids: Kids comfort & activity kit | Cards, coloring, books, small toys, glow sticks; kept in a labeled bin | Any — rotate favorites | $20–$50 each
 Evacuation: Go-bag backpack | 30–40 L pack per adult; small pack per child with ID card, snacks, comfort item | Osprey Daylite; REI Ruckpack 40 | $40–$120 each
 Evacuation: Vehicle emergency kit | Lithium jump starter, 12 V tire inflator, tow strap, reflective triangles, paper road atlas | NOCO Boost GB40; AstroAI tire inflator | $100–$200 each
@@ -417,7 +439,7 @@ Evacuation: Family tent + tarps | 3-season (or 4-season for winter) family tent,
 Evacuation: Water transport for off-grid site | 2–4 collapsible or rigid 5–7 gal containers dedicated to the vehicle/land site | Reliance Aqua-Tainer 7 gal; Scepter 5 gal | $40–$90 each
 Catalog last reviewed: 2026-11-01. Check prices, recalls and current reviews before you buy.
 
-18. MAINTENANCE CALENDAR
+19. MAINTENANCE CALENDAR
 Preparedness only works if it's maintained. Put these on your calendar now.
 
 When | Task

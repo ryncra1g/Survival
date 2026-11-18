@@ -11,11 +11,12 @@ const globals = { react: "React", "react-dom/client": "ReactDOM" };
 const shim = {
   name: "globals",
   setup(b) {
-    b.onResolve({ filter: inline ? /^next\/navigation$/ : /^(react|react-dom\/client|react\/jsx-runtime|next\/navigation)$/ }, (a) => ({ path: a.path, namespace: "shim" }));
+    b.onResolve({ filter: inline ? /^next\/(navigation|link)$/ : /^(react|react-dom\/client|react\/jsx-runtime|next\/navigation|next\/link)$/ }, (a) => ({ path: a.path, namespace: "shim" }));
     b.onLoad({ filter: /.*/, namespace: "shim" }, (a) => {
       if (a.path === "react/jsx-runtime")
         return { contents: "const R=window.React;const j=(t,p,k)=>R.createElement(t,k===undefined?p:{...p,key:k});export const jsx=j,jsxs=j,Fragment=R.Fragment;", loader: "js" };
       if (a.path === "next/navigation") return { contents: "export const useRouter=()=>({push(){},refresh(){}});", loader: "js" };
+      if (a.path === "next/link") return { contents: "import {createElement} from 'react';export default function Link({href,children,...p}){return createElement('span',p,children)}", loader: "js", resolveDir: root };
       return { contents: `module.exports=window.${globals[a.path]};`, loader: "js" };
     });
   },

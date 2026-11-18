@@ -12,7 +12,8 @@ export interface UserRow {
 
 export interface QuestionnaireRow {
   id: string;
-  user_id: string;
+  /** Null until the person gives their email at the end of the questionnaire. */
+  user_id: string | null;
   /** Session that created it. Unconfirmed sessions can only see their own questionnaires. */
   session_nonce: string;
   /** Decrypted answers (draft or complete). Stored encrypted. */
@@ -81,7 +82,9 @@ export interface Store {
 
   createQuestionnaire(q: Omit<QuestionnaireRow, "id" | "created_at" | "updated_at">): Promise<QuestionnaireRow>;
   getQuestionnaire(id: string): Promise<QuestionnaireRow | null>;
-  updateQuestionnaire(id: string, patch: Partial<Pick<QuestionnaireRow, "answers" | "complete">>): Promise<void>;
+  updateQuestionnaire(id: string, patch: Partial<Pick<QuestionnaireRow, "answers" | "complete" | "user_id">>): Promise<void>;
+  /** Privacy: remove questionnaires never linked to an email after N days. Returns count. */
+  deleteStaleAnonQuestionnaires(olderThanDays: number): Promise<number>;
   listQuestionnaires(userId: string): Promise<QuestionnaireRow[]>;
 
   createPlan(p: Omit<PlanRow, "id" | "created_at">): Promise<PlanRow>;

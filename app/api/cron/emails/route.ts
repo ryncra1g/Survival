@@ -36,5 +36,6 @@ export async function GET(req: Request) {
       break; // at most one email per user per day
     }
   }
-  return Response.json({ ok: true, sent });
+  const purgedAnonymous = await store.deleteStaleAnonQuestionnaires(30);
+  return Response.json({ ok: true, sent, purgedAnonymous });
 }

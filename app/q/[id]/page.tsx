@@ -12,5 +12,5 @@ export default async function QPage({ params }: { params: Promise<{ id: string }
   const session = await getSession();
   const q = /^[0-9a-f-]{36}$/i.test(id) ? await store.getQuestionnaire(id) : null;
   if (!q || !(await canAccessQuestionnaire(session, q))) notFound();
-  return <Questionnaire id={id} initial={q.answers} />;
+  return <Questionnaire id={id} initial={q.answers} needsEmail={!q.user_id} siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ""} />;
 }

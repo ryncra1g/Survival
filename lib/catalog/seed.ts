@@ -121,6 +121,42 @@ const seed: Seed[] = [
     models: ["Reliance Controls 31406CRK", "Generac 6853"], priceLow: 400, priceHigh: 1200, tier: 2, phase: 1, priority: 2,
     qty: 1, tags: ["well"], notes: "Range includes typical install cost",
   },
+  {
+    id: "power-bank", category: "Power", name: "USB power bank",
+    spec: "20,000 mAh or larger, USB-C PD; one per adult keeps phones running 3–4 days",
+    models: ["Anker PowerCore 20K", "INIU 20000 mAh"], priceLow: 25, priceHigh: 45, tier: 1, phase: 1, priority: 9,
+    qty: "adults", tags: [],
+  },
+  {
+    id: "quake-kit", category: "Earthquake", name: "Water-heater straps + gas shutoff wrench",
+    spec: "Seismic water-heater strap kit, furniture/TV anchors, and a gas/water shutoff wrench kept by the meter",
+    models: ["QuakeHOLD! strap kit", "Rothenberger 4-in-1 shutoff wrench"], priceLow: 30, priceHigh: 70, tier: 1, phase: 1, priority: 3,
+    qty: 1, tags: ["earthquake", "house_or_townhouse"],
+  },
+  {
+    id: "quake-bedside", category: "Earthquake", name: "Bedside kit",
+    spec: "Sturdy shoes, flashlight and work gloves in a bag tied to each bed (broken glass is the #1 quake injury)",
+    models: ["Any — use old sneakers"], priceLow: 15, priceHigh: 30, tier: 1, phase: 1, priority: 4,
+    qty: "adults", tags: ["earthquake"],
+  },
+  {
+    id: "smoke-masks", category: "Wildfire", name: "N95 masks + HEPA air purifier",
+    spec: "NIOSH-approved N95 masks (fit-tested sizes for each person) and a HEPA purifier sized for your safe room",
+    models: ["3M Aura 9205+", "Coway AP-1512HH"], priceLow: 120, priceHigh: 250, tier: 1, phase: 1, priority: 5,
+    qty: 1, tags: ["wildfire"],
+  },
+  {
+    id: "flood-kit", category: "Flood", name: "Flood kit",
+    spec: "Waterproof bins for documents/valuables on an upper shelf, sandbags or water-activated flood barriers for door thresholds",
+    models: ["Quick Dam water-activated bags", "Sterilite latching totes"], priceLow: 50, priceHigh: 150, tier: 1, phase: 2, priority: 6,
+    qty: 1, tags: ["flood", "house_or_townhouse"],
+  },
+  {
+    id: "mobility-kit", category: "Accessibility", name: "Mobility & access kit",
+    spec: "Spare cane/walker tips, a backup manual wheelchair or transfer aid if one is used, extra hearing-aid batteries, a whistle, and a laminated list of needs and contacts",
+    models: ["Any — match current equipment"], priceLow: 30, priceHigh: 150, tier: 1, phase: 1, priority: 6,
+    qty: 1, tags: ["mobility"],
+  },
   // ---------------- Phase 2: power + food ----------------
   {
     id: "generator-dual", category: "Power", name: "Dual-fuel inverter generator",
@@ -138,7 +174,7 @@ const seed: Seed[] = [
     id: "inlet-interlock", category: "Power", name: "Generator inlet + interlock (electrician-installed)",
     spec: "Power inlet box + panel interlock kit or transfer switch, installed by a licensed electrician (permit where required)",
     models: ["Reliance Controls PB30 inlet", "Panel-maker interlock kit"], priceLow: 500, priceHigh: 1500, tier: 2, phase: 2, priority: 3,
-    qty: 1, requiresGroup: "generator", tags: ["recommend_generator", "fuel_furnace"], notes: "Range includes typical install cost",
+    qty: 1, requiresGroup: "generator", tags: ["has_generator", "fuel_furnace", "house_or_townhouse"], notes: "Range includes typical install cost",
   },
   {
     id: "gen-cord", category: "Power", name: "Generator cord + outdoor extension cords",

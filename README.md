@@ -1,6 +1,8 @@
 # ReadyPlan
 
-A mobile-first web app that builds a personalized emergency plan and supply list for a household. The visitor enters an email, answers about 11 tap-to-select screens and gets a plan on screen. The same plan is available as a PDF and is emailed to them once they confirm their address.
+A mobile-first web app that builds a personalized emergency plan and supply list for a household. The visitor taps "Build my free plan", answers about 11 tap-to-select screens, then gives an email on a screen that previews their own numbers, and gets the plan on screen. The same plan is available as a PDF and is emailed to them once they confirm their address.
+
+**Shareable demo:** `npm run demo` builds `demo/dist/readyplan-demo.html`, a single page that runs the real questionnaire, rules engine and plan view in the browser with no server. **Focus-group review:** [`docs/focus-group.md`](docs/focus-group.md).
 
 - **Every quantity comes from a deterministic rules engine.** An optional LLM layer rewrites only the section summaries, and it can refer to numbers only through `{{tokens}}` that the engine fills in.
 - **Safety guardrails are enforced in code.** The required safety text is inserted by code, a linter checks every string in the plan, and tests cover adversarial and randomized households.
@@ -65,19 +67,21 @@ answers (Zod, enums only) ──► lib/rules/engine.ts ──► ComputedPlan (
 
 Supabase Auth was the original suggestion. ReadyPlan uses its own magic links instead because the flow needs two session scopes:
 
-- A **draft** session starts at signup. It lets someone fill in the questionnaire and see their plan right away. It can only see the questionnaires and plans it created, so typing someone else's email exposes nothing.
+- An **anon** session starts when someone taps "Build my free plan". It can only see the questionnaire it created. Unclaimed questionnaires are purged after 30 days.
+- A **draft** session starts when they give their email at the end. It lets someone fill in the questionnaire and see their plan right away. It can only see the questionnaires and plans it created, so typing someone else's email exposes nothing.
 - A **full** session starts when the user clicks a confirm or login link. It can see all of that user's data, edit answers, export and delete.
 
 The **confirm link is the double opt-in**. Plan emails (which carry an attachment) only go to confirmed addresses, so the form can't be used to send PDFs to strangers.
 
 ### Flow
 
-1. `/start`: email + required consent checkbox → `POST /api/signup`. This creates the user and a draft session, sends the confirmation email and creates the questionnaire.
+1. `/`: one button, which posts a form to `POST /api/start`. This creates an anonymous session and an empty questionnaire, with no email yet.
 2. `/q/[id]`: 11 screens (the toddler screen only appears when a child is 3 or under), with a progress bar and Back button. Answers autosave to localStorage and to `PUT /api/questionnaire/[id]` after 700 ms. Answers travel only in request bodies, never in URLs.
-3. `POST /api/questionnaire/[id]/generate` validates the answers, applies rate limits, runs the engine and optional LLM, and saves the plan encrypted. The questionnaire shows a loading screen meanwhile.
-4. `/plan/[id]`: the plan, a PDF download, print, and the email status.
-5. Clicking the confirm link (`/api/auth/verify`) sets `double_opt_in_at`, upgrades to a full session and emails the latest plan (HTML + PDF).
-6. `/account`: request a magic link, edit answers and regenerate, set follow-up preferences, export data (JSON), delete data.
+3. **Email screen.** "Your plan is ready. Where should we send it?" shows a preview of their numbers, plus the email field, the required consent checkbox, Turnstile and a honeypot field.
+4. `POST /api/questionnaire/[id]/generate` with `{answers, contact}`. This creates or finds the user, links the questionnaire, moves the browser session to draft scope and sends the confirmation email. It then validates the answers, applies rate limits, runs the engine and optional LLM, and saves the plan encrypted. The questionnaire shows a loading screen meanwhile.
+5. `/plan/[id]`: "Start here: your first 3 steps", then the full plan, a PDF download, print, and the email status.
+6. Clicking the confirm link (`/api/auth/verify`) sets `double_opt_in_at`, upgrades to a full session and emails the latest plan (HTML + PDF).
+7. `/account`: request a magic link, edit answers and regenerate, set follow-up preferences, export data (JSON), delete data.
 
 ---
 
@@ -105,7 +109,7 @@ Copy `.env.example` to `.env.local`.
 
 ## Deployment (Vercel + Supabase + Resend)
 
-1. **Supabase.** Create a project, then run [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql) in the SQL editor (or `supabase db push`). The migration creates the tables, the `rate_limit_hit` function, RLS with no policies, and a private `plans` storage bucket.
+1. **Supabase.** Create a project, then run [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql) and [`0002_anonymous_start.sql`](supabase/migrations/0002_anonymous_start.sql) in the SQL editor (or `supabase db push`). The migration creates the tables, the `rate_limit_hit` function, RLS with no policies, and a private `plans` storage bucket.
 2. **Seed the catalog.** Run `SUPABASE_URL=… SUPABASE_SERVICE_ROLE_KEY=… npm run seed`.
 3. **Resend.** Verify your sending domain (SPF/DKIM/DMARC), create an API key, and add a webhook to `https://YOUR_APP/api/webhooks/resend` for `email.opened`, `email.bounced` and `email.complained`.
 4. **Turnstile.** Create a widget for your domain.
@@ -198,8 +202,8 @@ The LLM system prompt (`lib/llm/writer.ts`) repeats these rules. Code does the e
 - **CAN-SPAM.** Every email has the physical address and an unsubscribe link. One-click unsubscribe is supported (RFC 8058 `List-Unsubscribe-Post`) and is HMAC-signed. Follow-ups go only to confirmed, opted-in, subscribed users.
 - **GDPR/CCPA.** Export (JSON of everything, decrypted) and delete-my-data (cascading delete, including stored PDFs) on `/account`.
 - **Abuse protection.**
-  - Rate limits: signup 8 per IP per hour; mail 5 per user per hour; plan generation 8 per user per day and 20 per IP per hour; autosave 120 per IP per minute.
-  - Turnstile and a honeypot field on the signup form.
+  - Rate limits: starting a plan 30 per IP per hour; email signup 8 per IP per hour; mail 5 per user per hour; plan generation 8 per user per day and 20 per IP per hour; autosave 120 per IP per minute.
+  - Turnstile and a honeypot field on the email screen.
   - An Origin check on every cookie-authenticated mutation.
   - No account enumeration on login.
 
@@ -236,7 +240,7 @@ Seasonal emails are de-duplicated per year through `email_events`.
 ## File map
 
 ```
-app/                     pages + API routes (api/signup, questionnaire, plans/[id]/pdf, auth, account, admin, cron, webhooks)
+app/                     pages + API routes (api/start, questionnaire, plans/[id]/pdf, auth, account, admin, cron, webhooks)
 components/              Questionnaire, PlanView, Checklist, SignupForm, AccountActions, Turnstile
 lib/answers/schema.ts    questionnaire schema (Zod) + labels
 lib/zip/                 ZIP3 → hazard profile

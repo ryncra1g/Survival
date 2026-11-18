@@ -105,7 +105,16 @@ export const fileStore: Store = {
       if (!q) return;
       if (patch.answers) q.answers_json = seal(patch.answers);
       if (patch.complete !== undefined) q.complete = patch.complete;
+      if (patch.user_id !== undefined) q.user_id = patch.user_id;
       q.updated_at = now();
+    });
+  },
+  async deleteStaleAnonQuestionnaires(days) {
+    return tx((db) => {
+      const cutoff = Date.now() - days * 86_400_000;
+      const before = db.questionnaires.length;
+      db.questionnaires = db.questionnaires.filter((q) => q.user_id || Date.parse(q.updated_at) > cutoff);
+      return before - db.questionnaires.length;
     });
   },
   async listQuestionnaires(userId) {

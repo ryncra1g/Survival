@@ -191,6 +191,8 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     week.push("TOP PRIORITY: Call your medical-device supplier about battery backup, and register with your electric utility's medical-needs / life-support registry.");
   if (cp.flags.wellPumpPriority)
     week.push("TOP PRIORITY: Your well pump needs power. Find out its voltage and starting watts (label or well contractor) so you can size a generator or battery and transfer switch.");
+  if (h.elderlyOrMobility)
+    week.push("Register anyone with mobility or medical needs with your county's special-needs (access & functional needs) registry or shelter program, and arrange who will help them evacuate.");
   week.push(`Test or install CO alarms: ${n(a.floors + (a.hasBasement ? 1 : 0) + 1)} (one per level plus outside sleeping areas).`);
   week.push(`Store your first 3 days of water: ${n(w.threeDayGal)} gallons.`);
   week.push("Turn on Wireless Emergency Alerts and sign up for your county's alert system.");
@@ -284,6 +286,56 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     facts: [],
     blocks: [check("day0", day0), { type: "ifthen", rows: triggers }],
   });
+
+  // 3b. Local hazards ---------------------------------------------------------
+  const hazardBlocks: Block[] = [];
+  const hzRows = (label: string, rows: { if: string; then: string }[], prep: string[]) => {
+    hazardBlocks.push({ type: "subheading", text: label });
+    hazardBlocks.push(check(`hz-${label.toLowerCase().replace(/\W+/g, "-")}`, prep));
+    hazardBlocks.push({ type: "ifthen", rows });
+  };
+  if (atLeast(prof.hurricane, "moderate"))
+    hzRows(`Hurricane (${prof.hurricane} risk)`, [
+      { if: "A hurricane watch is issued (about 48 hours out)", then: "Run the Day 0 checklist, fuel up, put up window protection, decide stay or go." },
+      { if: "You're told to evacuate, or you live in a mobile home or low-lying zone", then: "Leave early — before the warning. Roads jam fast." },
+      { if: "The eye passes and it goes calm", then: "Stay inside; the back half of the storm is coming." },
+    ], ["Look up your evacuation zone (county emergency site).", "Photograph your home and belongings for insurance.", "Know where to shut off power, gas and water."]);
+  if (atLeast(prof.flood, "moderate"))
+    hzRows(`Flooding (${prof.flood} risk)`, [
+      { if: "A flash flood warning is issued", then: "Move to higher ground now. Don't wait for water to rise." },
+      { if: "Water covers a road", then: "Turn around. Six inches of moving water can knock you down; a foot can float a car." },
+      { if: "Water is entering your home", then: "Turn off electricity at the main breaker only if you're dry and safe; otherwise leave it and get out." },
+    ], ["Check whether you're in a flood zone at FEMA's Flood Map Service Center.", "Flood damage usually isn't covered by homeowners insurance; flood policies have a 30-day wait.", "Keep documents and valuables in waterproof bins up high."]);
+  if (atLeast(prof.earthquake, "moderate"))
+    hzRows(`Earthquake (${prof.earthquake} risk)`, [
+      { if: "Shaking starts", then: "Drop, cover and hold on. Don't run outside or stand in a doorway." },
+      { if: "Shaking stops", then: "Put on shoes, check for injuries and gas leaks; expect aftershocks." },
+      { if: "You smell gas or hear hissing", then: "Shut off the gas at the meter, leave, and call the gas company from outside. Only the utility turns it back on." },
+    ], ["Strap the water heater and anchor tall furniture and TVs.", "Keep a shutoff wrench by the gas meter and learn how to use it.", "Put shoes and a flashlight by every bed.", "Your water heater holds 30–80 gallons of emergency water — learn how to drain it."]);
+  if (atLeast(prof.wildfire, "moderate"))
+    hzRows(`Wildfire & smoke (${prof.wildfire} risk)`, [
+      { if: "Air quality index goes over 150", then: "Stay inside with windows closed and the HEPA purifier running; wear N95s outdoors." },
+      { if: "An evacuation warning ('get set') is issued", then: "Load go-bags, pets and documents; park facing out." },
+      { if: "An evacuation order ('go') is issued", then: "Leave immediately by the route officials give." },
+    ], ["Clear dead plants and debris within 5 feet of the house.", "Sign up for county evacuation alerts and know your evacuation zone.", "Keep N95 masks for each person."]);
+  if (atLeast(prof.tornado, "moderate"))
+    hzRows(`Tornado (${prof.tornado} risk)`, [
+      { if: "A tornado watch is issued", then: "Keep shoes on, phones charged, and the weather radio on." },
+      { if: "A tornado warning is issued", then: "Go to the basement or a small interior room on the lowest floor; cover heads with helmets, pillows or a mattress." },
+    ], ["Pick your shelter spot and practice getting there in under a minute.", "Keep bike helmets for the kids in the shelter spot."]);
+  if (atLeast(prof.heat, "high"))
+    hzRows(`Extreme heat (${prof.heat} risk)`, [
+      { if: "Power fails during a heat wave", then: "Go to a cooling center, library or mall early in the day; a portable generator can't run central AC." },
+      { if: "Someone is confused, has hot dry skin or stops sweating", then: "Call 911 — that's heat stroke. Cool them with wet cloths while you wait." },
+    ], ["Water needs can double in extreme heat — store extra beyond the amounts in the Water section if you can.", "Find your nearest cooling centers.", "Check on older neighbors twice a day in a heat wave."]);
+  if (hazardBlocks.length)
+    S.push({
+      id: "hazards",
+      title: "Your area's hazards",
+      summaryTemplate: "These are the hazards rated moderate or higher for the {{region}} area, with the steps to take before and during each one.",
+      facts: [],
+      blocks: hazardBlocks,
+    });
 
   // 4. Water -----------------------------------------------------------------
   const waterRows = w.breakdown.map((b) => [b.label, `${n(b.galPerDay, 2)} gal/day`]);
@@ -695,6 +747,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
           type: "ifthen",
           rows: [
             { if: "Mandatory evacuation order for your zone", then: "Leave immediately." },
+            ...(h.elderlyOrMobility ? [{ if: "A voluntary evacuation is announced", then: "Leave now with anyone who has mobility or medical needs — they need extra time." }] : []),
             ...(atLeast(prof.hurricane, "moderate") ? [{ if: "Hurricane warning and you're in an evacuation zone or a mobile/weak structure", then: "Leave before the warning window closes — roads fill fast." }] : []),
             ...(winter ? [{ if: `No heat, house below ${n(c.heat.evacuateAtF)}°F, and no restoration estimate`, then: "Relocate while roads are passable." }] : []),
             { if: "No water and no way to filter/collect", then: "Relocate." },

@@ -78,10 +78,17 @@ ${doc.affiliateDisclosure ? `<p style="margin:8px 0;font-size:13px;color:${C.mut
 ${sections}
 <h2 style="margin:24px 0 4px;font-size:16px">Sources</h2><ul style="margin:4px 0;padding-left:20px;font-size:13px">${doc.sources.map((s) => `<li><a href="${esc(s.url)}" style="color:${C.info}">${esc(s.name)}</a></li>`).join("")}</ul>`;
   return {
-    subject: "Your ReadyPlan emergency plan",
+    subject: planSubject(doc),
     html: shell(doc.title, body, { ...meta, preheader: doc.sections[0]?.summary }),
     text: planToText(doc, meta),
   };
+}
+
+/** e.g. "Your 90-day emergency plan for Long Island is ready" */
+export function planSubject(doc: PlanDocument): string {
+  const [, region, scenario] = doc.subtitle.split(" · ");
+  const adj: Record<string, string> = { "72 hours": "72-hour", "2 weeks": "2-week", "30 days": "30-day", "90 days": "90-day" };
+  return region && scenario ? `Your ${adj[scenario] ?? scenario} emergency plan for ${region} is ready` : "Your ReadyPlan emergency plan";
 }
 
 export function planToText(doc: PlanDocument, meta: EmailMeta & { planUrl: string }): string {
@@ -103,8 +110,8 @@ export function planToText(doc: PlanDocument, meta: EmailMeta & { planUrl: strin
 }
 
 export function renderConfirmEmail(link: string, meta: EmailMeta) {
-  const body = `<h1 style="margin:0 0 8px;font-size:22px">Confirm your email</h1><p>Tap the button to confirm your address. We'll email your plan (with a printable PDF) right after, and the same link lets you come back and edit your answers.</p>${button(link, "Confirm & send my plan")}<p style="font-size:13px;color:${C.muted}">This link expires in 7 days. If you didn't request a ReadyPlan, ignore this email — you won't hear from us again.</p>`;
-  return { subject: "Confirm your email to get your ReadyPlan", html: shell("Confirm your email", body, meta), text: `Confirm your email and get your ReadyPlan: ${link}\n\nIf you didn't request this, ignore this email.\n\n${meta.mailingAddress}\nUnsubscribe: ${meta.unsubscribeUrl}` };
+  const body = `<h1 style="margin:0 0 8px;font-size:22px">Get your plan + PDF</h1><p>Tap the button to confirm this is your email. We'll send your full plan with a printable PDF right away, and the same link lets you come back and update it.</p>${button(link, "Send me my plan")}<p style="font-size:13px;color:${C.muted}">This link expires in 7 days. If you didn't request a ReadyPlan, ignore this email — you won't hear from us again.</p>`;
+  return { subject: "One tap to get your plan + printable PDF", html: shell("Confirm your email", body, meta), text: `Confirm your email and get your ReadyPlan: ${link}\n\nIf you didn't request this, ignore this email.\n\n${meta.mailingAddress}\nUnsubscribe: ${meta.unsubscribeUrl}` };
 }
 
 export function renderLoginEmail(link: string, meta: EmailMeta) {

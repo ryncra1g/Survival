@@ -4,8 +4,9 @@ import { store, type PlanRow, type QuestionnaireRow } from "./store";
 
 /** Authorization: full sessions see all their data; draft sessions only what they created. */
 export async function canAccessQuestionnaire(s: Session | null, q: QuestionnaireRow | null): Promise<boolean> {
-  if (!s || !q || q.user_id !== s.uid) return false;
-  return s.scope === "full" || q.session_nonce === s.nonce;
+  if (!s || !q) return false;
+  if (q.session_nonce === s.nonce) return true; // the browser session that created it
+  return s.scope === "full" && !!q.user_id && q.user_id === s.uid;
 }
 
 export async function loadPlanFor(s: Session | null, planId: string): Promise<PlanRow | null> {

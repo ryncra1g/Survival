@@ -339,7 +339,7 @@ export function heatStrategy(a: Answers, profile: ZipProfile, power: PowerResult
     else if (furnaceNeedsPower && !apt && (power.generatorStatus === "owned_portable" || power.generatorStatus === "recommended"))
       out.push("generator_inlet_furnace");
     if (a.heatSources.includes("wood")) out.push("wood_stove");
-    if (!apt && winter && power.generatorStatus !== "owned_standby") out.push("indoor_propane_heater");
+    if (!apt && winter && power.generatorStatus !== "owned_standby" && !a.heatSources.includes("wood")) out.push("indoor_propane_heater");
     out.push("one_warm_room");
     if (apt) out.push("apartment_no_combustion");
     if (winter) out.push("pipe_freeze");
@@ -388,7 +388,13 @@ export function computeTags(a: Answers, profile: ZipProfile, power: PowerResult,
   if (atLeast(profile.heat, "high")) t.add("hot_climate");
   if (atLeast(profile.hurricane, "moderate")) t.add("hurricane");
   if (a.hasBasement && atLeast(profile.flood, "moderate")) t.add("flood_basement");
-  if (a.waterSource === "well") t.add("well");
+  if (a.waterSource === "well" && power.generatorStatus !== "owned_standby") t.add("well");
+  if (power.generatorStatus === "owned_portable") t.add("owns_generator");
+  if (atLeast(profile.earthquake, "moderate")) t.add("earthquake");
+  if (atLeast(profile.wildfire, "moderate")) t.add("wildfire");
+  if (atLeast(profile.flood, "high")) t.add("flood");
+  if (atLeast(profile.tornado, "moderate")) t.add("tornado");
+  if (h.elderlyOrMobility) t.add("mobility");
   if (a.poweredDevices.length) t.add("medical_device");
   if (h.childrenInDiapers) t.add("diapers");
   if (h.infants) t.add("infant");
@@ -514,7 +520,8 @@ export function computeBudget(
   entries.sort((x, y) => x.phase - y.phase || x.priority - y.priority);
 
   let spent = 0;
-  const includedGroups = new Set<string>();
+  // Households that already own a portable generator get its accessories (cans, cord, inlet) without buying one.
+  const includedGroups = new Set<string>(tags.has("owns_generator") ? ["generator"] : []);
   const bundled = new Set<string>();
   const deferredGroups = new Set<string>();
   const picks: GearPick[] = [];
