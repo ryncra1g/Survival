@@ -33,6 +33,8 @@ export const BlockSchema = z.discriminatedUnion("type", [
         price: z.string(),
         qty: z.string(),
         buyable: z.boolean(),
+        /** False for Amazon links (not allowed in email/PDF); emails link back to the plan page instead. */
+        emailSafe: z.boolean().default(false),
         later: z.boolean(),
       }),
     ),

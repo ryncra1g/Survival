@@ -177,6 +177,7 @@ To turn them on, go to `/admin` and paste your **Amazon Associates tag** (e.g. `
 - **Destination:** an Amazon search for the item's first example model, carrying your tag. To link elsewhere, set an `affiliateUrl` on a catalog item; it always wins.
 - **Tracking:** every Buy link goes through `/go/<itemId>`. That route counts the click (`email_events` type `affiliate_click`) and redirects only to catalog destinations, so it can't be used as an open redirect.
 - **Dashboard:** shows Buy clicks, clicks per plan and the most-clicked gear.
+- **Email rules:** Amazon's Associates agreement doesn't allow its links in email or PDFs. In plan emails, Amazon-bound items show a "Shop" link back to the plan's shopping list instead, and `/go` redirects any email click on an Amazon item to the plan page. Non-Amazon affiliate URLs (Impact, CJ, AvantLink, etc.) appear in emails normally.
 - **Disclosure:** appears automatically on the page, in the PDF and in the email whenever any Buy button is shown. Links use `rel="sponsored nofollow"`.
 
 Clear the tag to switch Buy buttons off for new plans.

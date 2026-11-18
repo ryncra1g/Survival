@@ -82,7 +82,7 @@ function ItemForm({ item, onSave, onCancel, today }: { item: CatalogItem; onSave
       {field("priority", "Priority within phase (lower first)", "number")}
       <label className="block text-sm"><span className="font-semibold">Tags (comma-separated; ! = must not)</span><input className="input mt-1" value={f.tags.join(", ")} onChange={(e) => setF({ ...f, tags: e.target.value.split(",").map((s) => s.trim()).filter(Boolean) })} /></label>
       {field("group", "Alternative group (optional)")}
-      {field("affiliateUrl", "Affiliate URL (optional — disclosed automatically)")}
+      {field("affiliateUrl", "Affiliate URL (optional; a direct product link beats the tag search. Disclosed automatically; Amazon links are kept out of emails)")}
       {field("reviewedAt", "Last reviewed (YYYY-MM-DD)")}
       {field("notes", "Notes")}
       <div className="flex gap-4 items-center text-sm">

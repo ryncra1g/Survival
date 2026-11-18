@@ -49,7 +49,7 @@ function block(b: Block, ctx: { appUrl: string; planId?: string } = { appUrl: ""
       return `${b.caption ? `<p style="margin:12px 0 4px;font-size:13px;font-weight:600;color:${C.muted}">${esc(b.caption)}</p>` : ""}<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:6px 0"><tr>${th("Item")}${th("Price")}${th("")}</tr>${b.items
         .map(
           (i) =>
-            `<tr><td class="c"><strong>${esc(i.name)}</strong>${i.qty ? ` ${esc(i.qty)}` : ""}${i.later ? " <em>(later)</em>" : ""}<br><span style="color:${C.muted}">${esc(i.spec)}</span></td><td class="c">${esc(i.price)}</td><td class="c">${i.buyable ? `<a href="${esc(ctx.appUrl + goPath(i.itemId, ctx.planId, "email"))}" style="color:${C.brand};font-weight:700">Buy</a>` : ""}</td></tr>`,
+            `<tr><td class="c"><strong>${esc(i.name)}</strong>${i.qty ? ` ${esc(i.qty)}` : ""}${i.later ? " <em>(later)</em>" : ""}<br><span style="color:${C.muted}">${esc(i.spec)}</span></td><td class="c">${esc(i.price)}</td><td class="c">${i.buyable ? (i.emailSafe ? `<a href="${esc(ctx.appUrl + goPath(i.itemId, ctx.planId, "email"))}" style="color:${C.brand};font-weight:700">Buy</a>` : ctx.planId ? `<a href="${esc(`${ctx.appUrl}/plan/${ctx.planId}#priorities`)}" style="color:${C.brand};font-weight:700">Shop</a>` : "") : ""}</td></tr>`,
         )
         .join("")}</table>`;
     case "paragraph":
@@ -124,7 +124,7 @@ export function planToText(doc: PlanDocument, meta: EmailMeta & { planUrl: strin
       if (b.type === "table") lines.push(...(b.caption ? [b.caption] : []), b.columns.join(" | "), ...b.rows.map((r) => r.join(" | ")));
       if (b.type === "ifthen") lines.push(...b.rows.map((r) => `IF ${r.if} -> ${r.then}`));
       if (b.type === "callout") lines.push(`!! ${b.title}: ${b.text}`);
-      if (b.type === "products") lines.push(...(b.caption ? [b.caption] : []), ...b.items.map((i) => `- ${i.name} ${i.qty} (${i.price}): ${i.spec}${i.buyable ? ` — buy: ${meta.appUrl}${goPath(i.itemId, meta.planId, "email")}` : ""}`));
+      if (b.type === "products") lines.push(...(b.caption ? [b.caption] : []), ...b.items.map((i) => `- ${i.name} ${i.qty} (${i.price}): ${i.spec}${i.buyable && i.emailSafe ? ` — buy: ${meta.appUrl}${goPath(i.itemId, meta.planId, "email")}` : ""}`));
     }
     lines.push("");
   }

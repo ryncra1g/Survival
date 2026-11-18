@@ -12,7 +12,7 @@ import {
 } from "@/lib/safety/required";
 import { DISCLAIMER, SOURCES, type Block, type PlanDocument, type Section } from "./document";
 import { fillTokens, n, plural, range, usd, usdRange } from "./format";
-import { AFFILIATE_DISCLOSURE, buyUrl } from "@/lib/affiliate";
+import { AFFILIATE_DISCLOSURE, buyUrl, emailSafeBuyUrl } from "@/lib/affiliate";
 
 /**
  * Turns the computed plan into the PlanDocument structure.
@@ -129,6 +129,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       price: `${usdRange(p.item.priceLow, p.item.priceHigh)} each`,
       qty: p.qty > 1 ? `× ${n(p.qty)}` : "",
       buyable: isBuyable(p),
+      emailSafe: emailSafeBuyUrl(p.item, c.affiliate.amazonTag),
       later: later(p),
     })),
   });

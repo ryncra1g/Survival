@@ -36,8 +36,24 @@ describe("affiliate links", () => {
     expect(shop && shop.type === "products" && shop.items.every((i) => i.buyable)).toBe(true);
     expect(r.document.affiliateDisclosure).toMatch(/commission/);
     const e = renderPlanEmail(r.document, { appUrl: "https://app.example", unsubscribeUrl: "u", mailingAddress: "a", planUrl: "p", pdfAttached: true, planId: "abc" });
-    expect(e.html).toContain("https://app.example/go/co-alarm?p=abc&amp;src=email");
-    expect(e.html).not.toContain("amazon.com"); // all clicks go through the tracked redirect
+    // Amazon links aren't allowed in email: Amazon-bound items link back to the plan page instead
+    expect(e.html).not.toContain("/go/co-alarm");
+    expect(e.html).toContain("https://app.example/plan/abc#priorities");
+    expect(e.html).not.toContain("amazon.com");
     expect(Buffer.byteLength(e.html)).toBeLessThan(100_000);
+  });
+});
+
+describe("email-safe affiliate links", () => {
+  it("non-Amazon affiliate URLs go in emails through the tracked redirect", async () => {
+    const cat = SEED_CATALOG.map((i) => (i.id === "radio" ? { ...i, affiliateUrl: "https://www.example-store.com/radio?aff=1" } : i));
+    const r = await generatePlan(SAMPLE_HOUSEHOLD, DEFAULT_CONSTANTS, cat, { useLlm: false, now: NOW });
+    const e = renderPlanEmail(r.document, { appUrl: "https://app.example", unsubscribeUrl: "u", mailingAddress: "a", planUrl: "p", pdfAttached: true, planId: "abc" });
+    expect(e.html).toContain("https://app.example/go/radio?p=abc&amp;src=email");
+    expect(r.document.affiliateDisclosure).toMatch(/commission/);
+  });
+  it.each([["https://www.amazon.com/dp/B0", true], ["https://amzn.to/3xyz", true], ["https://www.amazon.co.uk/x", true], ["https://www.homedepot.com/p/1", false], ["https://notamazon.com/x", false]])("isAmazon(%s) = %s", async (u, want) => {
+    const { isAmazon } = await import("@/lib/affiliate");
+    expect(isAmazon(u)).toBe(want);
   });
 });
