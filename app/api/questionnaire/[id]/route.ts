@@ -1,3 +1,4 @@
+import { withoutConsentTicks } from "@/lib/legal";
 import { DraftAnswersSchema } from "@/lib/answers/schema";
 import { canAccessQuestionnaire } from "@/lib/server/access";
 import { err, json, readJson, sameOrigin } from "@/lib/server/http";
@@ -16,6 +17,6 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   const body = await readJson<{ answers: unknown }>(req, 20_000);
   const parsed = DraftAnswersSchema.safeParse(body?.answers);
   if (!parsed.success) return err("Invalid answers");
-  await store.updateQuestionnaire(id, { answers: parsed.data });
+  await store.updateQuestionnaire(id, { answers: withoutConsentTicks(parsed.data) });
   return json({ ok: true });
 }

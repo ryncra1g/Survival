@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AnswersSchema, DEFAULT_ANSWERS, LABELS, type Answers, type PetGroupT } from "@/lib/answers/schema";
 import { DEFAULT_CONSTANTS } from "@/lib/rules/constants";
 import { computeFood, computeWater, household } from "@/lib/rules/engine";
-import { checkConsent, HEALTH_REQUIRED_MSG, needsHealthConsent } from "@/lib/legal";
+import { withoutConsentTicks, checkConsent, HEALTH_REQUIRED_MSG, needsHealthConsent } from "@/lib/legal";
 import { BRAND } from "@/lib/brand";
 
 type Draft = Answers & { _step?: number; _screen?: string; _terms?: boolean; _health?: boolean };
@@ -429,7 +429,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
     try {
       const local = JSON.parse(localStorage.getItem(`rp_q_${id}`) ?? "null") as Partial<Draft> | null;
       if (local) {
-        setA((prev) => ({ ...prev, ...local }));
+        setA((prev) => ({ ...prev, ...withoutConsentTicks(local) }));
         if (typeof local._step === "number") setStep(local._step);
       }
     } catch {}
@@ -437,7 +437,8 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
 
   // Autosave: localStorage immediately, server debounced. Answers go in the body, never the URL.
   useEffect(() => {
-    const draft = { ...a, _step: step };
+    // Consent ticks stay on this screen only: never saved, so a copied plan never starts pre-ticked.
+    const draft = { ...withoutConsentTicks(a), _step: step };
     try {
       localStorage.setItem(`rp_q_${id}`, JSON.stringify(draft));
     } catch {}
@@ -466,6 +467,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
     const consent = { terms: !!a._terms, health: !!a._health };
     const consentError = checkConsent(parsed.data, consent);
     if (consentError) return setError(consentError);
+    if (saveTimer.current) clearTimeout(saveTimer.current);
     setGenerating(true);
     const timer = setInterval(() => setLoadingStep((s) => Math.min(s + 1, LOADING_STEPS.length - 1)), 1200);
     try {
@@ -530,7 +532,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
       })()}
       {(last || editOne) && (
         <div className="mt-6 space-y-3">
-          {screen.id !== "medical" && needsHealthConsent(a) && !a._health && <HealthConsent a={a} set={set} />}
+          {screen.id !== "medical" && needsHealthConsent(a) && <HealthConsent a={a} set={set} />}
           <ConsentBox id="termsConsent" checked={!!a._terms} onChange={(_terms) => set({ _terms })}>
             I understand this plan is general guidance, not professional advice, and I agree to the{" "}
             <a href="/terms" target="_blank" rel="noopener" className="underline">Terms of Use</a>.

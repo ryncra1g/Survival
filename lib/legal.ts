@@ -40,3 +40,16 @@ export function consentRecord(a: HealthAnswers, now: Date = new Date()): PlanCon
   const at = now.toISOString();
   return { termsVersion: TERMS_VERSION, termsAcceptedAt: at, healthDataConsentAt: needsHealthConsent(a) ? at : null };
 }
+
+/** Draft-only consent ticks. They must never be saved with answers (or a copied questionnaire would start pre-ticked). */
+export function withoutConsentTicks<T extends Record<string, unknown>>(a: T): Omit<T, "_terms" | "_health"> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { _terms, _health, ...rest } = a;
+  return rest;
+}
+
+/** True when a saved consent still covers rebuilding a plan from these answers (current Terms, health consent if needed). */
+export function consentStillValid(a: HealthAnswers, c: PlanConsent | null | undefined): c is PlanConsent {
+  if (!c || c.termsVersion !== TERMS_VERSION) return false;
+  return !needsHealthConsent(a) || !!c.healthDataConsentAt;
+}

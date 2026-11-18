@@ -143,7 +143,8 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(page).toHaveURL(/\/plan\/.*emailed=1/);
   await expect(page.getByText(/on their way to family@example.com/)).toBeVisible();
   await expect.poll(() => fs.readdirSync(".data/e2e/outbox").some((f) => f.endsWith("fridge-checklist.pdf"))).toBe(true);
-  expect(fs.readdirSync(".data/e2e/outbox").some((f) => f.endsWith(".pdf"))).toBe(true);
+  // The plan PDF itself, not just the fridge checklist.
+  expect(fs.readdirSync(".data/e2e/outbox").some((f) => f.endsWith(".pdf") && !f.endsWith("fridge-checklist.pdf"))).toBe(true);
   await page.goto(link!);
   await expect(page).toHaveURL(/link=expired/);
 
