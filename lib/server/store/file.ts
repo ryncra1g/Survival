@@ -1,3 +1,4 @@
+import type { PlanConsent } from "@/lib/legal";
 import "server-only";
 import fs from "node:fs";
 import path from "node:path";
@@ -11,7 +12,7 @@ import type { EmailEventRow, PlanRow, QuestionnaireRow, RuleConstantsRow, Stats,
  * (answers and plans are sealed). Not for production — single process, no locking.
  */
 type StoredQ = Omit<QuestionnaireRow, "answers"> & { answers_json: Sealed };
-type StoredP = Omit<PlanRow, "computed_quantities" | "plan"> & { computed_quantities_json: Sealed; plan_json: Sealed };
+type StoredP = Omit<PlanRow, "computed_quantities" | "plan" | "consent"> & { computed_quantities_json: Sealed; plan_json: Sealed; consent_json?: Sealed | null };
 interface DB {
   users: UserRow[];
   questionnaires: StoredQ[];
@@ -59,8 +60,8 @@ const qOut = (q: StoredQ): QuestionnaireRow => {
   return { ...rest, answers: unseal(answers_json) };
 };
 const pOut = (p: StoredP): PlanRow => {
-  const { computed_quantities_json, plan_json, ...rest } = p;
-  return { ...rest, computed_quantities: unseal(computed_quantities_json), plan: unseal(plan_json) };
+  const { computed_quantities_json, plan_json, consent_json, ...rest } = p;
+  return { ...rest, computed_quantities: unseal(computed_quantities_json), plan: unseal(plan_json), consent: consent_json ? unseal<PlanConsent>(consent_json) : null };
 };
 
 export const fileStore: Store = {
@@ -133,8 +134,8 @@ export const fileStore: Store = {
   },
   async createPlan(p) {
     return tx((db) => {
-      const { computed_quantities, plan, ...rest } = p;
-      const row: StoredP = { ...rest, computed_quantities_json: seal(computed_quantities), plan_json: seal(plan), id: newId(), created_at: now() };
+      const { computed_quantities, plan, consent, ...rest } = p;
+      const row: StoredP = { ...rest, computed_quantities_json: seal(computed_quantities), plan_json: seal(plan), consent_json: consent ? seal(consent) : null, id: newId(), created_at: now() };
       db.plans.push(row);
       return pOut(row);
     });

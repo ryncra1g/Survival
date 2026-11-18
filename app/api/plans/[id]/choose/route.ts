@@ -1,3 +1,4 @@
+import { consentStillValid } from "@/lib/legal";
 import { NextResponse } from "next/server";
 import { AnswersSchema, GEAR_SLOTS, GearLevel } from "@/lib/answers/schema";
 import { loadPlanFor } from "@/lib/server/access";
@@ -33,8 +34,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const prev = AnswersSchema.safeParse(source?.answers);
   if (!prev.success) return NextResponse.redirect(new URL(`/plan/${plan.id}#${back}`, env.appUrl), 303);
   const answers = { ...prev.data, gearChoices: { ...(prev.data.gearChoices ?? {}), [group]: level.data } };
+  // Rebuild only under a consent that still covers it (current Terms; health consent if health answers).
+  // Otherwise open the last screen with the gear choice applied, so they tick the boxes and press Update.
+  if (!consentStillValid(answers, plan.consent)) {
+    const draft = await store.createQuestionnaire({ user_id: plan.user_id, session_nonce: session.nonce, answers: { ...answers, _screen: "budget" }, complete: false, version: 1 });
+    return NextResponse.redirect(new URL(`/q/${draft.id}`, env.appUrl), 303);
+  }
   const q = await store.createQuestionnaire({ user_id: plan.user_id, session_nonce: session.nonce, answers, complete: true, version: 1 });
-  const next = await buildAndSavePlan(plan.user_id, q.id, answers, plan.consent ?? null);
+  const next = await buildAndSavePlan(plan.user_id, q.id, answers, plan.consent);
   if (plan.checks && Object.keys(plan.checks).length) await store.updatePlan(next.id, { checks: plan.checks });
   return NextResponse.redirect(new URL(`/plan/${next.id}#${back}`, env.appUrl), 303);
 }
