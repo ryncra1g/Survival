@@ -2,6 +2,7 @@ import type { PlanDocument } from "@/lib/plan/document";
 import { renderPlanPdf } from "@/lib/pdf/PlanPdf";
 import { loadPlanFor } from "@/lib/server/access";
 import { getSession } from "@/lib/server/session";
+import { BRAND } from "@/lib/brand";
 
 export const maxDuration = 30;
 
@@ -13,7 +14,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   return new Response(new Uint8Array(pdf), {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="Kinready-${plan.created_at.slice(0, 10)}.pdf"`,
+      "Content-Disposition": `attachment; filename="${BRAND.file}-${plan.created_at.slice(0, 10)}.pdf"`,
       "Cache-Control": "private, no-store",
     },
   });

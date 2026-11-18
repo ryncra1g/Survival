@@ -1,4 +1,5 @@
 import "server-only";
+import { BRAND } from "@/lib/brand";
 
 /** Central env access. Demo mode = no Supabase configured: file-backed store, console email. */
 export const env = {
@@ -7,8 +8,8 @@ export const env = {
   supabaseServiceKey: process.env.SUPABASE_SERVICE_ROLE_KEY || "",
   resendKey: process.env.RESEND_API_KEY || "",
   resendWebhookSecret: process.env.RESEND_WEBHOOK_SECRET || "",
-  emailFrom: process.env.EMAIL_FROM || "Kinready <plans@example.com>",
-  mailingAddress: process.env.MAILING_ADDRESS || "Kinready · [Set MAILING_ADDRESS] · City, ST 00000",
+  emailFrom: process.env.EMAIL_FROM || `${BRAND.name} <plans@example.com>`,
+  mailingAddress: process.env.MAILING_ADDRESS || `${BRAND.name} · [Set MAILING_ADDRESS] · City, ST 00000`,
   turnstileSecret: process.env.TURNSTILE_SECRET_KEY || "",
   turnstileSiteKey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "",
   encryptionKey: process.env.APP_ENCRYPTION_KEY || "",

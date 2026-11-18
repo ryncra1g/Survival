@@ -1,8 +1,8 @@
-# Kinready
+# ReadyPlan
 
 A mobile-first web app that builds a personalized emergency plan and supply list for a household. The visitor taps "Build my free plan" (no sign-up), answers about 11 tap-to-select screens and gets the plan on screen. Emailing the plan is optional, offered next to it. Recommended gear can carry tracked affiliate "Buy" buttons. The same plan is available as a PDF and is emailed to them once they confirm their address.
 
-**Shareable demo:** `npm run demo` builds `demo/dist/kinready-demo.html`, a single page that runs the real questionnaire, rules engine and plan view in the browser with no server. **Focus-group review:** [`docs/focus-group.md`](docs/focus-group.md).
+**Shareable demo:** `npm run demo` builds `demo/dist/demo.html`, a single page that runs the real questionnaire, rules engine and plan view in the browser with no server. **Focus-group review:** [`docs/focus-group.md`](docs/focus-group.md).
 
 - **Every quantity comes from a deterministic rules engine.** An optional LLM layer rewrites only the section summaries, and it can refer to numbers only through `{{tokens}}` that the engine fills in.
 - **Safety guardrails are enforced in code.** The required safety text is inserted by code, a linter checks every string in the plan, and tests cover adversarial and randomized households.
@@ -65,7 +65,7 @@ answers (Zod, enums only) ──► lib/rules/engine.ts ──► ComputedPlan (
 
 ### Auth: magic links instead of Supabase Auth
 
-Supabase Auth was the original suggestion. Kinready uses its own magic links instead because the flow needs two session scopes:
+Supabase Auth was the original suggestion. ReadyPlan uses its own magic links instead because the flow needs two session scopes:
 
 - An **anon** session starts at "Build my free plan". It can only see what this browser created. Plans never linked to an email are purged after 30 days.
 - A **draft** session starts when someone gives their email on the plan page. It lets someone fill in the questionnaire and see their plan right away. It can only see the questionnaires and plans it created, so typing someone else's email exposes nothing.
@@ -100,7 +100,7 @@ Copy `.env.example` to `.env.local`.
 | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | prod | Database and storage. Leave both empty for demo mode |
 | `RESEND_API_KEY` | prod | Sending email. Leave empty to write emails to `.data/outbox` |
 | `RESEND_WEBHOOK_SECRET` | optional | `whsec_…` from Resend, for open, bounce and complaint tracking |
-| `EMAIL_FROM` | prod | e.g. `Kinready <plans@yourdomain.com>` on a verified domain |
+| `EMAIL_FROM` | prod | e.g. `ReadyPlan <plans@yourdomain.com>` on a verified domain |
 | `MAILING_ADDRESS` | prod | **CAN-SPAM physical address**, shown in every email footer |
 | `ANTHROPIC_API_KEY` | optional | Turns on the LLM wording layer |
 | `ANTHROPIC_MODEL` | optional | Defaults to `claude-opus-5-5` |

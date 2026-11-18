@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /**
- * ALL quantities in a Kinready come from these constants.
+ * ALL quantities in a plan come from these constants.
  *
  * These are the defaults. Admins can override any subset at /admin/rules; overrides are
  * stored as versioned JSON (table `rule_constants`) and deep-merged over these defaults,

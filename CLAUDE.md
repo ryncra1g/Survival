@@ -1,4 +1,4 @@
-# Kinready — notes for Claude
+# ReadyPlan (working name) — notes for Claude
 
 Mobile-first Next.js 16 app: a household answers ~10 screens, gets an emergency plan + supply list,
 optionally emails it, and can buy gear through tracked affiliate links. See README.md for architecture.
@@ -23,7 +23,10 @@ optionally emails it, and can buy gear through tracked affiliate links. See READ
   powered devices, mobility) need the separate health box. Rules live in `lib/legal.ts` (`checkConsent`), are enforced
   by `/api/questionnaire/[id]/generate`, and the record (`TERMS_VERSION` + timestamps) is saved on the plan. Bump
   `TERMS_VERSION` when the Terms change in substance. Health answers are never used for marketing emails.
-- Formerly named ReadyPlan: the `READYPLAN_DATA_DIR` env var and the dev-only key keep the old name on purpose.
+- **The product name is undecided.** "ReadyPlan" is a working name only (another emergency-planning app uses it).
+  Never hard-code a name: use `BRAND.name` / `BRAND.file` / `BRAND.slug` from `lib/brand.ts`; the real name is set
+  with `NEXT_PUBLIC_BRAND_NAME` at build time. `/release-check` blocks a deploy while the working name is in use.
+- **Not only families:** households can be one person. Copy says "you/your household", never assumes a family.
 - Don't commit secrets, `.env*`, or `.data/`.
 
 ## Commands

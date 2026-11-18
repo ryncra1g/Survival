@@ -77,7 +77,7 @@ const seed: Seed[] = [
     models: ["Midland ER310", "Eton FRX3"], priceLow: 50, priceHigh: 80, tier: 1, phase: 1, priority: 9, qty: 1, tags: [],
   },
   {
-    id: "first-aid", category: "First aid", name: "Family first aid kit",
+    id: "first-aid", category: "First aid", name: "First aid kit",
     spec: "200+ piece kit with trauma pads, gauze, tape, elastic wrap, gloves, thermometer, tweezers, shears",
     models: ["Adventure Medical Kits Family", "American Red Cross Deluxe Family Kit"], priceLow: 30, priceHigh: 80, tier: 1, phase: 1, priority: 10,
     qty: 1, tags: [],
@@ -286,13 +286,13 @@ const seed: Seed[] = [
   },
   {
     id: "filter-gravity-bag", category: "Water", name: "Gravity bag filter",
-    spec: "Hang-and-forget gravity bag, 0.2-micron hollow fiber, filters several liters per minute for a family",
+    spec: "Hang-and-forget gravity bag, 0.2-micron hollow fiber, filters several liters per minute for a whole household",
     models: ["Platypus GravityWorks 4L", "Sawyer Gravity system"], priceLow: 90, priceHigh: 140, tier: 2, phase: 1, priority: 6,
     qty: 1, tags: ["needs_filter"], group: "filter", level: "standard",
   },
   {
     id: "frs-radios", category: "Communications", name: "FRS walkie-talkies",
-    spec: "License-free FRS pair, AA or rechargeable, for family use within about a mile",
+    spec: "License-free FRS pair, AA or rechargeable, for household use within about a mile",
     models: ["Motorola Talkabout T110", "Cobra RX100"], priceLow: 25, priceHigh: 45, tier: 1, phase: 3, priority: 3,
     qty: 1, tags: [], group: "two-way", level: "essential",
   },
@@ -396,7 +396,7 @@ const seed: Seed[] = [
     models: ["NOCO Boost GB40", "AstroAI tire inflator"], priceLow: 100, priceHigh: 200, tier: 1, phase: 3, priority: 8, qty: 1, tags: ["vehicles", "evacuation"], group: "vehicle-kit", level: "standard",
   },
   {
-    id: "tent", category: "Evacuation", name: "Family tent + tarps",
+    id: "tent", category: "Evacuation", name: "Tent + tarps",
     spec: "3-season (or 4-season for winter) family tent, 2 heavy tarps, paracord, stakes",
     models: ["Coleman Skydome 6", "REI Base Camp 6"], priceLow: 150, priceHigh: 450, tier: 2, phase: 3, priority: 9, qty: 1, tags: ["raw_land"], group: "shelter", level: "standard",
   },

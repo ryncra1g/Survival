@@ -162,7 +162,9 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     id: "snapshot",
     title: "Household snapshot & planning assumptions",
     summaryTemplate:
-      "This plan covers {{household.people}} people in the {{region}} area for a {{scenario.adj}} disruption. Every quantity below comes from the planning assumptions in this section.",
+      cp.household.people === 1
+        ? "This plan covers you, on your own, in the {{region}} area for a {{scenario.adj}} disruption. Every quantity below comes from the planning assumptions in this section."
+        : "This plan covers {{household.people}} people in the {{region}} area for a {{scenario.adj}} disruption. Every quantity below comes from the planning assumptions in this section.",
     facts: [`Main local hazards: ${hazards.join(", ") || "none rated moderate or higher"}`, `Home: ${LABELS.home[a.homeType]}`],
     blocks: [
       {
@@ -224,7 +226,12 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   week.push(`Test or install CO alarms: ${n(a.floors + (a.hasBasement ? 1 : 0) + 1)} (one per level plus outside sleeping areas).`);
   week.push(`Store your first 3 days of water: ${n(w.threeDayGal)} gallons.`);
   week.push("Turn on Wireless Emergency Alerts and sign up for your county's alert system.");
-  week.push("Write the family communications plan (see Communications) and pick an out-of-area contact.");
+  if (cp.household.people === 1) {
+    week.push("Write your communications plan (see Communications) and pick an out-of-area contact.");
+    week.push("Ask a neighbor or nearby friend to check on you during long outages, and agree how you'll reach each other.");
+  } else {
+    week.push("Write your household communications plan (see Communications) and pick an out-of-area contact.");
+  }
   week.push(`Set aside ${usd(cp.cash.total)} in small bills.`);
   if (!apt) week.push("Find and label your main water shutoff, gas shutoff and electrical panel.");
   if (a.hasPrescriptions) week.push("Ask your pharmacist or doctor how to keep an extra supply of daily prescriptions on hand.");
@@ -418,8 +425,8 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     title: "Water",
     summaryTemplate:
       w.filterDays > 0
-        ? "Your household uses about {{water.dailyGal}} gallons a day. Store {{water.storedGal}} gallons ({{water.storedDays}} days). After that, filter and disinfect collected water for the remaining {{water.filterDays}} days."
-        : "Your household uses about {{water.dailyGal}} gallons a day. Store {{water.storedGal}} gallons to cover the full {{water.storedDays}} days.",
+        ? "Your household uses about {{water.dailyGal}} gal of water a day. Store {{water.storedGal}} gallons ({{water.storedDays}} days). After that, filter and disinfect collected water for the remaining {{water.filterDays}} days."
+        : "Your household uses about {{water.dailyGal}} gal of water a day. Store {{water.storedGal}} gallons to cover the full {{water.storedDays}} days.",
     facts: [
       ...(a.waterSource === "well" ? ["Their well pump needs electricity, so tap water stops in an outage"] : ["Municipal water usually keeps flowing at first but can lose pressure or be contaminated"]),
     ],
@@ -690,7 +697,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     facts: [...(a.hasPrescriptions ? ["Someone takes daily prescriptions"] : []), ...(a.skills.includes("first_aid") ? ["Someone has first aid training"] : ["No one has first aid training yet"])],
     blocks: [
       check("fa", [
-        "Family first aid kit (bandages, gauze, tape, elastic wrap, gloves, shears, tweezers, thermometer).",
+        "First aid kit (bandages, gauze, tape, elastic wrap, gloves, shears, tweezers, thermometer).",
         "Written list of each person's medications, doses as prescribed, allergies and doctors (keep with documents).",
         ...(a.hasPrescriptions ? ["Ask your pharmacist about early refills or a 90-day supply; many states allow emergency refills during declared disasters."] : []),
         ...(a.hasPrescriptions ? ["Learn which medications need refrigeration and keep a small cooler and ice packs for them."] : []),
@@ -707,15 +714,18 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   S.push({
     id: "comms",
     title: "Communications, cash & documents",
-    summaryTemplate: "Agree on how your family will reach each other, keep {{cash.total}} in small bills, and keep copies of key documents in a waterproof pouch.",
+    summaryTemplate: cp.household.people === 1
+        ? "Agree on who checks on you and how you'll reach family or friends, keep {{cash.total}} in small bills, and keep copies of key documents in a waterproof pouch."
+        : "Agree on how your household will reach each other, keep {{cash.total}} in small bills, and keep copies of key documents in a waterproof pouch.",
     facts: [],
     blocks: [
       {
         type: "table",
-        caption: "Family communications plan (fill in)",
+        caption: "Communications plan (fill in)",
         columns: ["Item", "Plan"],
         rows: [
           ["Out-of-area contact", "Name / phone: ____________"],
+          ...(cp.household.people === 1 ? [["Who checks on me", "Neighbor or friend, name / phone: ____________"]] : []),
           ["Meeting place near home", "____________"],
           ["Meeting place outside neighborhood", "____________"],
           ...(cp.evacuation ? [["Fallback location", `${LABELS.fallback[cp.evacuation.locationType]} (~${n(cp.evacuation.distanceMiles)} mi): address on paper in each go-bag`]] : []),
@@ -727,7 +737,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         items: [
           "Text, don't call — texts get through congested networks.",
           "NOAA weather radio for alerts when cell and internet are down.",
-          "FRS/GMRS radios for family and neighbors within a few miles (GMRS needs an FCC license, no exam).",
+          "FRS/GMRS radios to reach your household and neighbors within a few miles (GMRS needs an FCC license, no exam).",
           `Cash: ${usd(cp.cash.total)} (${usd(cp.cash.perAdult)} per adult) in small bills; card readers fail in outages.`,
           "Documents: copies of IDs, insurance policies, deeds/leases, medication list, pet records, and photos of your home's contents — in a waterproof pouch, plus an encrypted cloud copy.",
         ],
@@ -810,7 +820,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     if (ev.hasEv) evRows.push(["EV range needed", `${n(ev.evMinRangeMiles)} miles (distance + ${n(c.evacuation.evRangeBufferPct)}% for cold/traffic)`]);
     const gearRows: string[][] = rawLand
       ? [
-          ["Shelter", "Family tent, 2 heavy tarps, paracord, stakes", "Raw land has no buildings"],
+          ["Shelter", "Tent that sleeps everyone, 2 heavy tarps, paracord, stakes", "Raw land has no buildings"],
           ["Water", "All portable jugs + filter + bleach", "No utilities on site"],
           ["Sleep/warmth", "Cold-rated sleeping bags, pads, wool blankets", ""],
           ["Cooking", "Camp stove + propane (outdoor use only), pots, utensils", ""],
@@ -954,7 +964,7 @@ export function assembleDocument(cp: ComputedPlan, draft: PlanDraft, summaries: 
     blocks: s.blocks,
   }));
   return {
-    title: "Your Kinready",
+    title: "Your emergency plan",
     subtitle: draft.subtitle,
     generatedAt: cp.computedAt,
     rulesVersion: cp.rulesVersion,

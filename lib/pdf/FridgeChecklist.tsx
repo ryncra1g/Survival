@@ -3,6 +3,7 @@ import { Document, Page, StyleSheet, Text, View, renderToBuffer } from "@react-p
 import type { Block, PlanDocument } from "@/lib/plan/document";
 import { CO_RULE } from "@/lib/safety/required";
 import { pdfSafe } from "./PlanPdf";
+import { BRAND } from "@/lib/brand";
 
 /** One-page "put it on the fridge" sheet: this week's steps, Day 0 checklist, key decisions, contacts. */
 const ink = "#1c2430";
@@ -51,7 +52,7 @@ export function FridgeChecklist({ doc }: { doc: PlanDocument }) {
   const day0 = checklist(doc, "day0", 0).slice(0, 9);
   const triggers = ifthen(doc).slice(0, 7);
   return (
-    <Document title="Kinready fridge checklist" author="Kinready">
+    <Document title={`${BRAND.name} fridge checklist`} author={BRAND.name}>
       <Page size="LETTER" style={s.page}>
         <View style={s.top}>
           <Text style={s.title}>Emergency checklist</Text>

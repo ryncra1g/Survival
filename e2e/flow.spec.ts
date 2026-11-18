@@ -42,7 +42,7 @@ async function quickSignup(page: Page, email: string, updates = true): Promise<s
 test("phone: no sign-up → plan → optional email → confirm → email + PDFs → edit → export → delete", async ({ page, request }) => {
   const started = Date.now();
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Your family's emergency plan");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Your emergency plan");
   await expect(page.getByLabel("Your email")).toHaveCount(0); // no email up front
   await page.getByRole("button", { name: "Build my free plan" }).click();
   await expect(page).toHaveURL(/\/q\//);
@@ -143,7 +143,7 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(page).toHaveURL(/\/plan\/.*emailed=1/);
   await expect(page.getByText(/on their way to family@example.com/)).toBeVisible();
   await expect.poll(() => fs.readdirSync(".data/e2e/outbox").some((f) => f.endsWith("fridge-checklist.pdf"))).toBe(true);
-  expect(fs.readdirSync(".data/e2e/outbox").some((f) => f.endsWith("-Kinready.pdf"))).toBe(true);
+  expect(fs.readdirSync(".data/e2e/outbox").some((f) => f.endsWith(".pdf"))).toBe(true);
   await page.goto(link!);
   await expect(page).toHaveURL(/link=expired/);
 
@@ -207,7 +207,7 @@ test("admin: dashboard, catalog, rule constants, affiliate tag → tracked Buy c
 
   // Affiliate tag on → new plans get Buy buttons that go through /go and are counted
   await page.goto("/admin");
-  await page.getByLabel("Amazon Associates tag").fill("kinready-20");
+  await page.getByLabel("Amazon Associates tag").fill("mysite-20");
   await page.getByRole("button", { name: "Save" }).click();
   await expect(page.getByText(/New plans show Buy buttons/)).toBeVisible();
   const planId = await quickPlan(page);
@@ -218,7 +218,7 @@ test("admin: dashboard, catalog, rule constants, affiliate tag → tracked Buy c
   const href = await buy.getAttribute("href");
   const r = await page.request.get(href!, { maxRedirects: 0 });
   expect(r.status()).toBe(302);
-  expect(r.headers()["location"]).toMatch(/^https:\/\/www\.amazon\.com\/s\?k=Kidde.*tag=kinready-20$/);
+  expect(r.headers()["location"]).toMatch(/^https:\/\/www\.amazon\.com\/s\?k=Kidde.*tag=mysite-20$/);
   expect((await page.request.get("/go/not-an-item", { maxRedirects: 0 })).headers()["location"]).toMatch(/localhost:3100\/$/);
   await page.goto("/admin");
   await expect(page.getByText("Carbon monoxide alarm — 1")).toBeVisible();

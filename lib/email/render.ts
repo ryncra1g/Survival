@@ -1,4 +1,5 @@
 import type { Block, PlanDocument } from "@/lib/plan/document";
+import { BRAND } from "@/lib/brand";
 
 /**
  * Email HTML. Table-based layout, inline styles only (Gmail/iOS Mail safe), system fonts,
@@ -23,14 +24,14 @@ function shell(title: string, body: string, meta: EmailMeta): string {
 <div style="display:none;max-height:0;overflow:hidden;opacity:0">${esc(meta.preheader ?? title)}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.bg}"><tr><td align="center" style="padding:16px 8px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:${C.card};border-radius:8px">
-<tr><td style="padding:20px 20px 8px;font-size:20px;font-weight:700;color:${C.brand}">Kinready</td></tr>
+<tr><td style="padding:20px 20px 8px;font-size:20px;font-weight:700;color:${C.brand}">${esc(BRAND.name)}</td></tr>
 <tr><td style="padding:0 20px 20px;font-size:15px;line-height:1.5">${body}</td></tr>
 </table>${footer(meta)}</td></tr></table></body></html>`;
 }
 
 function footer(meta: EmailMeta): string {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px"><tr><td style="padding:16px 20px;font-size:12px;line-height:1.5;color:${C.muted};text-align:center">
-${esc(meta.mailingAddress)}<br>You're receiving this because you asked for a Kinready.<br>
+${esc(meta.mailingAddress)}<br>You're receiving this because you asked for a ${esc(BRAND.name)} emergency plan.<br>
 <a href="${esc(meta.unsubscribeUrl)}" style="color:${C.muted}">Unsubscribe</a> · <a href="${esc(meta.appUrl)}/privacy" style="color:${C.muted}">Privacy</a> · <a href="${esc(meta.appUrl)}/account" style="color:${C.muted}">Manage or delete your data</a></td></tr></table>`;
 }
 
@@ -114,7 +115,7 @@ function firstSteps(doc: PlanDocument): string {
 export function planSubject(doc: PlanDocument): string {
   const [, region, scenario] = doc.subtitle.split(" · ");
   const adj: Record<string, string> = { "72 hours": "72-hour", "2 weeks": "2-week", "30 days": "30-day", "90 days": "90-day" };
-  return region && scenario ? `Your ${adj[scenario] ?? scenario} emergency plan for ${region} is ready` : "Your Kinready emergency plan";
+  return region && scenario ? `Your ${adj[scenario] ?? scenario} emergency plan for ${region} is ready` : `Your ${BRAND.name} emergency plan`;
 }
 
 export function planToText(doc: PlanDocument, meta: EmailMeta & { planUrl: string; planId?: string }): string {
@@ -138,28 +139,28 @@ export function planToText(doc: PlanDocument, meta: EmailMeta & { planUrl: strin
 }
 
 export function renderConfirmEmail(link: string, meta: EmailMeta) {
-  const body = `<h1 style="margin:0 0 8px;font-size:22px">One tap to get your plan by email</h1><p>Finish your questions on screen — your plan appears as soon as you're done. Tap below to confirm this is your email and we'll send the plan with a printable PDF. The same link lets you come back and update it.</p>${button(link, "Confirm & send my plan")}<p style="font-size:13px;color:${C.muted}">This link expires in 7 days. If you didn't request a Kinready, ignore this email — you won't hear from us again.</p>`;
-  return { subject: "Confirm your email to get your plan + PDF", html: shell("Confirm your email", body, meta), text: `Confirm your email and get your Kinready: ${link}\n\nIf you didn't request this, ignore this email.\n\n${meta.mailingAddress}\nUnsubscribe: ${meta.unsubscribeUrl}` };
+  const body = `<h1 style="margin:0 0 8px;font-size:22px">One tap to get your plan by email</h1><p>Finish your questions on screen — your plan appears as soon as you're done. Tap below to confirm this is your email and we'll send the plan with a printable PDF. The same link lets you come back and update it.</p>${button(link, "Confirm & send my plan")}<p style="font-size:13px;color:${C.muted}">This link expires in 7 days. If you didn't request a plan, ignore this email — you won't hear from us again.</p>`;
+  return { subject: "Confirm your email to get your plan + PDF", html: shell("Confirm your email", body, meta), text: `Confirm your email and get your plan: ${link}\n\nIf you didn't request this, ignore this email.\n\n${meta.mailingAddress}\nUnsubscribe: ${meta.unsubscribeUrl}` };
 }
 
 /** Sent once, a day after signup, if the address was never confirmed but a plan exists. */
 export function renderConfirmReminder(link: string, meta: EmailMeta) {
-  const body = `<h1 style="margin:0 0 8px;font-size:22px">Your plan is waiting</h1><p>You built a Kinready but we haven't been able to send it yet. Tap below to confirm this is your email and we'll send the plan, a printable PDF and a fridge checklist.</p>${button(link, "Confirm & send my plan")}<p style="font-size:13px;color:${C.muted}">This is the only reminder we'll send. If you didn't request a Kinready, ignore it.</p>`;
-  return { subject: "Your emergency plan is waiting", html: shell("Your plan is waiting", body, meta), text: `Confirm your email and we'll send your Kinready: ${link}\n\nThis is the only reminder we'll send.\n\n${meta.mailingAddress}\nUnsubscribe: ${meta.unsubscribeUrl}` };
+  const body = `<h1 style="margin:0 0 8px;font-size:22px">Your plan is waiting</h1><p>You built an emergency plan but we haven't been able to send it yet. Tap below to confirm this is your email and we'll send the plan, a printable PDF and a fridge checklist.</p>${button(link, "Confirm & send my plan")}<p style="font-size:13px;color:${C.muted}">This is the only reminder we'll send. If you didn't request a plan, ignore it.</p>`;
+  return { subject: "Your emergency plan is waiting", html: shell("Your plan is waiting", body, meta), text: `Confirm your email and we'll send your plan: ${link}\n\nThis is the only reminder we'll send.\n\n${meta.mailingAddress}\nUnsubscribe: ${meta.unsubscribeUrl}` };
 }
 
 export function renderLoginEmail(link: string, meta: EmailMeta) {
-  const body = `<h1 style="margin:0 0 8px;font-size:22px">Your sign-in link</h1><p>Use this link to open your Kinready, edit your answers, or download or delete your data.</p>${button(link, "Open my Kinready")}<p style="font-size:13px;color:${C.muted}">This link expires in 1 hour and works once.</p>`;
-  return { subject: "Your Kinready sign-in link", html: shell("Sign in", body, meta), text: `Open your Kinready: ${link}\n\n${meta.mailingAddress}` };
+  const body = `<h1 style="margin:0 0 8px;font-size:22px">Your sign-in link</h1><p>Use this link to open your plan, edit your answers, or download or delete your data.</p>${button(link, "Open my plan")}<p style="font-size:13px;color:${C.muted}">This link expires in 1 hour and works once.</p>`;
+  return { subject: `Your ${BRAND.name} sign-in link`, html: shell("Sign in", body, meta), text: `Open your plan: ${link}\n\n${meta.mailingAddress}` };
 }
 
 export type FollowupKind = "day1" | "day3" | "day30" | "winter" | "hurricane";
 export function renderFollowupEmail(kind: FollowupKind, planUrl: string, meta: EmailMeta) {
   const copy: Record<FollowupKind, { subject: string; h: string; p: string[] }> = {
     day1: { subject: "3 things to do today", h: "Your 3 steps for today", p: ["Most of your plan can wait. These three can't: test your CO alarms, store your first 3 days of water, and pick an out-of-area contact everyone can text.", "Each takes under 20 minutes."] },
-    day3: { subject: "Did you finish your 'This week' list?", h: "Quick check-in", p: ["Three days ago you made your Kinready. How's the 'This week' list going?", "If you only do one thing today: test your CO alarms and fill your first 3 days of water."] },
+    day3: { subject: "Did you finish your 'This week' list?", h: "Quick check-in", p: ["Three days ago you made your plan. How's the 'This week' list going?", "If you only do one thing today: test your CO alarms and fill your first 3 days of water."] },
     day30: { subject: "Time for Phase 2: power and food", h: "Phase 2 reminder", p: ["It's been a month. If Phase 1 (CO alarms, water, heat) is done, Phase 2 is power and food.", "Your plan has the exact food list and fuel math for your household."] },
-    winter: { subject: "Your Kinready winter check", h: "Winter check", p: ["Cold weather is coming. Test CO alarms, check your heat plan and warm room, insulate exposed pipes, and refresh propane and sleeping bags.", "Never run a generator or grill indoors or in a garage."] },
+    winter: { subject: `Your ${BRAND.name} winter check`, h: "Winter check", p: ["Cold weather is coming. Test CO alarms, check your heat plan and warm room, insulate exposed pipes, and refresh propane and sleeping bags.", "Never run a generator or grill indoors or in a garage."] },
     hurricane: { subject: "Hurricane season starts now", h: "Hurricane season check", p: ["Hurricane season runs June 1 – November 30. Check your evacuation zone, window protection, insurance and fuel, and keep go-bags ready."] },
   };
   const c = copy[kind];

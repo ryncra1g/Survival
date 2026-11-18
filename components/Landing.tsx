@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 export function Landing({ cta, footer }: { cta: ReactNode; footer?: ReactNode }) {
   return (
     <div className="mx-auto max-w-2xl px-4 py-10 sm:py-16">
-      <h1 className="text-[1.75rem] sm:text-5xl font-bold leading-tight text-balance">Your family&apos;s emergency plan and supply list, built for your home in 5 minutes.</h1>
+      <h1 className="text-[1.75rem] sm:text-5xl font-bold leading-tight text-balance">Your emergency plan and supply list, built for your home in 5 minutes.</h1>
       <p className="mt-3 sm:mt-4 sm:text-lg text-muted">Tap through a few questions. Get exactly how much water, food and fuel your household needs, and what to do first.</p>
       <div className="mt-7 flex flex-col sm:flex-row sm:items-center gap-3">
         {cta}

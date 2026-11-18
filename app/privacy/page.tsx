@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BRAND } from "@/lib/brand";
 
 export const metadata: Metadata = { title: "Privacy policy" };
 
@@ -22,7 +23,7 @@ export default function Privacy() {
       <h2 className="text-lg font-semibold">Your choices</h2>
       <p>Unsubscribe from any email in one click. Sign in at <a href="/account" className="underline">My plan</a> to export your data as JSON or delete it permanently (GDPR/CCPA).</p>
       <h2 className="text-lg font-semibold">Contact</h2>
-      <p>Write to the mailing address in the footer of any Kinready email.</p>
+      <p>Write to the mailing address in the footer of any {BRAND.name} email.</p>
     </div>
   );
 }

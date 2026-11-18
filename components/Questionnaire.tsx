@@ -5,6 +5,7 @@ import { AnswersSchema, DEFAULT_ANSWERS, LABELS, type Answers, type PetGroupT } 
 import { DEFAULT_CONSTANTS } from "@/lib/rules/constants";
 import { computeFood, computeWater, household } from "@/lib/rules/engine";
 import { checkConsent, HEALTH_REQUIRED_MSG, needsHealthConsent } from "@/lib/legal";
+import { BRAND } from "@/lib/brand";
 
 type Draft = Answers & { _step?: number; _screen?: string; _terms?: boolean; _health?: boolean };
 
@@ -66,7 +67,7 @@ function ConsentBox({ id, checked, onChange, children }: { id: string; checked: 
 function HealthConsent({ a, set }: { a: Draft; set: (patch: Partial<Draft>) => void }) {
   return (
     <ConsentBox id="healthConsent" checked={!!a._health} onChange={(_health) => set({ _health })}>
-      I agree that Kinready can use my medical and mobility answers to build my plan. They&apos;re encrypted, never sold and never used for marketing emails.
+      I agree that {BRAND.name} can use my medical and mobility answers to build my plan. They&apos;re encrypted, never sold and never used for marketing emails.
     </ConsentBox>
   );
 }

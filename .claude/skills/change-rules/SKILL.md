@@ -1,6 +1,6 @@
 ---
 name: change-rules
-description: Change a Kinready quantity rule (water, calories, diapers, fuel, budget split, etc.) safely — constants, hand-computed tests, safety suite, sample regeneration. Use when the owner wants different amounts or assumptions.
+description: Change a ReadyPlan quantity rule (water, calories, diapers, fuel, budget split, etc.) safely — constants, hand-computed tests, safety suite, sample regeneration. Use when the owner wants different amounts or assumptions.
 ---
 
 # Change a quantity rule

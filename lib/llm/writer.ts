@@ -5,6 +5,7 @@ import type { ComputedPlan } from "@/lib/rules/engine";
 import type { PlanDraft } from "@/lib/plan/build";
 import { tokensIn } from "@/lib/plan/format";
 import { lintText } from "@/lib/safety/linter";
+import { BRAND } from "@/lib/brand";
 
 /**
  * LLM wording layer. The model rewrites ONLY section summaries, in plain language,
@@ -24,7 +25,7 @@ export const WriterOutputSchema = z.object({
   sections: z.array(z.object({ id: z.string(), summary: z.string() })),
 });
 
-export const SYSTEM_PROMPT = `You write the plain-language section summaries for Kinready, a household emergency-preparedness plan.
+export const SYSTEM_PROMPT = `You write the plain-language section summaries for ${BRAND.name}, a household emergency-preparedness plan.
 
 You will receive each section's id, title, a template summary, the tokens available to that section, and short facts about the household. Rewrite each summary in 1-3 short sentences: warm, direct, specific to this household, no fluff.
 

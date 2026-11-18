@@ -2,6 +2,7 @@ import React from "react";
 import { Document, Page, StyleSheet, Text, View, renderToBuffer } from "@react-pdf/renderer";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import type { Block, PlanDocument } from "@/lib/plan/document";
+import { BRAND } from "@/lib/brand";
 
 /** Server-side PDF of the same PlanDocument structure. Uses built-in Helvetica (no font fetch). */
 const ink = "#1c2430";
@@ -134,9 +135,9 @@ function BlockView({ b }: { b: Block }) {
 
 export function PlanPdf({ doc }: { doc: PlanDocument }) {
   return (
-    <Document title={doc.title} author="Kinready" subject="Emergency preparedness plan">
+    <Document title={doc.title} author={BRAND.name} subject="Emergency preparedness plan">
       <Page size="LETTER" style={s.page} wrap>
-        <Text style={s.brand}>Kinready</Text>
+        <Text style={s.brand}>{BRAND.name}</Text>
         <Text style={s.h1}>{pdfSafe(doc.title)}</Text>
         <Text style={s.sub}>{pdfSafe(doc.subtitle)} · Generated {doc.generatedAt.slice(0, 10)}</Text>
         <Text style={{ fontSize: 8, color: muted, marginBottom: 6 }}>General guidance, not professional advice. Full disclaimer and sources at the end.</Text>
@@ -159,7 +160,7 @@ export function PlanPdf({ doc }: { doc: PlanDocument }) {
             {src.name} — {src.url}
           </Text>
         ))}
-        <Text style={s.footer} fixed>Kinready · General guidance, not professional advice</Text>
+        <Text style={s.footer} fixed>{BRAND.name} · General guidance, not professional advice</Text>
       </Page>
     </Document>
   );

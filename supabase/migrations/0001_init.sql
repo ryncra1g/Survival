@@ -1,4 +1,4 @@
--- Kinready schema. Apply with `supabase db push` or paste into the SQL editor.
+-- ReadyPlan schema. Apply with `supabase db push` or paste into the SQL editor.
 -- All tables have RLS enabled and NO policies: only the server (service-role key) can access data.
 
 create extension if not exists pgcrypto;

@@ -1,9 +1,13 @@
 ---
 name: release-check
-description: Run Kinready's full pre-release check (types, unit + safety tests, production build, browser tests, 10-household smoke loop, sample + demo rebuild) and report pass/fail. Use before any deploy or when asked "is it ready to ship?".
+description: Run ReadyPlan's full pre-release check (types, unit + safety tests, production build, browser tests, 10-household smoke loop, sample + demo rebuild) and report pass/fail. Use before any deploy or when asked "is it ready to ship?".
 ---
 
 # Release check
+
+0. **Name check:** `NEXT_PUBLIC_BRAND_NAME` must be set in the deploy environment to the final product name.
+   If it's unset or "ReadyPlan" (the working name, already used by another emergency-planning app), STOP: a
+   production deploy is not allowed. Everything else below can still run for a preview.
 
 Run these in order from the repo root. Stop at the first failure, show its output, and fix it (or report it) before continuing.
 
