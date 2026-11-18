@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:e2e": "playwright test --trace off",
     "sample": "tsx scripts/generate-sample.ts",
-    "seed": "tsx scripts/seed.ts"
+    "seed": "tsx scripts/seed.ts",
+    "demo": "node demo/build.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.10.0",

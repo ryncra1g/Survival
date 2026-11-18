@@ -364,7 +364,11 @@ const SCREENS: Screen[] = [
 
 const LOADING_STEPS = ["Checking your area's hazards", "Calculating water and food", "Running the fuel math", "Fitting gear to your budget", "Writing your plan"];
 
-export function Questionnaire({ id, initial }: { id: string; initial: Record<string, unknown> }) {
+/**
+ * `onGenerate` replaces the server round-trip (used by the standalone demo build):
+ * answers stay in this browser and the caller builds the plan.
+ */
+export function Questionnaire({ id, initial, onGenerate }: { id: string; initial: Record<string, unknown>; onGenerate?: (answers: Answers) => Promise<void> }) {
   const router = useRouter();
   const [a, setA] = useState<Draft>(() => ({ ...DEFAULT_ANSWERS, ...(initial as Partial<Draft>) }) as Draft);
   const visible = useMemo(() => SCREENS.filter((s) => !s.show || s.show(a)), [a]);
@@ -395,10 +399,11 @@ export function Questionnaire({ id, initial }: { id: string; initial: Record<str
       localStorage.setItem(`rp_q_${id}`, JSON.stringify(draft));
     } catch {}
     if (saveTimer.current) clearTimeout(saveTimer.current);
+    if (onGenerate) return;
     saveTimer.current = setTimeout(() => {
       fetch(`/api/questionnaire/${id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ answers: draft }) }).catch(() => {});
     }, 700);
-  }, [a, step, id]);
+  }, [a, step, id, onGenerate]);
 
   useEffect(() => {
     heading.current?.focus();
@@ -420,6 +425,11 @@ export function Questionnaire({ id, initial }: { id: string; initial: Record<str
     setGenerating(true);
     const timer = setInterval(() => setLoadingStep((s) => Math.min(s + 1, LOADING_STEPS.length - 1)), 1200);
     try {
+      if (onGenerate) {
+        await new Promise((r) => setTimeout(r, 1500));
+        await onGenerate(parsed.data);
+        return;
+      }
       const r = await fetch(`/api/questionnaire/${id}/generate`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ answers: parsed.data }) });
       const j = (await r.json()) as { planId?: string; error?: string };
       if (!r.ok || !j.planId) throw new Error(j.error ?? "Couldn't build the plan.");

@@ -1,0 +1,14 @@
+@import "../app/globals.css";
+@source "../components";
+@source "./main.tsx";
+
+:root[data-theme="dark"] {
+  --bg: #14171c; --surface: #1d2229; --ink: #e9e6e1; --muted: #a5adb8; --line: #343b45;
+  --brand: #e07a4f; --brand-ink: #1a0d06; --brand-soft: #2b1f19; --danger: #f08a7e; --warn: #e8bd62; --info: #8cbbe6; --ok: #8fd19b;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { color-scheme: dark; } }
+#main, header > div, footer > div {
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
