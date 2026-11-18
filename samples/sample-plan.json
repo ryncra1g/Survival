@@ -239,7 +239,7 @@
           "items": [
             {
               "id": "d90-22",
-              "text": "Phase 3 items: fire/water-resistant document pouch."
+              "text": "Phase 3 items: comfort and communications upgrades."
             },
             {
               "id": "d90-23",
@@ -1361,7 +1361,7 @@
       "id": "budget",
       "number": 17,
       "title": "Budget by phase",
-      "summary": "Within your $1,500–5,000 range we planned around $3,250. Phase 1 buys life safety first; the whole list comes to about $3,223.",
+      "summary": "Within your $1,500–5,000 range we planned around $3,250. Phase 1 buys life safety first; the whole list comes to about $3,390.",
       "blocks": [
         {
           "type": "table",
@@ -1511,51 +1511,33 @@
               ""
             ],
             [
+              "  Small inverter generator",
+              "",
+              "$550–$1,200",
+              ""
+            ],
+            [
+              "  Generator cord + outdoor extension cords",
+              "",
+              "$60–$120",
+              ""
+            ],
+            [
+              "  5-gallon gas cans + stabilizer",
+              "× 6",
+              "$180–$270",
+              ""
+            ],
+            [
               "  Flood kit",
               "",
               "$50–$150",
               ""
             ],
             [
-              "  Multi-day cooler",
-              "",
-              "$40–$90",
-              ""
-            ],
-            [
-              "  Food storage buckets",
-              "",
-              "$40–$90",
-              ""
-            ],
-            [
-              "  Emergency toilet kit",
-              "",
-              "$25–$50",
-              ""
-            ],
-            [
-              "  Window protection",
-              "",
-              "$150–$600",
-              ""
-            ],
-            [
-              "  Battery backup sump pump",
-              "",
-              "$250–$500",
-              ""
-            ],
-            [
-              "  Pet go-kit",
-              "",
-              "$30–$100",
-              ""
-            ],
-            [
               "  Phase 2 subtotal (target $1,625)",
               "",
-              "~$1,575",
+              "~$1,782",
               ""
             ],
             [
@@ -1571,21 +1553,15 @@
               "Ongoing, from grocery budget"
             ],
             [
-              "  Fire/water-resistant document pouch",
-              "",
-              "$20–$60",
-              ""
-            ],
-            [
               "  Phase 3 subtotal (target $650)",
               "",
-              "~$40",
+              "~$0",
               ""
             ],
             [
               "Total (midpoint estimate)",
               "",
-              "~$3,223",
+              "~$3,390",
               "Planning budget $3,250"
             ],
             [
@@ -1607,33 +1583,51 @@
           ],
           "rows": [
             [
-              "Small inverter generator",
-              "",
-              "$550–$1,200",
-              "Phase 2"
-            ],
-            [
               "Generator inlet + interlock (electrician-installed)",
               "",
               "$500–$1,500",
               "Phase 2"
             ],
             [
-              "Generator cord + outdoor extension cords",
-              "",
-              "$60–$120",
-              "Phase 2"
-            ],
-            [
-              "5-gallon gas cans + stabilizer",
-              "× 6",
-              "$180–$270",
-              "Phase 2"
-            ],
-            [
               "20-lb propane cylinders",
               "× 2",
               "$100–$140",
+              "Phase 2"
+            ],
+            [
+              "Multi-day cooler",
+              "",
+              "$40–$90",
+              "Phase 2"
+            ],
+            [
+              "Food storage buckets",
+              "",
+              "$40–$90",
+              "Phase 2"
+            ],
+            [
+              "Emergency toilet kit",
+              "",
+              "$25–$50",
+              "Phase 2"
+            ],
+            [
+              "Window protection",
+              "",
+              "$150–$600",
+              "Phase 2"
+            ],
+            [
+              "Battery backup sump pump",
+              "",
+              "$250–$500",
+              "Phase 2"
+            ],
+            [
+              "Pet go-kit",
+              "",
+              "$30–$100",
               "Phase 2"
             ],
             [
@@ -1658,6 +1652,12 @@
               "Countertop gravity filter",
               "",
               "$250–$450",
+              "Phase 3"
+            ],
+            [
+              "Fire/water-resistant document pouch",
+              "",
+              "$20–$60",
               "Phase 3"
             ],
             [
@@ -1696,7 +1696,7 @@
           "type": "callout",
           "tone": "info",
           "title": "What to cut first",
-          "text": "If money is tight, delay fire/water-resistant document pouch, pet go-kit, battery backup sump pump. Never cut CO alarms, stored water, or your heat plan. Buy food a little at a time with each grocery trip."
+          "text": "If money is tight, delay flood kit, pipe insulation & faucet covers, cold-rated sleeping bags. Never cut CO alarms, stored water, or your heat plan. Buy food a little at a time with each grocery trip."
         }
       ]
     },
@@ -1812,10 +1812,40 @@
               "$20–$50 each"
             ],
             [
+              "Power: Small inverter generator",
+              "2,200–2,500 W inverter with CO auto-shutoff (runs fridge, furnace blower via inlet, charging)",
+              "Champion 2500W inverter; Honda EU2200i",
+              "$550–$1,200 each"
+            ],
+            [
+              "Power: Generator cord + outdoor extension cords",
+              "L14-30 generator cord (for an inlet) or 12-gauge outdoor-rated extension cords long enough to keep the generator 20+ ft from the house",
+              "Conntek L14-30 25 ft; Southwire 12/3 outdoor cord",
+              "$60–$120 each"
+            ],
+            [
+              "Fuel: 5-gallon gas cans + stabilizer",
+              "Approved 5-gal cans + fuel stabilizer; store in a detached shed or well-ventilated area away from ignition sources",
+              "Scepter SmartControl 5 gal; STA-BIL Storage",
+              "$30–$45 each"
+            ],
+            [
               "Flood: Flood kit",
               "Waterproof bins for documents/valuables on an upper shelf, sandbags or water-activated flood barriers for door thresholds",
               "Quick Dam water-activated bags; Sterilite latching totes",
               "$50–$150 each"
+            ],
+            [
+              "Power: Generator inlet + interlock (electrician-installed)",
+              "Power inlet box + panel interlock kit or transfer switch, installed by a licensed electrician (permit where required)",
+              "Reliance Controls PB30 inlet; Panel-maker interlock kit",
+              "$500–$1,500 each"
+            ],
+            [
+              "Fuel: 20-lb propane cylinders",
+              "Filled 20-lb cylinders with OPD valves; store outdoors upright",
+              "Blue Rhino exchange; Worthington 20 lb",
+              "$50–$70 each"
             ],
             [
               "Food: Multi-day cooler",
@@ -1854,42 +1884,6 @@
               "$30–$100 each"
             ],
             [
-              "Documents: Fire/water-resistant document pouch",
-              "Fire- and water-resistant pouch or small safe for copies of IDs, insurance, prescriptions list",
-              "SentrySafe document bag; ROLOWAY fireproof pouch",
-              "$20–$60 each"
-            ],
-            [
-              "Power: Small inverter generator",
-              "2,200–2,500 W inverter with CO auto-shutoff (runs fridge, furnace blower via inlet, charging)",
-              "Champion 2500W inverter; Honda EU2200i",
-              "$550–$1,200 each"
-            ],
-            [
-              "Power: Generator inlet + interlock (electrician-installed)",
-              "Power inlet box + panel interlock kit or transfer switch, installed by a licensed electrician (permit where required)",
-              "Reliance Controls PB30 inlet; Panel-maker interlock kit",
-              "$500–$1,500 each"
-            ],
-            [
-              "Power: Generator cord + outdoor extension cords",
-              "L14-30 generator cord (for an inlet) or 12-gauge outdoor-rated extension cords long enough to keep the generator 20+ ft from the house",
-              "Conntek L14-30 25 ft; Southwire 12/3 outdoor cord",
-              "$60–$120 each"
-            ],
-            [
-              "Fuel: 5-gallon gas cans + stabilizer",
-              "Approved 5-gal cans + fuel stabilizer; store in a detached shed or well-ventilated area away from ignition sources",
-              "Scepter SmartControl 5 gal; STA-BIL Storage",
-              "$30–$45 each"
-            ],
-            [
-              "Fuel: 20-lb propane cylinders",
-              "Filled 20-lb cylinders with OPD valves; store outdoors upright",
-              "Blue Rhino exchange; Worthington 20 lb",
-              "$50–$70 each"
-            ],
-            [
               "Power: Portable power station (quiet hours)",
               "1–2 kWh LiFePO4, pure sine wave; covers overnight fridge/phone/CPAP loads so the generator can be off",
               "EcoFlow DELTA 2; Jackery Explorer 1000 v2",
@@ -1912,6 +1906,12 @@
               "Gravity system with independent test results (NSF/ANSI 53 or P231 where available), ≥2 gal/hour",
               "Berkey-style gravity system; LifeStraw Community",
               "$250–$450 each"
+            ],
+            [
+              "Documents: Fire/water-resistant document pouch",
+              "Fire- and water-resistant pouch or small safe for copies of IDs, insurance, prescriptions list",
+              "SentrySafe document bag; ROLOWAY fireproof pouch",
+              "$20–$60 each"
             ],
             [
               "Kids: Kids comfort & activity kit",

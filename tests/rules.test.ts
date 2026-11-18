@@ -190,8 +190,9 @@ describe("whole plan", () => {
   it("heat strategy for gas furnace, no backup, cold winter", () => {
     expect(cp.heat).toEqual(["generator_inlet_furnace", "indoor_propane_heater", "one_warm_room", "pipe_freeze"]);
   });
-  it("budget stays within planning amount except essentials", () => {
-    expect(cp.budget.totalMid).toBeLessThanOrEqual(cp.budget.planningAmount);
+  it("budget stays within planning amount (+5% tolerance) and the furnace generator fits", () => {
+    expect(cp.budget.totalMid).toBeLessThanOrEqual(cp.budget.planningAmount * 1.05);
+    expect(cp.budget.picks.some((p) => p.item.group === "generator")).toBe(true);
     expect(cp.budget.picks.some((p) => p.item.id === "co-alarm")).toBe(true);
   });
   it("gas cans are only bought together with a generator", () => {

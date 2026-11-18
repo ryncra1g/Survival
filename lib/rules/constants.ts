@@ -113,6 +113,8 @@ export const DEFAULT_CONSTANTS = {
     /** Target share of budget per phase. */
     phaseShare: { 1: 0.3, 2: 0.5, 3: 0.2 } as Record<string, number>,
     tierByBudget: { under_500: 1, "500_1500": 2, "1500_5000": 3, "5000_plus": 4 } as Record<string, number>,
+    /** Items may push the total this far over the planning amount (0.05 = 5%) before being deferred. */
+    overageTolerance: 0.05,
   },
   catalog: {
     /** Items not reviewed within this many days are hidden from plans and flagged in admin. */
@@ -210,6 +212,7 @@ export const RuleConstantsSchema = z.object({
     planningAmount: z.record(z.string(), num),
     phaseShare: z.record(z.string(), num),
     tierByBudget: z.record(z.string(), num),
+    overageTolerance: z.number().min(0).max(0.5),
   }),
   catalog: z.object({ staleAfterDays: z.number().positive() }),
   heat: z.object({ warmRoomAtF: z.number(), evacuateAtF: z.number(), pipeFreezeRiskOutdoorF: z.number() }),

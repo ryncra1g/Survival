@@ -344,7 +344,7 @@
   },
   "budget": {
     "planningAmount": 3250,
-    "totalMid": 3223,
+    "totalMid": 3390,
     "phases": [
       {
         "phase": 1,
@@ -356,16 +356,16 @@
       {
         "phase": 2,
         "target": 1625,
-        "includedMid": 1575,
-        "includedLow": 1077,
-        "includedHigh": 2072
+        "includedMid": 1782,
+        "includedLow": 1332,
+        "includedHigh": 2232
       },
       {
         "phase": 3,
         "target": 650,
-        "includedMid": 40,
-        "includedLow": 20,
-        "includedHigh": 60
+        "includedMid": 0,
+        "includedLow": 0,
+        "includedHigh": 0
       }
     ],
     "consumables": [
@@ -896,260 +896,6 @@
       {
         "item": {
           "essential": false,
-          "notes": "",
-          "reviewedAt": "2026-11-01",
-          "id": "flood-kit",
-          "category": "Flood",
-          "name": "Flood kit",
-          "spec": "Waterproof bins for documents/valuables on an upper shelf, sandbags or water-activated flood barriers for door thresholds",
-          "models": [
-            "Quick Dam water-activated bags",
-            "Sterilite latching totes"
-          ],
-          "priceLow": 50,
-          "priceHigh": 150,
-          "tier": 1,
-          "phase": 2,
-          "priority": 6,
-          "qty": 1,
-          "tags": [
-            "flood",
-            "house_or_townhouse"
-          ],
-          "affiliateUrl": null,
-          "active": true
-        },
-        "qty": 1,
-        "low": 50,
-        "high": 150,
-        "mid": 100,
-        "phase": 2,
-        "status": "included"
-      },
-      {
-        "item": {
-          "essential": false,
-          "notes": "",
-          "reviewedAt": "2026-11-01",
-          "id": "coolers",
-          "category": "Food",
-          "name": "Multi-day cooler",
-          "spec": "Rotomolded or 5-day-rated cooler, 45–70 qt",
-          "models": [
-            "Coleman Xtreme 70 qt",
-            "Igloo MaxCold"
-          ],
-          "priceLow": 40,
-          "priceHigh": 90,
-          "tier": 1,
-          "phase": 2,
-          "priority": 9,
-          "qty": 1,
-          "tags": [],
-          "affiliateUrl": null,
-          "active": true
-        },
-        "qty": 1,
-        "low": 40,
-        "high": 90,
-        "mid": 65,
-        "phase": 2,
-        "status": "included"
-      },
-      {
-        "item": {
-          "essential": false,
-          "notes": "",
-          "reviewedAt": "2026-11-01",
-          "id": "storage-kit",
-          "category": "Food",
-          "name": "Food storage buckets",
-          "spec": "Food-grade 5-gal buckets with gamma seal lids, mylar bags and oxygen absorbers for rice/beans/oats",
-          "models": [
-            "Gamma Seal lid kit",
-            "ShieldPro mylar kit"
-          ],
-          "priceLow": 40,
-          "priceHigh": 90,
-          "tier": 1,
-          "phase": 2,
-          "priority": 10,
-          "qty": 1,
-          "tags": [
-            "long_scenario"
-          ],
-          "affiliateUrl": null,
-          "active": true
-        },
-        "qty": 1,
-        "low": 40,
-        "high": 90,
-        "mid": 65,
-        "phase": 2,
-        "status": "included"
-      },
-      {
-        "item": {
-          "essential": false,
-          "notes": "",
-          "reviewedAt": "2026-11-01",
-          "id": "toilet-kit",
-          "category": "Sanitation",
-          "name": "Emergency toilet kit",
-          "spec": "5-gal bucket toilet seat + heavy-duty liners + absorbent (cat litter or sawdust); two-bucket setup",
-          "models": [
-            "Reliance Luggable Loo",
-            "Camco bucket toilet seat"
-          ],
-          "priceLow": 25,
-          "priceHigh": 50,
-          "tier": 1,
-          "phase": 2,
-          "priority": 11,
-          "qty": 1,
-          "tags": [],
-          "affiliateUrl": null,
-          "active": true
-        },
-        "qty": 1,
-        "low": 25,
-        "high": 50,
-        "mid": 38,
-        "phase": 2,
-        "status": "included"
-      },
-      {
-        "item": {
-          "essential": false,
-          "notes": "",
-          "reviewedAt": "2026-11-01",
-          "id": "window-protection",
-          "category": "Storm",
-          "name": "Window protection",
-          "spec": "Pre-cut 5/8\" exterior plywood with clips, or code-approved storm panels",
-          "models": [
-            "PlyLox window clips",
-            "Storm panel kits"
-          ],
-          "priceLow": 150,
-          "priceHigh": 600,
-          "tier": 2,
-          "phase": 2,
-          "priority": 12,
-          "qty": 1,
-          "tags": [
-            "hurricane",
-            "house_or_townhouse"
-          ],
-          "affiliateUrl": null,
-          "active": true
-        },
-        "qty": 1,
-        "low": 150,
-        "high": 600,
-        "mid": 375,
-        "phase": 2,
-        "status": "included"
-      },
-      {
-        "item": {
-          "essential": false,
-          "notes": "",
-          "reviewedAt": "2026-11-01",
-          "id": "sump-backup",
-          "category": "Storm",
-          "name": "Battery backup sump pump",
-          "spec": "Battery backup sump pump with alarm and deep-cycle battery",
-          "models": [
-            "Basement Watchdog Big Dog",
-            "Wayne ESP25"
-          ],
-          "priceLow": 250,
-          "priceHigh": 500,
-          "tier": 2,
-          "phase": 2,
-          "priority": 13,
-          "qty": 1,
-          "tags": [
-            "flood_basement"
-          ],
-          "affiliateUrl": null,
-          "active": true
-        },
-        "qty": 1,
-        "low": 250,
-        "high": 500,
-        "mid": 375,
-        "phase": 2,
-        "status": "included"
-      },
-      {
-        "item": {
-          "essential": false,
-          "notes": "",
-          "reviewedAt": "2026-11-01",
-          "id": "pet-kit",
-          "category": "Pets",
-          "name": "Pet go-kit",
-          "spec": "Collapsible bowls, spare leash/harness, crate or carrier, waste bags, copy of vaccination records",
-          "models": [
-            "Kurgo collapsible bowls",
-            "Any airline-style carrier"
-          ],
-          "priceLow": 30,
-          "priceHigh": 100,
-          "tier": 1,
-          "phase": 2,
-          "priority": 15,
-          "qty": 1,
-          "tags": [
-            "pets"
-          ],
-          "affiliateUrl": null,
-          "active": true
-        },
-        "qty": 1,
-        "low": 30,
-        "high": 100,
-        "mid": 65,
-        "phase": 2,
-        "status": "included"
-      },
-      {
-        "item": {
-          "essential": false,
-          "notes": "",
-          "reviewedAt": "2026-11-01",
-          "id": "docs-pouch",
-          "category": "Documents",
-          "name": "Fire/water-resistant document pouch",
-          "spec": "Fire- and water-resistant pouch or small safe for copies of IDs, insurance, prescriptions list",
-          "models": [
-            "SentrySafe document bag",
-            "ROLOWAY fireproof pouch"
-          ],
-          "priceLow": 20,
-          "priceHigh": 60,
-          "tier": 1,
-          "phase": 3,
-          "priority": 5,
-          "qty": 1,
-          "tags": [],
-          "affiliateUrl": null,
-          "active": true
-        },
-        "qty": 1,
-        "low": 20,
-        "high": 60,
-        "mid": 40,
-        "phase": 3,
-        "status": "included"
-      }
-    ],
-    "deferred": [
-      {
-        "item": {
-          "essential": false,
           "notes": "Picked instead of the dual-fuel model when the budget is tighter",
           "reviewedAt": "2026-11-01",
           "id": "generator-small",
@@ -1178,44 +924,7 @@
         "high": 1200,
         "mid": 875,
         "phase": 2,
-        "status": "deferred",
-        "reason": "Doesn't fit the remaining budget — buy next"
-      },
-      {
-        "item": {
-          "essential": false,
-          "notes": "Range includes typical install cost",
-          "reviewedAt": "2026-11-01",
-          "id": "inlet-interlock",
-          "category": "Power",
-          "name": "Generator inlet + interlock (electrician-installed)",
-          "spec": "Power inlet box + panel interlock kit or transfer switch, installed by a licensed electrician (permit where required)",
-          "models": [
-            "Reliance Controls PB30 inlet",
-            "Panel-maker interlock kit"
-          ],
-          "priceLow": 500,
-          "priceHigh": 1500,
-          "tier": 2,
-          "phase": 2,
-          "priority": 3,
-          "qty": 1,
-          "requiresGroup": "generator",
-          "tags": [
-            "has_generator",
-            "fuel_furnace",
-            "house_or_townhouse"
-          ],
-          "affiliateUrl": null,
-          "active": true
-        },
-        "qty": 1,
-        "low": 500,
-        "high": 1500,
-        "mid": 1000,
-        "phase": 2,
-        "status": "deferred",
-        "reason": "Buy after the generator"
+        "status": "included"
       },
       {
         "item": {
@@ -1250,8 +959,7 @@
         "high": 120,
         "mid": 90,
         "phase": 2,
-        "status": "deferred",
-        "reason": "Buy with the generator"
+        "status": "included"
       },
       {
         "item": {
@@ -1286,8 +994,78 @@
         "high": 270,
         "mid": 225,
         "phase": 2,
+        "status": "included"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "flood-kit",
+          "category": "Flood",
+          "name": "Flood kit",
+          "spec": "Waterproof bins for documents/valuables on an upper shelf, sandbags or water-activated flood barriers for door thresholds",
+          "models": [
+            "Quick Dam water-activated bags",
+            "Sterilite latching totes"
+          ],
+          "priceLow": 50,
+          "priceHigh": 150,
+          "tier": 1,
+          "phase": 2,
+          "priority": 6,
+          "qty": 1,
+          "tags": [
+            "flood",
+            "house_or_townhouse"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 50,
+        "high": 150,
+        "mid": 100,
+        "phase": 2,
+        "status": "included"
+      }
+    ],
+    "deferred": [
+      {
+        "item": {
+          "essential": false,
+          "notes": "Range includes typical install cost",
+          "reviewedAt": "2026-11-01",
+          "id": "inlet-interlock",
+          "category": "Power",
+          "name": "Generator inlet + interlock (electrician-installed)",
+          "spec": "Power inlet box + panel interlock kit or transfer switch, installed by a licensed electrician (permit where required)",
+          "models": [
+            "Reliance Controls PB30 inlet",
+            "Panel-maker interlock kit"
+          ],
+          "priceLow": 500,
+          "priceHigh": 1500,
+          "tier": 2,
+          "phase": 2,
+          "priority": 3,
+          "qty": 1,
+          "requiresGroup": "generator",
+          "tags": [
+            "has_generator",
+            "fuel_furnace",
+            "house_or_townhouse"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 500,
+        "high": 1500,
+        "mid": 1000,
+        "phase": 2,
         "status": "deferred",
-        "reason": "Buy with the generator"
+        "reason": "Doesn't fit the remaining budget — buy next"
       },
       {
         "item": {
@@ -1322,7 +1100,202 @@
         "mid": 120,
         "phase": 2,
         "status": "deferred",
-        "reason": "Buy after the generator"
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "coolers",
+          "category": "Food",
+          "name": "Multi-day cooler",
+          "spec": "Rotomolded or 5-day-rated cooler, 45–70 qt",
+          "models": [
+            "Coleman Xtreme 70 qt",
+            "Igloo MaxCold"
+          ],
+          "priceLow": 40,
+          "priceHigh": 90,
+          "tier": 1,
+          "phase": 2,
+          "priority": 9,
+          "qty": 1,
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 40,
+        "high": 90,
+        "mid": 65,
+        "phase": 2,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "storage-kit",
+          "category": "Food",
+          "name": "Food storage buckets",
+          "spec": "Food-grade 5-gal buckets with gamma seal lids, mylar bags and oxygen absorbers for rice/beans/oats",
+          "models": [
+            "Gamma Seal lid kit",
+            "ShieldPro mylar kit"
+          ],
+          "priceLow": 40,
+          "priceHigh": 90,
+          "tier": 1,
+          "phase": 2,
+          "priority": 10,
+          "qty": 1,
+          "tags": [
+            "long_scenario"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 40,
+        "high": 90,
+        "mid": 65,
+        "phase": 2,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "toilet-kit",
+          "category": "Sanitation",
+          "name": "Emergency toilet kit",
+          "spec": "5-gal bucket toilet seat + heavy-duty liners + absorbent (cat litter or sawdust); two-bucket setup",
+          "models": [
+            "Reliance Luggable Loo",
+            "Camco bucket toilet seat"
+          ],
+          "priceLow": 25,
+          "priceHigh": 50,
+          "tier": 1,
+          "phase": 2,
+          "priority": 11,
+          "qty": 1,
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 25,
+        "high": 50,
+        "mid": 38,
+        "phase": 2,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "window-protection",
+          "category": "Storm",
+          "name": "Window protection",
+          "spec": "Pre-cut 5/8\" exterior plywood with clips, or code-approved storm panels",
+          "models": [
+            "PlyLox window clips",
+            "Storm panel kits"
+          ],
+          "priceLow": 150,
+          "priceHigh": 600,
+          "tier": 2,
+          "phase": 2,
+          "priority": 12,
+          "qty": 1,
+          "tags": [
+            "hurricane",
+            "house_or_townhouse"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 150,
+        "high": 600,
+        "mid": 375,
+        "phase": 2,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "sump-backup",
+          "category": "Storm",
+          "name": "Battery backup sump pump",
+          "spec": "Battery backup sump pump with alarm and deep-cycle battery",
+          "models": [
+            "Basement Watchdog Big Dog",
+            "Wayne ESP25"
+          ],
+          "priceLow": 250,
+          "priceHigh": 500,
+          "tier": 2,
+          "phase": 2,
+          "priority": 13,
+          "qty": 1,
+          "tags": [
+            "flood_basement"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 250,
+        "high": 500,
+        "mid": 375,
+        "phase": 2,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "pet-kit",
+          "category": "Pets",
+          "name": "Pet go-kit",
+          "spec": "Collapsible bowls, spare leash/harness, crate or carrier, waste bags, copy of vaccination records",
+          "models": [
+            "Kurgo collapsible bowls",
+            "Any airline-style carrier"
+          ],
+          "priceLow": 30,
+          "priceHigh": 100,
+          "tier": 1,
+          "phase": 2,
+          "priority": 15,
+          "qty": 1,
+          "tags": [
+            "pets"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 30,
+        "high": 100,
+        "mid": 65,
+        "phase": 2,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
       },
       {
         "item": {
@@ -1449,6 +1422,37 @@
         "low": 250,
         "high": 450,
         "mid": 350,
+        "phase": 3,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "docs-pouch",
+          "category": "Documents",
+          "name": "Fire/water-resistant document pouch",
+          "spec": "Fire- and water-resistant pouch or small safe for copies of IDs, insurance, prescriptions list",
+          "models": [
+            "SentrySafe document bag",
+            "ROLOWAY fireproof pouch"
+          ],
+          "priceLow": 20,
+          "priceHigh": 60,
+          "tier": 1,
+          "phase": 3,
+          "priority": 5,
+          "qty": 1,
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 20,
+        "high": 60,
+        "mid": 40,
         "phase": 3,
         "status": "deferred",
         "reason": "Doesn't fit the remaining budget — buy next"
@@ -1621,9 +1625,9 @@
     ],
     "staleHidden": [],
     "cutFirst": [
-      "Fire/water-resistant document pouch",
-      "Pet go-kit",
-      "Battery backup sump pump"
+      "Flood kit",
+      "Pipe insulation & faucet covers",
+      "Cold-rated sleeping bags"
     ]
   }
 }

@@ -566,7 +566,8 @@ export function computeBudget(
             })
             .filter((b) => b.qty > 0)
         : [];
-    const fit = viable.find((o) => o.item.essential || spent + o.mid + bundleFor(o).reduce((t, b) => t + b.mid, 0) <= planningAmount);
+    const ceiling = planningAmount * (1 + c.budget.overageTolerance);
+    const fit = viable.find((o) => o.item.essential || spent + o.mid + bundleFor(o).reduce((t, b) => t + b.mid, 0) <= ceiling);
     if (fit) {
       for (const x of [fit, ...bundleFor(fit)]) {
         picks.push({ ...x, status: "included" });
