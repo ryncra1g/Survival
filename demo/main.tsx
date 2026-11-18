@@ -16,7 +16,7 @@ import type { PlanDocument } from "@/lib/plan/document";
 import { DEFAULT_CONSTANTS } from "@/lib/rules/constants";
 import { computePlan } from "@/lib/rules/engine";
 import { lintDocument } from "@/lib/safety/linter";
-import { SAMPLE_HOUSEHOLD } from "@/tests/fixtures/households";
+import { SAMPLE_HOUSEHOLD } from "@/lib/plan/sample";
 
 function makePlan(a: Answers): PlanDocument {
   const cp = computePlan(a, DEFAULT_CONSTANTS, SEED_CATALOG, new Date());
@@ -31,10 +31,7 @@ type View = { kind: "home" } | { kind: "build"; key: number; email: string } | {
 
 function Home({ onStart, onSample }: { onStart: (email: string) => void; onSample: () => void }) {
   return (
-    <Landing
-      form={<EmailStart onStart={onStart} />}
-      footer={<button type="button" className="underline" onClick={onSample}>See a sample plan</button>}
-    />
+    <Landing form={<EmailStart onStart={onStart} sampleLink={<button type="button" className="underline" onClick={onSample}>See a sample plan first</button>} />} />
   );
 }
 

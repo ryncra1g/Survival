@@ -74,7 +74,7 @@ The **confirm link is the double opt-in**. Plan emails (which carry an attachmen
 
 ### Flow
 
-1. `/`: email + required consent checkbox (plus Turnstile and a honeypot) → `POST /api/start`. It works as a plain form without JavaScript. This creates or finds the user, starts a draft session, sends the confirmation email and creates the questionnaire.
+1. `/`: email + required consent checkbox (plus Turnstile, a honeypot and a "did you mean gmail.com?" typo check) → `POST /api/start`. A public sample plan at `/sample` lets people see what they'll get first. It works as a plain form without JavaScript. This creates or finds the user, starts a draft session, sends the confirmation email and creates the questionnaire.
 2. `/q/[id]`: 11 screens (the toddler screen only appears when a child is 3 or under), with a progress bar and Back button. Answers autosave to localStorage and to `PUT /api/questionnaire/[id]` after 700 ms. Answers travel only in request bodies, never in URLs.
 3. On the last screen, a preview of their real numbers (gallons of water, pounds of food).
 4. `POST /api/questionnaire/[id]/generate` validates the answers, applies rate limits, runs the engine and optional LLM, and saves the plan encrypted. A confirmed address gets the plan email immediately. The questionnaire shows a loading screen meanwhile.
@@ -210,6 +210,7 @@ The LLM system prompt (`lib/llm/writer.ts`) repeats these rules. Code does the e
 
 The daily cron sends at most one email per user per day:
 
+- **Confirm reminder** (transactional, once): "Your plan is waiting", 1–6 days after signup, if the address was never confirmed but a plan was built. The plan page also has a "Didn't get it? Resend" button.
 - **Day 1:** "3 things to do today".
 - **Day 3:** "Did you finish your 'This week' list?"
 - **Day 30:** Phase 2 reminder.

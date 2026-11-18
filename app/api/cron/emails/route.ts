@@ -1,4 +1,5 @@
-import { renderFollowupEmail, type FollowupKind } from "@/lib/email/render";
+import { renderConfirmReminder, renderFollowupEmail, type FollowupKind } from "@/lib/email/render";
+import { issueLink } from "@/lib/server/auth";
 import type { ComputedPlan } from "@/lib/rules/engine";
 import { env } from "@/lib/server/env";
 import { metaFor, sendEmail } from "@/lib/server/mailer";
@@ -19,7 +20,17 @@ export async function GET(req: Request) {
   const year = now.getUTCFullYear();
   const sent: Record<string, number> = {};
   for (const user of await store.listUsers()) {
-    if (!user.double_opt_in_at || user.unsubscribed_at || !user.followups_opt_in) continue;
+    // One reminder to confirm, 1–6 days after signup, for people who built a plan but never confirmed.
+    if (!user.double_opt_in_at && !user.unsubscribed_at) {
+      const age = (now.getTime() - new Date(user.created_at).getTime()) / 86_400_000;
+      if (age >= 1 && age < 6 && !(await store.hasEmailEvent(user.id, "sent:confirm_reminder")) && (await store.listPlans(user.id)).length) {
+        const link = await issueLink(user.id, "confirm", "/account?confirmed=1");
+        const m = renderConfirmReminder(link, metaFor(user.id));
+        if (await sendEmail({ to: user.email, userId: user.id, type: "confirm_reminder", ...m })) sent.confirm_reminder = (sent.confirm_reminder ?? 0) + 1;
+      }
+      continue;
+    }
+    if (user.unsubscribed_at || !user.followups_opt_in) continue;
     const plan = (await store.listPlans(user.id))[0];
     if (!plan) continue;
     const ageDays = (now.getTime() - new Date(plan.created_at).getTime()) / 86_400_000;

@@ -63,3 +63,42 @@ Polish added after the review:
 - The plan email now opens with "Start here: your first 3 steps".
 - A **Day 1** "3 things to do today" email (opt-in, like the other follow-ups).
 - "About N min left" on each question screen.
+
+---
+
+# Round 2: email-first review
+
+**Method.** The same 10 simulated personas and the conversion specialist reviewed only the entry experience. That covered the front page with the email box first, the confirmation email, what returning visitors see, and what happens when someone never confirms.
+
+## What the panel said
+
+| Persona | Reaction to "email first" | Changed? |
+|---|---|---|
+| Hank (Montana veteran) and Walt (Vermont homesteader) | Privacy-minded: "Why do you need my email before I see anything?" Would leave without proof of value | ✅ "See a sample plan first" link under the button, going to a public sample plan; "Only used for ReadyPlan, never sold" right under the email field |
+| Dana (Long Island mom) | Fine with it; typed `gmial.com` on her phone | ✅ "Did you mean …gmail.com?" with one-tap fix |
+| Priya (NYC renter) | Wants the plan but not the updates; the required box bundles both | ⚠️ Not changed: it's your spec wording. See the compliance note below |
+| Ray & June (Florida retirees) | Never saw the confirmation email (it went to spam) and didn't know what to do | ✅ "Didn't get it? Resend" plus the address it went to on the plan page; one reminder email after a day |
+| The Olsons | Came back with the same email months later and wondered where the old plan went | ✅ "Welcome back. We've emailed you a sign-in link to see your earlier plans" |
+| Sam & Lee, Tasha, Marco, Gil & Rosa | Email-first acceptable because the promise is concrete (plan + PDF + checklist) and it's fast | No change |
+
+**Conversion specialist:**
+1. Email-first costs signups unless the page earns trust before the ask. The two strongest levers are proof (a real sample plan) and reassurance next to the field, not below the button. Both were added.
+2. Typo correction cuts bounced and undeliverable plans. Mistyped domains are usually 1–3% of mobile signups.
+3. A single confirm reminder typically recovers a meaningful share of unconfirmed signups. More than one starts to hurt sender reputation.
+4. Mobile keyboard details matter: no auto-capitalize, no spellcheck, a "Go" key and a placeholder. All added.
+
+## Changes made
+- **Public sample plan** at `/sample` (the Long Island family), linked as "See a sample plan first" under the button. The demo has the same link.
+- **Typo check** for common email domains (`lib/email/typos.ts`, tested). It suggests once; pressing the button again keeps what was typed.
+- **Trust line moved** to sit right under the email field.
+- **Mobile keyboard:** no auto-capitalize, no spellcheck, "Go" key, placeholder.
+- **Returning emails:** a "welcome back" note, plus the sign-in link email.
+- **Plan page, unconfirmed:** shows the address the email went to and a "Didn't get it? Resend" button (max 3 per hour).
+- **One "Your plan is waiting" reminder** 1–6 days after signup, for unconfirmed people who built a plan. It never repeats and is skipped for anyone who unsubscribed.
+
+## Compliance note (decision for you)
+The required checkbox, "Send me my plan **and occasional preparedness updates**", bundles marketing consent with getting the plan. That's fine for US-only CAN-SPAM, but under **GDPR (EU/UK) it isn't valid consent** for the updates, because it isn't freely given. If you'll have EU or UK users, split it into:
+- a required "Send me my plan" (or make submitting the form imply it), and
+- an optional, unticked "Also send me occasional preparedness updates".
+
+It's a 15-minute change. I left your wording as is until you decide.

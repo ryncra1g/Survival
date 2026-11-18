@@ -29,6 +29,13 @@ test("phone: email → questionnaire → plan → confirm → email + PDFs → e
   await page.getByRole("button", { name: "Build my free plan" }).click();
   await expect(page.locator("p[role=alert]")).toContainText("Tick the box");
   await page.getByRole("checkbox").check();
+  // typo check: offers a fix once, then keeps what was typed if they press again
+  await page.getByLabel("Your email").fill("family@gmial.com");
+  await page.getByRole("button", { name: "Build my free plan" }).click();
+  await expect(page.getByText("Did you mean")).toBeVisible();
+  await page.getByRole("button", { name: "family@gmail.com" }).click();
+  await expect(page.getByLabel("Your email")).toHaveValue("family@gmail.com");
+  await page.getByLabel("Your email").fill("family@example.com");
   await page.getByRole("button", { name: "Build my free plan" }).click();
   await expect(page).toHaveURL(/\/q\//);
   await expect(page.getByText(/open the confirmation email link/)).toBeVisible();
@@ -82,6 +89,8 @@ test("phone: email → questionnaire → plan → confirm → email + PDFs → e
   await expect(page.getByRole("heading", { name: /Your area's hazards/ })).toBeVisible();
   await expect(page.getByText("54 gal (14 days)")).toBeVisible();
   await expect(page.getByText(/check your inbox for our confirmation email/)).toBeVisible();
+  await page.getByRole("button", { name: "Didn't get it? Resend" }).click();
+  await expect(page.getByText(/Sent again to family@example.com/)).toBeVisible();
   await expect(page.getByRole("heading", { name: /Evacuation/ })).toBeVisible();
   // Answers never in URL
   expect(planUrl).not.toMatch(/11746|zip|answers/);
@@ -180,4 +189,32 @@ test("admin: dashboard, catalog and rule constants (no redeploy)", async ({ page
   expect((await r.json()).overrides.water.adultGalPerDay).toBe(1.25);
   // reset so other runs start from defaults
   await page.request.post("/api/admin/rules", { data: { overrides: {} }, headers: { origin: "http://localhost:3100" } });
+});
+
+test("sample plan is public, and returning emails get a welcome-back note", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("link", { name: "See a sample plan first" }).click();
+  await expect(page).toHaveURL(/\/sample/);
+  await expect(page.getByText("54 gal (14 days)")).toBeVisible();
+
+  await quickSignup(page, "repeat@example.com");
+  await page.context().clearCookies();
+  await page.goto("/");
+  await page.getByLabel("Your email").fill("repeat@example.com");
+  await page.getByRole("checkbox").check();
+  await page.getByRole("button", { name: "Build my free plan" }).click();
+  await expect(page).toHaveURL(/\/q\//);
+  await expect(page.getByText(/Welcome back/)).toBeVisible();
+});
+
+test("unconfirmed signups with a plan get exactly one reminder", async ({ page, request }) => {
+  await quickSignup(page, "forgetful@example.com");
+  const file = ".data/e2e/db.json";
+  const db = JSON.parse(fs.readFileSync(file, "utf8"));
+  const u = db.users.find((x: { email: string }) => x.email === "forgetful@example.com");
+  u.created_at = new Date(Date.now() - 2 * 86_400_000).toISOString();
+  fs.writeFileSync(file, JSON.stringify(db));
+  const auth = { headers: { authorization: "Bearer test-cron" } };
+  expect((await (await request.get("/api/cron/emails", auth)).json()).sent.confirm_reminder).toBe(1);
+  expect((await (await request.get("/api/cron/emails", auth)).json()).sent.confirm_reminder).toBeUndefined();
 });

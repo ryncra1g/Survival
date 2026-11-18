@@ -126,6 +126,12 @@ export function renderConfirmEmail(link: string, meta: EmailMeta) {
   return { subject: "Confirm your email to get your plan + PDF", html: shell("Confirm your email", body, meta), text: `Confirm your email and get your ReadyPlan: ${link}\n\nIf you didn't request this, ignore this email.\n\n${meta.mailingAddress}\nUnsubscribe: ${meta.unsubscribeUrl}` };
 }
 
+/** Sent once, a day after signup, if the address was never confirmed but a plan exists. */
+export function renderConfirmReminder(link: string, meta: EmailMeta) {
+  const body = `<h1 style="margin:0 0 8px;font-size:22px">Your plan is waiting</h1><p>You built a ReadyPlan but we haven't been able to send it yet. Tap below to confirm this is your email and we'll send the plan, a printable PDF and a fridge checklist.</p>${button(link, "Confirm & send my plan")}<p style="font-size:13px;color:${C.muted}">This is the only reminder we'll send. If you didn't request a ReadyPlan, ignore it.</p>`;
+  return { subject: "Your emergency plan is waiting", html: shell("Your plan is waiting", body, meta), text: `Confirm your email and we'll send your ReadyPlan: ${link}\n\nThis is the only reminder we'll send.\n\n${meta.mailingAddress}\nUnsubscribe: ${meta.unsubscribeUrl}` };
+}
+
 export function renderLoginEmail(link: string, meta: EmailMeta) {
   const body = `<h1 style="margin:0 0 8px;font-size:22px">Your sign-in link</h1><p>Use this link to open your ReadyPlan, edit your answers, or download or delete your data.</p>${button(link, "Open my ReadyPlan")}<p style="font-size:13px;color:${C.muted}">This link expires in 1 hour and works once.</p>`;
   return { subject: "Your ReadyPlan sign-in link", html: shell("Sign in", body, meta), text: `Open your ReadyPlan: ${link}\n\n${meta.mailingAddress}` };

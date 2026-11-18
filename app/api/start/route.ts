@@ -43,7 +43,8 @@ export async function POST(req: Request) {
   if (!(await verifyTurnstile(body.data.turnstileToken, ip))) return fail("The bot check didn't pass. Reload and try again.");
 
   const email = body.data.email;
-  const user = (await store.getUserByEmail(email)) ?? (await store.createUser({ email, consent_at: new Date().toISOString(), double_opt_in_at: null, unsubscribed_at: null, followups_opt_in: true }));
+  const known = await store.getUserByEmail(email);
+  const user = known ?? (await store.createUser({ email, consent_at: new Date().toISOString(), double_opt_in_at: null, unsubscribed_at: null, followups_opt_in: true }));
   // Keep a full session if it's the same person; otherwise a draft session that can only see this new plan.
   const existing = await getSession();
   const session = existing?.scope === "full" && existing.uid === user.id ? existing : await setSession(user.id, "draft");
@@ -54,5 +55,6 @@ export async function POST(req: Request) {
     demoLink = user.double_opt_in_at ? await sendLogin(user.id, email) : await sendConfirm(user.id, email);
 
   if (isForm) return NextResponse.redirect(new URL(`/q/${q.id}`, env.appUrl), 303);
-  return NextResponse.json({ questionnaireId: q.id, ...(isDemo && demoLink ? { demoLink } : {}) });
+  const returning = !!known && (await store.listPlans(user.id)).length > 0;
+  return NextResponse.json({ questionnaireId: q.id, returning, ...(isDemo && demoLink ? { demoLink } : {}) });
 }

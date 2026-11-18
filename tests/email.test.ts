@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { SEED_CATALOG } from "@/lib/catalog/seed";
-import { renderConfirmEmail, renderFollowupEmail, renderLoginEmail, renderPlanEmail } from "@/lib/email/render";
+import { renderConfirmEmail, renderConfirmReminder, renderFollowupEmail, renderLoginEmail, renderPlanEmail } from "@/lib/email/render";
 import { generatePlan } from "@/lib/plan/generate";
 import { DEFAULT_CONSTANTS as C } from "@/lib/rules/constants";
 import { at, SAMPLE_HOUSEHOLD } from "./fixtures/households";
@@ -40,6 +40,7 @@ describe("emails", () => {
       renderPlanEmail(r.document, { ...meta, planUrl: "x", pdfAttached: true }),
       renderConfirmEmail("https://link", meta),
       renderLoginEmail("https://link", meta),
+      renderConfirmReminder("https://link", meta),
       ...(["day1", "day3", "day30", "winter", "hurricane"] as const).map((k) => renderFollowupEmail(k, "https://plan", meta)),
     ];
     for (const e of all) {

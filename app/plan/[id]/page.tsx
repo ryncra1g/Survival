@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { PlanView } from "@/components/PlanView";
 import { PrintButton } from "@/components/PrintButton";
 import { DemoLinkBanner } from "@/components/DemoLinkBanner";
+import { ResendConfirm } from "@/components/ResendConfirm";
 import { FirstSteps } from "@/components/PlanView";
 import type { PlanDocument } from "@/lib/plan/document";
 import { loadPlanFor } from "@/lib/server/access";
@@ -33,9 +34,10 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
         ) : confirmed ? (
           <p className="card p-3">Your copy will be emailed shortly.</p>
         ) : (
-          <p className="card p-3 border-warn">
-            <strong>One more step:</strong> check your inbox for our confirmation email. Tap the link and we&apos;ll email this plan with a printable PDF — and you can come back to edit it any time.
-          </p>
+          <div className="card p-3 border-warn">
+            <strong>One more step:</strong> check your inbox for our confirmation email. Tap the link and we&apos;ll email this plan with a printable PDF and fridge checklist — and you can come back to edit it any time.
+            {user && <ResendConfirm email={user.email} />}
+          </div>
         )}
         {!confirmed && <DemoLinkBanner />}
       </div>
