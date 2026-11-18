@@ -3,7 +3,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { CatalogItem } from "@/lib/catalog/types";
 import { env } from "../env";
 import { seal, unseal, type Sealed } from "../crypto";
-import type { PlanRow, QuestionnaireRow, Stats, Store, UserRow } from "./types";
+import type { EmailEventRow, PlanRow, QuestionnaireRow, RuleConstantsRow, Stats, Store, UserRow } from "./types";
 
 /**
  * Production store on Supabase Postgres, using the service-role key from the server only.
@@ -177,7 +177,7 @@ export const supabaseStore: Store = {
     return must(await db().from("rule_constants").select("*").order("version", { ascending: false }).limit(1).maybeSingle());
   },
   async saveRuleConstants(overrides, by) {
-    return must(await db().from("rule_constants").insert({ overrides, created_by: by }).select().single());
+    return must(await db().from("rule_constants").insert({ overrides, created_by: by }).select().single()) as RuleConstantsRow;
   },
   async addEmailEvent(e) {
     must(await db().from("email_events").insert(e));
@@ -186,7 +186,7 @@ export const supabaseStore: Store = {
     return (await count("email_events", (q) => q.eq("user_id", userId).eq("type", type))) > 0;
   },
   async listEmailEvents(userId) {
-    return must(await db().from("email_events").select("*").eq("user_id", userId));
+    return (must(await db().from("email_events").select("*").eq("user_id", userId)) ?? []) as EmailEventRow[];
   },
   async rateLimit(key, limit, windowSec) {
     const r = await db().rpc("rate_limit_hit", { p_key: key, p_limit: limit, p_window_seconds: windowSec });

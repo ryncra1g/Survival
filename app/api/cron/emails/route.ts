@@ -1,0 +1,40 @@
+import { renderFollowupEmail, type FollowupKind } from "@/lib/email/render";
+import type { ComputedPlan } from "@/lib/rules/engine";
+import { env } from "@/lib/server/env";
+import { metaFor, sendEmail } from "@/lib/server/mailer";
+import { store } from "@/lib/server/store";
+import { atLeast } from "@/lib/zip/profile";
+
+export const maxDuration = 300;
+
+/**
+ * Daily follow-ups (Vercel Cron). Opt-in only: confirmed, follow-ups on, not unsubscribed.
+ * Day 3 and Day 30 after the latest plan; seasonal "winter" in November and "hurricane" in June
+ * based on the plan's ZIP hazard profile. Each kind is sent at most once (per year for seasonal).
+ */
+export async function GET(req: Request) {
+  if (!env.cronSecret || req.headers.get("authorization") !== `Bearer ${env.cronSecret}`) return new Response("Unauthorized", { status: 401 });
+  const now = new Date();
+  const month = now.getUTCMonth() + 1;
+  const year = now.getUTCFullYear();
+  const sent: Record<string, number> = {};
+  for (const user of await store.listUsers()) {
+    if (!user.double_opt_in_at || user.unsubscribed_at || !user.followups_opt_in) continue;
+    const plan = (await store.listPlans(user.id))[0];
+    if (!plan) continue;
+    const ageDays = (now.getTime() - new Date(plan.created_at).getTime()) / 86_400_000;
+    const profile = (plan.computed_quantities as ComputedPlan).profile;
+    const due: [FollowupKind, string][] = [];
+    if (ageDays >= 3 && ageDays < 10) due.push(["day3", "followup_day3"]);
+    if (ageDays >= 30 && ageDays < 40) due.push(["day30", "followup_day30"]);
+    if (month === 11 && atLeast(profile.winter, "moderate")) due.push(["winter", `seasonal_winter_${year}`]);
+    if (month === 6 && atLeast(profile.hurricane, "moderate")) due.push(["hurricane", `seasonal_hurricane_${year}`]);
+    for (const [kind, type] of due) {
+      if (await store.hasEmailEvent(user.id, `sent:${type}`)) continue;
+      const m = renderFollowupEmail(kind, `${env.appUrl}/plan/${plan.id}`, metaFor(user.id));
+      if (await sendEmail({ to: user.email, userId: user.id, type, marketing: true, ...m })) sent[kind] = (sent[kind] ?? 0) + 1;
+      break; // at most one email per user per day
+    }
+  }
+  return Response.json({ ok: true, sent });
+}
