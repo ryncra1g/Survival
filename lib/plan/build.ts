@@ -12,6 +12,7 @@ import {
 } from "@/lib/safety/required";
 import { DISCLAIMER, SOURCES, type Block, type PlanDocument, type Section } from "./document";
 import { fillTokens, n, plural, range, usd, usdRange } from "./format";
+import { AFFILIATE_DISCLOSURE, buyUrl } from "@/lib/affiliate";
 
 /**
  * Turns the computed plan into the PlanDocument structure.
@@ -115,6 +116,22 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   const genWord = pw.generatorStatus === "recommended" ? "a generator (recommended below)" : "your generator";
   const tokens = buildTokens(cp);
   const S: SectionDraft[] = [];
+  const isBuyable = (p: GearPick) => !!buyUrl(p.item, c.affiliate.amazonTag);
+  const productsBlock = (picks: GearPick[], later: (p: GearPick) => boolean, caption?: string): Block => ({
+    type: "products",
+    caption,
+    items: picks.map((p) => ({
+      itemId: p.item.id,
+      name: p.item.name,
+      category: p.item.category,
+      spec: p.item.spec,
+      models: p.item.models,
+      price: `${usdRange(p.item.priceLow, p.item.priceHigh)} each`,
+      qty: p.qty > 1 ? `× ${n(p.qty)}` : "",
+      buyable: isBuyable(p),
+      later: later(p),
+    })),
+  });
 
   const hazards: string[] = [];
   const hz = (label: string, l: string) => {
@@ -238,6 +255,11 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     blocks: [
       { type: "subheading", text: "This week" },
       check("week", week),
+      productsBlock(
+        cp.budget.picks.filter((p) => p.phase === 1),
+        () => false,
+        "Phase 1 shopping list (life safety)",
+      ),
       { type: "subheading", text: "This month" },
       check("month", month),
       { type: "subheading", text: "Within 60 days" },
@@ -799,26 +821,17 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   });
 
   // 17. Recommended gear ---------------------------------------------------------
-  const affiliate = b.picks.some((p) => p.item.affiliateUrl) || b.deferred.some((p) => p.item.affiliateUrl);
   S.push({
     id: "gear",
     title: "Recommended gear",
     summaryTemplate: "Buy to the spec, not the brand. The example models are just a starting point for comparing.",
     facts: [],
     blocks: [
-      {
-        type: "table",
-        columns: ["Category", "Look for", "Examples", "Price range"],
-        rows: [...b.picks, ...b.deferred].map((p) => [
-          `${p.item.category}: ${p.item.name}`,
-          p.item.spec,
-          p.item.models.join("; ") + (p.item.affiliateUrl ? " (affiliate link)" : ""),
-          `${usdRange(p.item.priceLow, p.item.priceHigh)} each`,
-        ]),
-      },
+      productsBlock([...b.picks, ...b.deferred], (p) => p.status === "deferred"),
       { type: "paragraph", text: `Catalog last reviewed: ${[...b.picks, ...b.deferred].map((p) => p.item.reviewedAt).sort()[0] ?? "n/a"}. Check prices, recalls and current reviews before you buy.` },
     ],
   });
+  const affiliate = [...b.picks, ...b.deferred].some((p) => isBuyable(p));
 
   // 18. Maintenance ------------------------------------------------------------
   const maint: string[][] = [
@@ -844,7 +857,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     tokens,
     sections: S,
     subtitle: `${plural(h.people, "person", "people")} · ${prof.region} · ${LABELS.scenarioDays[a.scenarioDays]} · ${LABELS.budget[a.budget]}`,
-    affiliateDisclosure: affiliate ? "Some gear links are affiliate links: ReadyPlan may earn a commission at no cost to you. Recommendations are spec-first and not influenced by commissions." : null,
+    affiliateDisclosure: affiliate ? AFFILIATE_DISCLOSURE : null,
   };
 }
 

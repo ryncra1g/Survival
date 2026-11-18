@@ -131,6 +131,14 @@ export const DEFAULT_CONSTANTS = {
     fullFreezerSafeHours: 48,
     halfFreezerSafeHours: 24,
   },
+  /**
+   * Affiliate settings (editable at /admin, no redeploy). With an Amazon Associates tag set,
+   * every recommended item gets a tracked "Buy" button (an Amazon search for its example model).
+   * An item's own affiliateUrl in the catalog always wins.
+   */
+  affiliate: {
+    amazonTag: "",
+  },
   /** Rough USD costs for consumables (used only for budget estimates). */
   costs: {
     diaperEach: 0.25,
@@ -217,6 +225,7 @@ export const RuleConstantsSchema = z.object({
   catalog: z.object({ staleAfterDays: z.number().positive() }),
   heat: z.object({ warmRoomAtF: z.number(), evacuateAtF: z.number(), pipeFreezeRiskOutdoorF: z.number() }),
   food: z.object({ fridgeSafeHours: num, fullFreezerSafeHours: num, halfFreezerSafeHours: num }),
+  affiliate: z.object({ amazonTag: z.string().regex(/^[A-Za-z0-9-]{0,40}$/, "Tag may contain letters, numbers and hyphens only") }),
   costs: z.object({
     diaperEach: num,
     wipesPack: num,

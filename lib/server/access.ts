@@ -12,8 +12,8 @@ export async function canAccessQuestionnaire(s: Session | null, q: Questionnaire
 export async function loadPlanFor(s: Session | null, planId: string): Promise<PlanRow | null> {
   if (!s || !/^[0-9a-f-]{36}$/i.test(planId)) return null;
   const p = await store.getPlan(planId);
-  if (!p || p.user_id !== s.uid) return null;
-  if (s.scope === "full") return p;
+  if (!p) return null;
+  if (s.scope === "full" && p.user_id && p.user_id === s.uid) return p;
   const q = await store.getQuestionnaire(p.questionnaire_id);
-  return q && q.session_nonce === s.nonce ? p : null;
+  return q && q.session_nonce === s.nonce ? p : null; // the browser that built it
 }

@@ -1,6 +1,6 @@
 # ReadyPlan
 
-A mobile-first web app that builds a personalized emergency plan and supply list for a household. The visitor enters an email (with the required consent box) on the front page, answers about 11 tap-to-select screens and gets the plan on screen. The same plan is available as a PDF and is emailed to them once they confirm their address.
+A mobile-first web app that builds a personalized emergency plan and supply list for a household. The visitor taps "Build my free plan" (no sign-up), answers about 11 tap-to-select screens and gets the plan on screen. Emailing the plan is optional, offered next to it. Recommended gear can carry tracked affiliate "Buy" buttons. The same plan is available as a PDF and is emailed to them once they confirm their address.
 
 **Shareable demo:** `npm run demo` builds `demo/dist/readyplan-demo.html`, a single page that runs the real questionnaire, rules engine and plan view in the browser with no server. **Focus-group review:** [`docs/focus-group.md`](docs/focus-group.md).
 
@@ -67,18 +67,22 @@ answers (Zod, enums only) ──► lib/rules/engine.ts ──► ComputedPlan (
 
 Supabase Auth was the original suggestion. ReadyPlan uses its own magic links instead because the flow needs two session scopes:
 
-- A **draft** session starts when someone enters their email on the front page. It lets someone fill in the questionnaire and see their plan right away. It can only see the questionnaires and plans it created, so typing someone else's email exposes nothing.
+- An **anon** session starts at "Build my free plan". It can only see what this browser created. Plans never linked to an email are purged after 30 days.
+- A **draft** session starts when someone gives their email on the plan page. It lets someone fill in the questionnaire and see their plan right away. It can only see the questionnaires and plans it created, so typing someone else's email exposes nothing.
 - A **full** session starts when the user clicks a confirm or login link. It can see all of that user's data, edit answers, export and delete.
 
 The **confirm link is the double opt-in**. Plan emails (which carry an attachment) only go to confirmed addresses, so the form can't be used to send PDFs to strangers.
 
 ### Flow
 
-1. `/`: email + required consent checkbox (plus Turnstile, a honeypot and a "did you mean gmail.com?" typo check) → `POST /api/start`. A public sample plan at `/sample` lets people see what they'll get first. It works as a plain form without JavaScript. This creates or finds the user, starts a draft session, sends the confirmation email and creates the questionnaire.
-2. `/q/[id]`: 11 screens (the toddler screen only appears when a child is 3 or under), with a progress bar and Back button. Answers autosave to localStorage and to `PUT /api/questionnaire/[id]` after 700 ms. Answers travel only in request bodies, never in URLs.
+1. `/`: one button, a plain form POST to `POST /api/start` (works without JavaScript). This creates an anonymous session and a questionnaire. A public sample plan at `/sample` shows what you get.
+2. `/q/[id]`: 11 screens (the toddler screen only appears when a child is 3 or under), with a progress bar, a time-left hint and a Back button. Answers autosave to localStorage and to `PUT /api/questionnaire/[id]` after 700 ms. Answers travel only in request bodies, never in URLs.
 3. On the last screen, a preview of their real numbers (gallons of water, pounds of food).
-4. `POST /api/questionnaire/[id]/generate` validates the answers, applies rate limits, runs the engine and optional LLM, and saves the plan encrypted. A confirmed address gets the plan email immediately. The questionnaire shows a loading screen meanwhile.
-5. `/plan/[id]`: "Start here: your first 3 steps", then the full plan, a PDF download, a one-page fridge checklist, print, and the email status.
+4. `POST /api/questionnaire/[id]/generate` validates the answers, applies rate limits, runs the engine and optional LLM, and saves the plan encrypted.
+5. `/plan/[id]`: "Start here: your first 3 steps", the optional **"Email me my plan"** box (shown again at the end of the plan), then the full plan with a Phase 1 shopping list, a PDF download, a one-page fridge checklist and print.
+   - Submitting an email (`POST /api/plans/[id]/claim`) links the plan to it. It has a typo check, Turnstile and a honeypot.
+   - The optional, **unticked** "Also send me seasonal reminders…" box is the only marketing consent.
+   - An address that's already confirmed gets the plan right away. Otherwise the double opt-in link is sent, with one "Your plan is waiting" reminder after a day.
 6. Clicking the confirm link (`/api/auth/verify`) sets `double_opt_in_at`, upgrades to a full session and emails the latest plan (HTML + PDF).
 7. `/account`: request a magic link, edit answers and regenerate, set follow-up preferences, export data (JSON), delete data.
 
@@ -108,7 +112,7 @@ Copy `.env.example` to `.env.local`.
 
 ## Deployment (Vercel + Supabase + Resend)
 
-1. **Supabase.** Create a project, then run [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql) and [`0002_anonymous_start.sql`](supabase/migrations/0002_anonymous_start.sql) in the SQL editor (or `supabase db push`). The migration creates the tables, the `rate_limit_hit` function, RLS with no policies, and a private `plans` storage bucket.
+1. **Supabase.** Create a project, then run the three files in [`supabase/migrations/`](supabase/migrations/) in order in the SQL editor (or `supabase db push`). The migration creates the tables, the `rate_limit_hit` function, RLS with no policies, and a private `plans` storage bucket.
 2. **Seed the catalog.** Run `SUPABASE_URL=… SUPABASE_SERVICE_ROLE_KEY=… npm run seed`.
 3. **Resend.** Verify your sending domain (SPF/DKIM/DMARC), create an API key, and add a webhook to `https://YOUR_APP/api/webhooks/resend` for `email.opened`, `email.bounced` and `email.complained`.
 4. **Turnstile.** Create a widget for your domain.
@@ -165,6 +169,18 @@ Items not reviewed within `catalog.staleAfterDays` (default 183 days) are **hidd
 
 ---
 
+## Affiliate links
+
+To turn them on, go to `/admin` and paste your **Amazon Associates tag** (e.g. `yourtag-20`). It's saved as a rule-constants version, so no redeploy is needed. Then:
+
+- **Buy buttons:** every recommended item in new plans gets one, in the Phase 1 shopping list (under "This week") and in Recommended gear. Plan emails carry them too.
+- **Destination:** an Amazon search for the item's first example model, carrying your tag. To link elsewhere, set an `affiliateUrl` on a catalog item; it always wins.
+- **Tracking:** every Buy link goes through `/go/<itemId>`. That route counts the click (`email_events` type `affiliate_click`) and redirects only to catalog destinations, so it can't be used as an open redirect.
+- **Dashboard:** shows Buy clicks, clicks per plan and the most-clicked gear.
+- **Disclosure:** appears automatically on the page, in the PDF and in the email whenever any Buy button is shown. Links use `rel="sponsored nofollow"`.
+
+Clear the tag to switch Buy buttons off for new plans.
+
 ## Safety guardrails
 
 | Guardrail | Where it's enforced |
@@ -201,8 +217,8 @@ The LLM system prompt (`lib/llm/writer.ts`) repeats these rules. Code does the e
 - **CAN-SPAM.** Every email has the physical address and an unsubscribe link. One-click unsubscribe is supported (RFC 8058 `List-Unsubscribe-Post`) and is HMAC-signed. Follow-ups go only to confirmed, opted-in, subscribed users.
 - **GDPR/CCPA.** Export (JSON of everything, decrypted) and delete-my-data (cascading delete, including stored PDFs) on `/account`.
 - **Abuse protection.**
-  - Rate limits: email signup 8 per IP per hour; mail 5 per user per hour; plan generation 8 per user per day and 20 per IP per hour; autosave 120 per IP per minute.
-  - Turnstile and a honeypot field on the front-page email form.
+  - Rate limits: starting a plan 30 per IP per hour; email submissions 8 per IP per hour; mail 5 per user per hour; plan generation 8 per user per day and 20 per IP per hour; autosave 120 per IP per minute.
+  - Turnstile and a honeypot field on the "Email me my plan" form.
   - An Origin check on every cookie-authenticated mutation.
   - No account enumeration on login.
 

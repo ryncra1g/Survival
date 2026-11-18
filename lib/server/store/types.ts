@@ -27,7 +27,8 @@ export interface QuestionnaireRow {
 export interface PlanRow {
   id: string;
   questionnaire_id: string;
-  user_id: string;
+  /** Null until the person optionally gives their email on the plan page. */
+  user_id: string | null;
   /** Decrypted. Stored encrypted. */
   computed_quantities: unknown;
   plan: unknown;
@@ -69,6 +70,10 @@ export interface Stats {
   emailsSent: number;
   emailOpens: number;
   unsubscribed: number;
+  /** Plans whose owner gave an email (optional email capture). */
+  plansWithEmail: number;
+  affiliateClicks: number;
+  topClicks: { itemId: string; clicks: number }[];
 }
 
 export interface Store {
@@ -83,13 +88,13 @@ export interface Store {
   createQuestionnaire(q: Omit<QuestionnaireRow, "id" | "created_at" | "updated_at">): Promise<QuestionnaireRow>;
   getQuestionnaire(id: string): Promise<QuestionnaireRow | null>;
   updateQuestionnaire(id: string, patch: Partial<Pick<QuestionnaireRow, "answers" | "complete" | "user_id">>): Promise<void>;
-  /** Privacy: remove questionnaires never linked to an email after N days. Returns count. */
+  /** Privacy: remove questionnaires (and their plans) never linked to an email after N days. Returns count. */
   deleteStaleAnonQuestionnaires(olderThanDays: number): Promise<number>;
   listQuestionnaires(userId: string): Promise<QuestionnaireRow[]>;
 
   createPlan(p: Omit<PlanRow, "id" | "created_at">): Promise<PlanRow>;
   getPlan(id: string): Promise<PlanRow | null>;
-  updatePlan(id: string, patch: Partial<Pick<PlanRow, "pdf_url" | "emailed_at">>): Promise<void>;
+  updatePlan(id: string, patch: Partial<Pick<PlanRow, "pdf_url" | "emailed_at" | "user_id">>): Promise<void>;
   listPlans(userId: string): Promise<PlanRow[]>;
 
   createToken(t: TokenRow): Promise<void>;

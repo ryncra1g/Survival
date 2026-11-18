@@ -1,139 +1,119 @@
 import { expect, test, type Page } from "@playwright/test";
+import fs from "node:fs";
+
+const SAMPLE = JSON.parse(fs.readFileSync("samples/sample-answers.json", "utf8"));
+const O = { origin: "http://localhost:3100" };
 
 async function pick(page: Page, name: string | RegExp) {
   await page.getByRole("button", { name, exact: typeof name === "string" }).first().click();
 }
 const next = (page: Page) => page.getByRole("button", { name: /^(Next|Build my plan)$/ }).click();
 
-import fs from "node:fs";
-const SAMPLE = JSON.parse(fs.readFileSync("samples/sample-answers.json", "utf8"));
-
-/** Start a plan and sign up through the API (shares the page's cookies). Returns the demo confirm link. */
-async function quickSignup(page: Page, email: string): Promise<string> {
+/** Start a plan from the front page and build it via the API (same cookies). Returns the plan id. */
+async function quickPlan(page: Page): Promise<string> {
   await page.goto("/");
-  const s = await page.request.post("/api/start", { data: { email, consent: true }, headers: { origin: "http://localhost:3100" } });
-  expect(s.status()).toBe(200);
-  const { questionnaireId, demoLink } = await s.json();
-  const r = await page.request.post(`/api/questionnaire/${questionnaireId}/generate`, { data: { answers: SAMPLE }, headers: { origin: "http://localhost:3100" } });
+  await page.getByRole("button", { name: "Build my free plan" }).click();
+  await expect(page).toHaveURL(/\/q\//);
+  const id = page.url().split("/q/")[1];
+  const r = await page.request.post(`/api/questionnaire/${id}/generate`, { data: { answers: SAMPLE }, headers: O });
   expect(r.status()).toBe(200);
-  return demoLink;
+  return (await r.json()).planId;
+}
+/** Plan + optional email. Returns the demo-mode confirmation link. */
+async function quickSignup(page: Page, email: string, updates = true): Promise<string> {
+  const planId = await quickPlan(page);
+  const r = await page.request.post(`/api/plans/${planId}/claim`, { data: { email, updates }, headers: O });
+  expect(r.status()).toBe(200);
+  return (await r.json()).demoLink;
 }
 
-test("phone: email → questionnaire → plan → confirm → email + PDFs → edit → export → delete", async ({ page, request }) => {
+test("phone: no sign-up → plan → optional email → confirm → email + PDFs → edit → export → delete", async ({ page, request }) => {
   const started = Date.now();
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Your family's emergency plan");
-  await page.getByRole("button", { name: "Build my free plan" }).click();
-  await expect(page.locator("p[role=alert]")).toContainText("valid email");
-  await page.getByLabel("Your email").fill("family@example.com");
-  await page.getByRole("button", { name: "Build my free plan" }).click();
-  await expect(page.locator("p[role=alert]")).toContainText("Tick the box");
-  await page.getByRole("checkbox").check();
-  // typo check: offers a fix once, then keeps what was typed if they press again
-  await page.getByLabel("Your email").fill("family@gmial.com");
-  await page.getByRole("button", { name: "Build my free plan" }).click();
-  await expect(page.getByText("Did you mean")).toBeVisible();
-  await page.getByRole("button", { name: "family@gmail.com" }).click();
-  await expect(page.getByLabel("Your email")).toHaveValue("family@gmail.com");
-  await page.getByLabel("Your email").fill("family@example.com");
+  await expect(page.getByLabel("Your email")).toHaveCount(0); // no email up front
   await page.getByRole("button", { name: "Build my free plan" }).click();
   await expect(page).toHaveURL(/\/q\//);
-  await expect(page.getByText(/open the confirmation email link/)).toBeVisible();
 
-  // 1 location
   await page.getByLabel("ZIP code").fill("11746");
   await pick(page, /^90 days/);
   await next(page);
-  // 2 household
   await page.getByLabel("Add a child age").selectOption("2");
   await page.getByLabel("Add a child age").selectOption("4");
   await next(page);
-  // 3 toddlers
-  await expect(page.getByRole("heading", { name: /little ones/ })).toBeVisible();
   await pick(page, "Diapers");
   await next(page);
-  // 4 pets
   await pick(page, "+ Add a pet");
   await next(page);
-  // 5 medical
   await next(page);
-  // 6 home
   await pick(page, "Basement / lower level");
   await pick(page, "Garage");
   await pick(page, "Yard");
   await next(page);
-  // 7 heat (natural gas default) — 8 water — 9 power
   await next(page);
   await next(page);
   await pick(page, "+ Gasoline");
   await next(page);
-  // 10 storage + evacuation
   await pick(page, "Garage");
   await pick(page, "Raw land");
   await pick(page, "~120 mi");
   await next(page);
-  // 11 budget
   await pick(page, "$1,500–5,000");
-  // Back button + autosave check
   await page.getByRole("button", { name: "Back" }).click();
   await expect(page.getByRole("button", { name: "Raw land" })).toHaveAttribute("aria-pressed", "true");
   await next(page);
-  await expect(page.getByText("54 gal")).toBeVisible(); // preview of their numbers on the last step
+  await expect(page.getByText("54 gal")).toBeVisible();
   await next(page);
 
   await expect(page).toHaveURL(/\/plan\//, { timeout: 60_000 });
   const planUrl = page.url();
   expect(Date.now() - started).toBeLessThan(5 * 60_000);
-  await expect(page.getByRole("heading", { name: "1. Household snapshot & planning assumptions" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Start here: your first 3 steps" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /Your area's hazards/ })).toBeVisible();
-  await expect(page.getByText("54 gal (14 days)")).toBeVisible();
-  await expect(page.getByText(/check your inbox for our confirmation email/)).toBeVisible();
-  await page.getByRole("button", { name: "Didn't get it? Resend" }).click();
-  await expect(page.getByText(/Sent again to family@example.com/)).toBeVisible();
-  await expect(page.getByRole("heading", { name: /Evacuation/ })).toBeVisible();
-  // Answers never in URL
   expect(planUrl).not.toMatch(/11746|zip|answers/);
+  await expect(page.getByRole("heading", { name: "Start here: your first 3 steps" })).toBeVisible();
+  await expect(page.getByText("54 gal (14 days)")).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Your area's hazards/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Phase 1 shopping list (life safety)" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /^Buy / })).toHaveCount(0); // no affiliate tag set yet
 
-  // PDF download
-  const pdf = await page.request.get(planUrl.replace("/plan/", "/api/plans/") + "/pdf");
-  expect(pdf.status()).toBe(200);
-  expect((await pdf.body()).subarray(0, 4).toString()).toBe("%PDF");
-  const fridge = await page.request.get(planUrl.replace("/plan/", "/api/plans/") + "/checklist");
-  expect((await fridge.body()).subarray(0, 4).toString()).toBe("%PDF");
+  // PDFs work without an email
+  for (const p of ["pdf", "checklist"]) {
+    const r = await page.request.get(planUrl.replace("/plan/", "/api/plans/") + "/" + p);
+    expect((await r.body()).subarray(0, 4).toString()).toBe("%PDF");
+  }
+  expect((await request.get(planUrl)).status()).toBe(404); // another browser can't see it
 
-  // Another browser can't see the plan
-  const anon = await request.get(planUrl);
-  expect(anon.status()).toBe(404);
+  // Optional email: typo check, then confirm flow
+  const box = page.locator("form", { has: page.getByRole("heading", { name: "Email me my plan" }) }).first();
+  await box.getByPlaceholder("you@example.com").fill("family@gmial.com");
+  await box.getByRole("button", { name: "Email my plan" }).click();
+  await expect(box.getByText("Did you mean")).toBeVisible();
+  await box.getByRole("button", { name: "family@gmail.com" }).click();
+  await box.getByPlaceholder("you@example.com").fill("family@example.com");
+  await expect(box.getByRole("checkbox")).not.toBeChecked(); // marketing is opt-in
+  await box.getByRole("checkbox").check();
+  await box.getByRole("button", { name: "Email my plan" }).click();
+  await expect(page.getByText(/Almost there: check your inbox/)).toBeVisible();
+  const link = await page.getByRole("link", { name: "open the confirmation link" }).getAttribute("href");
 
-  // Confirm via demo link shown on the questionnaire page (stored in sessionStorage)
-  const link = await page.evaluate(() => sessionStorage.getItem("rp_demo_link"));
-  expect(link).toBeTruthy();
   await page.goto(link!);
   await expect(page).toHaveURL(/\/plan\/.*emailed=1/);
-  await expect(page.getByText(/on its way to your inbox/)).toBeVisible();
+  await expect(page.getByText(/on their way to family@example.com/)).toBeVisible();
   await expect.poll(() => fs.readdirSync(".data/e2e/outbox").some((f) => f.endsWith("fridge-checklist.pdf"))).toBe(true);
   expect(fs.readdirSync(".data/e2e/outbox").some((f) => f.endsWith("-ReadyPlan.pdf"))).toBe(true);
-
-  // Link is single-use
   await page.goto(link!);
   await expect(page).toHaveURL(/link=expired/);
 
-  // Account: edit answers → regenerate
   await page.goto("/account");
   await expect(page.getByText("family@example.com")).toBeVisible();
   await page.getByRole("button", { name: "Edit answers & regenerate" }).click();
   await expect(page).toHaveURL(/\/q\//);
   await expect(page.getByLabel("ZIP code")).toHaveValue("11746");
 
-  // Export
   await page.goto("/account");
-  const exp = await page.request.get("/api/account/export");
-  const data = await exp.json();
+  const data = await (await page.request.get("/api/account/export")).json();
   expect(data.user.email).toBe("family@example.com");
+  expect(data.user.followups_opt_in).toBe(true);
   expect(data.plans.length).toBeGreaterThan(0);
-
-  // Delete
   await page.getByRole("button", { name: "Delete my data" }).click();
   await page.getByRole("button", { name: "Yes, delete everything" }).click();
   await expect(page).toHaveURL(/deleted=1/);
@@ -146,34 +126,29 @@ test("cron requires the secret and the admin area is hidden", async ({ request }
   expect((await request.get("/admin")).status()).toBe(404);
 });
 
-test("bad origin, honeypot and missing consent are rejected", async ({ page }) => {
-  const o = { origin: "http://localhost:3100" };
-  expect((await page.request.post("/api/start", { data: { email: "x@example.com", consent: true }, headers: { origin: "https://evil.example" } })).status()).toBe(403);
-  expect((await page.request.post("/api/start", { data: { email: "x@example.com", consent: true, website: "spam" }, headers: o })).status()).toBe(400);
-  expect((await page.request.post("/api/start", { data: { email: "x@example.com" }, headers: o })).status()).toBe(400);
-  expect((await page.request.post("/api/start", { data: { email: "not-an-email", consent: true }, headers: o })).status()).toBe(400);
+test("bad origin and honeypot are rejected; unchecked updates stays opted out", async ({ page }) => {
+  expect((await page.request.post("/api/start", { headers: { origin: "https://evil.example" } })).status()).toBe(403);
+  const planId = await quickPlan(page);
+  expect((await page.request.post(`/api/plans/${planId}/claim`, { data: { email: "x@example.com", website: "spam" }, headers: O })).status()).toBe(400);
+  expect((await page.request.post(`/api/plans/${planId}/claim`, { data: { email: "nope" }, headers: O })).status()).toBe(400);
+  expect((await page.request.post(`/api/plans/${planId}/claim`, { data: { email: "quiet@example.com" }, headers: O })).status()).toBe(200);
 });
 
-test("front page form works without JavaScript", async ({ browser }) => {
+test("front page works without JavaScript", async ({ browser }) => {
   const ctx = await browser.newContext({ javaScriptEnabled: false });
   const page = await ctx.newPage();
   await page.goto("/");
-  await page.getByLabel("Your email").fill("nojs@example.com");
-  await page.getByRole("button", { name: "Build my free plan" }).click();
-  await expect(page).toHaveURL(/error=Tick/);
-  await page.getByLabel("Your email").fill("nojs@example.com");
-  await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: "Build my free plan" }).click();
   await expect(page).toHaveURL(/\/q\//);
   await ctx.close();
 });
 
-test("admin: dashboard, catalog and rule constants (no redeploy)", async ({ page }) => {
+test("admin: dashboard, catalog, rule constants, affiliate tag → tracked Buy clicks", async ({ page }) => {
   const link = await quickSignup(page, "admin@example.com");
   await page.goto(link);
   await page.goto("/admin");
   await expect(page.getByRole("heading", { name: "Admin" })).toBeVisible();
-  await expect(page.getByText("Signups")).toBeVisible();
+  await expect(page.getByText("Email capture")).toBeVisible();
 
   await page.goto("/admin/catalog");
   await expect(page.getByText("Carbon monoxide alarm")).toBeVisible();
@@ -184,30 +159,38 @@ test("admin: dashboard, catalog and rule constants (no redeploy)", async ({ page
   await expect(page.getByText(/Invalid constants/)).toBeVisible();
   await page.getByLabel(/Overrides/).fill('{ "water": { "adultGalPerDay": 1.25 } }');
   await page.getByRole("button", { name: /Validate & save/ }).click();
-  await expect(page.getByText(/Saved as version 1/)).toBeVisible();
-  const r = await page.request.get("/api/admin/rules");
-  expect((await r.json()).overrides.water.adultGalPerDay).toBe(1.25);
+  await expect(page.getByText(/Saved as version/)).toBeVisible();
+
+  // Affiliate tag on → new plans get Buy buttons that go through /go and are counted
+  await page.goto("/admin");
+  await page.getByLabel("Amazon Associates tag").fill("readyplan-20");
+  await page.getByRole("button", { name: "Save" }).click();
+  await expect(page.getByText(/New plans show Buy buttons/)).toBeVisible();
+  const planId = await quickPlan(page);
+  await page.goto(`/plan/${planId}`);
+  await expect(page.getByText(/Affiliate disclosure/).first()).toBeVisible();
+  const buy = page.getByRole("link", { name: /^Buy Carbon monoxide alarm/ }).first();
+  await expect(buy).toHaveAttribute("rel", /sponsored/);
+  const href = await buy.getAttribute("href");
+  const r = await page.request.get(href!, { maxRedirects: 0 });
+  expect(r.status()).toBe(302);
+  expect(r.headers()["location"]).toMatch(/^https:\/\/www\.amazon\.com\/s\?k=Kidde.*tag=readyplan-20$/);
+  expect((await page.request.get("/go/not-an-item", { maxRedirects: 0 })).headers()["location"]).toMatch(/localhost:3100\/$/);
+  await page.goto("/admin");
+  await expect(page.getByText("Carbon monoxide alarm — 1")).toBeVisible();
+
   // reset so other runs start from defaults
-  await page.request.post("/api/admin/rules", { data: { overrides: {} }, headers: { origin: "http://localhost:3100" } });
+  await page.request.post("/api/admin/rules", { data: { overrides: {} }, headers: O });
 });
 
-test("sample plan is public, and returning emails get a welcome-back note", async ({ page }) => {
+test("sample plan is public", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("link", { name: "See a sample plan first" }).click();
+  await page.getByRole("link", { name: "See a sample plan" }).click();
   await expect(page).toHaveURL(/\/sample/);
   await expect(page.getByText("54 gal (14 days)")).toBeVisible();
-
-  await quickSignup(page, "repeat@example.com");
-  await page.context().clearCookies();
-  await page.goto("/");
-  await page.getByLabel("Your email").fill("repeat@example.com");
-  await page.getByRole("checkbox").check();
-  await page.getByRole("button", { name: "Build my free plan" }).click();
-  await expect(page).toHaveURL(/\/q\//);
-  await expect(page.getByText(/Welcome back/)).toBeVisible();
 });
 
-test("unconfirmed signups with a plan get exactly one reminder", async ({ page, request }) => {
+test("unconfirmed emails with a plan get exactly one reminder", async ({ page, request }) => {
   await quickSignup(page, "forgetful@example.com");
   const file = ".data/e2e/db.json";
   const db = JSON.parse(fs.readFileSync(file, "utf8"));

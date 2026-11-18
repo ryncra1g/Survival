@@ -19,6 +19,24 @@ export const BlockSchema = z.discriminatedUnion("type", [
     text: z.string(),
   }),
   z.object({ type: z.literal("subheading"), text: z.string() }),
+  /** Gear with optional Buy buttons. Renderers build the tracked link from itemId (/go/<itemId>). */
+  z.object({
+    type: z.literal("products"),
+    caption: z.string().optional(),
+    items: z.array(
+      z.object({
+        itemId: z.string(),
+        name: z.string(),
+        category: z.string(),
+        spec: z.string(),
+        models: z.array(z.string()),
+        price: z.string(),
+        qty: z.string(),
+        buyable: z.boolean(),
+        later: z.boolean(),
+      }),
+    ),
+  }),
 ]);
 export type Block = z.infer<typeof BlockSchema>;
 

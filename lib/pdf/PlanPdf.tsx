@@ -94,6 +94,17 @@ function BlockView({ b }: { b: Block }) {
     }
     case "ifthen":
       return <Table columns={["If…", "Then…"]} rows={b.rows.map((r) => [r.if, r.then])} widths={[4, 5]} />;
+    case "products":
+      return (
+        <View>
+          {b.caption ? <Text style={s.caption} minPresenceAhead={60}>{pdfSafe(b.caption)}</Text> : null}
+          <Table
+            columns={["Item", "Look for", "Examples", "Price"]}
+            rows={b.items.map((i) => [`${i.category}: ${i.name}${i.qty ? ` ${i.qty}` : ""}${i.later ? " (later)" : ""}`, i.spec, i.models.join("; "), i.price])}
+            widths={[3, 5, 3, 2]}
+          />
+        </View>
+      );
     case "callout":
       return (
         <View style={[s.callout, { borderLeftColor: tone[b.tone] }]} wrap={false}>

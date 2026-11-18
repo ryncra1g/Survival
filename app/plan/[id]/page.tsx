@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PlanView } from "@/components/PlanView";
-import { PrintButton } from "@/components/PrintButton";
 import { DemoLinkBanner } from "@/components/DemoLinkBanner";
+import { EmailMyPlan } from "@/components/EmailMyPlan";
+import { FirstSteps, PlanView } from "@/components/PlanView";
+import { PrintButton } from "@/components/PrintButton";
 import { ResendConfirm } from "@/components/ResendConfirm";
-import { FirstSteps } from "@/components/PlanView";
 import type { PlanDocument } from "@/lib/plan/document";
 import { loadPlanFor } from "@/lib/server/access";
 import { getSession } from "@/lib/server/session";
@@ -19,28 +19,30 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
   const session = await getSession();
   const plan = await loadPlanFor(session, id);
   if (!plan) notFound();
-  const user = await store.getUser(plan.user_id);
+  const user = plan.user_id ? await store.getUser(plan.user_id) : null;
   const doc = plan.plan as PlanDocument;
   const confirmed = !!user?.double_opt_in_at;
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+
+  // Email status: none yet → optional capture; given but unconfirmed → resend; confirmed → sent.
+  const emailStatus = !user ? (
+    <EmailMyPlan planId={plan.id} siteKey={siteKey} />
+  ) : emailed || plan.emailed_at ? (
+    <p className="card p-3 border-ok">✓ Your plan, PDF and fridge checklist are on their way to {user.email}.</p>
+  ) : confirmed ? (
+    <p className="card p-3">Your copy will be emailed to {user.email} shortly.</p>
+  ) : (
+    <div className="card p-3 border-warn">
+      <strong>Check your inbox:</strong> tap the link in our email and we&apos;ll send this plan with a printable PDF and fridge checklist.
+      <ResendConfirm email={user.email} />
+      <DemoLinkBanner />
+    </div>
+  );
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
       <h1 className="text-3xl font-bold">{doc.title}</h1>
       <p className="mt-1 text-muted">{doc.subtitle}</p>
-
-      <div className="mt-4 no-print" role="status">
-        {emailed || plan.emailed_at ? (
-          <p className="card p-3 border-ok">✓ A copy with a printable PDF is on its way to your inbox.</p>
-        ) : confirmed ? (
-          <p className="card p-3">Your copy will be emailed shortly.</p>
-        ) : (
-          <div className="card p-3 border-warn">
-            <strong>One more step:</strong> check your inbox for our confirmation email. Tap the link and we&apos;ll email this plan with a printable PDF and fridge checklist — and you can come back to edit it any time.
-            {user && <ResendConfirm email={user.email} />}
-          </div>
-        )}
-        {!confirmed && <DemoLinkBanner />}
-      </div>
 
       <div className="mt-4 flex flex-wrap gap-3 no-print">
         <a href={`/api/plans/${plan.id}/pdf`} className="btn">Download PDF</a>
@@ -50,8 +52,15 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
       </div>
 
       <FirstSteps doc={doc} />
+      <div className="mt-5" id="email">{emailStatus}</div>
       <p className="mt-4 text-sm text-muted border border-line rounded p-3">{doc.disclaimer}</p>
+      {doc.affiliateDisclosure && <p className="mt-2 text-sm text-muted"><strong>Affiliate disclosure:</strong> {doc.affiliateDisclosure}</p>}
       <PlanView doc={doc} planId={plan.id} />
+      {!user && (
+        <div className="my-6">
+          <EmailMyPlan planId={plan.id} siteKey={siteKey} idPrefix="emp2" />
+        </div>
+      )}
     </div>
   );
 }

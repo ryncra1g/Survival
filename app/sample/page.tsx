@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { StartButton } from "@/components/StartButton";
 import { FirstSteps, PlanView } from "@/components/PlanView";
 import { SEED_CATALOG } from "@/lib/catalog/seed";
 import { generatePlan } from "@/lib/plan/generate";
@@ -16,7 +16,7 @@ export default async function Sample() {
     <div className="mx-auto max-w-3xl px-4 py-6">
       <div className="card p-4 mb-5 flex flex-wrap items-center justify-between gap-3">
         <p className="min-w-0 flex-1"><strong>Sample plan:</strong> a Long Island family of four with a dog, gas heat and no generator, planning for 90 days.</p>
-        <Link href="/#start" className="btn">Build your own</Link>
+        <StartButton label="Build your own" />
       </div>
       <h1 className="text-3xl font-bold">{doc.title}</h1>
       <p className="mt-1 text-muted">{doc.subtitle}</p>
@@ -25,7 +25,7 @@ export default async function Sample() {
       <PlanView doc={doc} planId="sample" />
       <div className="card p-5 my-6 text-center">
         <p className="text-lg font-semibold">Want one for your household?</p>
-        <Link href="/#start" className="btn mt-3">Build my free plan</Link>
+        <div className="mt-3 flex justify-center"><StartButton /></div>
       </div>
     </div>
   );

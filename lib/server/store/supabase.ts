@@ -3,6 +3,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { catIn, catOut, type CatalogDb } from "@/lib/catalog/db";
 import { env } from "../env";
 import { seal, unseal, type Sealed } from "../crypto";
+import { clickStats } from "./file";
 import type { EmailEventRow, PlanRow, QuestionnaireRow, RuleConstantsRow, Stats, Store, UserRow } from "./types";
 
 /**
@@ -134,7 +135,8 @@ export const supabaseStore: Store = {
     return r.data as boolean;
   },
   async stats(): Promise<Stats> {
-    const [signups, confirmed, started, completed, plans, sent, opens, unsub] = await Promise.all([
+    const clicks = (must(await db().from("email_events").select("type, provider_id").eq("type", "affiliate_click").limit(50_000)) ?? []) as { type: string; provider_id: string | null }[];
+    const [signups, confirmed, started, completed, plans, sent, opens, unsub, withEmail] = await Promise.all([
       count("users"),
       count("users", (q) => q.not("double_opt_in_at", "is", null)),
       count("questionnaires"),
@@ -143,7 +145,8 @@ export const supabaseStore: Store = {
       count("email_events", (q) => q.like("type", "sent:%")),
       count("email_events", (q) => q.eq("type", "opened")),
       count("users", (q) => q.not("unsubscribed_at", "is", null)),
+      count("plans", (q) => q.not("user_id", "is", null)),
     ]);
-    return { signups, confirmed, questionnairesStarted: started, questionnairesCompleted: completed, plansGenerated: plans, emailsSent: sent, emailOpens: opens, unsubscribed: unsub };
+    return { signups, confirmed, questionnairesStarted: started, questionnairesCompleted: completed, plansGenerated: plans, emailsSent: sent, emailOpens: opens, unsubscribed: unsub, plansWithEmail: withEmail, ...clickStats(clicks) };
   },
 };

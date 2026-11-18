@@ -3,8 +3,32 @@ import { Checklist } from "./Checklist";
 
 const toneCls = { danger: "border-danger text-danger", warning: "border-warn text-warn", info: "border-info text-info" } as const;
 
-function BlockView({ b, planId }: { b: Block; planId: string }) {
+function BlockView({ b, planId, buyHref }: { b: Block; planId: string; buyHref?: (itemId: string) => string }) {
   switch (b.type) {
+    case "products":
+      return (
+        <div className="my-4">
+          {b.caption && <h3 className="mt-5 mb-2 font-semibold">{b.caption}</h3>}
+          <ul className="divide-y divide-line border-y border-line">
+            {b.items.map((i) => (
+              <li key={i.itemId} className="py-3 flex gap-3 items-start">
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold">
+                    {i.name} {i.qty && <span className="text-muted font-normal whitespace-nowrap">{i.qty}</span>} {i.later && <span className="text-xs align-middle rounded px-1.5 py-0.5 bg-bg border border-line font-normal">later</span>}
+                  </p>
+                  <p className="text-sm text-muted mt-0.5">{i.spec}</p>
+                  <p className="text-sm mt-0.5">{i.price}{i.models.length ? ` · e.g. ${i.models.join("; ")}` : ""}</p>
+                </div>
+                {i.buyable && (
+                  <a href={buyHref ? buyHref(i.itemId) : `/go/${encodeURIComponent(i.itemId)}?p=${planId}&src=web`} target="_blank" rel="sponsored nofollow noopener" className="btn-ghost shrink-0 text-brand min-h-[40px]" aria-label={`Buy ${i.name} (opens a store, affiliate link)`}>
+                    Buy
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
     case "paragraph":
       return <p className="my-3">{b.text}</p>;
     case "subheading":
@@ -66,7 +90,7 @@ function BlockView({ b, planId }: { b: Block; planId: string }) {
   }
 }
 
-export function PlanView({ doc, planId }: { doc: PlanDocument; planId: string }) {
+export function PlanView({ doc, planId, buyHref }: { doc: PlanDocument; planId: string; buyHref?: (itemId: string) => string }) {
   return (
     <article>
       <nav aria-label="Plan sections" className="card p-4 my-6 no-print">
@@ -81,7 +105,7 @@ export function PlanView({ doc, planId }: { doc: PlanDocument; planId: string })
         <section key={s.id} id={s.id} aria-labelledby={`${s.id}-h`} className="card p-4 sm:p-6 my-4 scroll-mt-4">
           <h2 id={`${s.id}-h`} className="text-xl font-bold">{s.number}. {s.title}</h2>
           <p className="mt-2 p-3 rounded bg-brand-soft">{s.summary}</p>
-          {s.blocks.map((b, i) => <BlockView key={i} b={b} planId={planId} />)}
+          {s.blocks.map((b, i) => <BlockView key={i} b={b} planId={planId} buyHref={buyHref} />)}
         </section>
       ))}
       <section className="card p-4 sm:p-6 my-4">

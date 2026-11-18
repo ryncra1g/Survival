@@ -68,6 +68,10 @@ export function documentStrings(doc: PlanDocument): string[] {
         case "callout":
           s.push(b.title, b.text);
           break;
+        case "products":
+          if (b.caption) s.push(b.caption);
+          for (const i of b.items) s.push(i.name, i.spec, ...i.models);
+          break;
       }
     }
   }

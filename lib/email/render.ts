@@ -40,8 +40,18 @@ const button = (href: string, label: string) =>
 // Cell styles live in a <style> block (class "c") — inlining them on every cell pushes long plans past Gmail's clip limit.
 const td = (v: string) => `<td class="c">${esc(v)}</td>`;
 const th = (v: string, w = "") => `<th class="c"${w ? ` width="${w}"` : ""}>${esc(v)}</th>`;
-function block(b: Block): string {
+/** Tracked Buy link: /go/<itemId>?p=<planId>&src=email */
+export const goPath = (itemId: string, planId?: string, src = "web") => `/go/${encodeURIComponent(itemId)}?${planId ? `p=${encodeURIComponent(planId)}&` : ""}src=${src}`;
+
+function block(b: Block, ctx: { appUrl: string; planId?: string } = { appUrl: "" }): string {
   switch (b.type) {
+    case "products":
+      return `${b.caption ? `<p style="margin:12px 0 4px;font-size:13px;font-weight:600;color:${C.muted}">${esc(b.caption)}</p>` : ""}<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:6px 0"><tr>${th("Item")}${th("Price")}${th("")}</tr>${b.items
+        .map(
+          (i) =>
+            `<tr><td class="c"><strong>${esc(i.name)}</strong>${i.qty ? ` ${esc(i.qty)}` : ""}${i.later ? " <em>(later)</em>" : ""}<br><span style="color:${C.muted}">${esc(i.spec)}</span></td><td class="c">${esc(i.price)}</td><td class="c">${i.buyable ? `<a href="${esc(ctx.appUrl + goPath(i.itemId, ctx.planId, "email"))}" style="color:${C.brand};font-weight:700">Buy</a>` : ""}</td></tr>`,
+        )
+        .join("")}</table>`;
     case "paragraph":
       return `<p style="margin:8px 0">${esc(b.text)}</p>`;
     case "subheading":
@@ -62,12 +72,12 @@ function block(b: Block): string {
 }
 
 /** The plan email: same structure as on screen. Gear specs are shortened to stay under Gmail's clip limit. */
-export function renderPlanEmail(doc: PlanDocument, meta: EmailMeta & { planUrl: string; pdfAttached: boolean }): { subject: string; html: string; text: string } {
+export function renderPlanEmail(doc: PlanDocument, meta: EmailMeta & { planUrl: string; pdfAttached: boolean; planId?: string }): { subject: string; html: string; text: string } {
   const toc = doc.sections.map((s) => `${s.number}. ${esc(s.title)}`).join(" · ");
   const sections = doc.sections
     .map((s) => {
       const blocks = s.id === "gear" ? s.blocks.map((b) => (b.type === "table" ? { ...b, columns: ["Item", "Look for", "Price"], rows: b.rows.map((r) => [r[0], r[1], r[3]]) } : b)) : s.blocks;
-      return `<h2 style="margin:24px 0 4px;font-size:18px;border-top:2px solid ${C.line};padding-top:16px">${s.number}. ${esc(s.title)}</h2><p style="margin:4px 0 8px;font-size:15px;color:${C.ink};background:#fbf3ea;padding:8px 10px;border-radius:4px">${esc(s.summary)}</p>${blocks.map(block).join("")}`;
+      return `<h2 style="margin:24px 0 4px;font-size:18px;border-top:2px solid ${C.line};padding-top:16px">${s.number}. ${esc(s.title)}</h2><p style="margin:4px 0 8px;font-size:15px;color:${C.ink};background:#fbf3ea;padding:8px 10px;border-radius:4px">${esc(s.summary)}</p>${blocks.map((b) => block(b, { appUrl: meta.appUrl, planId: meta.planId })).join("")}`;
     })
     .join("");
   const body = `<h1 style="margin:0 0 4px;font-size:22px">${esc(doc.title)}</h1><p style="margin:0;color:${C.muted};font-size:14px">${esc(doc.subtitle)}</p>
@@ -103,7 +113,7 @@ export function planSubject(doc: PlanDocument): string {
   return region && scenario ? `Your ${adj[scenario] ?? scenario} emergency plan for ${region} is ready` : "Your ReadyPlan emergency plan";
 }
 
-export function planToText(doc: PlanDocument, meta: EmailMeta & { planUrl: string }): string {
+export function planToText(doc: PlanDocument, meta: EmailMeta & { planUrl: string; planId?: string }): string {
   const lines = [doc.title, doc.subtitle, `Open your plan: ${meta.planUrl}`, "", doc.disclaimer, ""];
   for (const s of doc.sections) {
     lines.push(`${s.number}. ${s.title.toUpperCase()}`, s.summary, "");
@@ -114,6 +124,7 @@ export function planToText(doc: PlanDocument, meta: EmailMeta & { planUrl: strin
       if (b.type === "table") lines.push(...(b.caption ? [b.caption] : []), b.columns.join(" | "), ...b.rows.map((r) => r.join(" | ")));
       if (b.type === "ifthen") lines.push(...b.rows.map((r) => `IF ${r.if} -> ${r.then}`));
       if (b.type === "callout") lines.push(`!! ${b.title}: ${b.text}`);
+      if (b.type === "products") lines.push(...(b.caption ? [b.caption] : []), ...b.items.map((i) => `- ${i.name} ${i.qty} (${i.price}): ${i.spec}${i.buyable ? ` — buy: ${meta.appUrl}${goPath(i.itemId, meta.planId, "email")}` : ""}`));
     }
     lines.push("");
   }

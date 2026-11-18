@@ -161,6 +161,231 @@
           ]
         },
         {
+          "type": "products",
+          "caption": "Phase 1 shopping list (life safety)",
+          "items": [
+            {
+              "itemId": "co-alarm",
+              "name": "Carbon monoxide alarm",
+              "category": "Life safety",
+              "spec": "UL 2034 listed, battery or plug-in with battery backup, digital readout; one per floor and outside each sleeping area",
+              "models": [
+                "Kidde KN-COPP-3",
+                "First Alert CO605"
+              ],
+              "price": "$20–$40 each",
+              "qty": "× 4",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "water-jug",
+              "name": "7-gallon water container",
+              "category": "Water",
+              "spec": "Food-grade HDPE (#2), BPA-free, with spigot; stack no more than 2 high",
+              "models": [
+                "Reliance Aqua-Tainer 7 gal",
+                "Scepter 7 gal water container"
+              ],
+              "price": "$20–$35 each",
+              "qty": "× 8",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "tub-bladder",
+              "name": "Bathtub water bladder",
+              "category": "Water",
+              "spec": "Food-grade liner that fills a bathtub (~100 gal) when a storm is forecast",
+              "models": [
+                "WaterBOB 100 gal"
+              ],
+              "price": "$25–$40 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "bleach",
+              "name": "Unscented household bleach",
+              "category": "Water",
+              "spec": "Regular, unscented 6–8.25% sodium hypochlorite; no splash-less or scented types; replace yearly",
+              "models": [
+                "Any store brand"
+              ],
+              "price": "$4–$8 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "filter-basic",
+              "name": "Hollow-fiber water filter",
+              "category": "Water",
+              "spec": "0.1-micron hollow fiber (removes bacteria & protozoa; boil or disinfect for viruses); gravity or squeeze",
+              "models": [
+                "Sawyer Squeeze",
+                "LifeStraw Family 2.0"
+              ],
+              "price": "$35–$90 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "lights",
+              "name": "Headlamps + LED lanterns",
+              "category": "Light",
+              "spec": "AA/AAA headlamp per person (≥200 lumens) + 2 LED lanterns; no candles",
+              "models": [
+                "Black Diamond Astro",
+                "Energizer Vision headlamp"
+              ],
+              "price": "$15–$30 each",
+              "qty": "× 4",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "batteries",
+              "name": "AA/AAA battery stock",
+              "category": "Light",
+              "spec": "Bulk alkaline or rechargeable NiMH (pre-charged); store at room temperature",
+              "models": [
+                "Amazon Basics bulk",
+                "Panasonic eneloop"
+              ],
+              "price": "$20–$40 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "radio",
+              "name": "NOAA weather radio",
+              "category": "Communications",
+              "spec": "NOAA Weather Radio with SAME alerts, hand-crank + USB charging",
+              "models": [
+                "Midland ER310",
+                "Eton FRX3"
+              ],
+              "price": "$50–$80 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "power-bank",
+              "name": "USB power bank",
+              "category": "Power",
+              "spec": "20,000 mAh or larger, USB-C PD; one per adult keeps phones running 3–4 days",
+              "models": [
+                "Anker PowerCore 20K",
+                "INIU 20000 mAh"
+              ],
+              "price": "$25–$45 each",
+              "qty": "× 2",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "first-aid",
+              "name": "Family first aid kit",
+              "category": "First aid",
+              "spec": "200+ piece kit with trauma pads, gauze, tape, elastic wrap, gloves, thermometer, tweezers, shears",
+              "models": [
+                "Adventure Medical Kits Family",
+                "American Red Cross Deluxe Family Kit"
+              ],
+              "price": "$30–$80 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "extinguisher",
+              "name": "Fire extinguisher",
+              "category": "Life safety",
+              "spec": "ABC-rated, 2-A:10-B:C or larger, rechargeable metal valve; one per floor + kitchen",
+              "models": [
+                "First Alert PRO5",
+                "Kidde Pro 210"
+              ],
+              "price": "$30–$60 each",
+              "qty": "× 3",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "thermometers",
+              "name": "Fridge/freezer thermometers",
+              "category": "Food",
+              "spec": "Appliance thermometers to check the 40°F / 0°F food-safety lines",
+              "models": [
+                "Rubbermaid appliance thermometer"
+              ],
+              "price": "$8–$15 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "buddy-heater",
+              "name": "Indoor-rated portable propane heater",
+              "category": "Heat",
+              "spec": "Rated for indoor use, with oxygen depletion sensor (ODS) and tip-over shutoff; use only with a working CO alarm and the ventilation the manual requires",
+              "models": [
+                "Mr. Heater Portable Buddy (MH9BX)",
+                "Mr. Heater Big Buddy (MH18B)"
+              ],
+              "price": "$100–$200 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "propane-1lb",
+              "name": "1-lb propane cylinders (heater fuel)",
+              "category": "Heat",
+              "spec": "DOT-approved 1-lb cylinders; store outdoors or in a detached shed, never in living space",
+              "models": [
+                "Coleman 1-lb propane"
+              ],
+              "price": "$30–$50 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "sleep-system",
+              "name": "Cold-rated sleeping bags",
+              "category": "Heat",
+              "spec": "Rated 0–20°F (EN/ISO comfort rating where listed), one per person",
+              "models": [
+                "TETON Sports Celsius 0°F",
+                "Coleman North Rim 0°F"
+              ],
+              "price": "$40–$90 each",
+              "qty": "× 4",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "pipe-insulation",
+              "name": "Pipe insulation & faucet covers",
+              "category": "Heat",
+              "spec": "Foam pipe sleeves for exposed pipes + outdoor faucet covers",
+              "models": [
+                "Frost King foam sleeves"
+              ],
+              "price": "$20–$50 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            }
+          ]
+        },
+        {
           "type": "subheading",
           "text": "This month"
         },
@@ -1707,242 +1932,534 @@
       "summary": "Buy to the spec, not the brand. The example models are just a starting point for comparing.",
       "blocks": [
         {
-          "type": "table",
-          "columns": [
-            "Category",
-            "Look for",
-            "Examples",
-            "Price range"
-          ],
-          "rows": [
-            [
-              "Life safety: Carbon monoxide alarm",
-              "UL 2034 listed, battery or plug-in with battery backup, digital readout; one per floor and outside each sleeping area",
-              "Kidde KN-COPP-3; First Alert CO605",
-              "$20–$40 each"
-            ],
-            [
-              "Water: 7-gallon water container",
-              "Food-grade HDPE (#2), BPA-free, with spigot; stack no more than 2 high",
-              "Reliance Aqua-Tainer 7 gal; Scepter 7 gal water container",
-              "$20–$35 each"
-            ],
-            [
-              "Water: Bathtub water bladder",
-              "Food-grade liner that fills a bathtub (~100 gal) when a storm is forecast",
-              "WaterBOB 100 gal",
-              "$25–$40 each"
-            ],
-            [
-              "Water: Unscented household bleach",
-              "Regular, unscented 6–8.25% sodium hypochlorite; no splash-less or scented types; replace yearly",
-              "Any store brand",
-              "$4–$8 each"
-            ],
-            [
-              "Water: Hollow-fiber water filter",
-              "0.1-micron hollow fiber (removes bacteria & protozoa; boil or disinfect for viruses); gravity or squeeze",
-              "Sawyer Squeeze; LifeStraw Family 2.0",
-              "$35–$90 each"
-            ],
-            [
-              "Light: Headlamps + LED lanterns",
-              "AA/AAA headlamp per person (≥200 lumens) + 2 LED lanterns; no candles",
-              "Black Diamond Astro; Energizer Vision headlamp",
-              "$15–$30 each"
-            ],
-            [
-              "Light: AA/AAA battery stock",
-              "Bulk alkaline or rechargeable NiMH (pre-charged); store at room temperature",
-              "Amazon Basics bulk; Panasonic eneloop",
-              "$20–$40 each"
-            ],
-            [
-              "Communications: NOAA weather radio",
-              "NOAA Weather Radio with SAME alerts, hand-crank + USB charging",
-              "Midland ER310; Eton FRX3",
-              "$50–$80 each"
-            ],
-            [
-              "Power: USB power bank",
-              "20,000 mAh or larger, USB-C PD; one per adult keeps phones running 3–4 days",
-              "Anker PowerCore 20K; INIU 20000 mAh",
-              "$25–$45 each"
-            ],
-            [
-              "First aid: Family first aid kit",
-              "200+ piece kit with trauma pads, gauze, tape, elastic wrap, gloves, thermometer, tweezers, shears",
-              "Adventure Medical Kits Family; American Red Cross Deluxe Family Kit",
-              "$30–$80 each"
-            ],
-            [
-              "Life safety: Fire extinguisher",
-              "ABC-rated, 2-A:10-B:C or larger, rechargeable metal valve; one per floor + kitchen",
-              "First Alert PRO5; Kidde Pro 210",
-              "$30–$60 each"
-            ],
-            [
-              "Food: Fridge/freezer thermometers",
-              "Appliance thermometers to check the 40°F / 0°F food-safety lines",
-              "Rubbermaid appliance thermometer",
-              "$8–$15 each"
-            ],
-            [
-              "Heat: Indoor-rated portable propane heater",
-              "Rated for indoor use, with oxygen depletion sensor (ODS) and tip-over shutoff; use only with a working CO alarm and the ventilation the manual requires",
-              "Mr. Heater Portable Buddy (MH9BX); Mr. Heater Big Buddy (MH18B)",
-              "$100–$200 each"
-            ],
-            [
-              "Heat: 1-lb propane cylinders (heater fuel)",
-              "DOT-approved 1-lb cylinders; store outdoors or in a detached shed, never in living space",
-              "Coleman 1-lb propane",
-              "$30–$50 each"
-            ],
-            [
-              "Heat: Cold-rated sleeping bags",
-              "Rated 0–20°F (EN/ISO comfort rating where listed), one per person",
-              "TETON Sports Celsius 0°F; Coleman North Rim 0°F",
-              "$40–$90 each"
-            ],
-            [
-              "Heat: Pipe insulation & faucet covers",
-              "Foam pipe sleeves for exposed pipes + outdoor faucet covers",
-              "Frost King foam sleeves",
-              "$20–$50 each"
-            ],
-            [
-              "Power: Small inverter generator",
-              "2,200–2,500 W inverter with CO auto-shutoff (runs fridge, furnace blower via inlet, charging)",
-              "Champion 2500W inverter; Honda EU2200i",
-              "$550–$1,200 each"
-            ],
-            [
-              "Power: Generator cord + outdoor extension cords",
-              "L14-30 generator cord (for an inlet) or 12-gauge outdoor-rated extension cords long enough to keep the generator 20+ ft from the house",
-              "Conntek L14-30 25 ft; Southwire 12/3 outdoor cord",
-              "$60–$120 each"
-            ],
-            [
-              "Fuel: 5-gallon gas cans + stabilizer",
-              "Approved 5-gal cans + fuel stabilizer; store in a detached shed or well-ventilated area away from ignition sources",
-              "Scepter SmartControl 5 gal; STA-BIL Storage",
-              "$30–$45 each"
-            ],
-            [
-              "Flood: Flood kit",
-              "Waterproof bins for documents/valuables on an upper shelf, sandbags or water-activated flood barriers for door thresholds",
-              "Quick Dam water-activated bags; Sterilite latching totes",
-              "$50–$150 each"
-            ],
-            [
-              "Power: Generator inlet + interlock (electrician-installed)",
-              "Power inlet box + panel interlock kit or transfer switch, installed by a licensed electrician (permit where required)",
-              "Reliance Controls PB30 inlet; Panel-maker interlock kit",
-              "$500–$1,500 each"
-            ],
-            [
-              "Fuel: 20-lb propane cylinders",
-              "Filled 20-lb cylinders with OPD valves; store outdoors upright",
-              "Blue Rhino exchange; Worthington 20 lb",
-              "$50–$70 each"
-            ],
-            [
-              "Food: Multi-day cooler",
-              "Rotomolded or 5-day-rated cooler, 45–70 qt",
-              "Coleman Xtreme 70 qt; Igloo MaxCold",
-              "$40–$90 each"
-            ],
-            [
-              "Food: Food storage buckets",
-              "Food-grade 5-gal buckets with gamma seal lids, mylar bags and oxygen absorbers for rice/beans/oats",
-              "Gamma Seal lid kit; ShieldPro mylar kit",
-              "$40–$90 each"
-            ],
-            [
-              "Sanitation: Emergency toilet kit",
-              "5-gal bucket toilet seat + heavy-duty liners + absorbent (cat litter or sawdust); two-bucket setup",
-              "Reliance Luggable Loo; Camco bucket toilet seat",
-              "$25–$50 each"
-            ],
-            [
-              "Storm: Window protection",
-              "Pre-cut 5/8\" exterior plywood with clips, or code-approved storm panels",
-              "PlyLox window clips; Storm panel kits",
-              "$150–$600 each"
-            ],
-            [
-              "Storm: Battery backup sump pump",
-              "Battery backup sump pump with alarm and deep-cycle battery",
-              "Basement Watchdog Big Dog; Wayne ESP25",
-              "$250–$500 each"
-            ],
-            [
-              "Pets: Pet go-kit",
-              "Collapsible bowls, spare leash/harness, crate or carrier, waste bags, copy of vaccination records",
-              "Kurgo collapsible bowls; Any airline-style carrier",
-              "$30–$100 each"
-            ],
-            [
-              "Power: Portable power station (quiet hours)",
-              "1–2 kWh LiFePO4, pure sine wave; covers overnight fridge/phone/CPAP loads so the generator can be off",
-              "EcoFlow DELTA 2; Jackery Explorer 1000 v2",
-              "$400–$900 each"
-            ],
-            [
-              "Power: Portable solar panel",
-              "200–400 W folding panel matched to your power station's input (voltage/connector)",
-              "EcoFlow 220W bifacial; Jackery SolarSaga 200W",
-              "$300–$650 each"
-            ],
-            [
-              "Communications: GMRS/FRS handheld radios",
-              "Pair of FRS (license-free) or GMRS radios (FCC license, no exam) for neighborhood/family comms",
-              "Midland GXT1000VP4; Motorola Talkabout T470",
-              "$60–$150 each"
-            ],
-            [
-              "Water: Countertop gravity filter",
-              "Gravity system with independent test results (NSF/ANSI 53 or P231 where available), ≥2 gal/hour",
-              "Berkey-style gravity system; LifeStraw Community",
-              "$250–$450 each"
-            ],
-            [
-              "Documents: Fire/water-resistant document pouch",
-              "Fire- and water-resistant pouch or small safe for copies of IDs, insurance, prescriptions list",
-              "SentrySafe document bag; ROLOWAY fireproof pouch",
-              "$20–$60 each"
-            ],
-            [
-              "Kids: Kids comfort & activity kit",
-              "Cards, coloring, books, small toys, glow sticks; kept in a labeled bin",
-              "Any — rotate favorites",
-              "$20–$50 each"
-            ],
-            [
-              "Evacuation: Go-bag backpack",
-              "30–40 L pack per adult; small pack per child with ID card, snacks, comfort item",
-              "Osprey Daylite; REI Ruckpack 40",
-              "$40–$120 each"
-            ],
-            [
-              "Evacuation: Vehicle emergency kit",
-              "Lithium jump starter, 12 V tire inflator, tow strap, reflective triangles, paper road atlas",
-              "NOCO Boost GB40; AstroAI tire inflator",
-              "$100–$200 each"
-            ],
-            [
-              "Evacuation: Family tent + tarps",
-              "3-season (or 4-season for winter) family tent, 2 heavy tarps, paracord, stakes",
-              "Coleman Skydome 6; REI Base Camp 6",
-              "$150–$450 each"
-            ],
-            [
-              "Evacuation: Water transport for off-grid site",
-              "2–4 collapsible or rigid 5–7 gal containers dedicated to the vehicle/land site",
-              "Reliance Aqua-Tainer 7 gal; Scepter 5 gal",
-              "$40–$90 each"
-            ]
+          "type": "products",
+          "items": [
+            {
+              "itemId": "co-alarm",
+              "name": "Carbon monoxide alarm",
+              "category": "Life safety",
+              "spec": "UL 2034 listed, battery or plug-in with battery backup, digital readout; one per floor and outside each sleeping area",
+              "models": [
+                "Kidde KN-COPP-3",
+                "First Alert CO605"
+              ],
+              "price": "$20–$40 each",
+              "qty": "× 4",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "water-jug",
+              "name": "7-gallon water container",
+              "category": "Water",
+              "spec": "Food-grade HDPE (#2), BPA-free, with spigot; stack no more than 2 high",
+              "models": [
+                "Reliance Aqua-Tainer 7 gal",
+                "Scepter 7 gal water container"
+              ],
+              "price": "$20–$35 each",
+              "qty": "× 8",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "tub-bladder",
+              "name": "Bathtub water bladder",
+              "category": "Water",
+              "spec": "Food-grade liner that fills a bathtub (~100 gal) when a storm is forecast",
+              "models": [
+                "WaterBOB 100 gal"
+              ],
+              "price": "$25–$40 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "bleach",
+              "name": "Unscented household bleach",
+              "category": "Water",
+              "spec": "Regular, unscented 6–8.25% sodium hypochlorite; no splash-less or scented types; replace yearly",
+              "models": [
+                "Any store brand"
+              ],
+              "price": "$4–$8 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "filter-basic",
+              "name": "Hollow-fiber water filter",
+              "category": "Water",
+              "spec": "0.1-micron hollow fiber (removes bacteria & protozoa; boil or disinfect for viruses); gravity or squeeze",
+              "models": [
+                "Sawyer Squeeze",
+                "LifeStraw Family 2.0"
+              ],
+              "price": "$35–$90 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "lights",
+              "name": "Headlamps + LED lanterns",
+              "category": "Light",
+              "spec": "AA/AAA headlamp per person (≥200 lumens) + 2 LED lanterns; no candles",
+              "models": [
+                "Black Diamond Astro",
+                "Energizer Vision headlamp"
+              ],
+              "price": "$15–$30 each",
+              "qty": "× 4",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "batteries",
+              "name": "AA/AAA battery stock",
+              "category": "Light",
+              "spec": "Bulk alkaline or rechargeable NiMH (pre-charged); store at room temperature",
+              "models": [
+                "Amazon Basics bulk",
+                "Panasonic eneloop"
+              ],
+              "price": "$20–$40 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "radio",
+              "name": "NOAA weather radio",
+              "category": "Communications",
+              "spec": "NOAA Weather Radio with SAME alerts, hand-crank + USB charging",
+              "models": [
+                "Midland ER310",
+                "Eton FRX3"
+              ],
+              "price": "$50–$80 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "power-bank",
+              "name": "USB power bank",
+              "category": "Power",
+              "spec": "20,000 mAh or larger, USB-C PD; one per adult keeps phones running 3–4 days",
+              "models": [
+                "Anker PowerCore 20K",
+                "INIU 20000 mAh"
+              ],
+              "price": "$25–$45 each",
+              "qty": "× 2",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "first-aid",
+              "name": "Family first aid kit",
+              "category": "First aid",
+              "spec": "200+ piece kit with trauma pads, gauze, tape, elastic wrap, gloves, thermometer, tweezers, shears",
+              "models": [
+                "Adventure Medical Kits Family",
+                "American Red Cross Deluxe Family Kit"
+              ],
+              "price": "$30–$80 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "extinguisher",
+              "name": "Fire extinguisher",
+              "category": "Life safety",
+              "spec": "ABC-rated, 2-A:10-B:C or larger, rechargeable metal valve; one per floor + kitchen",
+              "models": [
+                "First Alert PRO5",
+                "Kidde Pro 210"
+              ],
+              "price": "$30–$60 each",
+              "qty": "× 3",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "thermometers",
+              "name": "Fridge/freezer thermometers",
+              "category": "Food",
+              "spec": "Appliance thermometers to check the 40°F / 0°F food-safety lines",
+              "models": [
+                "Rubbermaid appliance thermometer"
+              ],
+              "price": "$8–$15 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "buddy-heater",
+              "name": "Indoor-rated portable propane heater",
+              "category": "Heat",
+              "spec": "Rated for indoor use, with oxygen depletion sensor (ODS) and tip-over shutoff; use only with a working CO alarm and the ventilation the manual requires",
+              "models": [
+                "Mr. Heater Portable Buddy (MH9BX)",
+                "Mr. Heater Big Buddy (MH18B)"
+              ],
+              "price": "$100–$200 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "propane-1lb",
+              "name": "1-lb propane cylinders (heater fuel)",
+              "category": "Heat",
+              "spec": "DOT-approved 1-lb cylinders; store outdoors or in a detached shed, never in living space",
+              "models": [
+                "Coleman 1-lb propane"
+              ],
+              "price": "$30–$50 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "sleep-system",
+              "name": "Cold-rated sleeping bags",
+              "category": "Heat",
+              "spec": "Rated 0–20°F (EN/ISO comfort rating where listed), one per person",
+              "models": [
+                "TETON Sports Celsius 0°F",
+                "Coleman North Rim 0°F"
+              ],
+              "price": "$40–$90 each",
+              "qty": "× 4",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "pipe-insulation",
+              "name": "Pipe insulation & faucet covers",
+              "category": "Heat",
+              "spec": "Foam pipe sleeves for exposed pipes + outdoor faucet covers",
+              "models": [
+                "Frost King foam sleeves"
+              ],
+              "price": "$20–$50 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "generator-small",
+              "name": "Small inverter generator",
+              "category": "Power",
+              "spec": "2,200–2,500 W inverter with CO auto-shutoff (runs fridge, furnace blower via inlet, charging)",
+              "models": [
+                "Champion 2500W inverter",
+                "Honda EU2200i"
+              ],
+              "price": "$550–$1,200 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "gen-cord",
+              "name": "Generator cord + outdoor extension cords",
+              "category": "Power",
+              "spec": "L14-30 generator cord (for an inlet) or 12-gauge outdoor-rated extension cords long enough to keep the generator 20+ ft from the house",
+              "models": [
+                "Conntek L14-30 25 ft",
+                "Southwire 12/3 outdoor cord"
+              ],
+              "price": "$60–$120 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "gas-cans",
+              "name": "5-gallon gas cans + stabilizer",
+              "category": "Fuel",
+              "spec": "Approved 5-gal cans + fuel stabilizer; store in a detached shed or well-ventilated area away from ignition sources",
+              "models": [
+                "Scepter SmartControl 5 gal",
+                "STA-BIL Storage"
+              ],
+              "price": "$30–$45 each",
+              "qty": "× 6",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "flood-kit",
+              "name": "Flood kit",
+              "category": "Flood",
+              "spec": "Waterproof bins for documents/valuables on an upper shelf, sandbags or water-activated flood barriers for door thresholds",
+              "models": [
+                "Quick Dam water-activated bags",
+                "Sterilite latching totes"
+              ],
+              "price": "$50–$150 each",
+              "qty": "",
+              "buyable": false,
+              "later": false
+            },
+            {
+              "itemId": "inlet-interlock",
+              "name": "Generator inlet + interlock (electrician-installed)",
+              "category": "Power",
+              "spec": "Power inlet box + panel interlock kit or transfer switch, installed by a licensed electrician (permit where required)",
+              "models": [
+                "Reliance Controls PB30 inlet",
+                "Panel-maker interlock kit"
+              ],
+              "price": "$500–$1,500 each",
+              "qty": "",
+              "buyable": false,
+              "later": true
+            },
+            {
+              "itemId": "propane-20",
+              "name": "20-lb propane cylinders",
+              "category": "Fuel",
+              "spec": "Filled 20-lb cylinders with OPD valves; store outdoors upright",
+              "models": [
+                "Blue Rhino exchange",
+                "Worthington 20 lb"
+              ],
+              "price": "$50–$70 each",
+              "qty": "× 2",
+              "buyable": false,
+              "later": true
+            },
+            {
+              "itemId": "coolers",
+              "name": "Multi-day cooler",
+              "category": "Food",
+              "spec": "Rotomolded or 5-day-rated cooler, 45–70 qt",
+              "models": [
+                "Coleman Xtreme 70 qt",
+                "Igloo MaxCold"
+              ],
+              "price": "$40–$90 each",
+              "qty": "",
+              "buyable": false,
+              "later": true
+            },
+            {
+              "itemId": "storage-kit",
+              "name": "Food storage buckets",
+              "category": "Food",
+              "spec": "Food-grade 5-gal buckets with gamma seal lids, mylar bags and oxygen absorbers for rice/beans/oats",
+              "models": [
+                "Gamma Seal lid kit",
+                "ShieldPro mylar kit"
+              ],
+              "price": "$40–$90 each",
+              "qty": "",
+              "buyable": false,
+              "later": true
+            },
+            {
+              "itemId": "toilet-kit",
+              "name": "Emergency toilet kit",
+              "category": "Sanitation",
+              "spec": "5-gal bucket toilet seat + heavy-duty liners + absorbent (cat litter or sawdust); two-bucket setup",
+              "models": [
+                "Reliance Luggable Loo",
+                "Camco bucket toilet seat"
+              ],
+              "price": "$25–$50 each",
+              "qty": "",
+              "buyable": false,
+              "later": true
+            },
+            {
+              "itemId": "window-protection",
+              "name": "Window protection",
+              "category": "Storm",
+              "spec": "Pre-cut 5/8\" exterior plywood with clips, or code-approved storm panels",
+              "models": [
+                "PlyLox window clips",
+                "Storm panel kits"
+              ],
+              "price": "$150–$600 each",
+              "qty": "",
+              "buyable": false,
+              "later": true
+            },
+            {
+              "itemId": "sump-backup",
+              "name": "Battery backup sump pump",
+              "category": "Storm",
+              "spec": "Battery backup sump pump with alarm and deep-cycle battery",
+              "models": [
+                "Basement Watchdog Big Dog",
+                "Wayne ESP25"
+              ],
+              "price": "$250–$500 each",
+              "qty": "",
+              "buyable": false,
+              "later": true
+            },
+            {
+              "itemId": "pet-kit",
+              "name": "Pet go-kit",
+              "category": "Pets",
+              "spec": "Collapsible bowls, spare leash/harness, crate or carrier, waste bags, copy of vaccination records",
+              "models": [
+                "Kurgo collapsible bowls",
+                "Any airline-style carrier"
+              ],
+              "price": "$30–$100 each",
+              "qty": "",
+              "buyable": false,
+              "later": true
+            },
+            {
+              "itemId": "power-station-house",
+              "name": "Portable power station (quiet hours)",
+              "category": "Power",
+              "spec": "1–2 kWh LiFePO4, pure sine wave; covers overnight fridge/phone/CPAP loads so the generator can be off",
+              "models": [
+                "EcoFlow DELTA 2",
+                "Jackery Explorer 1000 v2"
+              ],
+              "price": "$400–$900 each",
+              "qty": "",
+              "buyable": false,
+              "later": true
+            },
+            {
+              "itemId": "solar-panel",
+              "name": "Portable solar panel",
+              "category": "Power",
+              "spec": "200–400 W folding panel matched to your power station's input (voltage/connector)",
+              "models": [
+                "EcoFlow 220W bifacial",
+                "Jackery SolarSaga 200W"
+              ],
+              "price": "$300–$650 each",
+              "qty": "",
+              "buyable": false,
+              "later": true
+            },
+            {
+              "itemId": "gmrs",
+              "name": "GMRS/FRS handheld radios",
+              "category": "Communications",
+              "spec": "Pair of FRS (license-free) or GMRS radios (FCC license, no exam) for neighborhood/family comms",
+              "models": [
+                "Midland GXT1000VP4",
+                "Motorola Talkabout T470"
+              ],
+              "price": "$60–$150 each",
+              "qty": "",
+              "buyable": false,
+              "later": true
+            },
+            {
+              "itemId": "filter-gravity",
+              "name": "Countertop gravity filter",
+              "category": "Water",
+              "spec": "Gravity system with independent test results (NSF/ANSI 53 or P231 where available), ≥2 gal/hour",
+              "models": [
+                "Berkey-style gravity system",
+                "LifeStraw Community"
+              ],
+              "price": "$250–$450 each",
+              "qty": "",
+              "buyable": false,
+              "later": true
+            },
+            {
+              "itemId": "docs-pouch",
+              "name": "Fire/water-resistant document pouch",
+              "category": "Documents",
+              "spec": "Fire- and water-resistant pouch or small safe for copies of IDs, insurance, prescriptions list",
+              "models": [
+                "SentrySafe document bag",
+                "ROLOWAY fireproof pouch"
+              ],
+              "price": "$20–$60 each",
+              "qty": "",
+              "buyable": false,
+              "later": true
+            },
+            {
+              "itemId": "morale-kit",
+              "name": "Kids comfort & activity kit",
+              "category": "Kids",
+              "spec": "Cards, coloring, books, small toys, glow sticks; kept in a labeled bin",
+              "models": [
+                "Any — rotate favorites"
+              ],
+              "price": "$20–$50 each",
+              "qty": "",
+              "buyable": false,
+              "later": true
+            },
+            {
+              "itemId": "go-bag",
+              "name": "Go-bag backpack",
+              "category": "Evacuation",
+              "spec": "30–40 L pack per adult; small pack per child with ID card, snacks, comfort item",
+              "models": [
+                "Osprey Daylite",
+                "REI Ruckpack 40"
+              ],
+              "price": "$40–$120 each",
+              "qty": "× 2",
+              "buyable": false,
+              "later": true
+            },
+            {
+              "itemId": "vehicle-kit",
+              "name": "Vehicle emergency kit",
+              "category": "Evacuation",
+              "spec": "Lithium jump starter, 12 V tire inflator, tow strap, reflective triangles, paper road atlas",
+              "models": [
+                "NOCO Boost GB40",
+                "AstroAI tire inflator"
+              ],
+              "price": "$100–$200 each",
+              "qty": "",
+              "buyable": false,
+              "later": true
+            },
+            {
+              "itemId": "tent",
+              "name": "Family tent + tarps",
+              "category": "Evacuation",
+              "spec": "3-season (or 4-season for winter) family tent, 2 heavy tarps, paracord, stakes",
+              "models": [
+                "Coleman Skydome 6",
+                "REI Base Camp 6"
+              ],
+              "price": "$150–$450 each",
+              "qty": "",
+              "buyable": false,
+              "later": true
+            },
+            {
+              "itemId": "raw-land-water",
+              "name": "Water transport for off-grid site",
+              "category": "Evacuation",
+              "spec": "2–4 collapsible or rigid 5–7 gal containers dedicated to the vehicle/land site",
+              "models": [
+                "Reliance Aqua-Tainer 7 gal",
+                "Scepter 5 gal"
+              ],
+              "price": "$40–$90 each",
+              "qty": "",
+              "buyable": false,
+              "later": true
+            }
           ]
         },
         {

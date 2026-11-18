@@ -10,7 +10,7 @@ import { env, isDemo } from "./env";
 import { metaFor, sendEmail } from "./mailer";
 import { store, type PlanRow, type UserRow } from "./store";
 
-export async function buildAndSavePlan(userId: string, questionnaireId: string, answers: unknown): Promise<PlanRow> {
+export async function buildAndSavePlan(userId: string | null, questionnaireId: string, answers: unknown): Promise<PlanRow> {
   const [{ constants, version }, catalog] = await Promise.all([loadConstants(), store.listCatalog()]);
   const r = await generatePlan(answers, constants, catalog);
   const plan = await store.createPlan({
@@ -44,7 +44,7 @@ export async function emailPlan(plan: PlanRow, user: UserRow): Promise<boolean> 
   const doc = plan.plan as PlanDocument;
   const pdf = await renderPlanPdf(doc);
   const pdfPath = await storePdf(plan.id, user.id, pdf);
-  const m = renderPlanEmail(doc, { ...metaFor(user.id), planUrl: `${env.appUrl}/plan/${plan.id}`, pdfAttached: true });
+  const m = renderPlanEmail(doc, { ...metaFor(user.id), planUrl: `${env.appUrl}/plan/${plan.id}`, pdfAttached: true, planId: plan.id });
   const ok = await sendEmail({ to: user.email, userId: user.id, type: "plan", ...m, attachments: [
       { filename: "ReadyPlan.pdf", content: pdf },
       { filename: "ReadyPlan-fridge-checklist.pdf", content: await renderFridgeChecklist(doc) },

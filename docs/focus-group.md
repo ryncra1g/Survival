@@ -102,3 +102,15 @@ The required checkbox, "Send me my plan **and occasional preparedness updates**"
 - an optional, unticked "Also send me occasional preparedness updates".
 
 It's a 15-minute change. I left your wording as is until you decide.
+
+---
+
+# Round 3: optional email + affiliate links (owner's decision)
+
+An associate pointed out that email-first adds a step before any value, and that clicks on affiliate links may be worth more than emails. The owner chose:
+
+- **Email optional, offered after the plan.** "Build my free plan" needs no sign-up. "Email me my plan" sits right after the first 3 steps and again at the end of the plan. The value exchange is the PDF and fridge checklist in your inbox plus a link to come back and update the plan.
+- **Consent fixed for GDPR.** Getting the plan by email is the main action. Seasonal reminders and updates are a separate, **unticked** checkbox. This settles the round-2 compliance note.
+- **Affiliate Buy buttons** in a "Phase 1 shopping list" right under "This week" (where people decide what to buy) and in Recommended gear, with click tracking and dashboard stats (email capture rate, Buy clicks per plan, most-clicked gear).
+
+What to watch on the dashboard: **email capture rate** (plans with an email ÷ plans) and **Buy clicks per plan**. Seasonal and Phase 2 emails bring people back to the Buy buttons, so both numbers matter.

@@ -26,6 +26,15 @@ interface DB {
 const FILE = path.join(process.env.READYPLAN_DATA_DIR || path.join(process.cwd(), ".data"), "db.json");
 const now = () => new Date().toISOString();
 
+export function clickStats(events: { type: string; provider_id: string | null }[]) {
+  const counts = new Map<string, number>();
+  for (const e of events) if (e.type === "affiliate_click" && e.provider_id) counts.set(e.provider_id, (counts.get(e.provider_id) ?? 0) + 1);
+  return {
+    affiliateClicks: [...counts.values()].reduce((t, n) => t + n, 0),
+    topClicks: [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([itemId, clicks]) => ({ itemId, clicks })),
+  };
+}
+
 function load(): DB {
   try {
     return JSON.parse(fs.readFileSync(FILE, "utf8")) as DB;
@@ -113,7 +122,9 @@ export const fileStore: Store = {
     return tx((db) => {
       const cutoff = Date.now() - days * 86_400_000;
       const before = db.questionnaires.length;
-      db.questionnaires = db.questionnaires.filter((q) => q.user_id || Date.parse(q.updated_at) > cutoff);
+      const gone = new Set(db.questionnaires.filter((q) => !q.user_id && Date.parse(q.updated_at) <= cutoff).map((q) => q.id));
+      db.questionnaires = db.questionnaires.filter((q) => !gone.has(q.id));
+      db.plans = db.plans.filter((p) => !gone.has(p.questionnaire_id));
       return before - db.questionnaires.length;
     });
   },
@@ -212,6 +223,8 @@ export const fileStore: Store = {
       emailsSent: sent,
       emailOpens: db.email_events.filter((e) => e.type === "opened").length,
       unsubscribed: db.users.filter((u) => u.unsubscribed_at).length,
+      plansWithEmail: db.plans.filter((p) => p.user_id).length,
+      ...clickStats(db.email_events),
     };
   },
 };

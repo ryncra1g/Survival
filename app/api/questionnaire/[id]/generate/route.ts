@@ -21,17 +21,16 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (!parsed.success) return err(parsed.error.issues[0]?.message ?? "Some answers are missing");
   const ip = await clientIp();
 
+  // Email is optional: plans can be built anonymously and claimed later from the plan page.
   const user = q.user_id ? await store.getUser(q.user_id) : null;
-  if (!user) return err("Start from the front page with your email.", 400);
-
-  if (!(await limit(`gen:user:${user.id}`, LIMITS.generatePerUserDay, 86_400)) || !(await limit(`gen:ip:${ip}`, LIMITS.generatePerIpHour, 3600)))
+  const who = user ? `user:${user.id}` : `nonce:${session!.nonce}`;
+  if (!(await limit(`gen:${who}`, LIMITS.generatePerUserDay, 86_400)) || !(await limit(`gen:ip:${ip}`, LIMITS.generatePerIpHour, 3600)))
     return err("You've generated several plans today. Try again tomorrow.", 429);
 
   await store.updateQuestionnaire(id, { answers: parsed.data });
-  const plan = await buildAndSavePlan(user.id, id, parsed.data);
+  const plan = await buildAndSavePlan(user?.id ?? null, id, parsed.data);
   // Confirmed addresses get the plan right away, even if they confirmed on another device.
-  const emailNow = !!user.double_opt_in_at;
-  const u = user;
-  if (emailNow) after(() => emailPlan(plan, u).catch((e) => console.error("[mail] plan", e)));
-  return json({ planId: plan.id, emailed: emailNow, confirmed: !!user.double_opt_in_at });
+  const emailNow = !!user?.double_opt_in_at;
+  if (user && emailNow) after(() => emailPlan(plan, user).catch((e) => console.error("[mail] plan", e)));
+  return json({ planId: plan.id, emailed: emailNow });
 }

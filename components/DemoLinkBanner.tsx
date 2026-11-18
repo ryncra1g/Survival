@@ -15,7 +15,7 @@ export function DemoLinkBanner() {
     <>
       {returning && (
         <p className="mt-3 text-sm card p-3 no-print" role="status">
-          Welcome back. We&apos;ve emailed you a sign-in link to see your earlier plans. This starts a new one.
+          Welcome back. We&apos;ve emailed you a sign-in link to see your earlier plans.
         </p>
       )}
       {link && <DemoLink link={link} />}
