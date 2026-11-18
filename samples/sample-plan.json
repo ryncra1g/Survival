@@ -287,7 +287,7 @@
               "itemId": "power-bank",
               "name": "USB power bank",
               "category": "Power",
-              "spec": "20,000 mAh or larger, USB-C PD; one per adult keeps phones running 3–4 days",
+              "spec": "20,000 mAh or larger, USB-C PD; keeps a phone running 3–4 days (one per adult is ideal)",
               "models": [
                 "Anker PowerCore 20K",
                 "INIU 20000 mAh"
@@ -496,6 +496,43 @@
               "text": "Put the maintenance calendar on your phone."
             }
           ]
+        },
+        {
+          "type": "subheading",
+          "text": "Skills to practice"
+        },
+        {
+          "type": "checklist",
+          "items": [
+            {
+              "id": "skill-26",
+              "text": "First aid: take a Red Cross First Aid/CPR class (about 3 hours, often online + one session)."
+            },
+            {
+              "id": "skill-27",
+              "text": "Shutoffs: have a handy neighbor or your utility show you the gas, water and main electrical shutoffs, and label them."
+            },
+            {
+              "id": "skill-28",
+              "text": "Camping: spend one night \"camping\" at home: set up the tent, cook on the camp stove outdoors, filter a gallon of water."
+            },
+            {
+              "id": "skill-29",
+              "text": "Generator: practice starting it, plugging in the fridge outdoors, and refueling only after a 15-minute cool-down."
+            },
+            {
+              "id": "skill-30",
+              "text": "Water: filter and disinfect one gallon start to finish."
+            },
+            {
+              "id": "skill-31",
+              "text": "Pets: practice getting each pet into its carrier or on a leash in under 2 minutes."
+            },
+            {
+              "id": "skill-32",
+              "text": "Kids: walk to your meeting place together and make it a game."
+            }
+          ]
         }
       ]
     },
@@ -509,43 +546,43 @@
           "type": "checklist",
           "items": [
             {
-              "id": "day0-26",
+              "id": "day0-33",
               "text": "Check CO and smoke alarms; replace batteries if unsure."
             },
             {
-              "id": "day0-27",
+              "id": "day0-34",
               "text": "Charge every phone, power bank and power station."
             },
             {
-              "id": "day0-28",
+              "id": "day0-35",
               "text": "Fill the bathtub water bladder and spare containers."
             },
             {
-              "id": "day0-29",
+              "id": "day0-36",
               "text": "Set fridge to its coldest setting; fill empty freezer space with water bottles."
             },
             {
-              "id": "day0-30",
+              "id": "day0-37",
               "text": "Get cash and refill prescriptions if you can."
             },
             {
-              "id": "day0-31",
+              "id": "day0-38",
               "text": "Fuel or charge vehicles."
             },
             {
-              "id": "day0-32",
+              "id": "day0-39",
               "text": "Test-start the generator outdoors; stage fuel and cords."
             },
             {
-              "id": "day0-33",
+              "id": "day0-40",
               "text": "Set up your warm room before the cold arrives (see Heat & warmth)."
             },
             {
-              "id": "day0-34",
+              "id": "day0-41",
               "text": "Bring pets inside and stage their food, meds and carrier."
             },
             {
-              "id": "day0-35",
+              "id": "day0-42",
               "text": "Check on elderly or disabled neighbors."
             }
           ]
@@ -607,15 +644,15 @@
           "type": "checklist",
           "items": [
             {
-              "id": "hz-hurricane-high-risk--36",
+              "id": "hz-hurricane-high-risk--43",
               "text": "Look up your evacuation zone (county emergency site)."
             },
             {
-              "id": "hz-hurricane-high-risk--37",
+              "id": "hz-hurricane-high-risk--44",
               "text": "Photograph your home and belongings for insurance."
             },
             {
-              "id": "hz-hurricane-high-risk--38",
+              "id": "hz-hurricane-high-risk--45",
               "text": "Know where to shut off power, gas and water."
             }
           ]
@@ -645,15 +682,15 @@
           "type": "checklist",
           "items": [
             {
-              "id": "hz-flooding-high-risk--39",
+              "id": "hz-flooding-high-risk--46",
               "text": "Check whether you're in a flood zone at FEMA's Flood Map Service Center."
             },
             {
-              "id": "hz-flooding-high-risk--40",
+              "id": "hz-flooding-high-risk--47",
               "text": "Flood damage usually isn't covered by homeowners insurance; flood policies have a 30-day wait."
             },
             {
-              "id": "hz-flooding-high-risk--41",
+              "id": "hz-flooding-high-risk--48",
               "text": "Keep documents and valuables in waterproof bins up high."
             }
           ]
@@ -1086,6 +1123,17 @@
             "Store staples in sealed food-grade buckets or mylar, cool and dry.",
             "Include comfort foods, spices, and a manual can opener."
           ]
+        },
+        {
+          "type": "subheading",
+          "text": "Where to keep it"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Basement: water and canned food on shelves at least a foot off the floor (your area floods); nothing you'd need in a flood down there.",
+            "Garage: water jugs and bulk staples in sealed bins, away from the car's exhaust, chemicals and direct sun; not for anything that spoils in heat."
+          ]
         }
       ]
     },
@@ -1215,27 +1263,27 @@
           "type": "checklist",
           "items": [
             {
-              "id": "fa-42",
+              "id": "fa-49",
               "text": "Family first aid kit (bandages, gauze, tape, elastic wrap, gloves, shears, tweezers, thermometer)."
             },
             {
-              "id": "fa-43",
+              "id": "fa-50",
               "text": "Written list of each person's medications, doses as prescribed, allergies and doctors (keep with documents)."
             },
             {
-              "id": "fa-44",
+              "id": "fa-51",
               "text": "Over-the-counter basics you already use (pain/fever reducer, allergy, stomach) — check expiration dates."
             },
             {
-              "id": "fa-45",
+              "id": "fa-52",
               "text": "Extra glasses/contacts, hearing aid batteries."
             },
             {
-              "id": "fa-46",
+              "id": "fa-53",
               "text": "Children's versions of any OTC medicines you use, with the dosing tool that came in the box."
             },
             {
-              "id": "fa-47",
+              "id": "fa-54",
               "text": "Take a Red Cross First Aid/CPR class."
             }
           ]
@@ -1324,31 +1372,31 @@
           "type": "checklist",
           "items": [
             {
-              "id": "kids-48",
+              "id": "kids-55",
               "text": "Keep meal, nap and bedtime routines as close to normal as you can."
             },
             {
-              "id": "kids-49",
+              "id": "kids-56",
               "text": "Give each child a 'job' (flashlight checker, water helper) so they feel useful."
             },
             {
-              "id": "kids-50",
+              "id": "kids-57",
               "text": "Comfort kit: favorite stuffed animal/blanket, books, cards, coloring, glow sticks."
             },
             {
-              "id": "kids-51",
+              "id": "kids-58",
               "text": "Put an ID card in each child's go-bag/pocket: name, parent phone numbers, out-of-area contact."
             },
             {
-              "id": "kids-52",
+              "id": "kids-59",
               "text": "Practice the plan as a game: 'lights-out dinner', a family meeting-place walk."
             },
             {
-              "id": "kids-53",
+              "id": "kids-60",
               "text": "Talk simply and honestly; limit news exposure; ask how they're feeling."
             },
             {
-              "id": "kids-54",
+              "id": "kids-61",
               "text": "Toddlers: baby gates and covers near any heater or stove; extra outfits and sleep sacks for cold nights."
             }
           ]
@@ -1380,19 +1428,19 @@
           "type": "checklist",
           "items": [
             {
-              "id": "pets-55",
+              "id": "pets-62",
               "text": "Vaccination records and a recent photo of each pet (in the documents pouch)."
             },
             {
-              "id": "pets-56",
+              "id": "pets-63",
               "text": "Leash, harness, crate/carrier, collapsible bowls, waste bags or litter."
             },
             {
-              "id": "pets-57",
+              "id": "pets-64",
               "text": "Microchip details up to date."
             },
             {
-              "id": "pets-58",
+              "id": "pets-65",
               "text": "Know which shelters and hotels on your route accept pets."
             }
           ]
@@ -1517,27 +1565,27 @@
           "type": "checklist",
           "items": [
             {
-              "id": "veh-59",
+              "id": "veh-66",
               "text": "Jump starter, tire inflator, tow strap"
             },
             {
-              "id": "veh-60",
+              "id": "veh-67",
               "text": "Paper road map with 2 routes marked"
             },
             {
-              "id": "veh-61",
+              "id": "veh-68",
               "text": "Blankets, water, snacks"
             },
             {
-              "id": "veh-62",
+              "id": "veh-69",
               "text": "Phone chargers"
             },
             {
-              "id": "veh-63",
+              "id": "veh-70",
               "text": "Flashlight, reflective triangles"
             },
             {
-              "id": "veh-64",
+              "id": "veh-71",
               "text": "Never store spare gasoline inside the car cabin"
             }
           ]
@@ -1550,43 +1598,43 @@
           "type": "checklist",
           "items": [
             {
-              "id": "gobag-65",
+              "id": "gobag-72",
               "text": "Water (1 L) and filter bottle"
             },
             {
-              "id": "gobag-66",
+              "id": "gobag-73",
               "text": "3 days of snacks"
             },
             {
-              "id": "gobag-67",
+              "id": "gobag-74",
               "text": "Change of clothes, rain layer, hat, gloves"
             },
             {
-              "id": "gobag-68",
+              "id": "gobag-75",
               "text": "Headlamp + batteries"
             },
             {
-              "id": "gobag-69",
+              "id": "gobag-76",
               "text": "Medications (7-day supply), glasses"
             },
             {
-              "id": "gobag-70",
+              "id": "gobag-77",
               "text": "Copies of ID and medication list"
             },
             {
-              "id": "gobag-71",
+              "id": "gobag-78",
               "text": "Cash in small bills"
             },
             {
-              "id": "gobag-72",
+              "id": "gobag-79",
               "text": "Whistle, mask, hand sanitizer"
             },
             {
-              "id": "gobag-73",
+              "id": "gobag-80",
               "text": "Child ID card and comfort item"
             },
             {
-              "id": "gobag-74",
+              "id": "gobag-81",
               "text": "Pet food, leash, records"
             }
           ]
@@ -1642,7 +1690,7 @@
               "  7-gallon water container",
               "× 8",
               "$160–$280",
-              "Essential"
+              ""
             ],
             [
               "  Bathtub water bladder",
@@ -2073,7 +2121,7 @@
               "itemId": "power-bank",
               "name": "USB power bank",
               "category": "Power",
-              "spec": "20,000 mAh or larger, USB-C PD; one per adult keeps phones running 3–4 days",
+              "spec": "20,000 mAh or larger, USB-C PD; keeps a phone running 3–4 days (one per adult is ideal)",
               "models": [
                 "Anker PowerCore 20K",
                 "INIU 20000 mAh"

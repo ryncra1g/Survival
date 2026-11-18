@@ -24,7 +24,13 @@ const seed: Seed[] = [
     id: "water-jug", category: "Water", name: "7-gallon water container",
     spec: "Food-grade HDPE (#2), BPA-free, with spigot; stack no more than 2 high",
     models: ["Reliance Aqua-Tainer 7 gal", "Scepter 7 gal water container"], priceLow: 20, priceHigh: 35, tier: 1, phase: 1, priority: 2,
-    qty: "water_jugs", tags: [], essential: true,
+    qty: "water_jugs", tags: [], group: "water",
+  },
+  {
+    id: "water-gallons", category: "Water", name: "Gallon water jugs or refilled bottles (low-cost)",
+    spec: "Store-bought 1-gallon water, or clean 2-liter soda bottles refilled with tap water (not milk jugs); upgrade to 7-gal jugs later",
+    models: ["Any store-brand gallon water"], priceLow: 1, priceHigh: 1.5, tier: 1, phase: 1, priority: 2,
+    qty: "water_gallons", tags: [], essential: true, group: "water",
   },
   {
     id: "water-drum", category: "Water", name: "55-gallon water drum kit",
@@ -123,7 +129,7 @@ const seed: Seed[] = [
   },
   {
     id: "power-bank", category: "Power", name: "USB power bank",
-    spec: "20,000 mAh or larger, USB-C PD; one per adult keeps phones running 3–4 days",
+    spec: "20,000 mAh or larger, USB-C PD; keeps a phone running 3–4 days (one per adult is ideal)",
     models: ["Anker PowerCore 20K", "INIU 20000 mAh"], priceLow: 25, priceHigh: 45, tier: 1, phase: 1, priority: 9,
     qty: "adults", tags: [],
   },
@@ -251,13 +257,13 @@ const seed: Seed[] = [
     id: "solar-panel", category: "Power", name: "Portable solar panel",
     spec: "200–400 W folding panel matched to your power station's input (voltage/connector)",
     models: ["EcoFlow 220W bifacial", "Jackery SolarSaga 200W"], priceLow: 300, priceHigh: 650, tier: 3, phase: 3, priority: 2,
-    qty: 1, tags: [],
+    qty: 1, tags: ["!owns_solar"],
   },
   {
     id: "power-station-house", category: "Power", name: "Portable power station (quiet hours)",
     spec: "1–2 kWh LiFePO4, pure sine wave; covers overnight fridge/phone/CPAP loads so the generator can be off",
     models: ["EcoFlow DELTA 2", "Jackery Explorer 1000 v2"], priceLow: 400, priceHigh: 900, tier: 3, phase: 3, priority: 1,
-    qty: 1, tags: ["house_or_townhouse"], group: "battery",
+    qty: 1, tags: ["house_or_townhouse", "!owns_solar"], group: "battery",
   },
   {
     id: "gmrs", category: "Communications", name: "GMRS/FRS handheld radios",

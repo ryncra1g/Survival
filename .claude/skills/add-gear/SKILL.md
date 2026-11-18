@@ -19,5 +19,6 @@ For each item decide, from the owner's info:
 - `group` for alternatives (engine picks the best that fits the budget), `requiresGroup`/`bundle` for accessories
 - `affiliateUrl`: a direct product link if the owner has one (Amazon links are kept out of emails automatically)
 
+Use "don't sell what they have" tags: `!owns_solar`, `!owns_generator`, or restrict with `house_or_townhouse` for anything fuel-burning. Then add the rule to the pairwise test in `tests/pathways.test.ts` if it's a new kind of ownership.
 Never add weapons, tactical gear, or anything that implies running fuel-burning equipment indoors.
 After editing the seed: `npm test` (the safety fuzz lints every product name/spec), then regenerate `npm run sample` and check the item shows up for a household it should apply to.

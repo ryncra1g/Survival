@@ -11,6 +11,7 @@ export const CATALOG_TAGS = [
   "recommend_generator",
   "has_generator",
   "owns_generator",
+  "owns_solar",
   "earthquake",
   "wildfire",
   "flood",

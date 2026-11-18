@@ -54,7 +54,7 @@ Phase 1 shopping list (life safety)
 - Headlamps + LED lanterns × 4 (Typical $15–$30 each): AA/AAA headlamp per person (≥200 lumens) + 2 LED lanterns; no candles
 - AA/AAA battery stock  (Typical $20–$40 each): Bulk alkaline or rechargeable NiMH (pre-charged); store at room temperature
 - NOAA weather radio  (Typical $50–$80 each): NOAA Weather Radio with SAME alerts, hand-crank + USB charging
-- USB power bank × 2 (Typical $25–$45 each): 20,000 mAh or larger, USB-C PD; one per adult keeps phones running 3–4 days
+- USB power bank × 2 (Typical $25–$45 each): 20,000 mAh or larger, USB-C PD; keeps a phone running 3–4 days (one per adult is ideal)
 - Family first aid kit  (Typical $30–$80 each): 200+ piece kit with trauma pads, gauze, tape, elastic wrap, gloves, thermometer, tweezers, shears
 - Fire extinguisher × 3 (Typical $30–$60 each): ABC-rated, 2-A:10-B:C or larger, rechargeable metal valve; one per floor + kitchen
 - Fridge/freezer thermometers  (Typical $8–$15 each): Appliance thermometers to check the 40°F / 0°F food-safety lines
@@ -82,6 +82,14 @@ Within 90 days
 [ ] Run a 'lights-out weekend': live off your plan for 24–48 hours and fix what breaks.
 [ ] Drive the route to your raw land and back; note fuel stops and alternates.
 [ ] Put the maintenance calendar on your phone.
+Skills to practice
+[ ] First aid: take a Red Cross First Aid/CPR class (about 3 hours, often online + one session).
+[ ] Shutoffs: have a handy neighbor or your utility show you the gas, water and main electrical shutoffs, and label them.
+[ ] Camping: spend one night "camping" at home: set up the tent, cook on the camp stove outdoors, filter a gallon of water.
+[ ] Generator: practice starting it, plugging in the fridge outdoors, and refueling only after a 15-minute cool-down.
+[ ] Water: filter and disinfect one gallon start to finish.
+[ ] Pets: practice getting each pet into its carrier or on a leash in under 2 minutes.
+[ ] Kids: walk to your meeting place together and make it a game.
 
 3. DAY 0 CHECKLIST & DECISION TRIGGERS
 When an outage or storm is coming, run this checklist. Once it hits, use the if/then table so decisions are made in advance, not under stress.
@@ -222,6 +230,9 @@ Day 3–14 | Pantry and canned food, ready-to-eat items.
 Day 15+ | Bulk staples: rice, beans, oats, pasta with oil, peanut butter, canned protein and produce.
 - Store staples in sealed food-grade buckets or mylar, cool and dry.
 - Include comfort foods, spices, and a manual can opener.
+Where to keep it
+- Basement: water and canned food on shelves at least a foot off the floor (your area floods); nothing you'd need in a flood down there.
+- Garage: water jugs and bulk staples in sealed bins, away from the car's exhaust, chemicals and direct sun; not for anything that spoils in heat.
 
 9. COOKING & REFRIGERATION
 Plan how you'll cook without power and when to throw out fridge food. The four-hour rule keeps everyone from getting sick.
@@ -361,7 +372,7 @@ Phase 1 — life safety (CO alarms, water, heat) |  |  |
   Toilet paper (52 rolls) + waste bags (56) |  | $53 | 
   Diapers (540) + wipes (9 packs) |  | $171 | 
   Carbon monoxide alarm | × 4 | $80–$160 | Essential
-  7-gallon water container | × 8 | $160–$280 | Essential
+  7-gallon water container | × 8 | $160–$280 | 
   Bathtub water bladder |  | $25–$40 | 
   Unscented household bleach |  | $4–$8 | Essential
   Hollow-fiber water filter |  | $35–$90 | 
@@ -423,7 +434,7 @@ Buy to the spec, not the brand. The example models are just a starting point for
 - Headlamps + LED lanterns × 4 (Typical $15–$30 each): AA/AAA headlamp per person (≥200 lumens) + 2 LED lanterns; no candles
 - AA/AAA battery stock  (Typical $20–$40 each): Bulk alkaline or rechargeable NiMH (pre-charged); store at room temperature
 - NOAA weather radio  (Typical $50–$80 each): NOAA Weather Radio with SAME alerts, hand-crank + USB charging
-- USB power bank × 2 (Typical $25–$45 each): 20,000 mAh or larger, USB-C PD; one per adult keeps phones running 3–4 days
+- USB power bank × 2 (Typical $25–$45 each): 20,000 mAh or larger, USB-C PD; keeps a phone running 3–4 days (one per adult is ideal)
 - Family first aid kit  (Typical $30–$80 each): 200+ piece kit with trauma pads, gauze, tape, elastic wrap, gloves, thermometer, tweezers, shears
 - Fire extinguisher × 3 (Typical $30–$60 each): ABC-rated, 2-A:10-B:C or larger, rechargeable metal valve; one per floor + kitchen
 - Fridge/freezer thermometers  (Typical $8–$15 each): Appliance thermometers to check the 40°F / 0°F food-safety lines

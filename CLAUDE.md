@@ -13,6 +13,9 @@ optionally emails it, and can buy gear through tracked affiliate links. See READ
 - **Amazon affiliate links never go in emails or PDFs** (`lib/affiliate.ts` `isAmazon`). Buy links go through `/go/<itemId>`.
 - **Privacy:** ZIP only, no diagnoses, no free-text answers; answers/plans are encrypted (`lib/server/crypto.ts`);
   answers never go in URLs. Email is optional; marketing consent is a separate unticked box.
+- **Every answer must change the plan, and the plan must never sell what someone already has.**
+  `tests/pathways.test.ts` enforces it (58 single-answer changes + 68 pairwise households covering all
+  1,844 answer pairs); see docs/PATHWAYS.md. A new question or answer needs a line there.
 - Don't commit secrets, `.env*`, or `.data/`.
 
 ## Commands

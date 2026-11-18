@@ -243,9 +243,37 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
 
   d90.push(`Phase 3 items: ${gearPhaseItems(cp, 3).map((g) => g.item.name.toLowerCase()).join(", ") || "comfort and communications upgrades"}.`);
   d90.push("Run a 'lights-out weekend': live off your plan for 24–48 hours and fix what breaks.");
-  if (cp.evacuation) d90.push(`Drive the route to your ${LABELS.fallback[cp.evacuation.locationType].toLowerCase()} and back; note fuel stops and alternates.`);
+  if (cp.evacuation)
+    d90.push(
+      cp.evacuation.vehicles
+        ? `Drive the route to your ${LABELS.fallback[cp.evacuation.locationType].toLowerCase()} and back; note fuel stops and alternates.`
+        : `Confirm your ride to your ${LABELS.fallback[cp.evacuation.locationType].toLowerCase()} and a backup ride; save your county's evacuation-assistance number.`,
+    );
   d90.push("Put the maintenance calendar on your phone.");
 
+
+  // Skills to practice: tailored to what the household has and knows
+  const has = (k: "first_aid" | "camping" | "tools") => a.skills.includes(k);
+  const practice: string[] = [
+    has("first_aid") ? "First aid: refresh CPR every 2 years and restock the kit with what you'd actually use." : "First aid: take a Red Cross First Aid/CPR class (about 3 hours, often online + one session).",
+    has("tools")
+      ? "Tools: do the DIY jobs yourself (pipe insulation, water-heater straps, window-protection clips); leave the generator hookup to a licensed electrician."
+      : "Shutoffs: have a handy neighbor or your utility show you the gas, water and main electrical shutoffs, and label them.",
+  ];
+  if (cp.evacuation?.locationType === "raw_land" || a.scenarioDays >= 30)
+    practice.push(
+      has("camping")
+        ? "Camping: check the gear you already own against this plan; it covers much of the outdoor list."
+        : "Camping: spend one night \"camping\" at home: set up the tent, cook on the camp stove outdoors, filter a gallon of water.",
+    );
+  if (pw.generatorStatus === "owned_portable" || pw.generatorStatus === "recommended")
+    practice.push("Generator: practice starting it, plugging in the fridge outdoors, and refueling only after a 15-minute cool-down.");
+  if (a.heatSources.includes("wood")) practice.push("Wood stove: practice a clean fire and safe ash disposal (metal can, outside, away from the house).");
+  if (a.waterSource === "well" && pw.generatorStatus !== "owned_standby") practice.push("Well: learn to switch the pump to backup power with the transfer switch.");
+  if (a.poweredDevices.length) practice.push("Medical device: switch it to battery power and time how long the battery lasts.");
+  if (w.filterDays > 0 || a.hasFiltration) practice.push("Water: filter and disinfect one gallon start to finish.");
+  if (a.pets.length) practice.push("Pets: practice getting each pet into its carrier or on a leash in under 2 minutes.");
+  if (h.children) practice.push("Kids: walk to your meeting place together and make it a game.");
   S.push({
     id: "priorities",
     title: "Priority list",
@@ -269,6 +297,8 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       check("d60", d60),
       { type: "subheading", text: "Within 90 days" },
       check("d90", d90),
+      { type: "subheading", text: "Skills to practice" },
+      check("skill", practice),
     ],
   });
 
@@ -362,6 +392,15 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       blocks: hazardBlocks,
     });
 
+  // Where to keep supplies, by the storage the household said it has
+  const storeTips: string[] = [];
+  if (a.storage.includes("basement")) storeTips.push(a.hasBasement && atLeast(prof.flood, "moderate") ? "Basement: water and canned food on shelves at least a foot off the floor (your area floods); nothing you'd need in a flood down there." : "Basement: cool and dark, ideal for water and staples; keep them on shelves, off bare concrete.");
+  if (a.storage.includes("garage")) storeTips.push("Garage: water jugs and bulk staples in sealed bins, away from the car's exhaust, chemicals and direct sun; not for anything that spoils in heat.");
+  if (a.storage.includes("shed")) storeTips.push("Shed: the right place for gas cans and propane cylinders (detached from the house); too hot or cold for food, water and medicine.");
+  if (a.storage.includes("closets")) storeTips.push("Closets: water bricks or 7-gallon jugs on the floor, food in labelled bins on the top shelf, go-bags by the door.");
+  if (a.storage.includes("limited"))
+    storeTips.push(`Limited space: start with ${a.scenarioDays > 14 ? "the first 2 weeks and add as space allows" : "what fits"}; use under-bed bins, stackable water bricks and the back of closets, and count the tub bladder as your flushing water.`);
+
   // 4. Water -----------------------------------------------------------------
   const waterRows = w.breakdown.map((b) => [b.label, `${n(b.galPerDay, 2)} gal/day`]);
   waterRows.push(["Total", `${n(w.dailyGal, 2)} gal/day`]);
@@ -383,7 +422,12 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         columns: ["What", "Amount"],
         rows: [
           ["Stored target", `${n(w.storedGal)} gal (${n(w.storedDays)} days)`],
-          ["Containers", `${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${plural(w.jugs, "7-gal jug")}`],
+          [
+            "Containers",
+            cp.budget.picks.some((p) => p.item.id === "water-gallons")
+              ? `${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${n(w.storedGal - w.drums * 55)} gallon jugs or refilled 2-liter bottles (low-cost); upgrade to ${plural(w.jugs, "7-gal jug")} later`
+              : `${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${plural(w.jugs, "7-gal jug")}`,
+          ],
           ["Filter + collect", w.filterDays > 0 ? `${n(w.filterGal)} gal over ${n(w.filterDays)} days` : "Not needed for this scenario (keep bleach as backup)"],
           ["Bathtub bladder (storm warning)", apt ? "Optional" : "~100 gal for flushing/washing"],
         ],
@@ -401,6 +445,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         ],
       },
       { type: "callout", tone: "info", title: "How to disinfect water", text: BLEACH_RULE },
+      ...(a.hasFiltration ? [{ type: "paragraph" as const, text: "You already have a filter: test it now, and keep spare cartridges or a backflush kit with it." }] : []),
       { type: "bullets", items: ["Store water in food-grade containers away from sunlight and chemicals.", "Replace tap-filled water every 6 months (mark the date).", "Use a 0.1-micron filter for bacteria/protozoa, then disinfect for viruses."] },
     ],
   });
@@ -415,6 +460,10 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         type: "paragraph",
         text: `Your ${a.heatSources.filter((s) => s !== "wood" && s !== "electric").map((s) => LABELS.heat[s].toLowerCase()).join("/")} heat needs electricity for the blower, ignition or circulator pump. The safest way to keep it running is ${genWord} connected through a licensed electrician's power inlet and interlock (or a transfer switch). Furnaces draw roughly 400–800 W running, so a 2,500 W+ inverter generator can handle it along with the fridge.`,
       });
+    if (key === "generator_inlet_furnace" && a.heatSources.includes("oil"))
+      heatBlocks.push({ type: "paragraph", text: "Heating oil: keep the tank above a quarter full from November to March; deliveries stop during storms and road closures." });
+    if (key === "generator_inlet_furnace" && a.heatSources.includes("propane"))
+      heatBlocks.push({ type: "paragraph", text: "Propane heat: keep the tank above half full in winter and save your supplier's emergency number; a full tank is your heat for weeks." });
     if (key === "wood_stove") heatBlocks.push({ type: "paragraph", text: "Your wood stove is your best no-power heat. Have the chimney inspected yearly, keep seasoned wood dry and off the ground, and keep a CO alarm in the room." });
     if (key === "indoor_propane_heater") heatBlocks.push({ type: "callout", tone: "warning", title: "Backup heater rules", text: INDOOR_HEATER_RULE });
     if (key === "one_warm_room")
@@ -557,6 +606,8 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         ],
       },
       { type: "bullets", items: ["Store staples in sealed food-grade buckets or mylar, cool and dry.", "Include comfort foods, spices, and a manual can opener.", ...(a.pets.some((p) => p.specialDiet) ? ["Stock your pet's special diet separately (see Pets)."] : [])] },
+      { type: "subheading", text: "Where to keep it" },
+      { type: "bullets", items: storeTips },
     ],
   });
 
@@ -765,7 +816,9 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     S.push({
       id: "evacuation",
       title: "Evacuation / bug-out plan",
-      summaryTemplate: "Your fallback is {{evac.location}}, about {{evac.distance}} miles away. Leave early on clear triggers, keep each tank above {{evac.reserveGal}} gallons, and keep go-bags ready.",
+      summaryTemplate: ev.vehicles
+        ? "Your fallback is {{evac.location}}, about {{evac.distance}} miles away. Leave early on clear triggers, keep each tank above {{evac.reserveGal}} gallons, and keep go-bags ready."
+        : "Your fallback is {{evac.location}}, about {{evac.distance}} miles away. With no car, line up your ride now and leave earlier than drivers would.",
       facts: rawLand ? ["The raw land has no shelter or utilities, so everything has to come with them"] : [],
       blocks: [
         {
@@ -781,11 +834,15 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
             { if: "Roads closed or unsafe to drive", then: "Shelter in place and use this plan's shelter-in-place sections." },
           ],
         },
-        { type: "table", caption: "Fuel & range", columns: ["Item", "Amount"], rows: evRows },
+        ...(ev.vehicles
+          ? [{ type: "table" as const, caption: "Fuel & range", columns: ["Item", "Amount"], rows: evRows }]
+          : [
+              { type: "callout" as const, tone: "warning" as const, title: "No car: plan your ride now", text: "Ask a family member, friend or neighbor now to take you, and agree on the trigger that means \"come get us\". Save the number for your county's evacuation-assistance or special-needs transport line, and know the nearest public pickup point. Leave on the first warning, not the order: rides and roads disappear fast." },
+            ]),
         { type: "table", caption: rawLand ? "Raw-land gear (nothing is there — bring it all)" : "What to bring", columns: ["Category", "Gear", "Note"], rows: gearRows },
-        { type: "subheading", text: "Vehicle kit" },
-        check("veh", ["Jump starter, tire inflator, tow strap", "Paper road map with 2 routes marked", "Blankets, water, snacks", "Phone chargers", "Flashlight, reflective triangles", ...(a.vehicleFuels.some((v) => v !== "ev") ? ["Never store spare gasoline inside the car cabin"] : [])]),
-        { type: "subheading", text: "Go-bag (one per person)" },
+        ...(ev.vehicles ? [{ type: "subheading" as const, text: "Vehicle kit" }] : []),
+        ...(ev.vehicles ? [check("veh", ["Jump starter, tire inflator, tow strap", "Paper road map with 2 routes marked", "Blankets, water, snacks", "Phone chargers", "Flashlight, reflective triangles", ...(a.vehicleFuels.some((v) => v !== "ev") ? ["Never store spare gasoline inside the car cabin"] : [])])] : []),
+        { type: "subheading", text: ev.vehicles ? "Go-bag (one per person)" : "Go-bag (one per person; pack light enough to carry and walk with)" },
         check("gobag", ["Water (1 L) and filter bottle", "3 days of snacks", "Change of clothes, rain layer, hat, gloves", "Headlamp + batteries", "Medications (7-day supply), glasses", "Copies of ID and medication list", "Cash in small bills", "Whistle, mask, hand sanitizer", ...(h.children ? ["Child ID card and comfort item"] : []), ...(cp.pets ? ["Pet food, leash, records"] : [])]),
         ...(rawLand ? [{ type: "callout" as const, tone: "danger" as const, title: "Tents and fumes", text: "Never use a heater, stove, grill or generator inside a tent or vehicle. Cook and run generators in the open, away from where people sleep." }] : []),
       ],

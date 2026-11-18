@@ -390,6 +390,7 @@ export function computeTags(a: Answers, profile: ZipProfile, power: PowerResult,
   if (a.hasBasement && atLeast(profile.flood, "moderate")) t.add("flood_basement");
   if (a.waterSource === "well" && power.generatorStatus !== "owned_standby") t.add("well");
   if (power.generatorStatus === "owned_portable") t.add("owns_generator");
+  if (power.generatorStatus === "solar_battery") t.add("owns_solar");
   if (atLeast(profile.earthquake, "moderate")) t.add("earthquake");
   if (atLeast(profile.wildfire, "moderate")) t.add("wildfire");
   if (atLeast(profile.flood, "high")) t.add("flood");
@@ -461,6 +462,8 @@ export function resolveQty(item: CatalogItem, ctx: { water: WaterResult; power: 
       return ctx.a.floors + (ctx.a.hasBasement ? 1 : 0) + 1;
     case "water_jugs":
       return ctx.water.jugs;
+    case "water_gallons":
+      return Math.max(0, ctx.water.storedGal - ctx.water.drums * 55);
     case "water_drums":
       return ctx.water.drums;
     case "people":
@@ -492,12 +495,15 @@ export function computeBudget(
   const planningAmount = c.budget.planningAmount[a.budget];
   const tier = c.budget.tierByBudget[a.budget];
   const staleHidden: string[] = [];
+  // Life-safety (phase 1) items above the budget tier still show under "next purchases" instead of vanishing.
+  const aboveTier: CatalogItem[] = [];
   const candidates = catalog.filter((it) => {
     if (!it.active || !tagsMatch(it, tags)) return false;
     if (isStale(it, now, c)) {
       staleHidden.push(it.id);
       return false;
     }
+    if (it.tier > tier && !it.essential && it.phase === 1 && !it.group) aboveTier.push(it);
     return it.tier <= tier || it.essential;
   });
 
@@ -583,6 +589,14 @@ export function computeBudget(
       if (cheapest.item.group) deferredGroups.add(cheapest.item.group);
       deferred.push({ ...cheapest, status: "deferred", reason: "Doesn't fit the remaining budget — buy next" });
     }
+  }
+
+  for (const item of aboveTier) {
+    const qty = resolveQty(item, ctx);
+    if (qty <= 0) continue;
+    const low = item.priceLow * qty;
+    const high = item.priceHigh * qty;
+    deferred.unshift({ item, qty, low, high, mid: round((low + high) / 2, 0), phase: item.phase, status: "deferred", reason: "Above your budget range, but important for your home — plan for it" });
   }
 
   const phases: BudgetPhase[] = ([1, 2, 3] as const).map((p) => ({

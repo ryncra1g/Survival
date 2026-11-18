@@ -435,7 +435,7 @@
       },
       {
         "item": {
-          "essential": true,
+          "essential": false,
           "notes": "",
           "reviewedAt": "2026-11-01",
           "id": "water-jug",
@@ -453,6 +453,7 @@
           "priority": 2,
           "qty": "water_jugs",
           "tags": [],
+          "group": "water",
           "affiliateUrl": null,
           "active": true
         },
@@ -651,7 +652,7 @@
           "id": "power-bank",
           "category": "Power",
           "name": "USB power bank",
-          "spec": "20,000 mAh or larger, USB-C PD; one per adult keeps phones running 3–4 days",
+          "spec": "20,000 mAh or larger, USB-C PD; keeps a phone running 3–4 days (one per adult is ideal)",
           "models": [
             "Anker PowerCore 20K",
             "INIU 20000 mAh"
@@ -1317,7 +1318,8 @@
           "priority": 1,
           "qty": 1,
           "tags": [
-            "house_or_townhouse"
+            "house_or_townhouse",
+            "!owns_solar"
           ],
           "group": "battery",
           "affiliateUrl": null,
@@ -1350,7 +1352,9 @@
           "phase": 3,
           "priority": 2,
           "qty": 1,
-          "tags": [],
+          "tags": [
+            "!owns_solar"
+          ],
           "affiliateUrl": null,
           "active": true
         },
