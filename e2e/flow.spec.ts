@@ -119,3 +119,31 @@ test("bad origin and honeypot are rejected", async ({ request }) => {
   const r2 = await request.post("/api/signup", { data: { email: "x@example.com", consent: true, website: "spam" }, headers: { origin: "http://localhost:3100" } });
   expect(r2.status()).toBe(400);
 });
+
+test("admin: dashboard, catalog and rule constants (no redeploy)", async ({ page }) => {
+  await page.goto("/start");
+  await page.getByLabel("Email").fill("admin@example.com");
+  await page.getByRole("checkbox").check();
+  await page.getByRole("button", { name: "Start my plan" }).click();
+  await expect(page).toHaveURL(/\/q\//);
+  const link = await page.evaluate(() => sessionStorage.getItem("rp_demo_link"));
+  await page.goto(link!);
+  await page.goto("/admin");
+  await expect(page.getByRole("heading", { name: "Admin" })).toBeVisible();
+  await expect(page.getByText("Signups")).toBeVisible();
+
+  await page.goto("/admin/catalog");
+  await expect(page.getByText("Carbon monoxide alarm")).toBeVisible();
+
+  await page.goto("/admin/rules");
+  await page.getByLabel(/Overrides/).fill('{ "water": { "adultGalPerDay": -5 } }');
+  await page.getByRole("button", { name: /Validate & save/ }).click();
+  await expect(page.getByText(/Invalid constants/)).toBeVisible();
+  await page.getByLabel(/Overrides/).fill('{ "water": { "adultGalPerDay": 1.25 } }');
+  await page.getByRole("button", { name: /Validate & save/ }).click();
+  await expect(page.getByText(/Saved as version 1/)).toBeVisible();
+  const r = await page.request.get("/api/admin/rules");
+  expect((await r.json()).overrides.water.adultGalPerDay).toBe(1.25);
+  // reset so other runs start from defaults
+  await page.request.post("/api/admin/rules", { data: { overrides: {} }, headers: { origin: "http://localhost:3100" } });
+});
