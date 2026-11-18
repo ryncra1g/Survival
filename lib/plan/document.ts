@@ -23,6 +23,8 @@ export const BlockSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("products"),
     caption: z.string().optional(),
+    /** Compact rows (name, qty, price, Buy) for the shopping list; full specs live in Recommended gear. */
+    compact: z.boolean().optional(),
     items: z.array(
       z.object({
         itemId: z.string(),

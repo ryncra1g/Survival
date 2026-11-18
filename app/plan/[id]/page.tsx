@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DemoLinkBanner } from "@/components/DemoLinkBanner";
+import { ChangeAnswer } from "@/components/ChangeAnswer";
 import { EmailMyPlan } from "@/components/EmailMyPlan";
 import { FirstSteps, PlanView } from "@/components/PlanView";
 import { PrintButton } from "@/components/PrintButton";
@@ -55,7 +56,8 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
       <div className="mt-5" id="email">{emailStatus}</div>
       <p className="mt-4 text-sm text-muted border border-line rounded p-3">{doc.disclaimer}</p>
       {doc.affiliateDisclosure && <p className="mt-2 text-sm text-muted"><strong>Affiliate disclosure:</strong> {doc.affiliateDisclosure}</p>}
-      <PlanView doc={doc} planId={plan.id} />
+      <ChangeAnswer planId={plan.id} />
+      <PlanView doc={doc} planId={plan.id} checks={plan.checks ?? {}} sync />
       {!user && (
         <div className="my-6">
           <EmailMyPlan planId={plan.id} siteKey={siteKey} idPrefix="emp2" />

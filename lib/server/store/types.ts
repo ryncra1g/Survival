@@ -35,6 +35,8 @@ export interface PlanRow {
   pdf_url: string | null;
   emailed_at: string | null;
   writer: string;
+  /** Checklist ticks: { "<checklist item id>": true }. Not sensitive (ids only), stored unencrypted. */
+  checks?: Record<string, boolean>;
   created_at: string;
 }
 
@@ -94,7 +96,7 @@ export interface Store {
 
   createPlan(p: Omit<PlanRow, "id" | "created_at">): Promise<PlanRow>;
   getPlan(id: string): Promise<PlanRow | null>;
-  updatePlan(id: string, patch: Partial<Pick<PlanRow, "pdf_url" | "emailed_at" | "user_id">>): Promise<void>;
+  updatePlan(id: string, patch: Partial<Pick<PlanRow, "pdf_url" | "emailed_at" | "user_id" | "checks">>): Promise<void>;
   listPlans(userId: string): Promise<PlanRow[]>;
 
   createToken(t: TokenRow): Promise<void>;

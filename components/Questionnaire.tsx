@@ -5,7 +5,7 @@ import { AnswersSchema, DEFAULT_ANSWERS, LABELS, type Answers, type PetGroupT } 
 import { DEFAULT_CONSTANTS } from "@/lib/rules/constants";
 import { computeFood, computeWater, household } from "@/lib/rules/engine";
 
-type Draft = Answers & { _step?: number };
+type Draft = Answers & { _step?: number; _screen?: string };
 
 /* ---------- small building blocks ---------- */
 function Choice({ selected, onClick, children, sub }: { selected: boolean; onClick: () => void; children: React.ReactNode; sub?: string }) {
@@ -229,7 +229,7 @@ const SCREENS: Screen[] = [
   },
   {
     id: "heat",
-    title: "Heat and cooking",
+    title: "Heat, cooking and water",
     valid: (a) => (a.heatSources.length ? null : "Pick at least one heat source."),
     render: ({ a, set }) => (
       <>
@@ -247,14 +247,6 @@ const SCREENS: Screen[] = [
             ))}
           </div>
         </Group>
-      </>
-    ),
-  },
-  {
-    id: "water",
-    title: "Your water",
-    render: ({ a, set }) => (
-      <>
         <Group label="Where does your water come from?">
           <Grid>
             <Choice selected={a.waterSource === "municipal"} onClick={() => set({ waterSource: "municipal" })} sub="Water bill / city or town">Public water</Choice>
@@ -399,7 +391,12 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
   const router = useRouter();
   const [a, setA] = useState<Draft>(() => ({ ...DEFAULT_ANSWERS, ...(initial as Partial<Draft>) }) as Draft);
   const visible = useMemo(() => SCREENS.filter((s) => !s.show || s.show(a)), [a]);
-  const [step, setStep] = useState(() => Math.min(Number(a._step ?? 0), visible.length - 1));
+  // "Change an answer" from a plan opens straight on that screen and offers "Update my plan".
+  const editOne = typeof (initial as Draft)._screen === "string";
+  const [step, setStep] = useState(() => {
+    const i = editOne ? visible.findIndex((s) => s.id === (initial as Draft)._screen) : -1;
+    return i >= 0 ? i : Math.min(Number(a._step ?? 0), visible.length - 1);
+  });
   const [error, setError] = useState("");
   const [generating, setGenerating] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
@@ -440,7 +437,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
     setA((prev) => ({ ...prev, ...patch }));
   };
   const last = step >= visible.length - 1;
-  const parsedAnswers = () => AnswersSchema.safeParse({ ...a, _step: undefined });
+  const parsedAnswers = () => AnswersSchema.safeParse({ ...a, _step: undefined, _screen: undefined });
 
   async function build() {
     const parsed = parsedAnswers();
@@ -510,8 +507,13 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
       {error && <p role="alert" className="mt-4 text-danger font-medium">{error}</p>}
       <div className="mt-8 flex gap-3 sticky bottom-0 bg-bg py-3">
         <button type="button" className="btn-ghost" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0}>Back</button>
-        <button type="button" className="btn flex-1" onClick={next}>{last ? "Build my plan" : "Next"}</button>
+        {editOne ? (
+          <button type="button" className="btn flex-1" onClick={async () => { const msg = screen.valid?.(a); if (msg) return setError(msg); await build(); }}>Update my plan</button>
+        ) : (
+          <button type="button" className="btn flex-1" onClick={next}>{last ? "Build my plan" : "Next"}</button>
+        )}
       </div>
+      {editOne && !last && <button type="button" className="text-sm underline text-muted" onClick={next}>Review the next question instead</button>}
     </div>
   );
 }

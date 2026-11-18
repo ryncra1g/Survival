@@ -50,7 +50,7 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await pick(page, "Garage");
   await pick(page, "Yard");
   await next(page);
-  await next(page);
+  await expect(page.getByRole("heading", { name: "Heat, cooking and water" })).toBeVisible();
   await next(page);
   await pick(page, "+ Gasoline");
   await next(page);
@@ -70,10 +70,36 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   expect(Date.now() - started).toBeLessThan(5 * 60_000);
   expect(planUrl).not.toMatch(/11746|zip|answers/);
   await expect(page.getByRole("heading", { name: "Start here: your first 3 steps" })).toBeVisible();
-  await expect(page.getByText("54 gal (14 days)")).toBeVisible();
+  await expect(page.getByText(/Store 54 gallons \(14 days\)/)).toBeVisible();
   await expect(page.getByRole("heading", { name: /Your area's hazards/ })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Phase 1 shopping list (life safety)" })).toBeVisible();
   await expect(page.getByRole("link", { name: /^Buy / })).toHaveCount(0); // no affiliate tag set yet
+
+  // Shorter plan: action sections open, reference sections collapsed to title + summary
+  await expect(page.locator("details#priorities")).toHaveAttribute("open", "");
+  await expect(page.locator("details#gear")).not.toHaveAttribute("open", "");
+  await page.getByRole("navigation", { name: "Plan sections" }).getByRole("link", { name: "Gear" }).click();
+  await expect(page.locator("details#gear")).toHaveAttribute("open", "");
+
+  // Ticks are saved to the plan, not just this browser
+  const firstTick = page.locator("details#priorities input[type=checkbox]").first();
+  await firstTick.check();
+  await expect(page.locator("details#priorities").getByText(/^1 of \d+ done/).first()).toBeVisible();
+  await page.waitForTimeout(800);
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+  await expect(page.locator("details#priorities input[type=checkbox]").first()).toBeChecked();
+
+  // Change one answer without redoing the questionnaire
+  await page.getByText("Something not right? Change an answer").click();
+  await page.getByRole("button", { name: "Household", exact: true }).click();
+  await expect(page).toHaveURL(/\/q\//);
+  await expect(page.getByRole("heading", { name: "Who lives with you?" })).toBeVisible();
+  await page.getByRole("button", { name: "More adults" }).click();
+  await page.getByRole("button", { name: "Update my plan" }).click();
+  await expect(page).toHaveURL(/\/plan\//, { timeout: 60_000 });
+  await expect(page.getByText(/^5 people · Long Island/)).toBeVisible();
+  await page.goto(planUrl);
 
   // PDFs work without an email
   for (const p of ["pdf", "checklist"]) {
@@ -187,7 +213,7 @@ test("sample plan is public", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: "See a sample plan" }).click();
   await expect(page).toHaveURL(/\/sample/);
-  await expect(page.getByText("54 gal (14 days)")).toBeVisible();
+  await expect(page.getByText(/Store 54 gallons \(14 days\)/)).toBeVisible();
 });
 
 test("unconfirmed emails with a plan get exactly one reminder", async ({ page, request }) => {

@@ -117,9 +117,10 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   const tokens = buildTokens(cp);
   const S: SectionDraft[] = [];
   const isBuyable = (p: GearPick) => !!buyUrl(p.item, c.affiliate.amazonTag);
-  const productsBlock = (picks: GearPick[], later: (p: GearPick) => boolean, caption?: string): Block => ({
+  const productsBlock = (picks: GearPick[], later: (p: GearPick) => boolean, caption?: string, compact?: boolean): Block => ({
     type: "products",
     caption,
+    compact,
     items: picks.map((p) => ({
       itemId: p.item.id,
       name: p.item.name,
@@ -260,6 +261,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         cp.budget.picks.filter((p) => p.phase === 1),
         () => false,
         "Phase 1 shopping list (life safety)",
+        true,
       ),
       { type: "subheading", text: "This month" },
       check("month", month),

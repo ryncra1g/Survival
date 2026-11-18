@@ -1,5 +1,7 @@
 import type { Block, PlanDocument } from "@/lib/plan/document";
 import { Checklist } from "./Checklist";
+import { ChecksProvider } from "./ChecksContext";
+import { SectionNav } from "./SectionNav";
 
 const toneCls = { danger: "border-danger text-danger", warning: "border-warn text-warn", info: "border-info text-info" } as const;
 
@@ -9,15 +11,16 @@ function BlockView({ b, planId, buyHref }: { b: Block; planId: string; buyHref?:
       return (
         <div className="my-4">
           {b.caption && <h3 className="mt-5 mb-2 font-semibold">{b.caption}</h3>}
+          {b.compact && <p className="text-sm text-muted -mt-1 mb-2">What to look for is in <a href="#gear" className="underline">Recommended gear</a>.</p>}
           <ul className="divide-y divide-line border-y border-line">
             {b.items.map((i) => (
-              <li key={i.itemId} className="py-3 flex gap-3 items-start">
+              <li key={i.itemId} className={`${b.compact ? "py-2 items-center" : "py-3 items-start"} flex gap-3`}>
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold">
                     {i.name} {i.qty && <span className="text-muted font-normal whitespace-nowrap">{i.qty}</span>} {i.later && <span className="text-xs align-middle rounded px-1.5 py-0.5 bg-bg border border-line font-normal">later</span>}
                   </p>
-                  <p className="text-sm text-muted mt-0.5">{i.spec}</p>
-                  <p className="text-sm mt-0.5">{i.price}{i.models.length ? ` · e.g. ${i.models.join("; ")}` : ""}</p>
+                  {!b.compact && <p className="text-sm text-muted mt-0.5">{i.spec}</p>}
+                  <p className="text-sm mt-0.5">{i.price}{!b.compact && i.models.length ? ` · e.g. ${i.models.join("; ")}` : ""}</p>
                 </div>
                 {i.buyable && (
                   <a href={buyHref ? buyHref(i.itemId) : `/go/${encodeURIComponent(i.itemId)}?p=${planId}&src=web`} target="_blank" rel="sponsored nofollow noopener" className="btn-ghost shrink-0 text-brand min-h-[40px]" aria-label={`Buy ${i.name} (opens a store, affiliate link)`}>
@@ -40,7 +43,7 @@ function BlockView({ b, planId, buyHref }: { b: Block; planId: string; buyHref?:
         </ul>
       );
     case "checklist":
-      return <Checklist planId={planId} items={b.items} />;
+      return <Checklist items={b.items} />;
     case "table":
       return (
         <div className="my-4 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
@@ -90,33 +93,68 @@ function BlockView({ b, planId, buyHref }: { b: Block; planId: string; buyHref?:
   }
 }
 
-export function PlanView({ doc, planId, buyHref }: { doc: PlanDocument; planId: string; buyHref?: (itemId: string) => string }) {
+/** Sections that start open: the ones people act on now. The rest show title + one-line summary. */
+const OPEN_SECTIONS = new Set(["priorities", "hazards", "day0"]);
+const SHORT: Record<string, string> = {
+  snapshot: "Your household",
+  priorities: "Priority list",
+  day0: "Day 0",
+  hazards: "Your hazards",
+  heat: "Heat",
+  power: "Power & fuel",
+  cooking: "Cooking",
+  sanitation: "Sanitation",
+  firstaid: "First aid",
+  comms: "Comms & cash",
+  security: "Security",
+  kids: "Kids",
+  evacuation: "Evacuation",
+  budget: "Budget",
+  gear: "Gear",
+  maintenance: "Maintenance",
+};
+
+export function PlanView({
+  doc,
+  planId,
+  buyHref,
+  checks,
+  sync = false,
+}: {
+  doc: PlanDocument;
+  planId: string;
+  buyHref?: (itemId: string) => string;
+  checks?: Record<string, boolean>;
+  sync?: boolean;
+}) {
   return (
-    <article>
-      <nav aria-label="Plan sections" className="card p-4 my-6 no-print">
-        <p className="font-semibold mb-2">In this plan</p>
-        <ol className="grid sm:grid-cols-2 gap-x-4 gap-y-1 text-sm">
-          {doc.sections.map((s) => (
-            <li key={s.id}><a href={`#${s.id}`} className="underline underline-offset-2">{s.number}. {s.title}</a></li>
-          ))}
-        </ol>
-      </nav>
-      {doc.sections.map((s) => (
-        <section key={s.id} id={s.id} aria-labelledby={`${s.id}-h`} className="card p-4 sm:p-6 my-4 scroll-mt-4">
-          <h2 id={`${s.id}-h`} className="text-xl font-bold">{s.number}. {s.title}</h2>
-          <p className="mt-2 p-3 rounded bg-brand-soft">{s.summary}</p>
-          {s.blocks.map((b, i) => <BlockView key={i} b={b} planId={planId} buyHref={buyHref} />)}
+    <ChecksProvider planId={planId} initial={checks} sync={sync}>
+      <article>
+        <SectionNav sections={doc.sections.map((s) => ({ id: s.id, title: SHORT[s.id] ?? s.title }))} />
+        {doc.sections.map((s) => (
+          <details key={s.id} id={s.id} data-section open={OPEN_SECTIONS.has(s.id)} className="group card my-3 scroll-mt-24">
+            <summary className="list-none cursor-pointer p-4 sm:p-5 [&::-webkit-details-marker]:hidden">
+              <span className="flex items-start justify-between gap-3">
+                <h2 id={`${s.id}-h`} className="text-xl font-bold">{s.number}. {s.title}</h2>
+                <span aria-hidden className="mt-1 text-muted transition-transform group-open:rotate-180">▾</span>
+              </span>
+              <span className="mt-2 block p-3 rounded bg-brand-soft">{s.summary}</span>
+            </summary>
+            <div className="px-4 sm:px-6 pb-5">
+              {s.blocks.map((b, i) => <BlockView key={i} b={b} planId={planId} buyHref={buyHref} />)}
+            </div>
+          </details>
+        ))}
+        <section className="card p-4 sm:p-6 my-4">
+          <h2 className="text-lg font-bold">Sources</h2>
+          <ul className="mt-2 list-disc pl-5 space-y-1 text-sm">
+            {doc.sources.map((src) => <li key={src.url}><a href={src.url} className="underline" rel="noopener">{src.name}</a></li>)}
+          </ul>
+          <p className="mt-4 text-sm text-muted">{doc.disclaimer}</p>
+          {doc.affiliateDisclosure && <p className="mt-2 text-sm text-muted"><strong>Affiliate disclosure:</strong> {doc.affiliateDisclosure}</p>}
         </section>
-      ))}
-      <section className="card p-4 sm:p-6 my-4">
-        <h2 className="text-lg font-bold">Sources</h2>
-        <ul className="mt-2 list-disc pl-5 space-y-1 text-sm">
-          {doc.sources.map((s) => <li key={s.url}><a href={s.url} className="underline" rel="noopener">{s.name}</a></li>)}
-        </ul>
-        <p className="mt-4 text-sm text-muted">{doc.disclaimer}</p>
-        {doc.affiliateDisclosure && <p className="mt-2 text-sm text-muted"><strong>Affiliate disclosure:</strong> {doc.affiliateDisclosure}</p>}
-      </section>
-    </article>
+      </article>
+    </ChecksProvider>
   );
 }
 

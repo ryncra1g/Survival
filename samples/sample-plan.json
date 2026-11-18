@@ -163,6 +163,7 @@
         {
           "type": "products",
           "caption": "Phase 1 shopping list (life safety)",
+          "compact": true,
           "items": [
             {
               "itemId": "co-alarm",
