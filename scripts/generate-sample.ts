@@ -16,10 +16,10 @@ fs.mkdirSync(out, { recursive: true });
 const now = new Date("2026-11-18T12:00:00Z");
 const r = await generatePlan(SAMPLE_HOUSEHOLD, DEFAULT_CONSTANTS, SEED_CATALOG, { now });
 const meta = {
-  appUrl: "https://readyplan.example",
-  planUrl: "https://readyplan.example/plan/sample",
-  unsubscribeUrl: "https://readyplan.example/api/unsubscribe?u=sample",
-  mailingAddress: "ReadyPlan · 123 Example St, Suite 100 · Huntington, NY 11743",
+  appUrl: "https://kinready.example",
+  planUrl: "https://kinready.example/plan/sample",
+  unsubscribeUrl: "https://kinready.example/api/unsubscribe?u=sample",
+  mailingAddress: "Kinready · 123 Example St, Suite 100 · Huntington, NY 11743",
   pdfAttached: true,
 };
 const email = renderPlanEmail(r.document, meta);

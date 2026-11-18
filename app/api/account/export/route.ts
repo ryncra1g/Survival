@@ -12,6 +12,6 @@ export async function GET() {
   ]);
   const data = { exportedAt: new Date().toISOString(), user: auth.user, questionnaires, plans, emailEvents };
   return new Response(JSON.stringify(data, null, 2), {
-    headers: { "Content-Type": "application/json", "Content-Disposition": 'attachment; filename="readyplan-my-data.json"', "Cache-Control": "no-store" },
+    headers: { "Content-Type": "application/json", "Content-Disposition": 'attachment; filename="kinready-my-data.json"', "Cache-Control": "no-store" },
   });
 }

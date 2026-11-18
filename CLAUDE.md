@@ -1,4 +1,4 @@
-# ReadyPlan — notes for Claude
+# Kinready — notes for Claude
 
 Mobile-first Next.js 16 app: a household answers ~10 screens, gets an emergency plan + supply list,
 optionally emails it, and can buy gear through tracked affiliate links. See README.md for architecture.
@@ -19,6 +19,11 @@ optionally emails it, and can buy gear through tracked affiliate links. See READ
 - **Gear levels (à la carte):** items in a `group` are a slot with `level` essential/standard/premium; the budget sets the
   default (`budget.defaultLevel`), `answers.gearChoices` overrides it, and `excludes` removes items a choice replaces.
   `tests/levels.test.ts` loops every slot × level for the 10 personas. New slots go in `GEAR_SLOTS` (lib/answers/schema.ts).
+- **Consent before a plan (clickwrap):** the Terms box must be ticked, and health-adjacent answers (prescriptions,
+  powered devices, mobility) need the separate health box. Rules live in `lib/legal.ts` (`checkConsent`), are enforced
+  by `/api/questionnaire/[id]/generate`, and the record (`TERMS_VERSION` + timestamps) is saved on the plan. Bump
+  `TERMS_VERSION` when the Terms change in substance. Health answers are never used for marketing emails.
+- Formerly named ReadyPlan: the `READYPLAN_DATA_DIR` env var and the dev-only key keep the old name on purpose.
 - Don't commit secrets, `.env*`, or `.data/`.
 
 ## Commands

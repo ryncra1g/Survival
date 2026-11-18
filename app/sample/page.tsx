@@ -6,7 +6,7 @@ import { generatePlan } from "@/lib/plan/generate";
 import { SAMPLE_HOUSEHOLD } from "@/lib/plan/sample";
 import { DEFAULT_CONSTANTS } from "@/lib/rules/constants";
 
-export const metadata: Metadata = { title: "Sample plan", description: "A real ReadyPlan for a Long Island family of four, so you can see what you get." };
+export const metadata: Metadata = { title: "Sample plan", description: "A real Kinready for a Long Island family of four, so you can see what you get." };
 export const revalidate = 86400;
 
 /** Public sample so people can see exactly what they get before giving their email. */

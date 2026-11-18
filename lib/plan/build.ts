@@ -954,7 +954,7 @@ export function assembleDocument(cp: ComputedPlan, draft: PlanDraft, summaries: 
     blocks: s.blocks,
   }));
   return {
-    title: "Your ReadyPlan",
+    title: "Your Kinready",
     subtitle: draft.subtitle,
     generatedAt: cp.computedAt,
     rulesVersion: cp.rulesVersion,

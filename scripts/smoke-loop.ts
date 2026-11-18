@@ -41,7 +41,7 @@ async function run(i: number): Promise<R> {
   if (r.status !== 200) fail(`q page ${r.status}`);
   r = await req("autosave", `/api/questionnaire/${qid}`, { method: "PUT", headers: { ...O, "content-type": "application/json" }, body: JSON.stringify({ answers: { ...p.a, _step: 4 } }) });
   if (r.status !== 200) fail(`autosave ${r.status}`);
-  r = await req("generate", `/api/questionnaire/${qid}/generate`, { method: "POST", headers: { ...O, "content-type": "application/json" }, body: JSON.stringify({ answers: p.a }) });
+  r = await req("generate", `/api/questionnaire/${qid}/generate`, { method: "POST", headers: { ...O, "content-type": "application/json" }, body: JSON.stringify({ answers: p.a, consent: { terms: true, health: true } }) });
   const g = (await r.json()) as { planId?: string; error?: string };
   if (!g.planId) return fail(`generate ${r.status} ${g.error}`), res;
   const pid = g.planId;

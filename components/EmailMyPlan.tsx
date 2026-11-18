@@ -86,7 +86,7 @@ export function EmailMyPlan({ planId, siteKey = "", onSubmit, idPrefix = "emp" }
       </label>
       <Turnstile siteKey={siteKey} onToken={onToken} />
       {error && <p role="alert" className="text-danger font-medium">{error}</p>}
-      <p className="text-xs text-muted">Only used for ReadyPlan, never sold. <Link href="/privacy" className="underline">Privacy policy</Link>.</p>
+      <p className="text-xs text-muted">Only used for Kinready, never sold. <Link href="/privacy" className="underline">Privacy policy</Link>.</p>
     </form>
   );
 }

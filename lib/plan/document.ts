@@ -90,6 +90,6 @@ export const SOURCES = [
 ];
 
 export const DISCLAIMER =
-  "ReadyPlan provides general preparedness guidance, not professional, medical, legal or electrical advice. " +
+  "Kinready provides general preparedness guidance, not professional, medical, legal or electrical advice. " +
   "Follow official instructions from local emergency management. Quantities are planning estimates. " +
   "Prices and products change — check current specs, recalls and reviews before you buy.";

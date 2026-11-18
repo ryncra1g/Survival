@@ -1,6 +1,6 @@
 ---
 name: release-check
-description: Run ReadyPlan's full pre-release check (types, unit + safety tests, production build, browser tests, 10-household smoke loop, sample + demo rebuild) and report pass/fail. Use before any deploy or when asked "is it ready to ship?".
+description: Run Kinready's full pre-release check (types, unit + safety tests, production build, browser tests, 10-household smoke loop, sample + demo rebuild) and report pass/fail. Use before any deploy or when asked "is it ready to ship?".
 ---
 
 # Release check

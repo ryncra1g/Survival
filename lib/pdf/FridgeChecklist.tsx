@@ -51,7 +51,7 @@ export function FridgeChecklist({ doc }: { doc: PlanDocument }) {
   const day0 = checklist(doc, "day0", 0).slice(0, 9);
   const triggers = ifthen(doc).slice(0, 7);
   return (
-    <Document title="ReadyPlan fridge checklist" author="ReadyPlan">
+    <Document title="Kinready fridge checklist" author="Kinready">
       <Page size="LETTER" style={s.page}>
         <View style={s.top}>
           <Text style={s.title}>Emergency checklist</Text>

@@ -1,8 +1,8 @@
-Your ReadyPlan
+Your Kinready
 4 people · Long Island · 90 days · $1,500–5,000
-Open your plan: https://readyplan.example/plan/sample
+Open your plan: https://kinready.example/plan/sample
 
-ReadyPlan provides general preparedness guidance, not professional, medical, legal or electrical advice. Follow official instructions from local emergency management. Quantities are planning estimates. Prices and products change — check current specs, recalls and reviews before you buy.
+Kinready provides general preparedness guidance, not professional, medical, legal or electrical advice. Follow official instructions from local emergency management. Quantities are planning estimates. Prices and products change — check current specs, recalls and reviews before you buy.
 
 1. HOUSEHOLD SNAPSHOT & PLANNING ASSUMPTIONS
 This plan covers 4 people in the Long Island area for a 90-day disruption. Every quantity below comes from the planning assumptions in this section.
@@ -276,7 +276,7 @@ Keep a stocked first aid kit and a written list of everyone's medications and al
 [ ] Extra glasses/contacts, hearing aid batteries.
 [ ] Children's versions of any OTC medicines you use, with the dosing tool that came in the box.
 [ ] Take a Red Cross First Aid/CPR class.
-!! Medications: ReadyPlan never gives medication doses. For any medicine — for people or pets — follow the label or your doctor, pharmacist or vet.
+!! Medications: Kinready never gives medication doses. For any medicine — for people or pets — follow the label or your doctor, pharmacist or vet.
 
 12. COMMUNICATIONS, CASH & DOCUMENTS
 Agree on how your family will reach each other, keep $1,200 in small bills, and keep copies of key documents in a waterproof pouch.
@@ -323,7 +323,7 @@ Pet | Food for scenario | Water/day
 [ ] Leash, harness, crate/carrier, collapsible bowls, waste bags or litter.
 [ ] Microchip details up to date.
 [ ] Know which shelters and hotels on your route accept pets.
-!! Pet medications: ReadyPlan never gives medication doses. For any medicine — for people or pets — follow the label or your doctor, pharmacist or vet.
+!! Pet medications: Kinready never gives medication doses. For any medicine — for people or pets — follow the label or your doctor, pharmacist or vet.
 
 16. EVACUATION / BUG-OUT PLAN
 Your fallback is your raw land, about 120 miles away. Leave early on clear triggers, keep each tank above 7.2 gallons, and keep go-bags ready.
@@ -496,5 +496,5 @@ Sources:
 - EPA — Emergency disinfection of drinking water: https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water
 - FoodSafety.gov — Food safety during power outages: https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage
 
-ReadyPlan · 123 Example St, Suite 100 · Huntington, NY 11743
-Unsubscribe: https://readyplan.example/api/unsubscribe?u=sample
+Kinready · 123 Example St, Suite 100 · Huntington, NY 11743
+Unsubscribe: https://kinready.example/api/unsubscribe?u=sample

@@ -1,3 +1,4 @@
+import type { PlanConsent } from "@/lib/legal";
 import "server-only";
 import { createClient } from "@supabase/supabase-js";
 import { generatePlan } from "@/lib/plan/generate";
@@ -10,7 +11,7 @@ import { env, isDemo } from "./env";
 import { metaFor, sendEmail } from "./mailer";
 import { store, type PlanRow, type UserRow } from "./store";
 
-export async function buildAndSavePlan(userId: string | null, questionnaireId: string, answers: unknown): Promise<PlanRow> {
+export async function buildAndSavePlan(userId: string | null, questionnaireId: string, answers: unknown, consent: PlanConsent | null): Promise<PlanRow> {
   const [{ constants, version }, catalog] = await Promise.all([loadConstants(), store.listCatalog()]);
   const r = await generatePlan(answers, constants, catalog);
   const plan = await store.createPlan({
@@ -21,6 +22,7 @@ export async function buildAndSavePlan(userId: string | null, questionnaireId: s
     pdf_url: null,
     emailed_at: null,
     writer: r.document.writer,
+    consent,
   });
   await store.updateQuestionnaire(questionnaireId, { complete: true });
   return plan;
@@ -46,8 +48,8 @@ export async function emailPlan(plan: PlanRow, user: UserRow): Promise<boolean> 
   const pdfPath = await storePdf(plan.id, user.id, pdf);
   const m = renderPlanEmail(doc, { ...metaFor(user.id), planUrl: `${env.appUrl}/plan/${plan.id}`, pdfAttached: true, planId: plan.id });
   const ok = await sendEmail({ to: user.email, userId: user.id, type: "plan", ...m, attachments: [
-      { filename: "ReadyPlan.pdf", content: pdf },
-      { filename: "ReadyPlan-fridge-checklist.pdf", content: await renderFridgeChecklist(doc) },
+      { filename: "Kinready.pdf", content: pdf },
+      { filename: "Kinready-fridge-checklist.pdf", content: await renderFridgeChecklist(doc) },
     ],
   });
   if (ok) await store.updatePlan(plan.id, { emailed_at: new Date().toISOString(), ...(pdfPath ? { pdf_url: pdfPath } : {}) });

@@ -34,7 +34,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (!prev.success) return NextResponse.redirect(new URL(`/plan/${plan.id}#${back}`, env.appUrl), 303);
   const answers = { ...prev.data, gearChoices: { ...(prev.data.gearChoices ?? {}), [group]: level.data } };
   const q = await store.createQuestionnaire({ user_id: plan.user_id, session_nonce: session.nonce, answers, complete: true, version: 1 });
-  const next = await buildAndSavePlan(plan.user_id, q.id, answers);
+  const next = await buildAndSavePlan(plan.user_id, q.id, answers, plan.consent ?? null);
   if (plan.checks && Object.keys(plan.checks).length) await store.updatePlan(next.id, { checks: plan.checks });
   return NextResponse.redirect(new URL(`/plan/${next.id}#${back}`, env.appUrl), 303);
 }

@@ -1,6 +1,6 @@
 ---
 name: add-gear
-description: Add or update items in ReadyPlan's gear catalog (spec, example models, price range, tier, phase, tags, affiliate link) so the rules engine recommends them to the right households. Use when the owner gives product names, links or prices.
+description: Add or update items in Kinready's gear catalog (spec, example models, price range, tier, phase, tags, affiliate link) so the rules engine recommends them to the right households. Use when the owner gives product names, links or prices.
 ---
 
 # Add or update gear

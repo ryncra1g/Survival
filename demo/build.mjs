@@ -28,7 +28,7 @@ const js = await build({
 });
 const cssIn = fs.readFileSync(path.join(root, "demo/demo.css"), "utf8");
 const css = await postcss([tailwind({ base: root, optimize: true })]).process(cssIn, { from: path.join(root, "demo/demo.css") });
-const html = `<title>ReadyPlan Demo</title>
+const html = `<title>Kinready Demo</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>${css.css}</style>
 <div id="root"></div>
@@ -37,6 +37,6 @@ ${inline ? "" : `<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.
 <script>${js.outputFiles[0].text.replace(/<\/script/gi, "<\\/script")}</script>
 `;
 fs.mkdirSync(path.join(root, "demo/dist"), { recursive: true });
-const out = inline ? "demo/dist/readyplan-demo-offline.html" : "demo/dist/readyplan-demo.html";
+const out = inline ? "demo/dist/kinready-demo-offline.html" : "demo/dist/kinready-demo.html";
 fs.writeFileSync(path.join(root, out), html);
 console.log(`${out} ${(html.length / 1024).toFixed(0)} KB`);

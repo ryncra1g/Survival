@@ -13,7 +13,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   return new Response(new Uint8Array(pdf), {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="ReadyPlan-${plan.created_at.slice(0, 10)}.pdf"`,
+      "Content-Disposition": `attachment; filename="Kinready-${plan.created_at.slice(0, 10)}.pdf"`,
       "Cache-Control": "private, no-store",
     },
   });
