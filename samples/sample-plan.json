@@ -173,9 +173,10 @@
                 "Kidde KN-COPP-3",
                 "First Alert CO605"
               ],
-              "price": "$20–$40 each",
+              "price": "Typical $20–$40 each",
               "qty": "× 4",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -187,9 +188,10 @@
                 "Reliance Aqua-Tainer 7 gal",
                 "Scepter 7 gal water container"
               ],
-              "price": "$20–$35 each",
+              "price": "Typical $20–$35 each",
               "qty": "× 8",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -200,9 +202,10 @@
               "models": [
                 "WaterBOB 100 gal"
               ],
-              "price": "$25–$40 each",
+              "price": "Typical $25–$40 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -213,9 +216,10 @@
               "models": [
                 "Any store brand"
               ],
-              "price": "$4–$8 each",
+              "price": "Typical $4–$8 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -227,9 +231,10 @@
                 "Sawyer Squeeze",
                 "LifeStraw Family 2.0"
               ],
-              "price": "$35–$90 each",
+              "price": "Typical $35–$90 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -241,9 +246,10 @@
                 "Black Diamond Astro",
                 "Energizer Vision headlamp"
               ],
-              "price": "$15–$30 each",
+              "price": "Typical $15–$30 each",
               "qty": "× 4",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -255,9 +261,10 @@
                 "Amazon Basics bulk",
                 "Panasonic eneloop"
               ],
-              "price": "$20–$40 each",
+              "price": "Typical $20–$40 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -269,9 +276,10 @@
                 "Midland ER310",
                 "Eton FRX3"
               ],
-              "price": "$50–$80 each",
+              "price": "Typical $50–$80 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -283,9 +291,10 @@
                 "Anker PowerCore 20K",
                 "INIU 20000 mAh"
               ],
-              "price": "$25–$45 each",
+              "price": "Typical $25–$45 each",
               "qty": "× 2",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -297,9 +306,10 @@
                 "Adventure Medical Kits Family",
                 "American Red Cross Deluxe Family Kit"
               ],
-              "price": "$30–$80 each",
+              "price": "Typical $30–$80 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -311,9 +321,10 @@
                 "First Alert PRO5",
                 "Kidde Pro 210"
               ],
-              "price": "$30–$60 each",
+              "price": "Typical $30–$60 each",
               "qty": "× 3",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -324,9 +335,10 @@
               "models": [
                 "Rubbermaid appliance thermometer"
               ],
-              "price": "$8–$15 each",
+              "price": "Typical $8–$15 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -338,9 +350,10 @@
                 "Mr. Heater Portable Buddy (MH9BX)",
                 "Mr. Heater Big Buddy (MH18B)"
               ],
-              "price": "$100–$200 each",
+              "price": "Typical $100–$200 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -351,9 +364,10 @@
               "models": [
                 "Coleman 1-lb propane"
               ],
-              "price": "$30–$50 each",
+              "price": "Typical $30–$50 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -365,9 +379,10 @@
                 "TETON Sports Celsius 0°F",
                 "Coleman North Rim 0°F"
               ],
-              "price": "$40–$90 each",
+              "price": "Typical $40–$90 each",
               "qty": "× 4",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -378,9 +393,10 @@
               "models": [
                 "Frost King foam sleeves"
               ],
-              "price": "$20–$50 each",
+              "price": "Typical $20–$50 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             }
           ]
@@ -1943,9 +1959,10 @@
                 "Kidde KN-COPP-3",
                 "First Alert CO605"
               ],
-              "price": "$20–$40 each",
+              "price": "Typical $20–$40 each",
               "qty": "× 4",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -1957,9 +1974,10 @@
                 "Reliance Aqua-Tainer 7 gal",
                 "Scepter 7 gal water container"
               ],
-              "price": "$20–$35 each",
+              "price": "Typical $20–$35 each",
               "qty": "× 8",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -1970,9 +1988,10 @@
               "models": [
                 "WaterBOB 100 gal"
               ],
-              "price": "$25–$40 each",
+              "price": "Typical $25–$40 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -1983,9 +2002,10 @@
               "models": [
                 "Any store brand"
               ],
-              "price": "$4–$8 each",
+              "price": "Typical $4–$8 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -1997,9 +2017,10 @@
                 "Sawyer Squeeze",
                 "LifeStraw Family 2.0"
               ],
-              "price": "$35–$90 each",
+              "price": "Typical $35–$90 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -2011,9 +2032,10 @@
                 "Black Diamond Astro",
                 "Energizer Vision headlamp"
               ],
-              "price": "$15–$30 each",
+              "price": "Typical $15–$30 each",
               "qty": "× 4",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -2025,9 +2047,10 @@
                 "Amazon Basics bulk",
                 "Panasonic eneloop"
               ],
-              "price": "$20–$40 each",
+              "price": "Typical $20–$40 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -2039,9 +2062,10 @@
                 "Midland ER310",
                 "Eton FRX3"
               ],
-              "price": "$50–$80 each",
+              "price": "Typical $50–$80 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -2053,9 +2077,10 @@
                 "Anker PowerCore 20K",
                 "INIU 20000 mAh"
               ],
-              "price": "$25–$45 each",
+              "price": "Typical $25–$45 each",
               "qty": "× 2",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -2067,9 +2092,10 @@
                 "Adventure Medical Kits Family",
                 "American Red Cross Deluxe Family Kit"
               ],
-              "price": "$30–$80 each",
+              "price": "Typical $30–$80 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -2081,9 +2107,10 @@
                 "First Alert PRO5",
                 "Kidde Pro 210"
               ],
-              "price": "$30–$60 each",
+              "price": "Typical $30–$60 each",
               "qty": "× 3",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -2094,9 +2121,10 @@
               "models": [
                 "Rubbermaid appliance thermometer"
               ],
-              "price": "$8–$15 each",
+              "price": "Typical $8–$15 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -2108,9 +2136,10 @@
                 "Mr. Heater Portable Buddy (MH9BX)",
                 "Mr. Heater Big Buddy (MH18B)"
               ],
-              "price": "$100–$200 each",
+              "price": "Typical $100–$200 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -2121,9 +2150,10 @@
               "models": [
                 "Coleman 1-lb propane"
               ],
-              "price": "$30–$50 each",
+              "price": "Typical $30–$50 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -2135,9 +2165,10 @@
                 "TETON Sports Celsius 0°F",
                 "Coleman North Rim 0°F"
               ],
-              "price": "$40–$90 each",
+              "price": "Typical $40–$90 each",
               "qty": "× 4",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -2148,9 +2179,10 @@
               "models": [
                 "Frost King foam sleeves"
               ],
-              "price": "$20–$50 each",
+              "price": "Typical $20–$50 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -2162,9 +2194,10 @@
                 "Champion 2500W inverter",
                 "Honda EU2200i"
               ],
-              "price": "$550–$1,200 each",
+              "price": "Typical $550–$1,200 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -2176,9 +2209,10 @@
                 "Conntek L14-30 25 ft",
                 "Southwire 12/3 outdoor cord"
               ],
-              "price": "$60–$120 each",
+              "price": "Typical $60–$120 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -2190,9 +2224,10 @@
                 "Scepter SmartControl 5 gal",
                 "STA-BIL Storage"
               ],
-              "price": "$30–$45 each",
+              "price": "Typical $30–$45 each",
               "qty": "× 6",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -2204,9 +2239,10 @@
                 "Quick Dam water-activated bags",
                 "Sterilite latching totes"
               ],
-              "price": "$50–$150 each",
+              "price": "Typical $50–$150 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -2218,9 +2254,10 @@
                 "Reliance Controls PB30 inlet",
                 "Panel-maker interlock kit"
               ],
-              "price": "$500–$1,500 each",
+              "price": "Typical $500–$1,500 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": true
             },
             {
@@ -2232,9 +2269,10 @@
                 "Blue Rhino exchange",
                 "Worthington 20 lb"
               ],
-              "price": "$50–$70 each",
+              "price": "Typical $50–$70 each",
               "qty": "× 2",
               "buyable": false,
+              "emailSafe": false,
               "later": true
             },
             {
@@ -2246,9 +2284,10 @@
                 "Coleman Xtreme 70 qt",
                 "Igloo MaxCold"
               ],
-              "price": "$40–$90 each",
+              "price": "Typical $40–$90 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": true
             },
             {
@@ -2260,9 +2299,10 @@
                 "Gamma Seal lid kit",
                 "ShieldPro mylar kit"
               ],
-              "price": "$40–$90 each",
+              "price": "Typical $40–$90 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": true
             },
             {
@@ -2274,9 +2314,10 @@
                 "Reliance Luggable Loo",
                 "Camco bucket toilet seat"
               ],
-              "price": "$25–$50 each",
+              "price": "Typical $25–$50 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": true
             },
             {
@@ -2288,9 +2329,10 @@
                 "PlyLox window clips",
                 "Storm panel kits"
               ],
-              "price": "$150–$600 each",
+              "price": "Typical $150–$600 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": true
             },
             {
@@ -2302,9 +2344,10 @@
                 "Basement Watchdog Big Dog",
                 "Wayne ESP25"
               ],
-              "price": "$250–$500 each",
+              "price": "Typical $250–$500 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": true
             },
             {
@@ -2316,9 +2359,10 @@
                 "Kurgo collapsible bowls",
                 "Any airline-style carrier"
               ],
-              "price": "$30–$100 each",
+              "price": "Typical $30–$100 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": true
             },
             {
@@ -2330,9 +2374,10 @@
                 "EcoFlow DELTA 2",
                 "Jackery Explorer 1000 v2"
               ],
-              "price": "$400–$900 each",
+              "price": "Typical $400–$900 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": true
             },
             {
@@ -2344,9 +2389,10 @@
                 "EcoFlow 220W bifacial",
                 "Jackery SolarSaga 200W"
               ],
-              "price": "$300–$650 each",
+              "price": "Typical $300–$650 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": true
             },
             {
@@ -2358,9 +2404,10 @@
                 "Midland GXT1000VP4",
                 "Motorola Talkabout T470"
               ],
-              "price": "$60–$150 each",
+              "price": "Typical $60–$150 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": true
             },
             {
@@ -2372,9 +2419,10 @@
                 "Berkey-style gravity system",
                 "LifeStraw Community"
               ],
-              "price": "$250–$450 each",
+              "price": "Typical $250–$450 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": true
             },
             {
@@ -2386,9 +2434,10 @@
                 "SentrySafe document bag",
                 "ROLOWAY fireproof pouch"
               ],
-              "price": "$20–$60 each",
+              "price": "Typical $20–$60 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": true
             },
             {
@@ -2399,9 +2448,10 @@
               "models": [
                 "Any — rotate favorites"
               ],
-              "price": "$20–$50 each",
+              "price": "Typical $20–$50 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": true
             },
             {
@@ -2413,9 +2463,10 @@
                 "Osprey Daylite",
                 "REI Ruckpack 40"
               ],
-              "price": "$40–$120 each",
+              "price": "Typical $40–$120 each",
               "qty": "× 2",
               "buyable": false,
+              "emailSafe": false,
               "later": true
             },
             {
@@ -2427,9 +2478,10 @@
                 "NOCO Boost GB40",
                 "AstroAI tire inflator"
               ],
-              "price": "$100–$200 each",
+              "price": "Typical $100–$200 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": true
             },
             {
@@ -2441,9 +2493,10 @@
                 "Coleman Skydome 6",
                 "REI Base Camp 6"
               ],
-              "price": "$150–$450 each",
+              "price": "Typical $150–$450 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": true
             },
             {
@@ -2455,9 +2508,10 @@
                 "Reliance Aqua-Tainer 7 gal",
                 "Scepter 5 gal"
               ],
-              "price": "$40–$90 each",
+              "price": "Typical $40–$90 each",
               "qty": "",
               "buyable": false,
+              "emailSafe": false,
               "later": true
             }
           ]

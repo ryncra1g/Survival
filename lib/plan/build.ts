@@ -126,7 +126,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       category: p.item.category,
       spec: p.item.spec,
       models: p.item.models,
-      price: `${usdRange(p.item.priceLow, p.item.priceHigh)} each`,
+      price: `Typical ${usdRange(p.item.priceLow, p.item.priceHigh)} each`,
       qty: p.qty > 1 ? `× ${n(p.qty)}` : "",
       buyable: isBuyable(p),
       emailSafe: emailSafeBuyUrl(p.item, c.affiliate.amazonTag),

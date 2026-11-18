@@ -27,6 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <p>General preparedness guidance, not professional advice. Follow official instructions in an emergency. Prices and products change.</p>
             <p className="flex flex-wrap gap-x-4 gap-y-1">
               <Link href="/privacy" className="underline">Privacy</Link>
+              <Link href="/terms" className="underline">Terms</Link>
               <Link href="/account" className="underline">Export or delete my data</Link>
               <a href="https://www.ready.gov" className="underline" rel="noopener">Ready.gov</a>
             </p>

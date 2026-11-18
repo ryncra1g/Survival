@@ -119,9 +119,9 @@ Copy `.env.example` to `.env.local`.
 5. **Vercel.** Import the repo, set the env vars above and deploy. `vercel.json` schedules the daily follow-up cron.
 6. **Check the deploy.** Sign up with an `ADMIN_EMAILS` address, confirm it and open `/admin`.
 
-Before launch:
+Before launch (full business checklist: [`docs/LAUNCH_PLAN.md`](docs/LAUNCH_PLAN.md)):
 
-- Have counsel review `/privacy` (it's a template).
+- Have counsel review `/terms` and `/privacy` (both are templates). Set `NEXT_PUBLIC_LEGAL_NAME` for the Terms.
 - Set `MAILING_ADDRESS`.
 - Send test emails through a rendering service (Litmus or Email on Acid) to check real iOS Mail and Gmail. See **Testing status** below.
 
