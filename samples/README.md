@@ -26,6 +26,6 @@ The wording was written by the **template writer**: no `ANTHROPIC_API_KEY` was s
 | Heat | Generator → furnace through an electrician-installed inlet + interlock; indoor-rated propane heater (ODS) + CO alarms; one warm room; pipe-freeze protocol |
 | Evacuation | 120 mi ÷ 25 mpg = 4.8 gal one way. Keep **≥ 7.2 gal** in each tank; raw-land gear list (bring shelter, water and sanitation) |
 | Cash | $600 per adult = $1,200 |
-| Budget | Planning amount $3,250 (midpoint of the range, up to 5% over allowed). Phase 1 ≈ $1,608 (adds power banks and a flood kit for Long Island's flood risk) · Phase 2 ≈ $1,782 (small inverter generator + cans + cord, 30 days of food, dog food, flood kit) · total ≈ **$3,390**, plus ≈ $823 of food added gradually with groceries |
+| Budget | Planning amount $3,250 (midpoint of the range, up to 5% over allowed). Phase 1 ≈ $1,608 (now includes phone power banks) · Phase 2 ≈ $1,782 (small inverter generator + cans + cord, 30 days of food, dog food, flood kit) · total ≈ **$3,390**, plus ≈ $823 of food added gradually with groceries |
 
 The **generator inlet + interlock** didn't fit the planning budget. The plan lists it first under "Next purchases". Until it's installed, the plan says to run the fridge on extension cords and use the warm-room plan with the indoor-rated heater. The plan never suggests connecting the generator any other way.
