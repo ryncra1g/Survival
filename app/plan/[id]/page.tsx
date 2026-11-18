@@ -44,18 +44,17 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
     <div className="mx-auto max-w-3xl px-4 py-6">
       <h1 className="text-3xl font-bold">{doc.title}</h1>
       <p className="mt-1 text-muted">{doc.subtitle}</p>
+      <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="#about" className="underline">Sources &amp; disclaimers</a></p>
 
-      <div className="mt-4 flex flex-wrap gap-3 no-print">
-        <a href={`/api/plans/${plan.id}/pdf`} className="btn">Download PDF</a>
-        <a href={`/api/plans/${plan.id}/checklist`} className="btn-ghost">Fridge checklist</a>
+      <div className="mt-3 flex flex-wrap gap-2 no-print">
+        <a href={`/api/plans/${plan.id}/pdf`} className="btn text-sm px-4 min-h-[44px]">Download PDF</a>
+        <a href={`/api/plans/${plan.id}/checklist`} className="btn-ghost text-sm px-3">Fridge checklist</a>
         <PrintButton />
         {session?.scope === "full" && <Link href="/account" className="btn-ghost">Edit answers</Link>}
       </div>
 
       <FirstSteps doc={doc} />
       <div className="mt-5" id="email">{emailStatus}</div>
-      <p className="mt-4 text-sm text-muted border border-line rounded p-3">{doc.disclaimer}</p>
-      {doc.affiliateDisclosure && <p className="mt-2 text-sm text-muted"><strong>Affiliate disclosure:</strong> {doc.affiliateDisclosure}</p>}
       <ChangeAnswer planId={plan.id} />
       <PlanView doc={doc} planId={plan.id} checks={plan.checks ?? {}} sync />
       {!user && (

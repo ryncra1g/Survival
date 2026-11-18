@@ -138,8 +138,7 @@ export function PlanPdf({ doc }: { doc: PlanDocument }) {
         <Text style={s.brand}>ReadyPlan</Text>
         <Text style={s.h1}>{pdfSafe(doc.title)}</Text>
         <Text style={s.sub}>{pdfSafe(doc.subtitle)} · Generated {doc.generatedAt.slice(0, 10)}</Text>
-        <Text style={s.disclaimer}>{pdfSafe(doc.disclaimer)}</Text>
-        {doc.affiliateDisclosure ? <Text style={s.disclaimer}>Affiliate disclosure: {pdfSafe(doc.affiliateDisclosure)}</Text> : null}
+        <Text style={{ fontSize: 8, color: muted, marginBottom: 6 }}>General guidance, not professional advice. Full disclaimer and sources at the end.</Text>
         {doc.sections.map((sec) => (
           <View key={sec.id}>
             <Text style={s.h2} minPresenceAhead={60}>
@@ -151,7 +150,9 @@ export function PlanPdf({ doc }: { doc: PlanDocument }) {
             ))}
           </View>
         ))}
-        <Text style={s.h2}>Sources</Text>
+        <Text style={s.h2}>Sources &amp; disclaimers</Text>
+        <Text style={s.disclaimer}>{pdfSafe(doc.disclaimer)}</Text>
+        {doc.affiliateDisclosure ? <Text style={s.disclaimer}>Affiliate disclosure: {pdfSafe(doc.affiliateDisclosure)}</Text> : null}
         {doc.sources.map((src) => (
           <Text key={src.url} style={s.p}>
             {src.name} — {src.url}

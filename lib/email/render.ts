@@ -88,11 +88,10 @@ export function renderPlanEmail(doc: PlanDocument, meta: EmailMeta & { planUrl: 
   const body = `<h1 style="margin:0 0 4px;font-size:22px">${esc(doc.title)}</h1><p style="margin:0;color:${C.muted};font-size:14px">${esc(doc.subtitle)}</p>
 ${button(meta.planUrl, "Open your plan")}
 <p style="margin:0 0 8px;font-size:13px;color:${C.muted}">${meta.pdfAttached ? "Attached: your full plan as a PDF, plus a one-page checklist for the fridge. " : ""}Sections: ${toc}</p>
-<p style="margin:8px 0;font-size:13px;color:${C.muted};border:1px solid ${C.line};padding:8px;border-radius:4px">${esc(doc.disclaimer)}</p>
+<p style="margin:4px 0 8px;font-size:12px;color:${C.muted}">General guidance, not professional advice. Full disclaimer at the end.</p>
 ${firstSteps(doc)}
-${doc.affiliateDisclosure ? `<p style="margin:8px 0;font-size:13px;color:${C.muted}"><strong>Affiliate disclosure:</strong> ${esc(doc.affiliateDisclosure)}</p>` : ""}
 ${sections}
-<h2 style="margin:24px 0 4px;font-size:16px">Sources</h2><ul style="margin:4px 0;padding-left:20px;font-size:13px">${doc.sources.map((s) => `<li><a href="${esc(s.url)}" style="color:${C.info}">${esc(s.name)}</a></li>`).join("")}</ul>`;
+<h2 style="margin:24px 0 4px;font-size:16px">Sources &amp; disclaimers</h2><p style="margin:4px 0 8px;font-size:13px;color:${C.muted}">${esc(doc.disclaimer)}</p>${doc.affiliateDisclosure ? `<p style="margin:8px 0;font-size:13px;color:${C.muted}"><strong>Affiliate disclosure:</strong> ${esc(doc.affiliateDisclosure)}</p>` : ""}<ul style="margin:4px 0;padding-left:20px;font-size:13px">${doc.sources.map((s) => `<li><a href="${esc(s.url)}" style="color:${C.info}">${esc(s.name)}</a></li>`).join("")}</ul>`;
   return {
     subject: planSubject(doc),
     html: shell(doc.title, body, { ...meta, preheader: doc.sections[0]?.summary }),

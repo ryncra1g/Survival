@@ -20,8 +20,8 @@ export default async function Sample() {
       </div>
       <h1 className="text-3xl font-bold">{doc.title}</h1>
       <p className="mt-1 text-muted">{doc.subtitle}</p>
+      <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="#about" className="underline">Sources &amp; disclaimers</a></p>
       <FirstSteps doc={doc} />
-      <p className="mt-4 text-sm text-muted border border-line rounded p-3">{doc.disclaimer}</p>
       <PlanView doc={doc} planId="sample" />
       <div className="card p-5 my-6 text-center">
         <p className="text-lg font-semibold">Want one for your household?</p>

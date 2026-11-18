@@ -82,10 +82,9 @@ function App() {
             </div>
             <h1 className="text-3xl font-bold">{view.doc.title}</h1>
             <p className="mt-1 text-muted">{view.doc.subtitle}</p>
+            <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="#about" className="underline">Sources &amp; disclaimers</a></p>
             <FirstSteps doc={view.doc} />
             {!view.sample && <div className="mt-5"><EmailMyPlan planId="demo" onSubmit={() => {}} /></div>}
-            <p className="mt-4 text-sm text-muted border border-line rounded p-3">{view.doc.disclaimer}</p>
-            {view.doc.affiliateDisclosure && <p className="mt-2 text-sm text-muted"><strong>Affiliate disclosure:</strong> {view.doc.affiliateDisclosure}</p>}
             <PlanView
               doc={view.doc}
               planId={view.sample ? "sample" : "demo"}
