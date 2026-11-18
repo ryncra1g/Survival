@@ -8,7 +8,8 @@ export async function clientIp(): Promise<string> {
 }
 
 export const LIMITS = {
-  signupPerIpHour: 8,
+  // Generous per IP: mobile carriers put many phones behind one address (CGNAT). Turnstile stops bots; per-email limits stop abuse.
+  signupPerIpHour: 30,
   startPerIpHour: 30,
   loginPerEmailHour: 5,
   generatePerUserDay: 8,

@@ -5,6 +5,14 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: { default: "ReadyPlan — your family's emergency plan", template: "%s · ReadyPlan" },
   description: "A personalized emergency plan and supply list for your home, built in about 5 minutes.",
+  metadataBase: new URL(process.env.APP_URL || "http://localhost:3000"),
+  openGraph: {
+    type: "website",
+    siteName: "ReadyPlan",
+    title: "ReadyPlan — your family's emergency plan in 5 minutes",
+    description: "Exact water, food and fuel amounts for your household, a week-by-week checklist and steps for your area's hazards. Free, no sign-up.",
+  },
+  twitter: { card: "summary_large_image" },
 };
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#b3471d" };
 
