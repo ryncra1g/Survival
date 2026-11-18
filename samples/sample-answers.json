@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "zip": "11746",
+  "scenarioDays": 90,
+  "adults": 2,
+  "childrenAges": [
+    2,
+    4
+  ],
+  "elderlyOrMobility": false,
+  "toddlerNeeds": [
+    "diapers"
+  ],
+  "pets": [
+    {
+      "type": "dog",
+      "count": 1,
+      "size": "medium",
+      "specialDiet": false,
+      "medications": false
+    }
+  ],
+  "hasPrescriptions": false,
+  "poweredDevices": [],
+  "homeType": "house",
+  "floors": 2,
+  "hasBasement": true,
+  "hasGarage": true,
+  "hasYard": true,
+  "heatSources": [
+    "natural_gas"
+  ],
+  "cooking": "gas",
+  "waterSource": "municipal",
+  "hasFiltration": false,
+  "backupPower": "none",
+  "vehicleFuels": [
+    "gas",
+    "gas"
+  ],
+  "storage": [
+    "garage",
+    "basement"
+  ],
+  "evacuation": {
+    "mode": "fallback",
+    "locationType": "raw_land",
+    "distanceMiles": 120
+  },
+  "budget": "1500_5000",
+  "skills": []
+}

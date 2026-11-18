@@ -1,0 +1,1568 @@
+{
+  "rulesVersion": "1.0.0",
+  "computedAt": "2026-11-18T12:00:00.000Z",
+  "answers": {
+    "version": 1,
+    "zip": "11746",
+    "scenarioDays": 90,
+    "adults": 2,
+    "childrenAges": [
+      2,
+      4
+    ],
+    "elderlyOrMobility": false,
+    "toddlerNeeds": [
+      "diapers"
+    ],
+    "pets": [
+      {
+        "type": "dog",
+        "count": 1,
+        "size": "medium",
+        "specialDiet": false,
+        "medications": false
+      }
+    ],
+    "hasPrescriptions": false,
+    "poweredDevices": [],
+    "homeType": "house",
+    "floors": 2,
+    "hasBasement": true,
+    "hasGarage": true,
+    "hasYard": true,
+    "heatSources": [
+      "natural_gas"
+    ],
+    "cooking": "gas",
+    "waterSource": "municipal",
+    "hasFiltration": false,
+    "backupPower": "none",
+    "vehicleFuels": [
+      "gas",
+      "gas"
+    ],
+    "storage": [
+      "garage",
+      "basement"
+    ],
+    "evacuation": {
+      "mode": "fallback",
+      "locationType": "raw_land",
+      "distanceMiles": 120
+    },
+    "budget": "1500_5000",
+    "skills": []
+  },
+  "profile": {
+    "zip": "11746",
+    "state": "NY",
+    "region": "Long Island",
+    "climateZone": 4,
+    "winter": "moderate",
+    "heat": "low",
+    "hurricane": "high",
+    "flood": "high",
+    "wildfire": "low",
+    "earthquake": "low",
+    "tornado": "low",
+    "approximate": false
+  },
+  "household": {
+    "adults": 2,
+    "childrenAges": [
+      2,
+      4
+    ],
+    "children": 2,
+    "people": 4,
+    "elderlyOrMobility": false,
+    "childrenInDiapers": 1,
+    "infants": 0,
+    "toddlersOnMilk": 0,
+    "petCount": 1
+  },
+  "flags": {
+    "wellPumpPriority": false,
+    "medicalDevicePriority": false,
+    "furnaceNeedsPower": true,
+    "apartment": false,
+    "apartmentWithGenerator": false,
+    "winter": true,
+    "hasStandby": false,
+    "gasCooking": true
+  },
+  "tags": [
+    "children",
+    "diapers",
+    "evacuation",
+    "flood_basement",
+    "fuel_furnace",
+    "has_generator",
+    "house_or_townhouse",
+    "hurricane",
+    "large_storage",
+    "long_scenario",
+    "needs_backup_heat",
+    "needs_filter",
+    "pets",
+    "raw_land",
+    "recommend_generator",
+    "vehicles",
+    "winter"
+  ],
+  "water": {
+    "dailyGal": 3.85,
+    "breakdown": [
+      {
+        "label": "2 adult(s)",
+        "galPerDay": 2
+      },
+      {
+        "label": "2 child(ren)",
+        "galPerDay": 1.5
+      },
+      {
+        "label": "Pets",
+        "galPerDay": 0.35
+      }
+    ],
+    "storedDays": 14,
+    "storedGal": 54,
+    "filterDays": 76,
+    "filterGal": 293,
+    "jugs": 8,
+    "drums": 0,
+    "threeDayGal": 12,
+    "bleachDropsPerGal6pct": 8,
+    "bleachDropsPerGal8pct": 6
+  },
+  "food": {
+    "dailyKcal": 7000,
+    "totalKcal": 630000,
+    "perPerson": [
+      {
+        "label": "Adult 1",
+        "kcal": 2300
+      },
+      {
+        "label": "Adult 2",
+        "kcal": 2300
+      },
+      {
+        "label": "Child, age 2",
+        "kcal": 1000
+      },
+      {
+        "label": "Child, age 4",
+        "kcal": 1400
+      }
+    ],
+    "staples": [
+      {
+        "key": "rice",
+        "name": "White rice",
+        "kcal": 163800,
+        "lbs": 100,
+        "units": 5,
+        "unit": "20-lb bag",
+        "cost": 90
+      },
+      {
+        "key": "beans",
+        "name": "Dry beans/lentils",
+        "kcal": 81900,
+        "lbs": 53,
+        "units": 6,
+        "unit": "10-lb bag",
+        "cost": 96
+      },
+      {
+        "key": "oats",
+        "name": "Rolled oats",
+        "kcal": 63000,
+        "lbs": 38,
+        "units": 15,
+        "unit": "42-oz canister",
+        "cost": 75
+      },
+      {
+        "key": "pasta",
+        "name": "Pasta",
+        "kcal": 63000,
+        "lbs": 38,
+        "units": 38,
+        "unit": "1-lb box",
+        "cost": 57
+      },
+      {
+        "key": "peanut_butter",
+        "name": "Peanut butter",
+        "kcal": 50400,
+        "lbs": 20,
+        "units": 8,
+        "unit": "40-oz jar",
+        "cost": 56
+      },
+      {
+        "key": "oil",
+        "name": "Cooking oil",
+        "kcal": 50400,
+        "lbs": 13,
+        "units": 2,
+        "unit": "1-gal jug",
+        "cost": 28
+      },
+      {
+        "key": "canned_protein",
+        "name": "Canned protein (chicken, tuna, beans)",
+        "kcal": 63000,
+        "lbs": 84,
+        "units": 108,
+        "unit": "12.5-oz can",
+        "cost": 324
+      },
+      {
+        "key": "canned_produce",
+        "name": "Canned fruit & vegetables",
+        "kcal": 63000,
+        "lbs": 287,
+        "units": 306,
+        "unit": "15-oz can",
+        "cost": 398
+      },
+      {
+        "key": "milk_powder",
+        "name": "Powdered milk",
+        "kcal": 31500,
+        "lbs": 20,
+        "units": 5,
+        "unit": "4-lb bag",
+        "cost": 110
+      }
+    ],
+    "totalLbs": 653,
+    "cost": 1234
+  },
+  "diapers": {
+    "children": 1,
+    "perDay": 6,
+    "total": 540,
+    "currentSize": 270,
+    "nextSize": 270,
+    "packs": 6,
+    "wipes": 720,
+    "wipesPacks": 9,
+    "cost": 171
+  },
+  "formula": null,
+  "sanitation": {
+    "toiletPaperRolls": 52,
+    "wasteBags": 56,
+    "trashBags": 52,
+    "weeks": 13,
+    "cost": 53
+  },
+  "pets": {
+    "groups": [
+      {
+        "label": "1 medium dog",
+        "foodLbs": 54,
+        "waterGalPerDay": 0.35,
+        "medications": false,
+        "specialDiet": false
+      }
+    ],
+    "foodLbs": 54,
+    "waterGalPerDay": 0.35,
+    "cost": 81
+  },
+  "power": {
+    "generatorStatus": "recommended",
+    "generatorSiteOk": true,
+    "hoursPerDay": 12,
+    "hoursPerDayNonWinter": 6,
+    "hoursBasis": "furnace/boiler blower + ignition in cold weather, plus fridge and charging",
+    "gasolineGalPerDay": [
+      3,
+      4.8
+    ],
+    "propaneGalPerDay": [
+      4.2,
+      7.2
+    ],
+    "storedGasolineGal": 30,
+    "storedGasolineDays": [
+      6.3,
+      10
+    ],
+    "gasolineTable": [
+      {
+        "gallons": 5,
+        "daysLow": 1,
+        "daysHigh": 1.7
+      },
+      {
+        "gallons": 20,
+        "daysLow": 4.2,
+        "daysHigh": 6.7
+      },
+      {
+        "gallons": 40,
+        "daysLow": 8.3,
+        "daysHigh": 13.3
+      }
+    ],
+    "propane20lbDays": [
+      0.7,
+      1.1
+    ],
+    "propane100lbDays": [
+      3.3,
+      5.6
+    ],
+    "gasCans": 6
+  },
+  "heat": [
+    "generator_inlet_furnace",
+    "indoor_propane_heater",
+    "one_warm_room",
+    "pipe_freeze"
+  ],
+  "cash": {
+    "perAdult": 600,
+    "total": 1200
+  },
+  "evacuation": {
+    "locationType": "raw_land",
+    "distanceMiles": 120,
+    "oneWayGalPerVehicle": 4.8,
+    "reserveGalPerVehicle": 7.2,
+    "hasEv": false,
+    "evMinRangeMiles": 156,
+    "vehicles": 2
+  },
+  "budget": {
+    "planningAmount": 3250,
+    "totalMid": 3220,
+    "phases": [
+      {
+        "phase": 1,
+        "target": 975,
+        "includedMid": 1538,
+        "includedLow": 1096,
+        "includedHigh": 1977
+      },
+      {
+        "phase": 2,
+        "target": 1625,
+        "includedMid": 1682,
+        "includedLow": 1282,
+        "includedHigh": 2082
+      },
+      {
+        "phase": 3,
+        "target": 650,
+        "includedMid": 0,
+        "includedLow": 0,
+        "includedHigh": 0
+      }
+    ],
+    "consumables": [
+      {
+        "key": "sanitation",
+        "label": "Toilet paper (52 rolls) + waste bags (56)",
+        "phase": 1,
+        "cost": 53
+      },
+      {
+        "key": "diapers",
+        "label": "Diapers (540) + wipes (9 packs)",
+        "phase": 1,
+        "cost": 171
+      },
+      {
+        "key": "food",
+        "label": "Food staples, first 30 days",
+        "phase": 2,
+        "cost": 411
+      },
+      {
+        "key": "food_rest",
+        "label": "Food staples, days 31–90 (build up with each grocery trip)",
+        "phase": 3,
+        "cost": 823,
+        "ongoing": true
+      },
+      {
+        "key": "pet_food",
+        "label": "Pet food (54 lb)",
+        "phase": 2,
+        "cost": 81
+      }
+    ],
+    "ongoingCost": 823,
+    "picks": [
+      {
+        "item": {
+          "essential": true,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "co-alarm",
+          "category": "Life safety",
+          "name": "Carbon monoxide alarm",
+          "spec": "UL 2034 listed, battery or plug-in with battery backup, digital readout; one per floor and outside each sleeping area",
+          "models": [
+            "Kidde KN-COPP-3",
+            "First Alert CO605"
+          ],
+          "priceLow": 20,
+          "priceHigh": 40,
+          "tier": 1,
+          "phase": 1,
+          "priority": 1,
+          "qty": "co_alarms",
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 4,
+        "low": 80,
+        "high": 160,
+        "mid": 120,
+        "phase": 1,
+        "status": "included"
+      },
+      {
+        "item": {
+          "essential": true,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "water-jug",
+          "category": "Water",
+          "name": "7-gallon water container",
+          "spec": "Food-grade HDPE (#2), BPA-free, with spigot; stack no more than 2 high",
+          "models": [
+            "Reliance Aqua-Tainer 7 gal",
+            "Scepter 7 gal water container"
+          ],
+          "priceLow": 20,
+          "priceHigh": 35,
+          "tier": 1,
+          "phase": 1,
+          "priority": 2,
+          "qty": "water_jugs",
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 8,
+        "low": 160,
+        "high": 280,
+        "mid": 220,
+        "phase": 1,
+        "status": "included"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "tub-bladder",
+          "category": "Water",
+          "name": "Bathtub water bladder",
+          "spec": "Food-grade liner that fills a bathtub (~100 gal) when a storm is forecast",
+          "models": [
+            "WaterBOB 100 gal"
+          ],
+          "priceLow": 25,
+          "priceHigh": 40,
+          "tier": 1,
+          "phase": 1,
+          "priority": 4,
+          "qty": 1,
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 25,
+        "high": 40,
+        "mid": 33,
+        "phase": 1,
+        "status": "included"
+      },
+      {
+        "item": {
+          "essential": true,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "bleach",
+          "category": "Water",
+          "name": "Unscented household bleach",
+          "spec": "Regular, unscented 6–8.25% sodium hypochlorite; no splash-less or scented types; replace yearly",
+          "models": [
+            "Any store brand"
+          ],
+          "priceLow": 4,
+          "priceHigh": 8,
+          "tier": 1,
+          "phase": 1,
+          "priority": 5,
+          "qty": 1,
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 4,
+        "high": 8,
+        "mid": 6,
+        "phase": 1,
+        "status": "included"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "filter-basic",
+          "category": "Water",
+          "name": "Hollow-fiber water filter",
+          "spec": "0.1-micron hollow fiber (removes bacteria & protozoa; boil or disinfect for viruses); gravity or squeeze",
+          "models": [
+            "Sawyer Squeeze",
+            "LifeStraw Family 2.0"
+          ],
+          "priceLow": 35,
+          "priceHigh": 90,
+          "tier": 1,
+          "phase": 1,
+          "priority": 6,
+          "qty": 1,
+          "tags": [
+            "needs_filter"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 35,
+        "high": 90,
+        "mid": 63,
+        "phase": 1,
+        "status": "included"
+      },
+      {
+        "item": {
+          "essential": true,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "lights",
+          "category": "Light",
+          "name": "Headlamps + LED lanterns",
+          "spec": "AA/AAA headlamp per person (≥200 lumens) + 2 LED lanterns; no candles",
+          "models": [
+            "Black Diamond Astro",
+            "Energizer Vision headlamp"
+          ],
+          "priceLow": 15,
+          "priceHigh": 30,
+          "tier": 1,
+          "phase": 1,
+          "priority": 7,
+          "qty": "people",
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 4,
+        "low": 60,
+        "high": 120,
+        "mid": 90,
+        "phase": 1,
+        "status": "included"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "batteries",
+          "category": "Light",
+          "name": "AA/AAA battery stock",
+          "spec": "Bulk alkaline or rechargeable NiMH (pre-charged); store at room temperature",
+          "models": [
+            "Amazon Basics bulk",
+            "Panasonic eneloop"
+          ],
+          "priceLow": 20,
+          "priceHigh": 40,
+          "tier": 1,
+          "phase": 1,
+          "priority": 8,
+          "qty": 1,
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 20,
+        "high": 40,
+        "mid": 30,
+        "phase": 1,
+        "status": "included"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "radio",
+          "category": "Communications",
+          "name": "NOAA weather radio",
+          "spec": "NOAA Weather Radio with SAME alerts, hand-crank + USB charging",
+          "models": [
+            "Midland ER310",
+            "Eton FRX3"
+          ],
+          "priceLow": 50,
+          "priceHigh": 80,
+          "tier": 1,
+          "phase": 1,
+          "priority": 9,
+          "qty": 1,
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 50,
+        "high": 80,
+        "mid": 65,
+        "phase": 1,
+        "status": "included"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "first-aid",
+          "category": "First aid",
+          "name": "Family first aid kit",
+          "spec": "200+ piece kit with trauma pads, gauze, tape, elastic wrap, gloves, thermometer, tweezers, shears",
+          "models": [
+            "Adventure Medical Kits Family",
+            "American Red Cross Deluxe Family Kit"
+          ],
+          "priceLow": 30,
+          "priceHigh": 80,
+          "tier": 1,
+          "phase": 1,
+          "priority": 10,
+          "qty": 1,
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 30,
+        "high": 80,
+        "mid": 55,
+        "phase": 1,
+        "status": "included"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "extinguisher",
+          "category": "Life safety",
+          "name": "Fire extinguisher",
+          "spec": "ABC-rated, 2-A:10-B:C or larger, rechargeable metal valve; one per floor + kitchen",
+          "models": [
+            "First Alert PRO5",
+            "Kidde Pro 210"
+          ],
+          "priceLow": 30,
+          "priceHigh": 60,
+          "tier": 1,
+          "phase": 1,
+          "priority": 11,
+          "qty": "floors",
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 3,
+        "low": 90,
+        "high": 180,
+        "mid": 135,
+        "phase": 1,
+        "status": "included"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "thermometers",
+          "category": "Food",
+          "name": "Fridge/freezer thermometers",
+          "spec": "Appliance thermometers to check the 40°F / 0°F food-safety lines",
+          "models": [
+            "Rubbermaid appliance thermometer"
+          ],
+          "priceLow": 8,
+          "priceHigh": 15,
+          "tier": 1,
+          "phase": 1,
+          "priority": 12,
+          "qty": 1,
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 8,
+        "high": 15,
+        "mid": 12,
+        "phase": 1,
+        "status": "included"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "buddy-heater",
+          "category": "Heat",
+          "name": "Indoor-rated portable propane heater",
+          "spec": "Rated for indoor use, with oxygen depletion sensor (ODS) and tip-over shutoff; use only with a working CO alarm and the ventilation the manual requires",
+          "models": [
+            "Mr. Heater Portable Buddy (MH9BX)",
+            "Mr. Heater Big Buddy (MH18B)"
+          ],
+          "priceLow": 100,
+          "priceHigh": 200,
+          "tier": 1,
+          "phase": 1,
+          "priority": 13,
+          "qty": 1,
+          "tags": [
+            "needs_backup_heat",
+            "house_or_townhouse",
+            "winter"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 100,
+        "high": 200,
+        "mid": 150,
+        "phase": 1,
+        "status": "included"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "Priced per 4-pack",
+          "reviewedAt": "2026-11-01",
+          "id": "propane-1lb",
+          "category": "Heat",
+          "name": "1-lb propane cylinders (heater fuel)",
+          "spec": "DOT-approved 1-lb cylinders; store outdoors or in a detached shed, never in living space",
+          "models": [
+            "Coleman 1-lb propane"
+          ],
+          "priceLow": 30,
+          "priceHigh": 50,
+          "tier": 1,
+          "phase": 1,
+          "priority": 14,
+          "qty": 1,
+          "tags": [
+            "needs_backup_heat",
+            "house_or_townhouse",
+            "winter"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 30,
+        "high": 50,
+        "mid": 40,
+        "phase": 1,
+        "status": "included"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "sleep-system",
+          "category": "Heat",
+          "name": "Cold-rated sleeping bags",
+          "spec": "Rated 0–20°F (EN/ISO comfort rating where listed), one per person",
+          "models": [
+            "TETON Sports Celsius 0°F",
+            "Coleman North Rim 0°F"
+          ],
+          "priceLow": 40,
+          "priceHigh": 90,
+          "tier": 1,
+          "phase": 1,
+          "priority": 15,
+          "qty": "people",
+          "tags": [
+            "winter"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 4,
+        "low": 160,
+        "high": 360,
+        "mid": 260,
+        "phase": 1,
+        "status": "included"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "pipe-insulation",
+          "category": "Heat",
+          "name": "Pipe insulation & faucet covers",
+          "spec": "Foam pipe sleeves for exposed pipes + outdoor faucet covers",
+          "models": [
+            "Frost King foam sleeves"
+          ],
+          "priceLow": 20,
+          "priceHigh": 50,
+          "tier": 1,
+          "phase": 1,
+          "priority": 16,
+          "qty": 1,
+          "tags": [
+            "winter",
+            "house_or_townhouse"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 20,
+        "high": 50,
+        "mid": 35,
+        "phase": 1,
+        "status": "included"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "Picked instead of the dual-fuel model when the budget is tighter",
+          "reviewedAt": "2026-11-01",
+          "id": "generator-small",
+          "category": "Power",
+          "name": "Small inverter generator",
+          "spec": "2,200–2,500 W inverter with CO auto-shutoff (runs fridge, furnace blower via inlet, charging)",
+          "models": [
+            "Champion 2500W inverter",
+            "Honda EU2200i"
+          ],
+          "priceLow": 550,
+          "priceHigh": 1200,
+          "tier": 2,
+          "phase": 2,
+          "priority": 3,
+          "qty": 1,
+          "tags": [
+            "recommend_generator"
+          ],
+          "group": "generator",
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 550,
+        "high": 1200,
+        "mid": 875,
+        "phase": 2,
+        "status": "included"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "gen-cord",
+          "category": "Power",
+          "name": "Generator cord + outdoor extension cords",
+          "spec": "L14-30 generator cord (for an inlet) or 12-gauge outdoor-rated extension cords long enough to keep the generator 20+ ft from the house",
+          "models": [
+            "Conntek L14-30 25 ft",
+            "Southwire 12/3 outdoor cord"
+          ],
+          "priceLow": 60,
+          "priceHigh": 120,
+          "tier": 1,
+          "phase": 2,
+          "priority": 5,
+          "qty": 1,
+          "bundle": true,
+          "requiresGroup": "generator",
+          "tags": [
+            "has_generator",
+            "house_or_townhouse"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 60,
+        "high": 120,
+        "mid": 90,
+        "phase": 2,
+        "status": "included"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "gas-cans",
+          "category": "Fuel",
+          "name": "5-gallon gas cans + stabilizer",
+          "spec": "Approved 5-gal cans + fuel stabilizer; store in a detached shed or well-ventilated area away from ignition sources",
+          "models": [
+            "Scepter SmartControl 5 gal",
+            "STA-BIL Storage"
+          ],
+          "priceLow": 30,
+          "priceHigh": 45,
+          "tier": 1,
+          "phase": 2,
+          "priority": 6,
+          "qty": "gas_cans",
+          "bundle": true,
+          "requiresGroup": "generator",
+          "tags": [
+            "has_generator",
+            "house_or_townhouse"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 6,
+        "low": 180,
+        "high": 270,
+        "mid": 225,
+        "phase": 2,
+        "status": "included"
+      }
+    ],
+    "deferred": [
+      {
+        "item": {
+          "essential": false,
+          "notes": "Range includes typical install cost",
+          "reviewedAt": "2026-11-01",
+          "id": "inlet-interlock",
+          "category": "Power",
+          "name": "Generator inlet + interlock (electrician-installed)",
+          "spec": "Power inlet box + panel interlock kit or transfer switch, installed by a licensed electrician (permit where required)",
+          "models": [
+            "Reliance Controls PB30 inlet",
+            "Panel-maker interlock kit"
+          ],
+          "priceLow": 500,
+          "priceHigh": 1500,
+          "tier": 2,
+          "phase": 2,
+          "priority": 3,
+          "qty": 1,
+          "requiresGroup": "generator",
+          "tags": [
+            "recommend_generator",
+            "fuel_furnace"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 500,
+        "high": 1500,
+        "mid": 1000,
+        "phase": 2,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "propane-20",
+          "category": "Fuel",
+          "name": "20-lb propane cylinders",
+          "spec": "Filled 20-lb cylinders with OPD valves; store outdoors upright",
+          "models": [
+            "Blue Rhino exchange",
+            "Worthington 20 lb"
+          ],
+          "priceLow": 50,
+          "priceHigh": 70,
+          "tier": 2,
+          "phase": 2,
+          "priority": 7,
+          "qty": 2,
+          "requiresGroup": "generator",
+          "tags": [
+            "has_generator",
+            "house_or_townhouse"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 2,
+        "low": 100,
+        "high": 140,
+        "mid": 120,
+        "phase": 2,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "coolers",
+          "category": "Food",
+          "name": "Multi-day cooler",
+          "spec": "Rotomolded or 5-day-rated cooler, 45–70 qt",
+          "models": [
+            "Coleman Xtreme 70 qt",
+            "Igloo MaxCold"
+          ],
+          "priceLow": 40,
+          "priceHigh": 90,
+          "tier": 1,
+          "phase": 2,
+          "priority": 9,
+          "qty": 1,
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 40,
+        "high": 90,
+        "mid": 65,
+        "phase": 2,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "storage-kit",
+          "category": "Food",
+          "name": "Food storage buckets",
+          "spec": "Food-grade 5-gal buckets with gamma seal lids, mylar bags and oxygen absorbers for rice/beans/oats",
+          "models": [
+            "Gamma Seal lid kit",
+            "ShieldPro mylar kit"
+          ],
+          "priceLow": 40,
+          "priceHigh": 90,
+          "tier": 1,
+          "phase": 2,
+          "priority": 10,
+          "qty": 1,
+          "tags": [
+            "long_scenario"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 40,
+        "high": 90,
+        "mid": 65,
+        "phase": 2,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "toilet-kit",
+          "category": "Sanitation",
+          "name": "Emergency toilet kit",
+          "spec": "5-gal bucket toilet seat + heavy-duty liners + absorbent (cat litter or sawdust); two-bucket setup",
+          "models": [
+            "Reliance Luggable Loo",
+            "Camco bucket toilet seat"
+          ],
+          "priceLow": 25,
+          "priceHigh": 50,
+          "tier": 1,
+          "phase": 2,
+          "priority": 11,
+          "qty": 1,
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 25,
+        "high": 50,
+        "mid": 38,
+        "phase": 2,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "window-protection",
+          "category": "Storm",
+          "name": "Window protection",
+          "spec": "Pre-cut 5/8\" exterior plywood with clips, or code-approved storm panels",
+          "models": [
+            "PlyLox window clips",
+            "Storm panel kits"
+          ],
+          "priceLow": 150,
+          "priceHigh": 600,
+          "tier": 2,
+          "phase": 2,
+          "priority": 12,
+          "qty": 1,
+          "tags": [
+            "hurricane",
+            "house_or_townhouse"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 150,
+        "high": 600,
+        "mid": 375,
+        "phase": 2,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "sump-backup",
+          "category": "Storm",
+          "name": "Battery backup sump pump",
+          "spec": "Battery backup sump pump with alarm and deep-cycle battery",
+          "models": [
+            "Basement Watchdog Big Dog",
+            "Wayne ESP25"
+          ],
+          "priceLow": 250,
+          "priceHigh": 500,
+          "tier": 2,
+          "phase": 2,
+          "priority": 13,
+          "qty": 1,
+          "tags": [
+            "flood_basement"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 250,
+        "high": 500,
+        "mid": 375,
+        "phase": 2,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "pet-kit",
+          "category": "Pets",
+          "name": "Pet go-kit",
+          "spec": "Collapsible bowls, spare leash/harness, crate or carrier, waste bags, copy of vaccination records",
+          "models": [
+            "Kurgo collapsible bowls",
+            "Any airline-style carrier"
+          ],
+          "priceLow": 30,
+          "priceHigh": 100,
+          "tier": 1,
+          "phase": 2,
+          "priority": 15,
+          "qty": 1,
+          "tags": [
+            "pets"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 30,
+        "high": 100,
+        "mid": 65,
+        "phase": 2,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "power-station-house",
+          "category": "Power",
+          "name": "Portable power station (quiet hours)",
+          "spec": "1–2 kWh LiFePO4, pure sine wave; covers overnight fridge/phone/CPAP loads so the generator can be off",
+          "models": [
+            "EcoFlow DELTA 2",
+            "Jackery Explorer 1000 v2"
+          ],
+          "priceLow": 400,
+          "priceHigh": 900,
+          "tier": 3,
+          "phase": 3,
+          "priority": 1,
+          "qty": 1,
+          "tags": [
+            "house_or_townhouse"
+          ],
+          "group": "battery",
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 400,
+        "high": 900,
+        "mid": 650,
+        "phase": 3,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "solar-panel",
+          "category": "Power",
+          "name": "Portable solar panel",
+          "spec": "200–400 W folding panel matched to your power station's input (voltage/connector)",
+          "models": [
+            "EcoFlow 220W bifacial",
+            "Jackery SolarSaga 200W"
+          ],
+          "priceLow": 300,
+          "priceHigh": 650,
+          "tier": 3,
+          "phase": 3,
+          "priority": 2,
+          "qty": 1,
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 300,
+        "high": 650,
+        "mid": 475,
+        "phase": 3,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "gmrs",
+          "category": "Communications",
+          "name": "GMRS/FRS handheld radios",
+          "spec": "Pair of FRS (license-free) or GMRS radios (FCC license, no exam) for neighborhood/family comms",
+          "models": [
+            "Midland GXT1000VP4",
+            "Motorola Talkabout T470"
+          ],
+          "priceLow": 60,
+          "priceHigh": 150,
+          "tier": 2,
+          "phase": 3,
+          "priority": 3,
+          "qty": 1,
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 60,
+        "high": 150,
+        "mid": 105,
+        "phase": 3,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "filter-gravity",
+          "category": "Water",
+          "name": "Countertop gravity filter",
+          "spec": "Gravity system with independent test results (NSF/ANSI 53 or P231 where available), ≥2 gal/hour",
+          "models": [
+            "Berkey-style gravity system",
+            "LifeStraw Community"
+          ],
+          "priceLow": 250,
+          "priceHigh": 450,
+          "tier": 3,
+          "phase": 3,
+          "priority": 4,
+          "qty": 1,
+          "tags": [
+            "needs_filter"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 250,
+        "high": 450,
+        "mid": 350,
+        "phase": 3,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "docs-pouch",
+          "category": "Documents",
+          "name": "Fire/water-resistant document pouch",
+          "spec": "Fire- and water-resistant pouch or small safe for copies of IDs, insurance, prescriptions list",
+          "models": [
+            "SentrySafe document bag",
+            "ROLOWAY fireproof pouch"
+          ],
+          "priceLow": 20,
+          "priceHigh": 60,
+          "tier": 1,
+          "phase": 3,
+          "priority": 5,
+          "qty": 1,
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 20,
+        "high": 60,
+        "mid": 40,
+        "phase": 3,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "morale-kit",
+          "category": "Kids",
+          "name": "Kids comfort & activity kit",
+          "spec": "Cards, coloring, books, small toys, glow sticks; kept in a labeled bin",
+          "models": [
+            "Any — rotate favorites"
+          ],
+          "priceLow": 20,
+          "priceHigh": 50,
+          "tier": 1,
+          "phase": 3,
+          "priority": 6,
+          "qty": 1,
+          "tags": [
+            "children"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 20,
+        "high": 50,
+        "mid": 35,
+        "phase": 3,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "go-bag",
+          "category": "Evacuation",
+          "name": "Go-bag backpack",
+          "spec": "30–40 L pack per adult; small pack per child with ID card, snacks, comfort item",
+          "models": [
+            "Osprey Daylite",
+            "REI Ruckpack 40"
+          ],
+          "priceLow": 40,
+          "priceHigh": 120,
+          "tier": 1,
+          "phase": 3,
+          "priority": 7,
+          "qty": "adults",
+          "tags": [
+            "evacuation"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 2,
+        "low": 80,
+        "high": 240,
+        "mid": 160,
+        "phase": 3,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "vehicle-kit",
+          "category": "Evacuation",
+          "name": "Vehicle emergency kit",
+          "spec": "Lithium jump starter, 12 V tire inflator, tow strap, reflective triangles, paper road atlas",
+          "models": [
+            "NOCO Boost GB40",
+            "AstroAI tire inflator"
+          ],
+          "priceLow": 100,
+          "priceHigh": 200,
+          "tier": 1,
+          "phase": 3,
+          "priority": 8,
+          "qty": 1,
+          "tags": [
+            "vehicles",
+            "evacuation"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 100,
+        "high": 200,
+        "mid": 150,
+        "phase": 3,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "tent",
+          "category": "Evacuation",
+          "name": "Family tent + tarps",
+          "spec": "3-season (or 4-season for winter) family tent, 2 heavy tarps, paracord, stakes",
+          "models": [
+            "Coleman Skydome 6",
+            "REI Base Camp 6"
+          ],
+          "priceLow": 150,
+          "priceHigh": 450,
+          "tier": 2,
+          "phase": 3,
+          "priority": 9,
+          "qty": 1,
+          "tags": [
+            "raw_land"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 150,
+        "high": 450,
+        "mid": 300,
+        "phase": 3,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "raw-land-water",
+          "category": "Evacuation",
+          "name": "Water transport for off-grid site",
+          "spec": "2–4 collapsible or rigid 5–7 gal containers dedicated to the vehicle/land site",
+          "models": [
+            "Reliance Aqua-Tainer 7 gal",
+            "Scepter 5 gal"
+          ],
+          "priceLow": 40,
+          "priceHigh": 90,
+          "tier": 1,
+          "phase": 3,
+          "priority": 10,
+          "qty": 1,
+          "tags": [
+            "raw_land"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 40,
+        "high": 90,
+        "mid": 65,
+        "phase": 3,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      }
+    ],
+    "staleHidden": [],
+    "cutFirst": [
+      "Pipe insulation & faucet covers",
+      "Cold-rated sleeping bags",
+      "1-lb propane cylinders (heater fuel)"
+    ]
+  }
+}

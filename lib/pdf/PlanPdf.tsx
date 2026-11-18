@@ -1,0 +1,143 @@
+import React from "react";
+import { Document, Page, StyleSheet, Text, View, renderToBuffer } from "@react-pdf/renderer";
+import type { Block, PlanDocument } from "@/lib/plan/document";
+
+/** Server-side PDF of the same PlanDocument structure. Uses built-in Helvetica (no font fetch). */
+const ink = "#1c2430";
+const muted = "#5b6573";
+const line = "#d5dae0";
+const brand = "#b3471d";
+const tone = { danger: "#a1261b", warning: "#8a5a00", info: "#1f4f7a" };
+
+const s = StyleSheet.create({
+  page: { paddingTop: 36, paddingBottom: 48, paddingHorizontal: 36, fontSize: 9.5, fontFamily: "Helvetica", color: ink, lineHeight: 1.35 },
+  brand: { fontSize: 11, color: brand, fontFamily: "Helvetica-Bold" },
+  h1: { fontSize: 22, fontFamily: "Helvetica-Bold", marginTop: 6, marginBottom: 6, lineHeight: 1.2 },
+  sub: { fontSize: 10, color: muted, marginTop: 2, marginBottom: 10 },
+  disclaimer: { fontSize: 8.5, color: muted, borderWidth: 1, borderColor: line, padding: 6, marginBottom: 8 },
+  h2: { fontSize: 14, fontFamily: "Helvetica-Bold", marginTop: 14, marginBottom: 3, paddingTop: 8, borderTopWidth: 1.5, borderTopColor: line },
+  summary: { fontSize: 10, backgroundColor: "#fbf3ea", padding: 6, marginBottom: 6 },
+  p: { marginVertical: 3 },
+  subheading: { fontFamily: "Helvetica-Bold", marginTop: 8, marginBottom: 2 },
+  bulletRow: { flexDirection: "row", marginVertical: 1.5 },
+  bulletDot: { width: 10 },
+  checkRow: { flexDirection: "row", marginVertical: 2, alignItems: "flex-start" },
+  box: { width: 8, height: 8, borderWidth: 1, borderColor: ink, marginRight: 6, marginTop: 1.5 },
+  caption: { fontFamily: "Helvetica-Bold", color: muted, fontSize: 8.5, marginTop: 6, marginBottom: 2 },
+  table: { borderTopWidth: 1, borderTopColor: line, marginVertical: 3 },
+  tr: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: line },
+  th: { fontFamily: "Helvetica-Bold", backgroundColor: "#f4f4f1" },
+  td: { padding: 3, flexGrow: 1, flexShrink: 1, width: 1 },
+  callout: { borderLeftWidth: 3, backgroundColor: "#faf8f5", padding: 6, marginVertical: 4 },
+  footer: { position: "absolute", bottom: 20, left: 36, right: 36, fontSize: 7.5, color: muted, textAlign: "center" },
+});
+
+/** Helvetica only covers WinAnsi; map the few symbols we use that it lacks. */
+export const pdfSafe = (t: string) => t.replace(/≤/g, "<=").replace(/≥/g, ">=").replace(/→/g, "->").replace(/☐/g, "[ ]").replace(/[  ]/g, " ");
+
+function Table({ columns, rows, widths }: { columns: string[]; rows: string[][]; widths?: number[] }) {
+  const w = (i: number) => (widths ? { flexGrow: widths[i] } : {});
+  return (
+    <View style={s.table}>
+      <View style={[s.tr, s.th]} wrap={false} minPresenceAhead={40}>
+        {columns.map((c, i) => (
+          <Text key={i} style={[s.td, w(i)]}>{pdfSafe(c)}</Text>
+        ))}
+      </View>
+      {rows.map((r, ri) => (
+        <View key={ri} style={s.tr} wrap={false}>
+          {r.map((cell, ci) => (
+            <Text key={ci} style={[s.td, w(ci)]}>{pdfSafe(cell)}</Text>
+          ))}
+        </View>
+      ))}
+    </View>
+  );
+}
+
+function BlockView({ b }: { b: Block }) {
+  switch (b.type) {
+    case "paragraph":
+      return <Text style={s.p}>{pdfSafe(b.text)}</Text>;
+    case "subheading":
+      return <Text style={s.subheading}>{pdfSafe(b.text)}</Text>;
+    case "bullets":
+      return (
+        <View>
+          {b.items.map((t, i) => (
+            <View key={i} style={s.bulletRow} wrap={false}>
+              <Text style={s.bulletDot}>•</Text>
+              <Text style={{ flex: 1 }}>{pdfSafe(t)}</Text>
+            </View>
+          ))}
+        </View>
+      );
+    case "checklist":
+      return (
+        <View>
+          {b.items.map((it) => (
+            <View key={it.id} style={s.checkRow} wrap={false}>
+              <View style={s.box} />
+              <Text style={{ flex: 1 }}>{pdfSafe(it.text)}</Text>
+            </View>
+          ))}
+        </View>
+      );
+    case "table": {
+      const widths = b.columns.length === 4 && b.columns[1] === "Look for" ? [3, 5, 3, 2] : b.columns.length === 2 ? [2, 5] : undefined;
+      return (
+        <View>
+          {b.caption ? <Text style={s.caption} minPresenceAhead={60}>{pdfSafe(b.caption)}</Text> : null}
+          <Table columns={b.columns} rows={b.rows} widths={widths} />
+        </View>
+      );
+    }
+    case "ifthen":
+      return <Table columns={["If…", "Then…"]} rows={b.rows.map((r) => [r.if, r.then])} widths={[4, 5]} />;
+    case "callout":
+      return (
+        <View style={[s.callout, { borderLeftColor: tone[b.tone] }]} wrap={false}>
+          <Text>
+            <Text style={{ fontFamily: "Helvetica-Bold", color: tone[b.tone] }}>{pdfSafe(b.title)}. </Text>
+            {pdfSafe(b.text)}
+          </Text>
+        </View>
+      );
+  }
+}
+
+export function PlanPdf({ doc }: { doc: PlanDocument }) {
+  return (
+    <Document title={doc.title} author="ReadyPlan" subject="Emergency preparedness plan">
+      <Page size="LETTER" style={s.page} wrap>
+        <Text style={s.brand}>ReadyPlan</Text>
+        <Text style={s.h1}>{pdfSafe(doc.title)}</Text>
+        <Text style={s.sub}>{pdfSafe(doc.subtitle)} · Generated {doc.generatedAt.slice(0, 10)}</Text>
+        <Text style={s.disclaimer}>{pdfSafe(doc.disclaimer)}</Text>
+        {doc.affiliateDisclosure ? <Text style={s.disclaimer}>Affiliate disclosure: {pdfSafe(doc.affiliateDisclosure)}</Text> : null}
+        {doc.sections.map((sec) => (
+          <View key={sec.id}>
+            <Text style={s.h2} minPresenceAhead={60}>
+              {sec.number}. {pdfSafe(sec.title)}
+            </Text>
+            <Text style={s.summary}>{pdfSafe(sec.summary)}</Text>
+            {sec.blocks.map((b, i) => (
+              <BlockView key={i} b={b} />
+            ))}
+          </View>
+        ))}
+        <Text style={s.h2}>Sources</Text>
+        {doc.sources.map((src) => (
+          <Text key={src.url} style={s.p}>
+            {src.name} — {src.url}
+          </Text>
+        ))}
+        <Text style={s.footer} fixed>ReadyPlan · General guidance, not professional advice</Text>
+      </Page>
+    </Document>
+  );
+}
+
+export async function renderPlanPdf(doc: PlanDocument): Promise<Buffer> {
+  return renderToBuffer(<PlanPdf doc={doc} />);
+}
