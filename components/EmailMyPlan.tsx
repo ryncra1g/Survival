@@ -86,7 +86,7 @@ export function EmailMyPlan({ planId, siteKey = "", onSubmit, idPrefix = "emp" }
         <span>Also send me seasonal reminders (winter, hurricane season) and occasional preparedness updates. <span className="text-muted">Unsubscribe any time.</span></span>
       </label>
       <Turnstile siteKey={siteKey} onToken={onToken} />
-      {error && <p role="alert" className="text-danger font-medium">{error}</p>}
+      {error && <p role="alert" className="text-warn font-medium">{error}</p>}
       <p className="text-xs text-muted">Only used for {BRAND.name}, never sold. <Link href="/privacy" className="underline">Privacy policy</Link>.</p>
     </form>
   );

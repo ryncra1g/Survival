@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Subtitle } from "@/components/Subtitle";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DemoLinkBanner } from "@/components/DemoLinkBanner";
@@ -43,7 +44,7 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
       <h1 className="text-3xl font-bold">{doc.title}</h1>
-      <p className="mt-1 text-muted">{doc.subtitle}</p>
+      <Subtitle text={doc.subtitle} />
       <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="#about" className="underline">Sources &amp; disclaimers</a></p>
 
       <div className="mt-3 flex flex-wrap gap-2 no-print">

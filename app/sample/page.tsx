@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Subtitle } from "@/components/Subtitle";
 import { StartButton } from "@/components/StartButton";
 import { FirstSteps, PlanView } from "@/components/PlanView";
 import { SEED_CATALOG } from "@/lib/catalog/seed";
@@ -20,7 +21,7 @@ export default async function Sample() {
         <StartButton label="Build your own" />
       </div>
       <h1 className="text-3xl font-bold">{doc.title}</h1>
-      <p className="mt-1 text-muted">{doc.subtitle}</p>
+      <Subtitle text={doc.subtitle} />
       <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="#about" className="underline">Sources &amp; disclaimers</a></p>
       <FirstSteps doc={doc} />
       <PlanView doc={doc} planId="sample" />

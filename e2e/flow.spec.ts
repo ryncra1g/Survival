@@ -48,6 +48,8 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(page).toHaveURL(/\/q\//);
 
   await page.getByLabel("ZIP code").fill("11746");
+  await expect(page.getByText(/Your area:.*Long Island, NY/)).toBeVisible();
+  await expect(page.getByText(/Your plan will cover: Hurricanes \(high\), Flooding \(high\), Winter storms \(moderate\)/)).toBeVisible();
   await pick(page, /^90 days/);
   await next(page);
   await page.getByLabel("Add a child age").selectOption("2");
@@ -95,7 +97,10 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   // Shorter plan: action sections open, reference sections collapsed to title + summary
   await expect(page.locator("details#priorities")).toHaveAttribute("open", "");
   await expect(page.locator("details#gear")).not.toHaveAttribute("open", "");
-  await page.getByRole("navigation", { name: "Plan sections" }).getByRole("link", { name: "Gear" }).click();
+  const nav = page.getByRole("navigation", { name: "Plan sections" });
+  await nav.getByRole("link", { name: "Supplies" }).click();
+  await expect(nav.getByRole("link", { name: "Supplies" })).toHaveAttribute("aria-current", "true");
+  await nav.getByRole("link", { name: "Gear" }).click();
   await expect(page.locator("details#gear")).toHaveAttribute("open", "");
 
   // Ticks are saved to the plan, not just this browser
@@ -229,7 +234,7 @@ test("admin: dashboard, catalog, rule constants, affiliate tag → tracked Buy c
 
 test("sample plan is public", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("link", { name: "See a sample plan" }).click();
+  await page.getByRole("link", { name: "See the full sample plan" }).click();
   await expect(page).toHaveURL(/\/sample/);
   await expect(page.getByText(/Store 54 gallons \(14 days\)/)).toBeVisible();
 });

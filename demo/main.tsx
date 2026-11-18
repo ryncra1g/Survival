@@ -4,6 +4,7 @@
  * Build: npm run demo  →  demo/dist/demo.html
  */
 import { useEffect, useState } from "react";
+import { Subtitle } from "@/components/Subtitle";
 import { createRoot } from "react-dom/client";
 import { Questionnaire } from "@/components/Questionnaire";
 import { FirstSteps, PlanView } from "@/components/PlanView";
@@ -40,7 +41,7 @@ function makePlan(a: Answers): PlanDocument {
 type View = { kind: "home" } | { kind: "build"; key: number } | { kind: "plan"; doc: PlanDocument; sample: boolean; answers: Answers };
 
 function Home({ onStart, onSample }: { onStart: () => void; onSample: () => void }) {
-  return <Landing cta={<StartButton onStart={onStart} />} footer={<button type="button" className="underline" onClick={onSample}>See a sample plan</button>} />;
+  return <Landing cta={<StartButton onStart={onStart} />} sampleLink={<button type="button" className="underline font-semibold text-brand" onClick={onSample}>See the full sample plan</button>} />;
 }
 
 function App() {
@@ -82,7 +83,7 @@ function App() {
               <button type="button" className="btn" onClick={() => setView({ kind: "home" })}>{view.sample ? "Build your own plan" : "Start over"}</button>
             </div>
             <h1 className="text-3xl font-bold">{view.doc.title}</h1>
-            <p className="mt-1 text-muted">{view.doc.subtitle}</p>
+            <Subtitle text={view.doc.subtitle} />
             <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="#about" className="underline">Sources &amp; disclaimers</a></p>
             <FirstSteps doc={view.doc} />
             {!view.sample && <div className="mt-5"><EmailMyPlan planId="demo" onSubmit={() => {}} /></div>}

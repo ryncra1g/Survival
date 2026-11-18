@@ -44,11 +44,11 @@ export function CatalogEditor({ initial, staleDays, today }: { initial: CatalogI
                 <td className="p-2 border-b border-line">{i.tier}</td>
                 <td className="p-2 border-b border-line">${i.priceLow}–{i.priceHigh}</td>
                 <td className="p-2 border-b border-line">{i.tags.join(", ") || "all"}</td>
-                <td className={`p-2 border-b border-line ${stale(i) ? "text-danger font-semibold" : ""}`}>{i.reviewedAt}{stale(i) ? " (stale — hidden)" : ""}</td>
+                <td className={`p-2 border-b border-line ${stale(i) ? "text-warn font-semibold" : ""}`}>{i.reviewedAt}{stale(i) ? " (stale — hidden)" : ""}</td>
                 <td className="p-2 border-b border-line whitespace-nowrap">
                   <button className="underline mr-3" onClick={() => setEdit(i)}>Edit</button>
                   <button className="underline mr-3" onClick={() => save({ ...i, reviewedAt: today })}>Mark reviewed</button>
-                  <button className="underline text-danger" onClick={() => remove(i.id)}>Delete</button>
+                  <button className="underline" onClick={() => remove(i.id)}>Delete</button>
                 </td>
               </tr>
             ))}
