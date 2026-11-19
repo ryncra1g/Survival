@@ -43,7 +43,7 @@ export function SectionNav({ chapters }: { chapters: NavChapter[] }) {
         const order = chapters.map((c) => c.id).filter((id) => visible.has(id));
         if (order.length) setActive(order[0]);
       },
-      { rootMargin: "-140px 0px -55% 0px" },
+      { rootMargin: "-70px 0px -55% 0px" },
     );
     document.querySelectorAll<HTMLElement>("section[data-chapter]").forEach((el) => io.observe(el));
     return () => {
@@ -56,7 +56,10 @@ export function SectionNav({ chapters }: { chapters: NavChapter[] }) {
   const setAll = (open: boolean) => document.querySelectorAll<HTMLDetailsElement>("details[data-section]").forEach((d) => (d.open = open));
   const current = chapters.find((c) => c.id === active) ?? chapters[0];
   return (
-    <nav aria-label="Plan sections" className="no-print sticky top-0 z-10 -mx-4 px-4 pt-2 pb-2 bg-bg/95 backdrop-blur border-b border-line mt-6">
+    <>
+    {/* Only the four tabs stay pinned (about 56px), so most of the phone screen is the plan itself.
+        Section chips sit under each chapter heading instead. */}
+    <nav aria-label="Plan sections" className="no-print sticky top-0 z-10 -mx-4 px-4 py-2 bg-bg/95 backdrop-blur border-b border-line mt-6">
       <div className="grid grid-cols-4 gap-1 rounded-xl bg-surface border border-line p-1">
         {chapters.map((c) => (
           <a
@@ -76,28 +79,11 @@ export function SectionNav({ chapters }: { chapters: NavChapter[] }) {
           </a>
         ))}
       </div>
-      {current && (
-        <div className="mt-2 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:thin]" aria-label={`${current.title} sections`}>
-          {current.sections.map((s) => (
-            <a
-              key={s.id}
-              href={`#${s.id}`}
-              onClick={(e) => {
-                e.preventDefault();
-                openSection(s.id)?.scrollIntoView({ behavior: "smooth" });
-                history.replaceState(null, "", `#${s.id}`);
-              }}
-              className="shrink-0 rounded-full border border-line bg-surface px-3 py-1.5 text-sm whitespace-nowrap"
-            >
-              {s.title}
-            </a>
-          ))}
-        </div>
-      )}
-      <div className="flex gap-4 text-sm mt-1">
-        <button type="button" className="underline" onClick={() => setAll(true)}>Expand all</button>
-        <button type="button" className="underline" onClick={() => setAll(false)}>Collapse all</button>
-      </div>
     </nav>
+    <div className="no-print mt-2 flex justify-end gap-4 text-sm">
+      <button type="button" className="underline min-h-[32px]" onClick={() => setAll(true)}>Expand all</button>
+      <button type="button" className="underline min-h-[32px]" onClick={() => setAll(false)}>Collapse all</button>
+    </div>
+    </>
   );
 }

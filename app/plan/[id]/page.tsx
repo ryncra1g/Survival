@@ -47,16 +47,25 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
       <Subtitle text={doc.subtitle} />
       <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="#about" className="underline">Sources &amp; disclaimers</a></p>
 
-      <div className="mt-3 flex flex-wrap gap-2 no-print">
-        <a href={`/api/plans/${plan.id}/pdf`} className="btn text-sm px-4 min-h-[44px]">Download PDF</a>
-        <a href={`/api/plans/${plan.id}/checklist`} className="btn-ghost text-sm px-3">Fridge checklist</a>
-        <PrintButton />
-        {session?.scope === "full" && <Link href="/account" className="btn-ghost">Edit answers</Link>}
-      </div>
-
-      <div className="mt-5" id="email">{emailStatus}</div>
-      <ChangeAnswer planId={plan.id} />
-      <PlanView doc={doc} planId={plan.id} checks={plan.checks ?? {}} sync />
+      {/* Dashboard first (what to do next); then ways to keep the plan; then the plan itself. */}
+      <PlanView
+        doc={doc}
+        planId={plan.id}
+        checks={plan.checks ?? {}}
+        sync
+        afterDashboard={
+          <div className="no-print">
+            <div className="mt-5" id="email">{emailStatus}</div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <a href={`/api/plans/${plan.id}/pdf`} className="btn-ghost border border-line text-sm px-3 min-h-[44px]">Download PDF</a>
+              <a href={`/api/plans/${plan.id}/checklist`} className="btn-ghost border border-line text-sm px-3 min-h-[44px]">Fridge checklist</a>
+              <PrintButton />
+              {session?.scope === "full" && <Link href="/account" className="btn-ghost border border-line text-sm px-3 min-h-[44px]">Edit answers</Link>}
+            </div>
+            <ChangeAnswer planId={plan.id} />
+          </div>
+        }
+      />
       {!user && (
         <div className="my-6">
           <EmailMyPlan planId={plan.id} siteKey={siteKey} idPrefix="emp2" />

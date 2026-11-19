@@ -4,7 +4,8 @@ import { ChecksProvider } from "./ChecksContext";
 import { LevelChips } from "./LevelChips";
 import { SectionNav } from "./SectionNav";
 import { BuyIfNeeded } from "./BuyIfNeeded";
-import { Dashboard } from "./Dashboard";
+import { Dashboard, type PriorityStep } from "./Dashboard";
+import { Chevron } from "./Chevron";
 import { groupIntoChapters } from "@/lib/plan/chapters";
 import { BRAND } from "@/lib/brand";
 import { HelpStrip, productIndex, resolveStep, StepExtras, type StepView } from "./StepExtras";
@@ -117,8 +118,11 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
   }
 }
 
-/** Sections that start open: the ones people act on now. The rest show title + one-line summary. */
-const OPEN_SECTIONS = new Set(["priorities", "hazards", "day0"]);
+/**
+ * Sections that start open. None: the dashboard above carries "what to do now", so the plan below reads as
+ * a short index (title + one-line summary) and each section opens on tap or from a link.
+ */
+const OPEN_SECTIONS = new Set<string>();
 const SHORT: Record<string, string> = {
   snapshot: "Your household",
   priorities: "Priority list",
@@ -145,7 +149,10 @@ export function PlanView({
   checks,
   sync = false,
   onChoose,
+  afterDashboard,
 }: {
+  /** Shown right under the dashboard (e.g. email, PDF, change an answer), before the plan chapters. */
+  afterDashboard?: React.ReactNode;
   doc: PlanDocument;
   planId: string;
   buyHref?: (itemId: string) => string;
@@ -161,25 +168,38 @@ export function PlanView({
       <article>
         <Dashboard
           overview={doc.overview}
-          stepIds={doc.sections.flatMap((s) => s.blocks.flatMap((b) => (b.type === "checklist" ? b.items.map((i) => i.id) : [])))}
+          priority={prioritySteps(doc, ctx)}
+          allStepIds={doc.sections.flatMap((s) => s.blocks.flatMap((b) => (b.type === "checklist" ? b.items.map((i) => i.id) : [])))}
           buyHref={Object.fromEntries([...ctx.products.keys()].map((id) => [id, ctx.href(id)]))}
         />
+        {afterDashboard}
         <SectionNav chapters={chapters.map((ch) => ({ id: ch.id, title: ch.title, short: ch.short, sections: ch.items.map((x) => ({ id: x.id, title: SHORT[x.id] ?? x.title })) }))} />
-        <FirstSteps doc={doc} ctx={ctx} />
         {chapters.map((ch) => (
-          <section key={ch.id} id={`ch-${ch.id}`} data-chapter={ch.id} aria-labelledby={`ch-${ch.id}-h`} className="scroll-mt-32 pt-4">
+          <section key={ch.id} id={`ch-${ch.id}`} data-chapter={ch.id} aria-labelledby={`ch-${ch.id}-h`} className="scroll-mt-16 pt-4">
             <h2 id={`ch-${ch.id}-h`} className="text-2xl font-bold text-brand mt-4">{ch.title}</h2>
+            {ch.items.length > 1 && (
+              <p className="mt-2 flex flex-wrap gap-2 no-print" aria-label={`${ch.title}: sections`}>
+                {ch.items.map((x) => (
+                  <a key={x.id} href={`#${x.id}`} className="rounded-full border border-line bg-surface px-3 py-1.5 text-sm no-underline">{SHORT[x.id] ?? x.title}</a>
+                ))}
+              </p>
+            )}
             {ch.items.map((s) => (
-              <details key={s.id} id={s.id} data-section open={OPEN_SECTIONS.has(s.id)} className="group card my-3 scroll-mt-40">
+              <details key={s.id} id={s.id} data-section open={OPEN_SECTIONS.has(s.id)} className="group card my-3 scroll-mt-20">
                 <summary className="list-none cursor-pointer p-4 sm:p-5 [&::-webkit-details-marker]:hidden">
                   <span className="flex items-start justify-between gap-3">
-                    <h3 id={`${s.id}-h`} className="text-xl font-bold">{s.title}</h3>
-                    <span aria-hidden className="mt-1 text-muted transition-transform group-open:rotate-180">▾</span>
+                    <h3 id={`${s.id}-h`} className="text-lg font-bold">{s.title}</h3>
+                    <Chevron />
                   </span>
-                  <span className="mt-2 block p-3 rounded bg-brand-soft">{s.summary}</span>
+                  {/* Summary: plain text when collapsed (a scannable index); the tinted box once opened. */}
+                  <span className="mt-1 block text-muted group-open:mt-3 group-open:rounded group-open:bg-brand-soft group-open:p-3 group-open:text-ink">{s.summary}</span>
                 </summary>
                 <div className="px-4 sm:px-6 pb-5">
-                  {s.blocks.map((b, i) => <BlockView key={i} b={b} planId={planId} buyHref={buyHref} sectionId={s.id} onChoose={onChoose} ctx={ctx} />)}
+                  {s.blocks
+                    // The dashboard's shopping list replaces the compact shopping list inside the Priority list on the web
+                    // (email and PDF keep it).
+                    .filter((b) => !(doc.overview && s.id === "priorities" && b.type === "products" && b.compact))
+                    .map((b, i) => <BlockView key={i} b={b} planId={planId} buyHref={buyHref} sectionId={s.id} onChoose={onChoose} ctx={ctx} />)}
                 </div>
               </details>
             ))}
@@ -199,27 +219,16 @@ export function PlanView({
   );
 }
 
-/** The three most important actions, up top, so the plan starts with something doable today: why, what to buy, where to go. */
-function FirstSteps({ doc, ctx }: { doc: PlanDocument; ctx: Ctx }) {
-  const pr = doc.sections.find((s) => s.id === "priorities");
-  const week = pr?.blocks.find((b) => b.type === "checklist");
-  if (!week || week.type !== "checklist") return null;
-  const steps: StepView[] = week.items.slice(0, 3).map((i) => resolveStep(i, ctx.products, ctx.href));
-  return (
-    <section aria-labelledby="first-steps" className="mt-5 rounded-xl border-2 border-accent bg-surface p-4 sm:p-5">
-      <h2 id="first-steps" className="text-lg font-bold">Start here: your first 3 steps</h2>
-      <ol className="mt-3 space-y-4 list-decimal pl-5">
-        {steps.map((st) => (
-          <li key={st.id}>
-            <span className="font-medium">{st.text}</span>
-            <StepExtras step={st} />
-          </li>
-        ))}
-      </ol>
-      <p className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm no-print">
-        <a href="#priorities" className="underline">Full priority list</a>
-        {doc.sections.some((s) => s.id === "gear") && <a href="#gear" className="underline">Everything to buy</a>}
-      </p>
-    </section>
-  );
+/** Stages of the Priority list, in order; "Skills to practice" isn't a to-do stage. */
+const STAGES = ["This week", "This month", "Within 60 days", "Within 90 days"];
+
+/** Every Priority-list step with its stage, in plan order, for the dashboard's "Next up". */
+function prioritySteps(doc: PlanDocument, ctx: Ctx): PriorityStep[] {
+  const out: PriorityStep[] = [];
+  let stage = "";
+  for (const b of doc.sections.find((s) => s.id === "priorities")?.blocks ?? []) {
+    if (b.type === "subheading") stage = b.text;
+    else if (b.type === "checklist" && STAGES.includes(stage)) for (const i of b.items) out.push({ stage, step: resolveStep(i, ctx.products, ctx.href) });
+  }
+  return out;
 }

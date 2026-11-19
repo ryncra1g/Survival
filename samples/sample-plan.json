@@ -255,7 +255,7 @@
               ],
               "price": "Typical $20–$40 each",
               "qty": "× 4",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -270,7 +270,7 @@
               ],
               "price": "Typical $20–$35 each",
               "qty": "× 8",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "group": "water",
               "levels": [
@@ -305,7 +305,7 @@
               ],
               "price": "Typical $25–$40 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -320,7 +320,7 @@
               ],
               "price": "Typical $90–$140 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "group": "filter",
               "levels": [
@@ -355,7 +355,7 @@
               ],
               "price": "Typical $4–$8 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -370,7 +370,7 @@
               ],
               "price": "Typical $15–$30 each",
               "qty": "× 4",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -385,7 +385,7 @@
               ],
               "price": "Typical $20–$40 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -400,7 +400,7 @@
               ],
               "price": "Typical $50–$80 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -415,7 +415,7 @@
               ],
               "price": "Typical $25–$45 each",
               "qty": "× 2",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -430,7 +430,7 @@
               ],
               "price": "Typical $30–$80 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -445,7 +445,7 @@
               ],
               "price": "Typical $30–$60 each",
               "qty": "× 3",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -459,7 +459,7 @@
               ],
               "price": "Typical $8–$15 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -474,7 +474,7 @@
               ],
               "price": "Typical $100–$200 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -488,7 +488,7 @@
               ],
               "price": "Typical $30–$50 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -503,7 +503,7 @@
               ],
               "price": "Typical $40–$90 each",
               "qty": "× 4",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -517,7 +517,7 @@
               ],
               "price": "Typical $20–$50 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             }
@@ -549,10 +549,10 @@
             },
             {
               "id": "month-10",
-              "text": "Buy Phase 1 gear: carbon monoxide alarm, 7-gallon water container, bathtub water bladder, gravity bag filter, unscented household bleach, headlamps + led lanterns, aa/aaa battery stock, noaa weather radio, usb power bank, first aid kit, fire extinguisher, fridge/freezer thermometers, indoor-rated portable propane heater, 1-lb propane cylinders (heater fuel), cold-rated sleeping bags, pipe insulation & faucet covers.",
+              "text": "Buy the rest of your Phase 1 (life safety) gear: 16 items, about $977–$1,893.",
               "see": {
-                "label": "Shopping list with Buy buttons",
-                "anchor": "gear"
+                "label": "Open your shopping list",
+                "anchor": "shopping"
               }
             },
             {
@@ -708,10 +708,10 @@
           "items": [
             {
               "id": "d90-22",
-              "text": "Phase 3 items: comfort and communications upgrades.",
+              "text": "Buy Phase 3 upgrades: comfort and communications.",
               "see": {
-                "label": "Shopping list with Buy buttons",
-                "anchor": "gear"
+                "label": "Open your shopping list",
+                "anchor": "shopping"
               }
             },
             {
@@ -2394,7 +2394,7 @@
               ],
               "price": "Typical $25–$45 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "group": "two-way",
               "levels": [
@@ -2464,7 +2464,7 @@
               ],
               "price": "Typical $35–$70 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "group": "vehicle-kit",
               "levels": [
@@ -2499,7 +2499,7 @@
               ],
               "price": "Typical $50–$100 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "group": "shelter",
               "levels": [
@@ -2535,7 +2535,7 @@
               ],
               "price": "Typical $40–$90 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": true
             }
@@ -3167,7 +3167,7 @@
               ],
               "price": "Typical $20–$40 each",
               "qty": "× 4",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -3182,7 +3182,7 @@
               ],
               "price": "Typical $20–$35 each",
               "qty": "× 8",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "group": "water",
               "levels": [
@@ -3217,7 +3217,7 @@
               ],
               "price": "Typical $25–$40 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -3232,7 +3232,7 @@
               ],
               "price": "Typical $90–$140 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "group": "filter",
               "levels": [
@@ -3267,7 +3267,7 @@
               ],
               "price": "Typical $4–$8 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -3282,7 +3282,7 @@
               ],
               "price": "Typical $15–$30 each",
               "qty": "× 4",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -3297,7 +3297,7 @@
               ],
               "price": "Typical $20–$40 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -3312,7 +3312,7 @@
               ],
               "price": "Typical $50–$80 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -3327,7 +3327,7 @@
               ],
               "price": "Typical $25–$45 each",
               "qty": "× 2",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -3342,7 +3342,7 @@
               ],
               "price": "Typical $30–$80 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -3357,7 +3357,7 @@
               ],
               "price": "Typical $30–$60 each",
               "qty": "× 3",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -3371,7 +3371,7 @@
               ],
               "price": "Typical $8–$15 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -3386,7 +3386,7 @@
               ],
               "price": "Typical $100–$200 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -3400,7 +3400,7 @@
               ],
               "price": "Typical $30–$50 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -3415,7 +3415,7 @@
               ],
               "price": "Typical $40–$90 each",
               "qty": "× 4",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -3429,7 +3429,7 @@
               ],
               "price": "Typical $20–$50 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -3444,7 +3444,7 @@
               ],
               "price": "Typical $550–$1,200 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "group": "generator",
               "levels": [
@@ -3480,7 +3480,7 @@
               ],
               "price": "Typical $60–$120 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -3495,7 +3495,7 @@
               ],
               "price": "Typical $30–$45 each",
               "qty": "× 6",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -3510,7 +3510,7 @@
               ],
               "price": "Typical $40–$90 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": false
             },
@@ -3525,7 +3525,7 @@
               ],
               "price": "Typical $500–$1,500 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": true
             },
@@ -3540,7 +3540,7 @@
               ],
               "price": "Typical $50–$150 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": true
             },
@@ -3555,7 +3555,7 @@
               ],
               "price": "Typical $50–$70 each",
               "qty": "× 2",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": true
             },
@@ -3570,7 +3570,7 @@
               ],
               "price": "Typical $40–$90 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": true
             },
@@ -3585,7 +3585,7 @@
               ],
               "price": "Typical $25–$50 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": true
             },
@@ -3600,7 +3600,7 @@
               ],
               "price": "Typical $150–$600 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": true
             },
@@ -3615,7 +3615,7 @@
               ],
               "price": "Typical $250–$500 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": true
             },
@@ -3630,7 +3630,7 @@
               ],
               "price": "Typical $30–$100 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": true
             },
@@ -3645,7 +3645,7 @@
               ],
               "price": "Typical $400–$900 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "group": "battery-house",
               "levels": [
@@ -3675,7 +3675,7 @@
               ],
               "price": "Typical $300–$650 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": true
             },
@@ -3690,7 +3690,7 @@
               ],
               "price": "Typical $25–$45 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "group": "two-way",
               "levels": [
@@ -3726,7 +3726,7 @@
               ],
               "price": "Typical $20–$60 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": true
             },
@@ -3789,7 +3789,7 @@
               ],
               "price": "Typical $35–$70 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "group": "vehicle-kit",
               "levels": [
@@ -3824,7 +3824,7 @@
               ],
               "price": "Typical $50–$100 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "group": "shelter",
               "levels": [
@@ -3860,7 +3860,7 @@
               ],
               "price": "Typical $40–$90 each",
               "qty": "",
-              "buyable": false,
+              "buyable": true,
               "emailSafe": false,
               "later": true
             }

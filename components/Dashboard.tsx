@@ -1,28 +1,48 @@
 "use client";
+import { useEffect, useState } from "react";
 import type { Overview } from "@/lib/plan/document";
 import { gotId } from "./BuyIfNeeded";
 import { useChecks } from "./ChecksContext";
+import { Chevron } from "./Chevron";
+import { StepExtras, type StepView } from "./StepExtras";
 
 const usd = (v: number) => "$" + Math.round(v).toLocaleString("en-US");
 const usdRange = (lo: number, hi: number) => (Math.round(lo) === Math.round(hi) ? usd(lo) : `${usd(lo)}–${usd(hi)}`);
 const PHASE = { 1: "Buy now (life safety)", 2: "Next (power & comfort)", 3: "Later (upgrades)" } as const;
 
+/** A priority step and the stage it belongs to ("This week", "This month"…), in plan order. */
+export type PriorityStep = { stage: string; step: StepView };
+
 function Bar({ value, label }: { value: number; label: string }) {
   return (
-    <div className="mt-1 h-2.5 w-full rounded-full bg-brand-soft" role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(value)}>
-      <div className="h-full rounded-full bg-accent transition-[width]" style={{ width: `${Math.max(2, value)}%` }} />
+    <div className="mt-1.5 h-3 w-full rounded-full bg-brand-soft" role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(value)}>
+      <div className="h-full rounded-full bg-accent transition-[width]" style={{ width: `${Math.max(3, value)}%` }} />
     </div>
   );
 }
 
 /**
- * Plan dashboard: progress on every checklist step, the headline numbers (each with its math), and the gear
- * list with "Got it" ticks and what's left to buy. Ticks sync like the checklists (ChecksProvider).
+ * The plan's home: what to do next, how far along you are, the key numbers, and what's left to buy.
+ * "Next up" is the first unticked priority steps, so it moves forward as you tick them (here or in the plan).
+ * Ticks sync like the checklists (ChecksProvider).
  */
-export function Dashboard({ overview, stepIds, buyHref }: { overview?: Overview; stepIds: string[]; buyHref: Record<string, string> }) {
+export function Dashboard({ overview, priority, allStepIds, buyHref }: { overview?: Overview; priority: PriorityStep[]; allStepIds: string[]; buyHref: Record<string, string> }) {
   const { checks, toggle } = useChecks();
-  const done = stepIds.filter((id) => checks[id]).length;
-  const pct = stepIds.length ? (done / stepIds.length) * 100 : 0;
+  // A step ticked here stays a few seconds, struck through, with Undo, so a mis-tap is easy to reverse.
+  const [justDone, setJustDone] = useState<string[]>([]);
+  useEffect(() => {
+    if (!justDone.length) return;
+    const t = setTimeout(() => setJustDone([]), 5000);
+    return () => clearTimeout(t);
+  }, [justDone]);
+  const open = priority.filter((p) => !checks[p.step.id]);
+  // Progress is shown for the current stage (this week, then this month…): a near goal, not 0 of 80.
+  const stage = open[0]?.stage;
+  const inStage = priority.filter((p) => p.stage === stage);
+  const stageDone = inStage.filter((p) => checks[p.step.id]).length;
+  const next = priority.filter((p) => justDone.includes(p.step.id) || open.slice(0, 3).includes(p));
+  const allDone = allStepIds.filter((id) => checks[id]).length;
+
   const gear = overview?.gear ?? [];
   const got = gear.filter((g) => checks[gotId(g.itemId)]);
   const left = gear.filter((g) => !checks[gotId(g.itemId)] && !g.later);
@@ -30,24 +50,82 @@ export function Dashboard({ overview, stepIds, buyHref }: { overview?: Overview;
   const leftHigh = left.reduce((t, g) => t + g.high, 0);
 
   return (
-    <section aria-labelledby="dash-h" className="card mt-5 p-4 sm:p-5" data-testid="dashboard">
-      <h2 id="dash-h" className="text-lg font-bold">Your plan at a glance</h2>
+    <section aria-labelledby="dash-h" className="mt-4 rounded-xl border-2 border-accent bg-surface p-4 sm:p-5" data-testid="dashboard">
+      <h2 id="dash-h" className="sr-only">Your plan at a glance</h2>
 
-      <div className="mt-3 grid gap-4 sm:grid-cols-2">
+      {/* Progress: the current stage, plus the whole plan in one line */}
+      {stage ? (
         <div>
-          <p className="flex justify-between text-sm"><span className="font-semibold">Steps done</span><span className="tabular">{done} of {stepIds.length}</span></p>
-          <Bar value={pct} label="Steps done" />
+          <p className="flex items-baseline justify-between gap-3">
+            <span className="font-bold">{stage}</span>
+            <span className="tabular text-sm" data-testid="stage-progress">{stageDone} of {inStage.length} done</span>
+          </p>
+          <Bar value={(stageDone / inStage.length) * 100} label={`${stage}: steps done`} />
         </div>
-        {gear.length > 0 && (
-          <div>
-            <p className="flex justify-between text-sm"><span className="font-semibold">Gear you have</span><span className="tabular">{got.length} of {gear.length}</span></p>
-            <Bar value={(got.length / gear.length) * 100} label="Gear you have" />
-          </div>
-        )}
-      </div>
+      ) : (
+        <p className="font-bold">Every priority step is done. Keep the plan up to date with the maintenance calendar.</p>
+      )}
+      <p className="mt-1.5 text-sm text-muted tabular" data-testid="overall-progress">
+        Whole plan: {allDone} of {allStepIds.length} steps{gear.length ? ` · you have ${got.length} of ${gear.length} gear items` : ""}
+      </p>
 
+      {/* Next up: the next three things to do, tickable right here */}
+      {next.length > 0 && (
+        <div className="mt-4">
+          <h3 className="text-lg font-bold">Next up</h3>
+          <ul className="mt-2 space-y-4">
+            {next.map(({ step, stage: s }) => {
+              const done = !!checks[step.id];
+              const firstOpen = !done && step.id === open[0]?.step.id;
+              return (
+                <li key={step.id} className="flex gap-2">
+                  {/* 44px tap target around the box */}
+                  <label className="-ml-2 -mt-1.5 flex size-11 shrink-0 cursor-pointer items-center justify-center">
+                    <input
+                      type="checkbox"
+                      className="size-5 accent-[var(--brand)]"
+                      checked={done}
+                      onChange={() => {
+                        toggle(step.id);
+                        setJustDone((j) => (done ? j.filter((x) => x !== step.id) : [...j, step.id]));
+                      }}
+                      aria-label={`Done: ${step.text}`}
+                    />
+                  </label>
+                  <div className="min-w-0 flex-1">
+                    <p className={done ? "text-muted line-through" : "font-medium"}>
+                      {step.text}
+                      {!done && s !== stage && <span className="ml-2 text-xs font-normal rounded px-1.5 py-0.5 bg-bg border border-line whitespace-nowrap">{s}</span>}
+                    </p>
+                    {done ? (
+                      <p className="mt-1 text-sm" role="status">
+                        Done.{" "}
+                        <button type="button" className="underline text-brand min-h-[32px]" onClick={() => { toggle(step.id); setJustDone((j) => j.filter((x) => x !== step.id)); }}>
+                          Undo
+                        </button>
+                      </p>
+                    ) : (
+                      // The first open step gets its "why"; the others stay short so the dashboard fits on a phone.
+                      <StepExtras step={firstOpen ? step : { ...step, why: undefined }} />
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+          <a href="#priorities" className="mt-3 inline-block text-sm underline no-print">See every step ({open.length} left)</a>
+        </div>
+      )}
+
+      {/* The one thing to find fast when weather turns */}
+      <a href="#day0" className="mt-5 flex min-h-[48px] items-center justify-between gap-3 rounded-lg border-2 border-brand px-3 py-2 font-semibold text-brand no-underline no-print">
+        <span>Storm or outage coming? Open your Day 0 checklist</span>
+        <span aria-hidden>→</span>
+      </a>
+
+      {/* Key numbers, each with its math */}
       {overview && (
-        <ul className="mt-4 grid grid-cols-2 gap-2">
+        <ul className="mt-5 grid grid-cols-2 gap-2" aria-label="Key numbers">
           {overview.stats.map((s) => (
             <li key={s.key}>
               <a href={`#${s.anchor}`} className="block h-full rounded-lg bg-brand-soft p-3 no-underline hover:outline hover:outline-2 hover:outline-brand">
@@ -60,23 +138,24 @@ export function Dashboard({ overview, stepIds, buyHref }: { overview?: Overview;
         </ul>
       )}
 
+      {/* Shopping list: everything the plan recommends, with "I have this" ticks */}
       {gear.length > 0 && (
-        <details className="group mt-4 rounded-lg border border-line">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-3 [&::-webkit-details-marker]:hidden">
+        <details className="group mt-4 rounded-lg border border-line" id="shopping">
+          <summary className="flex min-h-[48px] cursor-pointer list-none items-center justify-between gap-3 p-3 [&::-webkit-details-marker]:hidden">
             <span>
-              <span className="font-semibold">Your gear list</span>
-              <span className="block text-sm text-muted tabular">{left.length ? `${left.length} to buy now or next · about ${usdRange(leftLow, leftHigh)}` : "Everything planned is ticked off"}</span>
+              <span className="font-bold">Shopping list</span>
+              <span className="block text-sm text-muted tabular">{left.length ? `${left.length} items to buy now or next · about ${usdRange(leftLow, leftHigh)}` : "You have everything planned for now"}</span>
             </span>
-            <span aria-hidden className="text-muted transition-transform group-open:rotate-180">▾</span>
+            <Chevron />
           </summary>
           <div className="px-3 pb-3">
-            <p className="text-sm text-muted">Tick what you already have; its Buy buttons disappear across your plan.</p>
+            <p className="text-sm text-muted">Tick what you already have. It comes off your total and its Buy buttons disappear.</p>
             {([1, 2, 3] as const).map((ph) => {
               const rows = gear.filter((g) => g.phase === ph);
               if (!rows.length) return null;
               return (
                 <div key={ph} className="mt-3">
-                  <h3 className="text-sm font-semibold">{PHASE[ph]}</h3>
+                  <h4 className="text-sm font-semibold">{PHASE[ph]}</h4>
                   <ul className="mt-1 divide-y divide-line border-y border-line">
                     {rows.map((g) => {
                       const have = !!checks[gotId(g.itemId)];
@@ -85,13 +164,15 @@ export function Dashboard({ overview, stepIds, buyHref }: { overview?: Overview;
                           <label className="flex min-w-0 flex-1 cursor-pointer items-start gap-3">
                             <input type="checkbox" className="mt-1 size-5 shrink-0 accent-[var(--brand)]" checked={have} onChange={() => toggle(gotId(g.itemId))} aria-label={`I have: ${g.name}`} />
                             <span className={`min-w-0 ${have ? "text-muted line-through" : ""}`}>
-                              {g.name}{g.qty > 1 ? ` × ${g.qty}` : ""}{" "}
-                              <span className="text-sm text-muted whitespace-nowrap tabular">{usdRange(g.low, g.high)}</span>
-                              {g.later && <span className="ml-1 text-xs rounded px-1.5 py-0.5 bg-bg border border-line">later</span>}
+                              <span className="block">{g.name}</span>
+                              <span className="block text-sm text-muted tabular">
+                                {g.qty > 1 ? `${g.qty} × ${usdRange(g.low / g.qty, g.high / g.qty)} = ` : ""}{usdRange(g.low, g.high)}
+                                {g.later && <span className="ml-2 text-xs rounded px-1.5 py-0.5 bg-bg border border-line">later</span>}
+                              </span>
                             </span>
                           </label>
                           {!have && buyHref[g.itemId] && (
-                            <a href={buyHref[g.itemId]} target="_blank" rel="sponsored nofollow noopener" className="btn-ghost shrink-0 text-brand min-h-[40px] border border-line" aria-label={`Buy ${g.name} (opens a store, affiliate link)`}>Buy</a>
+                            <a href={buyHref[g.itemId]} target="_blank" rel="sponsored nofollow noopener" className="btn-ghost shrink-0 text-brand min-h-[44px] border border-line" aria-label={`Buy ${g.name} (opens a store)`}>Buy</a>
                           )}
                         </li>
                       );

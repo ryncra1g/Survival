@@ -15,9 +15,15 @@ describe("affiliate links", () => {
   it("tag → Amazon search for the first example model, tagged", () =>
     expect(buyUrl(item, "mysite-20")).toBe("https://www.amazon.com/s?k=Kidde%20KN-COPP-3&tag=mysite-20"));
   it("an item's own affiliate URL wins", () => expect(buyUrl({ ...item, affiliateUrl: "https://example.com/x" }, "mysite-20")).toBe("https://example.com/x"));
-  it("generic examples ('Any …', local supplier) search by item name instead", () => {
-    const wood = SEED_CATALOG.find((i) => i.id === "firewood")!;
-    expect(buyUrl(wood, "t-20")).toContain(encodeURIComponent(wood.name));
+  it("generic examples ('Any store brand') search by item name; a named model wins over a generic one", () => {
+    const bleach = SEED_CATALOG.find((i) => i.id === "bleach")!;
+    expect(buyUrl(bleach, "t-20")).toContain(encodeURIComponent(bleach.name));
+    const med = SEED_CATALOG.find((i) => i.id === "med-battery")!;
+    expect(buyUrl(med, "t-20")).toContain(encodeURIComponent(med.models[1]));
+  });
+  it("'use what you own' and 'buy locally' items have no store link", () => {
+    for (const id of ["go-bag-basic", "quake-bedside", "mobility-kit", "morale-kit", "firewood", "raw-land-cabin"])
+      expect(buyUrl(SEED_CATALOG.find((i) => i.id === id)!, "t-20"), id).toBeNull();
   });
   it("rejects tags with unsafe characters", () => expect(() => mergeConstants({ affiliate: { amazonTag: "x&evil=1" } })).toThrow());
 
@@ -25,7 +31,9 @@ describe("affiliate links", () => {
     const r = await generatePlan(SAMPLE_HOUSEHOLD, DEFAULT_CONSTANTS, SEED_CATALOG, { useLlm: false, now: NOW });
     const items = r.document.sections.flatMap((s) => s.blocks).flatMap((b) => (b.type === "products" ? b.items : []));
     expect(items.length).toBeGreaterThan(10);
-    expect(items.every((i) => i.buyable)).toBe(true);
+    // Every real product has a Buy link; only "use what you own / buy locally" items don't.
+    expect(items.filter((i) => !i.buyable).map((i) => i.itemId).every((id) => ["go-bag-basic", "quake-bedside", "mobility-kit", "morale-kit", "firewood", "raw-land-cabin"].includes(id))).toBe(true);
+    expect(items.filter((i) => i.buyable).length).toBeGreaterThan(10);
     expect(r.document.affiliateDisclosure).toBeNull();
   });
   it("without a tag, an item with its own affiliate URL turns the disclosure on", async () => {
