@@ -5,7 +5,7 @@ import { LevelChips } from "./LevelChips";
 import { SectionNav } from "./SectionNav";
 import { groupIntoChapters } from "@/lib/plan/chapters";
 import { BRAND } from "@/lib/brand";
-import { productIndex, resolveStep, StepExtras, type StepView } from "./StepExtras";
+import { HelpStrip, productIndex, resolveStep, StepExtras, type StepView } from "./StepExtras";
 
 const toneCls = { danger: "border-danger text-danger", warning: "border-warn text-warn", info: "border-info text-info" } as const;
 
@@ -15,6 +15,8 @@ type Ctx = { products: ReturnType<typeof productIndex>; href: (itemId: string) =
 
 function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block; planId: string; buyHref?: (itemId: string) => string; sectionId: string; onChoose?: ChooseFn; ctx: Ctx }) {
   switch (b.type) {
+    case "help":
+      return <HelpStrip b={b} products={ctx.products} href={ctx.href} />;
     case "levelchoice":
       return (
         <div className="my-4">

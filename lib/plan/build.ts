@@ -2,6 +2,7 @@ import { LABELS } from "@/lib/answers/schema";
 import type { ComputedPlan, GearPick } from "@/lib/rules/engine";
 import type { RuleConstants } from "@/lib/rules/constants";
 import { atLeast } from "@/lib/zip/profile";
+import { addHelp } from "./help";
 import { alertLink, evacZoneLink, FEMA_FLOOD_MAP, type OfficialLink } from "@/lib/zip/resources";
 import {
   APARTMENT_GENERATOR_RULE,
@@ -975,6 +976,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     blocks: [{ type: "table", columns: ["When", "Task"], rows: maint }],
   });
 
+  addHelp(S, prof);
   return {
     tokens,
     sections: S,

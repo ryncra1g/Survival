@@ -1,3 +1,4 @@
+import { HOWTO } from "@/lib/zip/resources";
 import type { Block, PlanDocument } from "@/lib/plan/document";
 import { BRAND } from "@/lib/brand";
 
@@ -47,8 +48,24 @@ export const goPath = (itemId: string, planId?: string, src = "web") => `/go/${e
 const levelLine = (levels?: { level: string; price: string; selected: boolean }[]) =>
   levels ? `<br><span style="color:${C.muted};font-size:12px">Levels: ${levels.map((l) => `${l.selected ? "<strong>" : ""}${esc(l.level[0].toUpperCase() + l.level.slice(1))} ${esc(l.price)}${l.selected ? "</strong>" : ""}`).join(" · ")}</span>` : "";
 
-function block(b: Block, ctx: { appUrl: string; planId?: string } = { appUrl: "" }): string {
+/** National how-to pages are listed once in each section's "What you need" line; steps keep only local links. */
+const GENERAL_HOWTO = new Set(Object.values(HOWTO).map((l) => l.url));
+/** Each official link appears once per section in email (keeps long plans under Gmail's clip limit). */
+const once = (ctx: { seen?: Set<string> }, url: string) => {
+  if (!ctx.seen) return true;
+  if (ctx.seen.has(url)) return false;
+  ctx.seen.add(url);
+  return true;
+};
+
+function block(b: Block, ctx: { appUrl: string; planId?: string; seen?: Set<string> } = { appUrl: "" }): string {
   switch (b.type) {
+    case "help":
+      // Official links only: Amazon links never go in email.
+    {
+      const links = b.links.filter((l) => once(ctx, l.url));
+      return links.length || b.note ? `<p style="margin:10px 0 4px;font-size:13px"><strong>What you need:</strong>${b.note ? ` ${esc(b.note)}` : ""}${links.map((l) => `<br><a href="${esc(l.url)}" style="color:${C.info}">${esc(l.label)}</a>`).join("")}</p>` : "";
+    }
     case "levelchoice":
       return `<p style="margin:10px 0 4px;font-weight:600">${esc(b.caption)}</p><p style="margin:0 0 8px;font-size:13px">${b.levels.map((l) => `${l.selected ? "<strong>✓ " : ""}${esc(l.name)}: ${esc(l.price)}${l.selected ? "</strong>" : ""}`).join("<br>")}</p>`;
     case "products":
@@ -65,7 +82,7 @@ function block(b: Block, ctx: { appUrl: string; planId?: string } = { appUrl: ""
     case "bullets":
       return `<ul style="margin:8px 0;padding-left:20px">${b.items.map((i) => `<li style="margin:3px 0">${esc(i)}</li>`).join("")}</ul>`;
     case "checklist":
-      return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:6px 0">${b.items.map((i) => `<tr><td valign="top" style="padding:2px 8px 2px 0">&#9744;</td><td style="padding:2px 0">${esc(i.text)}${i.link ? `<br><a href="${esc(i.link.url)}" style="color:${C.info};font-size:13px">${esc(i.link.label)}</a>` : ""}</td></tr>`).join("")}</table>`;
+      return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:6px 0">${b.items.map((i) => `<tr><td valign="top" style="padding:2px 8px 2px 0">&#9744;</td><td style="padding:2px 0">${esc(i.text)}${i.link && !GENERAL_HOWTO.has(i.link.url) && once(ctx, i.link.url) ? `<br><a href="${esc(i.link.url)}" style="color:${C.info};font-size:13px">${esc(i.link.label)}</a>` : ""}</td></tr>`).join("")}</table>`;
     case "table":
       return `${b.caption ? `<p style="margin:12px 0 4px;font-size:13px;font-weight:600;color:${C.muted}">${esc(b.caption)}</p>` : ""}<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:6px 0"><tr>${b.columns.map((c) => th(c)).join("")}</tr>${b.rows.map((r) => `<tr>${r.map(td).join("")}</tr>`).join("")}</table>`;
     case "ifthen":
@@ -83,7 +100,10 @@ export function renderPlanEmail(doc: PlanDocument, meta: EmailMeta & { planUrl: 
   const sections = doc.sections
     .map((s) => {
       const blocks = s.id === "gear" ? s.blocks.map((b) => (b.type === "table" ? { ...b, columns: ["Item", "Look for", "Price"], rows: b.rows.map((r) => [r[0], r[1], r[3]]) } : b)) : s.blocks;
-      return `<h2 style="margin:24px 0 4px;font-size:18px;border-top:2px solid ${C.line};padding-top:16px">${s.number}. ${esc(s.title)}</h2><p style="margin:4px 0 8px;font-size:15px;color:${C.ink};background:#fbf3ea;padding:8px 10px;border-radius:4px">${esc(s.summary)}</p>${blocks.map((b) => block(b, { appUrl: meta.appUrl, planId: meta.planId })).join("")}`;
+      return `<h2 style="margin:24px 0 4px;font-size:18px;border-top:2px solid ${C.line};padding-top:16px">${s.number}. ${esc(s.title)}</h2><p style="margin:4px 0 8px;font-size:15px;color:${C.ink};background:#fbf3ea;padding:8px 10px;border-radius:4px">${esc(s.summary)}</p>${(() => {
+        const ctx = { appUrl: meta.appUrl, planId: meta.planId, seen: new Set<string>() };
+        return blocks.map((b) => block(b, ctx)).join("");
+      })()}`;
     })
     .join("");
   const body = `<h1 style="margin:0 0 4px;font-size:22px">${esc(doc.title)}</h1><p style="margin:0;color:${C.muted};font-size:14px">${esc(doc.subtitle)}</p>
@@ -133,6 +153,7 @@ export function planToText(doc: PlanDocument, meta: EmailMeta & { planUrl: strin
       if (b.type === "table") lines.push(...(b.caption ? [b.caption] : []), b.columns.join(" | "), ...b.rows.map((r) => r.join(" | ")));
       if (b.type === "ifthen") lines.push(...b.rows.map((r) => `IF ${r.if} -> ${r.then}`));
       if (b.type === "callout") lines.push(`!! ${b.title}: ${b.text}`);
+      if (b.type === "help") lines.push(...(b.note ? [b.note] : []), ...b.links.map((l) => `${l.label}: ${l.url}`));
       if (b.type === "levelchoice") lines.push(b.caption, ...b.levels.map((l) => `${l.selected ? "[x]" : "[ ]"} ${l.name}: ${l.price}`));
       if (b.type === "products") lines.push(...(b.caption ? [b.caption] : []), ...b.items.map((i) => `- ${i.name} ${i.qty} (${i.price}): ${i.spec}${i.buyable && i.emailSafe ? ` — buy: ${meta.appUrl}${goPath(i.itemId, meta.planId, "email")}` : ""}`));
     }

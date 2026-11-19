@@ -26,8 +26,17 @@ export const BlockSchema = z.discriminatedUnion("type", [
         buy: z.array(z.string()).optional(),
         /** An official resource for this step (state/county site). Never an affiliate link. */
         link: z.object({ label: z.string(), url: z.string().url() }).optional(),
+        /** Where in this plan the step is covered (e.g. the shopping list). */
+        see: z.object({ label: z.string(), anchor: z.string().regex(/^[a-z0-9-]+$/) }).optional(),
       }),
     ),
+  }),
+  /** "What you need" strip at the end of a section: catalog items (Buy shown only if in this plan's gear) + official links. */
+  z.object({
+    type: z.literal("help"),
+    buy: z.array(z.string()),
+    links: z.array(z.object({ label: z.string(), url: z.string().url() })),
+    note: z.string().optional(),
   }),
   z.object({
     type: z.literal("table"),

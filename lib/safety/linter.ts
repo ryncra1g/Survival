@@ -72,6 +72,9 @@ export function documentStrings(doc: PlanDocument): string[] {
           if (b.caption) s.push(b.caption);
           for (const i of b.items) s.push(i.name, i.spec, ...i.models, ...(i.levels ?? []).map((l) => l.name));
           break;
+        case "help":
+          s.push(...b.links.map((l) => l.label), ...(b.note ? [b.note] : []));
+          break;
         case "levelchoice":
           s.push(b.caption, ...b.levels.map((l) => l.name));
           break;

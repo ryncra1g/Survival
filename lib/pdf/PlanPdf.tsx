@@ -115,6 +115,16 @@ function BlockView({ b }: { b: Block }) {
           />
         </View>
       );
+    case "help":
+      return b.links.length || b.note ? (
+        <View wrap={false} style={{ marginTop: 6 }}>
+          <Text style={s.caption}>What you need</Text>
+          {b.note ? <Text style={s.p}>{pdfSafe(b.note)}</Text> : null}
+          {b.links.map((l) => (
+            <Text key={l.url} style={{ fontSize: 8.5, color: tone.info }}>{`${pdfSafe(l.label)}: ${l.url}`}</Text>
+          ))}
+        </View>
+      ) : null;
     case "levelchoice":
       return (
         <View>

@@ -38,15 +38,15 @@ Tornado | low
 Start with life safety this week, then water and food this month, then power and comfort. Check items off as you go.
 
 This week
-[ ] Test or install CO alarms: 4 (one per level plus outside sleeping areas).
-[ ] Store your first 3 days of water: 12 gallons.
+[ ] Test or install CO alarms: 4 (one per level plus outside sleeping areas). (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/prevention/)
+[ ] Store your first 3 days of water: 12 gallons. (Make water safe to drink (EPA): https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water)
 [ ] Look up your hurricane evacuation zone and the route out, and decide where you'd go. (Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM): https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map)
 [ ] Turn on Wireless Emergency Alerts and sign up for your county's alert system. (Sign up for NY-Alert (New York State): https://alert.ny.gov/sign-up-ny-alert)
-[ ] Write your household communications plan (see Communications) and pick an out-of-area contact.
-[ ] Set aside $1,200 in small bills.
-[ ] Find and label your main water shutoff, gas shutoff and electrical panel.
-[ ] Buy 2 weeks of diapers (84) and wipes.
-[ ] Keep every gas/diesel vehicle above half a tank from now on.
+[ ] Write your household communications plan (see Communications) and pick an out-of-area contact. (Make a plan (Ready.gov): https://www.ready.gov/plan)
+[ ] Set aside $1,200 in small bills. (Build a kit (Ready.gov): https://www.ready.gov/kit)
+[ ] Find and label your main water shutoff, gas shutoff and electrical panel. (Make a plan (Ready.gov): https://www.ready.gov/plan)
+[ ] Buy 2 weeks of diapers (84) and wipes. (Planning with kids (Ready.gov): https://www.ready.gov/kids/family-emergency-planning)
+[ ] Keep every gas/diesel vehicle above half a tank from now on. (Plan your evacuation (Ready.gov): https://www.ready.gov/evacuation)
 Phase 1 shopping list (life safety)
 - Carbon monoxide alarm × 4 (Typical $20–$40 each): UL 2034 listed, battery or plug-in with battery backup, digital readout; one per floor and outside each sleeping area
 - 7-gallon water container × 8 (Typical $20–$35 each): Food-grade HDPE (#2), BPA-free, with spigot; stack no more than 2 high
@@ -65,47 +65,49 @@ Phase 1 shopping list (life safety)
 - Cold-rated sleeping bags × 4 (Typical $40–$90 each): Rated 0–20°F (EN/ISO comfort rating where listed), one per person
 - Pipe insulation & faucet covers  (Typical $20–$50 each): Foam pipe sleeves for exposed pipes + outdoor faucet covers
 This month
-[ ] Finish stored water: 54 gallons (8 7-gal jugs).
+[ ] Finish stored water: 54 gallons (8 7-gal jugs). (Make water safe to drink (EPA): https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water)
 [ ] Buy Phase 1 gear: carbon monoxide alarm, 7-gallon water container, bathtub water bladder, gravity bag filter, unscented household bleach, headlamps + led lanterns, aa/aaa battery stock, noaa weather radio, usb power bank, first aid kit, fire extinguisher, fridge/freezer thermometers, indoor-rated portable propane heater, 1-lb propane cylinders (heater fuel), cold-rated sleeping bags, pipe insulation & faucet covers.
 [ ] Build a 2-week pantry from the food list (about 98 thousand calories).
-[ ] Get a licensed electrician's quote for a generator power inlet + interlock (or transfer switch) so the generator can safely run your furnace.
-[ ] Do the pipe-freeze prep in section 5 (insulate exposed pipes, know how to drain lines).
-[ ] Stock 2 weeks of pet food; ask your vet how to keep extra medication on hand if your pet takes any.
+[ ] Get a licensed electrician's quote for a generator power inlet + interlock (or transfer switch) so the generator can safely run your furnace. (Power outages (Ready.gov): https://www.ready.gov/power-outages)
+[ ] Do the pipe-freeze prep in section 5 (insulate exposed pipes, know how to drain lines). (Winter weather (Ready.gov): https://www.ready.gov/winter-weather)
+[ ] Stock 2 weeks of pet food; ask your vet how to keep extra medication on hand if your pet takes any. (Prepare your pets (Ready.gov): https://www.ready.gov/pets)
 [ ] Pack a go-bag for each person (see the Evacuation section).
 [ ] Check your flood zone and evacuation zone; review insurance (flood insurance has a 30-day wait). (Look up your flood zone (FEMA Flood Map Service Center): https://msc.fema.gov/portal/search)
 Within 60 days
 [ ] Complete the full 90 days food list: 653 lb of staples.
-[ ] Buy the generator and fuel storage; test-run it outdoors, 20+ ft from the house, under load.
-[ ] Set up water filtration + collection for days 15–90 (293 gallons).
-[ ] Assemble the sanitation kit (two-bucket toilet, bags, absorbent).
-[ ] Pre-cut and label window protection.
+[ ] Buy the generator and fuel storage; test-run it outdoors, 20+ ft from the house, under load. (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/prevention/)
+[ ] Set up water filtration + collection for days 15–90 (293 gallons). (Make water safe to drink (EPA): https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water)
+[ ] Assemble the sanitation kit (two-bucket toilet, bags, absorbent). (Build a kit (Ready.gov): https://www.ready.gov/kit)
+[ ] Pre-cut and label window protection. (Hazard-by-hazard guides (Ready.gov): https://www.ready.gov/be-informed)
 Within 90 days
 [ ] Phase 3 items: comfort and communications upgrades.
-[ ] Run a 'lights-out weekend': live off your plan for 24–48 hours and fix what breaks.
-[ ] Drive the route to your raw land and back; note fuel stops and alternates.
+[ ] Run a 'lights-out weekend': live off your plan for 24–48 hours and fix what breaks. (Power outages (Ready.gov): https://www.ready.gov/power-outages)
+[ ] Drive the route to your raw land and back; note fuel stops and alternates. (Plan your evacuation (Ready.gov): https://www.ready.gov/evacuation)
 [ ] Put the maintenance calendar on your phone.
 Skills to practice
-[ ] First aid: take a Red Cross First Aid/CPR class (about 3 hours, often online + one session).
-[ ] Shutoffs: have a handy neighbor or your utility show you the gas, water and main electrical shutoffs, and label them.
-[ ] Camping: spend one night "camping" at home: set up the tent, cook on the camp stove outdoors, filter a gallon of water.
-[ ] Generator: practice starting it, plugging in the fridge outdoors, and refueling only after a 15-minute cool-down.
-[ ] Water: filter and disinfect one gallon start to finish.
-[ ] Pets: practice getting each pet into its carrier or on a leash in under 2 minutes.
-[ ] Kids: walk to your meeting place together and make it a game.
+[ ] First aid: take a Red Cross First Aid/CPR class (about 3 hours, often online + one session). (Find a First Aid/CPR class (American Red Cross): https://www.redcross.org/take-a-class)
+[ ] Shutoffs: have a handy neighbor or your utility show you the gas, water and main electrical shutoffs, and label them. (Make a plan (Ready.gov): https://www.ready.gov/plan)
+[ ] Camping: spend one night "camping" at home: set up the tent, cook on the camp stove outdoors, filter a gallon of water. (Build a kit (Ready.gov): https://www.ready.gov/kit)
+[ ] Generator: practice starting it, plugging in the fridge outdoors, and refueling only after a 15-minute cool-down. (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/prevention/)
+[ ] Water: filter and disinfect one gallon start to finish. (Make water safe to drink (EPA): https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water)
+[ ] Pets: practice getting each pet into its carrier or on a leash in under 2 minutes. (Prepare your pets (Ready.gov): https://www.ready.gov/pets)
+[ ] Kids: walk to your meeting place together and make it a game. (Planning with kids (Ready.gov): https://www.ready.gov/kids/family-emergency-planning)
+Make a plan (Ready.gov): https://www.ready.gov/plan
+Low- and no-cost preparedness (Ready.gov): https://www.ready.gov/low-and-no-cost
 
 3. DAY 0 CHECKLIST & DECISION TRIGGERS
 When an outage or storm is coming, run this checklist. Once it hits, use the if/then table so decisions are made in advance, not under stress.
 
-[ ] Check CO and smoke alarms; replace batteries if unsure.
-[ ] Charge every phone, power bank and power station.
-[ ] Fill the bathtub water bladder and spare containers.
-[ ] Set fridge to its coldest setting; fill empty freezer space with water bottles.
-[ ] Get cash and refill prescriptions if you can.
-[ ] Fuel or charge vehicles.
-[ ] Test-start the generator outdoors; stage fuel and cords.
-[ ] Set up your warm room before the cold arrives (see Heat & warmth).
-[ ] Bring pets inside and stage their food, meds and carrier.
-[ ] Check on elderly or disabled neighbors.
+[ ] Check CO and smoke alarms; replace batteries if unsure. (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/prevention/)
+[ ] Charge every phone, power bank and power station. (Power outages (Ready.gov): https://www.ready.gov/power-outages)
+[ ] Fill the bathtub water bladder and spare containers. (Make water safe to drink (EPA): https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water)
+[ ] Set fridge to its coldest setting; fill empty freezer space with water bottles. (Food safety in a power outage (FoodSafety.gov): https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage)
+[ ] Get cash and refill prescriptions if you can. (Older adults and people with disabilities (Ready.gov): https://www.ready.gov/older-adults)
+[ ] Fuel or charge vehicles. (Plan your evacuation (Ready.gov): https://www.ready.gov/evacuation)
+[ ] Test-start the generator outdoors; stage fuel and cords. (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/prevention/)
+[ ] Set up your warm room before the cold arrives (see Heat & warmth). (Winter weather (Ready.gov): https://www.ready.gov/winter-weather)
+[ ] Bring pets inside and stage their food, meds and carrier. (Prepare your pets (Ready.gov): https://www.ready.gov/pets)
+[ ] Check on elderly or disabled neighbors. (Older adults and people with disabilities (Ready.gov): https://www.ready.gov/older-adults)
 IF A CO alarm sounds or anyone has headache, dizziness or nausea -> Everyone outside to fresh air now. Call 911. Don't go back in until responders say it's safe.
 IF Power is out more than 4 hours -> Discard refrigerated perishables that rose above 40°F. Keep the freezer closed (a full freezer holds about 48 hours).
 IF A boil-water notice is issued or tap water looks/smells wrong -> Use stored water; disinfect any other water (see Water).
@@ -115,24 +117,29 @@ IF Outdoor temperature forecast below 20°F during an outage -> Start the pipe-f
 IF Officials issue an evacuation order for your zone -> Leave. Take go-bags and pets to your fallback location.
 IF Sewage backs up or toilets can't flush -> Stop flushing; switch to the two-bucket toilet (see Sanitation).
 IF A hurricane watch is issued -> Do the Day 0 checklist; put up window protection; decide stay vs. go before the warning.
+Power outages (Ready.gov): https://www.ready.gov/power-outages
+Sign up for NY-Alert (New York State): https://alert.ny.gov/sign-up-ny-alert
 
 4. YOUR AREA'S HAZARDS
 These are the hazards rated moderate or higher for the Long Island area, with the steps to take before and during each one.
 
 Hurricane (high risk)
-[ ] Look up your evacuation zone (county emergency site).
-[ ] Photograph your home and belongings for insurance.
-[ ] Know where to shut off power, gas and water.
+[ ] Look up your evacuation zone (county emergency site). (Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM): https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map)
+[ ] Photograph your home and belongings for insurance. (Make a plan (Ready.gov): https://www.ready.gov/plan)
+[ ] Know where to shut off power, gas and water. (Make a plan (Ready.gov): https://www.ready.gov/plan)
 IF A hurricane watch is issued (about 48 hours out) -> Run the Day 0 checklist, fuel up, put up window protection, decide stay or go.
 IF You're told to evacuate, or you live in a mobile home or low-lying zone -> Leave early — before the warning. Roads jam fast.
 IF The eye passes and it goes calm -> Stay inside; the back half of the storm is coming.
 Flooding (high risk)
-[ ] Check whether you're in a flood zone at FEMA's Flood Map Service Center.
-[ ] Flood damage usually isn't covered by homeowners insurance; flood policies have a 30-day wait.
-[ ] Keep documents and valuables in waterproof bins up high.
+[ ] Check whether you're in a flood zone at FEMA's Flood Map Service Center. (Look up your flood zone (FEMA Flood Map Service Center): https://msc.fema.gov/portal/search)
+[ ] Flood damage usually isn't covered by homeowners insurance; flood policies have a 30-day wait. (Look up your flood zone (FEMA Flood Map Service Center): https://msc.fema.gov/portal/search)
+[ ] Keep documents and valuables in waterproof bins up high. (Build a kit (Ready.gov): https://www.ready.gov/kit)
 IF A flash flood warning is issued -> Move to higher ground now. Don't wait for water to rise.
 IF Water covers a road -> Turn around. Six inches of moving water can knock you down; a foot can float a car.
 IF Water is entering your home -> Turn off electricity at the main breaker only if you're dry and safe; otherwise leave it and get out.
+Hazard-by-hazard guides (Ready.gov): https://www.ready.gov/be-informed
+Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM): https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map
+Look up your flood zone (FEMA Flood Map Service Center): https://msc.fema.gov/portal/search
 
 5. WATER
 Your household uses about 3.85 gal of water a day. Store 54 gallons (14 days). After that, filter and disinfect collected water for the remaining 76 days.
@@ -157,6 +164,7 @@ IF Stored water runs low -> Collect rain or surface water, filter it, then disin
 - Store water in food-grade containers away from sunlight and chemicals.
 - Replace tap-filled water every 6 months (mark the date).
 - Use a 0.1-micron filter for bacteria/protozoa, then disinfect for viruses.
+Make water safe to drink (EPA): https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water
 
 6. HEAT & WARMTH
 Winter is the most dangerous part of an outage in the Long Island area. Your plan uses a layered approach: keep the main heat running safely if you can, then shrink to one warm room, then relocate if it gets too cold.
@@ -178,6 +186,8 @@ IF House below 55°F -> Run the furnace from the generator via the inlet/interlo
 IF Warm room still too cold -> Use the indoor-rated propane heater in that room with the CO alarm, following its manual.
 IF House below 45°F and dropping -> Relocate to a warming center, friends/family, or your fallback location.
 !! Carbon monoxide: Never run a generator, grill, camp stove, charcoal or any fuel-burning device not rated for indoor use inside your home, garage, basement, crawlspace, tent or on a balcony — not even with doors or windows open. Keep generators outdoors at least 20 feet from doors, windows and vents, with the exhaust pointed away from buildings. Put battery-powered or battery-backup CO alarms on every level and outside sleeping areas. If a CO alarm sounds or anyone feels dizzy, headachy or nauseous, get everyone outside to fresh air right away and call 911.
+Winter weather (Ready.gov): https://www.ready.gov/winter-weather
+Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/prevention/
 
 7. POWER & FUEL MATH
 Plan on about 12 generator hours a day, burning 3–4.8 gallons of gasoline. Stored fuel of 30 gallons lasts about 6.3–10 days.
@@ -201,6 +211,8 @@ IF Rain or snow -> Use a generator tent/cover rated for it, still in open air �
 IF Utility lines down near home -> Stay 35+ ft away and call the utility.
 !! Connecting a generator to your house: Never back-feed your house through a dryer outlet or any double-male ("suicide") cord — it can electrocute you, your neighbors and utility line workers, and start fires. Power house circuits only through a power inlet with an interlock or a transfer switch installed by a licensed electrician. Until then, plug appliances directly into the generator with outdoor-rated extension cords.
 !! Carbon monoxide: Never run a generator, grill, camp stove, charcoal or any fuel-burning device not rated for indoor use inside your home, garage, basement, crawlspace, tent or on a balcony — not even with doors or windows open. Keep generators outdoors at least 20 feet from doors, windows and vents, with the exhaust pointed away from buildings. Put battery-powered or battery-backup CO alarms on every level and outside sleeping areas. If a CO alarm sounds or anyone feels dizzy, headachy or nauseous, get everyone outside to fresh air right away and call 911.
+Power outages (Ready.gov): https://www.ready.gov/power-outages
+Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/prevention/
 
 8. FOOD
 Your household needs about 7,000 calories a day — 630,000 for the full 90 days. The staples below provide it for roughly $1,234. Eat perishables first, then pantry food, then bulk staples.
@@ -238,6 +250,9 @@ Food level: store it yourself, or buy ready-made
 Where to keep it
 - Basement: water and canned food on shelves at least a foot off the floor (your area floods); nothing you'd need in a flood down there.
 - Garage: water jugs and bulk staples in sealed bins, away from the car's exhaust, chemicals and direct sun; not for anything that spoils in heat.
+Rice, beans, oats, pasta, oil and canned goods are cheapest at a grocery store or warehouse club.
+Food safety in a power outage (FoodSafety.gov): https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage
+Power outage food and water safety (CDC): https://www.cdc.gov/natural-disasters/safety/power-outage-safety.html
 
 9. COOKING & REFRIGERATION
 Plan how you'll cook without power and when to throw out fridge food. The four-hour rule keeps everyone from getting sick.
@@ -248,6 +263,7 @@ IF Freezer food still has ice crystals or is at 40°F or below -> Safe to refree
 IF Running a generator -> Run fridge/freezer 1–2 hours at a time; keep doors shut between runs.
 IF Cooler use -> Keep it in the shade and packed with ice; check with a thermometer.
 !! Cook outdoors only: Grills, camp stoves and charcoal give off carbon monoxide. Use them outdoors only — never inside, in a garage or on an enclosed porch.
+Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/prevention/
 
 10. SANITATION, HYGIENE & DIAPERS
 Store 52 rolls of toilet paper and 540 diapers (6 a day). If toilets can't flush, switch to a two-bucket toilet.
@@ -267,17 +283,21 @@ IF No water but sewer OK -> Flush by pouring a bucket of non-drinking water into
 IF Sewer backing up or officials say don't flush -> Line the toilet or a bucket with two bags, add absorbent after each use, tie off and store outside in a lidded can.
 - Wash hands with soap and water, or sanitizer when water is short.
 - Keep human waste away from food and water areas.
+Toilet paper, trash bags, soap and wipes: any grocery or warehouse store.
+Build a kit (Ready.gov): https://www.ready.gov/kit
 
 11. FIRST AID & MEDICATIONS
 Keep a stocked first aid kit and a written list of everyone's medications and allergies. Talk to your doctor or pharmacist about keeping an extra supply.
 
-[ ] First aid kit (bandages, gauze, tape, elastic wrap, gloves, shears, tweezers, thermometer).
-[ ] Written list of each person's medications, doses as prescribed, allergies and doctors (keep with documents).
-[ ] Over-the-counter basics you already use (pain/fever reducer, allergy, stomach) — check expiration dates.
-[ ] Extra glasses/contacts, hearing aid batteries.
-[ ] Children's versions of any OTC medicines you use, with the dosing tool that came in the box.
-[ ] Take a Red Cross First Aid/CPR class.
+[ ] First aid kit (bandages, gauze, tape, elastic wrap, gloves, shears, tweezers, thermometer). (Build a kit (Ready.gov): https://www.ready.gov/kit)
+[ ] Written list of each person's medications, doses as prescribed, allergies and doctors (keep with documents). (Build a kit (Ready.gov): https://www.ready.gov/kit)
+[ ] Over-the-counter basics you already use (pain/fever reducer, allergy, stomach) — check expiration dates. (Build a kit (Ready.gov): https://www.ready.gov/kit)
+[ ] Extra glasses/contacts, hearing aid batteries. (Older adults and people with disabilities (Ready.gov): https://www.ready.gov/older-adults)
+[ ] Children's versions of any OTC medicines you use, with the dosing tool that came in the box. (Build a kit (Ready.gov): https://www.ready.gov/kit)
+[ ] Take a Red Cross First Aid/CPR class. (Find a First Aid/CPR class (American Red Cross): https://www.redcross.org/take-a-class)
 !! Medications: ReadyPlan never gives medication doses. For any medicine — for people or pets — follow the label or your doctor, pharmacist or vet.
+Find a First Aid/CPR class (American Red Cross): https://www.redcross.org/take-a-class
+Older adults and people with disabilities (Ready.gov): https://www.ready.gov/older-adults
 
 12. COMMUNICATIONS, CASH & DOCUMENTS
 Agree on how your household will reach each other, keep $1,200 in small bills, and keep copies of key documents in a waterproof pouch.
@@ -294,6 +314,8 @@ School/daycare pickup | Who picks up, and the school's emergency plan
 - FRS/GMRS radios to reach your household and neighbors within a few miles (GMRS needs an FCC license, no exam).
 - Cash: $1,200 ($600 per adult) in small bills; card readers fail in outages.
 - Documents: copies of IDs, insurance policies, deeds/leases, medication list, pet records, and photos of your home's contents — in a waterproof pouch, plus an encrypted cloud copy.
+Sign up for NY-Alert (New York State): https://alert.ny.gov/sign-up-ny-alert
+Make a plan (Ready.gov): https://www.ready.gov/plan
 
 13. SECURITY & NEIGHBORS
 Keep a low profile and build a small neighbor pod. Neighbors who look out for each other are the best security in a long outage.
@@ -303,28 +325,31 @@ Keep a low profile and build a small neighbor pod. Neighbors who look out for ea
 - Lock doors and windows; keep exterior lights on a battery or solar motion light.
 - Neighbor pod: swap numbers with 3–5 nearby households, share skills (medical, tools, childcare), and check on older neighbors.
 - If you feel unsafe, leave and call 911. Supplies can be replaced; people can't.
+Make a plan (Ready.gov): https://www.ready.gov/plan
 
 14. KIDS & MORALE
 Kids cope better when they have a routine and a job. Keep things predictable and give them a role in the plan.
 
-[ ] Keep meal, nap and bedtime routines as close to normal as you can.
-[ ] Give each child a 'job' (flashlight checker, water helper) so they feel useful.
-[ ] Comfort kit: favorite stuffed animal/blanket, books, cards, coloring, glow sticks.
-[ ] Put an ID card in each child's go-bag/pocket: name, parent phone numbers, out-of-area contact.
-[ ] Practice the plan as a game: 'lights-out dinner', a family meeting-place walk.
-[ ] Talk simply and honestly; limit news exposure; ask how they're feeling.
-[ ] Toddlers: baby gates and covers near any heater or stove; extra outfits and sleep sacks for cold nights.
+[ ] Keep meal, nap and bedtime routines as close to normal as you can. (Planning with kids (Ready.gov): https://www.ready.gov/kids/family-emergency-planning)
+[ ] Give each child a 'job' (flashlight checker, water helper) so they feel useful. (Build a kit (Ready.gov): https://www.ready.gov/kit)
+[ ] Comfort kit: favorite stuffed animal/blanket, books, cards, coloring, glow sticks. (Planning with kids (Ready.gov): https://www.ready.gov/kids/family-emergency-planning)
+[ ] Put an ID card in each child's go-bag/pocket: name, parent phone numbers, out-of-area contact. (Planning with kids (Ready.gov): https://www.ready.gov/kids/family-emergency-planning)
+[ ] Practice the plan as a game: 'lights-out dinner', a family meeting-place walk. (Planning with kids (Ready.gov): https://www.ready.gov/kids/family-emergency-planning)
+[ ] Talk simply and honestly; limit news exposure; ask how they're feeling. (Planning with kids (Ready.gov): https://www.ready.gov/kids/family-emergency-planning)
+[ ] Toddlers: baby gates and covers near any heater or stove; extra outfits and sleep sacks for cold nights. (Planning with kids (Ready.gov): https://www.ready.gov/kids/family-emergency-planning)
+Planning with kids (Ready.gov): https://www.ready.gov/kids/family-emergency-planning
 
 15. PETS
 Store 54 pounds of pet food and add 0.35 gallons of water a day for your pets. Keep records and a carrier ready.
 
 Pet | Food for scenario | Water/day
 1 medium dog | 54 lb | 0.35 gal
-[ ] Vaccination records and a recent photo of each pet (in the documents pouch).
-[ ] Leash, harness, crate/carrier, collapsible bowls, waste bags or litter.
-[ ] Microchip details up to date.
-[ ] Know which shelters and hotels on your route accept pets.
+[ ] Vaccination records and a recent photo of each pet (in the documents pouch). (Prepare your pets (Ready.gov): https://www.ready.gov/pets)
+[ ] Leash, harness, crate/carrier, collapsible bowls, waste bags or litter. (Prepare your pets (Ready.gov): https://www.ready.gov/pets)
+[ ] Microchip details up to date. (Prepare your pets (Ready.gov): https://www.ready.gov/pets)
+[ ] Know which shelters and hotels on your route accept pets. (Prepare your pets (Ready.gov): https://www.ready.gov/pets)
 !! Pet medications: ReadyPlan never gives medication doses. For any medicine — for people or pets — follow the label or your doctor, pharmacist or vet.
+Prepare your pets (Ready.gov): https://www.ready.gov/pets
 
 16. EVACUATION / BUG-OUT PLAN
 Your fallback is your raw land, about 120 miles away. Leave early on clear triggers, keep each tank above 7.2 gallons, and keep go-bags ready.
@@ -356,24 +381,26 @@ Bug-out kit: pick a level for each (Essential, Standard or Premium)
 - Tarp shelter kit  (Typical $50–$100 each): Two 10×12 ft heavy tarps, 100 ft paracord, stakes, ground cloth; quick rain-and-wind shelter
 - Water transport for off-grid site  (Typical $40–$90 each): 2–4 collapsible or rigid 5–7 gal containers dedicated to the vehicle/land site
 Vehicle kit
-[ ] Jump starter, tire inflator, tow strap
-[ ] Paper road map with 2 routes marked
-[ ] Blankets, water, snacks
-[ ] Phone chargers
-[ ] Flashlight, reflective triangles
-[ ] Never store spare gasoline inside the car cabin
+[ ] Jump starter, tire inflator, tow strap (Plan your evacuation (Ready.gov): https://www.ready.gov/evacuation)
+[ ] Paper road map with 2 routes marked (Plan your evacuation (Ready.gov): https://www.ready.gov/evacuation)
+[ ] Blankets, water, snacks (Build a kit (Ready.gov): https://www.ready.gov/kit)
+[ ] Phone chargers (Plan your evacuation (Ready.gov): https://www.ready.gov/evacuation)
+[ ] Flashlight, reflective triangles (Build a kit (Ready.gov): https://www.ready.gov/kit)
+[ ] Never store spare gasoline inside the car cabin (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/prevention/)
 Go-bag (one per person)
-[ ] Water (1 L) and filter bottle
-[ ] 3 days of snacks
-[ ] Change of clothes, rain layer, hat, gloves
-[ ] Headlamp + batteries
-[ ] Medications (7-day supply), glasses
-[ ] Copies of ID and medication list
-[ ] Cash in small bills
-[ ] Whistle, mask, hand sanitizer
-[ ] Child ID card and comfort item
-[ ] Pet food, leash, records
+[ ] Water (1 L) and filter bottle (Make water safe to drink (EPA): https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water)
+[ ] 3 days of snacks (Build a kit (Ready.gov): https://www.ready.gov/kit)
+[ ] Change of clothes, rain layer, hat, gloves (Build a kit (Ready.gov): https://www.ready.gov/kit)
+[ ] Headlamp + batteries (Build a kit (Ready.gov): https://www.ready.gov/kit)
+[ ] Medications (7-day supply), glasses (Older adults and people with disabilities (Ready.gov): https://www.ready.gov/older-adults)
+[ ] Copies of ID and medication list (Older adults and people with disabilities (Ready.gov): https://www.ready.gov/older-adults)
+[ ] Cash in small bills (Build a kit (Ready.gov): https://www.ready.gov/kit)
+[ ] Whistle, mask, hand sanitizer (Build a kit (Ready.gov): https://www.ready.gov/kit)
+[ ] Child ID card and comfort item (Planning with kids (Ready.gov): https://www.ready.gov/kids/family-emergency-planning)
+[ ] Pet food, leash, records (Prepare your pets (Ready.gov): https://www.ready.gov/pets)
 !! Tents and fumes: Never use a heater, stove, grill or generator inside a tent or vehicle. Cook and run generators in the open, away from where people sleep.
+Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM): https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map
+Plan your evacuation (Ready.gov): https://www.ready.gov/evacuation
 
 17. BUDGET BY PHASE
 Within your $1,500–5,000 range we planned around $3,250. Phase 1 buys life safety first; the whole list comes to about $3,407.
@@ -433,6 +460,7 @@ Tarp shelter kit |  | $50–$100 | Phase 3
 Water transport for off-grid site |  | $40–$90 | Phase 3
 !! Go cheaper or bigger, item by item: Items with levels (water, power, filters, radios, go-bags, shelter, vehicle kit, food) can each be switched to Essential, Standard or Premium in Recommended gear. Totals update when you switch.
 !! What to cut first: If money is tight, delay multi-day cooler, pipe insulation & faucet covers, cold-rated sleeping bags. Never cut CO alarms, stored water, or your heat plan. Buy food a little at a time with each grocery trip.
+Low- and no-cost preparedness (Ready.gov): https://www.ready.gov/low-and-no-cost
 
 18. RECOMMENDED GEAR
 Buy to the spec, not the brand. The example models are just a starting point for comparing.
@@ -487,6 +515,7 @@ Every 12 months | Rotate stabilized gasoline into cars; replace bleach; check fi
 November | Winter check: heat plan, pipe insulation, sleeping bags, propane.
 June | Hurricane season check: window protection, evacuation zone, insurance, fuel.
 Every 12 months | Review this plan and regenerate it if your household changes.
+Build a kit (Ready.gov): https://www.ready.gov/kit
 
 Sources:
 - Ready.gov — Build a Kit & Make a Plan: https://www.ready.gov/kit

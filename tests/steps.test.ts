@@ -9,7 +9,9 @@ import { isAmazon } from "@/lib/affiliate";
 import { renderPlanEmail } from "@/lib/email/render";
 import { productIndex, resolveStep } from "@/components/StepExtras";
 import { PERSONAS } from "./fixtures/personas";
-import { SAMPLE_HOUSEHOLD } from "./fixtures/households";
+import { SAMPLE_HOUSEHOLD, at } from "./fixtures/households";
+import { sectionHelp } from "@/lib/plan/help";
+import type { Answers } from "@/lib/answers/schema";
 
 const NOW = new Date("2026-11-18");
 const C = { ...DEFAULT_CONSTANTS, affiliate: { amazonTag: "test-20" } };
@@ -73,5 +75,48 @@ describe("each step says why, what to buy and where to go", () => {
     expect(html).toContain("alert.ny.gov");
     expect(text).toContain("alert.ny.gov");
     expect(html).not.toMatch(/amazon\./i);
+  });
+});
+
+/** Households that between them switch on every kind of step: all personas plus a spread of places and setups. */
+const SPREAD: { name: string; a: Answers }[] = [
+  { name: "sample", a: SAMPLE_HOUSEHOLD },
+  ...PERSONAS,
+  { name: "miami", a: at({ zip: "33101" }) },
+  { name: "sf", a: at({ zip: "94110" }) },
+  { name: "denver-wood", a: at({ zip: "80202", heatSources: ["wood"] }) },
+  { name: "phoenix-apt", a: at({ zip: "85001", homeType: "apartment" }) },
+  { name: "baby", a: at({ childrenAges: [0, 4], toddlerNeeds: ["diapers", "formula"] }) },
+  { name: "solo", a: at({ adults: 1 }) },
+];
+
+describe("every recommendation has something for the customer", () => {
+  it("every checklist step offers a Buy option in this plan, an official link, or a pointer to where the plan covers it", async () => {
+    const empty: string[] = [];
+    for (const p of SPREAD) {
+      const doc = await plan(p.a);
+      const products = productIndex(doc);
+      for (const st of steps(doc)) {
+        const r = resolveStep(st, products, href);
+        if (!r.buy && !r.link && !r.see) empty.push(`${p.name}: ${st.text}`);
+        if (r.see) expect(doc.sections.some((x) => x.id === r.see!.anchor), `${p.name}: ${r.see.anchor}`).toBe(true);
+      }
+    }
+    expect(empty).toEqual([]);
+  });
+
+  it("every section (except your answers and the gear list itself) ends with official links; its Buy ids are real catalog items", async () => {
+    const ids = new Set(SEED_CATALOG.map((i) => i.id));
+    for (const p of SPREAD) {
+      const doc = await plan(p.a);
+      for (const sec of doc.sections) {
+        if (sec.id === "snapshot" || sec.id === "gear") continue;
+        const help = sec.blocks.find((b) => b.type === "help");
+        expect(help && help.type === "help" && help.links.length > 0, `${p.name}: ${sec.id}`).toBe(true);
+        if (help?.type === "help") for (const id of help.buy) expect(ids.has(id), `${sec.id}: ${id}`).toBe(true);
+      }
+    }
+    for (const id of ["priorities", "day0", "hazards", "water", "food", "cooking", "sanitation", "firstaid", "heat", "power", "comms", "security", "kids", "pets", "evacuation", "budget", "maintenance"])
+      for (const b of sectionHelp(id, lookupZip("11746"))?.buy ?? []) expect(ids.has(b), `${id}: ${b}`).toBe(true);
   });
 });
