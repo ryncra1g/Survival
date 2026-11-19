@@ -171,7 +171,7 @@ export function PlanPdf({ doc }: { doc: PlanDocument }) {
  * crashes ("unsupported number") or draws nothing in a long wrapped document, so we post-process instead.
  */
 export async function addPageNumbers(pdf: Uint8Array): Promise<Buffer> {
-  const out = await PDFDocument.load(pdf);
+  const out = await PDFDocument.load(pdf, { updateMetadata: false });
   const font = await out.embedFont(StandardFonts.Helvetica);
   const pages = out.getPages();
   pages.forEach((page, i) => {

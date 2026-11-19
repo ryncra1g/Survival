@@ -30,6 +30,17 @@ export const HEALTH_REQUIRED_MSG =
   "Please tick the box to let us use your medical and mobility answers to build your plan (or change those answers to No).";
 
 /** Returns an error message, or null when the consent is complete for these answers. */
+/** "Please tick…" message naming the answers that need health consent (and where to change them). */
+export function healthConsentMessage(a: HealthAnswers): string {
+  const why = [
+    a.hasPrescriptions && "daily prescriptions",
+    Array.isArray(a.poweredDevices) && a.poweredDevices.length > 0 && "a powered medical device",
+    a.elderlyOrMobility && "limited mobility (on the Household screen)",
+  ].filter(Boolean) as string[];
+  const list = why.length > 1 ? `${why.slice(0, -1).join(", ")} and ${why[why.length - 1]}` : why[0] ?? "health";
+  return `Please tick the box so we can use your answers about ${list} to build your plan (or change ${why.length > 1 ? "those answers" : "that answer"} to No).`;
+}
+
 export function checkConsent(a: HealthAnswers, c: ConsentInput | null | undefined): string | null {
   if (c?.terms !== true) return TERMS_REQUIRED_MSG;
   if (needsHealthConsent(a) && c?.health !== true) return HEALTH_REQUIRED_MSG;

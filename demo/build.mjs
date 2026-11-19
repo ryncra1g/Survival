@@ -28,7 +28,9 @@ const js = await build({
 });
 const cssIn = fs.readFileSync(path.join(root, "demo/demo.css"), "utf8");
 const css = await postcss([tailwind({ base: root, optimize: true })]).process(cssIn, { from: path.join(root, "demo/demo.css") });
-const brand = (process.env.NEXT_PUBLIC_BRAND_NAME ?? "").trim() || "ReadyPlan";
+// Same fallback as lib/brand.ts, read from it so the two can't drift.
+const WORKING_NAME = fs.readFileSync(path.join(root, "lib/brand.ts"), "utf8").match(/WORKING_NAME = "([^"]+)"/)[1];
+const brand = (process.env.NEXT_PUBLIC_BRAND_NAME ?? "").trim() || WORKING_NAME;
 const html = `<title>${brand} demo</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>${css.css}</style>
