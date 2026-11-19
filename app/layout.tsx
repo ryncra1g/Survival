@@ -5,12 +5,12 @@ import { BRAND } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: { default: `${BRAND.name} — your emergency plan`, template: `%s · ${BRAND.name}` },
-  description: "A personalized emergency plan and supply list for your home, built in about 5 minutes.",
+  description: "Know exactly what to do when the power goes out: a free emergency plan built for your home in about 5 minutes, with exact water, food and fuel amounts.",
   metadataBase: new URL(process.env.APP_URL || "http://localhost:3000"),
   openGraph: {
     type: "website",
     siteName: BRAND.name,
-    title: `${BRAND.name} — your emergency plan in 5 minutes`,
+    title: `Know exactly what to do when the power goes out · ${BRAND.name}`,
     description: "Exact water, food and fuel amounts for your household, a week-by-week checklist and steps for your area's hazards. Free, no sign-up.",
   },
   twitter: { card: "summary_large_image" },

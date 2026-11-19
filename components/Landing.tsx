@@ -7,11 +7,11 @@ export function Landing({ cta, footer, sampleLink }: { cta: ReactNode; footer?: 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:py-14">
       <p className="text-sm font-semibold tracking-wide text-brand">Free · No sign-up · About 5 minutes</p>
-      <h1 className="mt-2 text-[1.85rem] sm:text-5xl font-bold leading-tight text-balance">Your emergency plan and supply list, built for your home in 5 minutes.</h1>
-      <p className="mt-3 sm:text-lg text-muted max-w-2xl">Whether you live alone or with a full house, get exactly how much water, food and fuel you need, what to buy first, and what to do when the power goes out.</p>
+      <h1 className="mt-2 text-[1.85rem] sm:text-5xl font-bold leading-tight text-balance">Know exactly what to do when the power goes out.</h1>
+      <p className="mt-3 sm:text-lg text-muted max-w-2xl">A plan built for your household, whether it&apos;s just you or a full house, in a house or an apartment. How much water, food and fuel to keep, what to buy first, and what to do when a storm hits.</p>
       <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3">
         {cta}
-        <span className="text-sm text-muted text-center sm:text-left">Every number shows its math.</span>
+        <span className="text-sm text-muted text-center sm:text-left">Every amount is worked out for your household, with the math shown.</span>
       </div>
 
       <section aria-labelledby="preview-h" className="card mt-8 p-4 sm:p-5">
@@ -41,7 +41,7 @@ export function Landing({ cta, footer, sampleLink }: { cta: ReactNode; footer?: 
           {[
             ["Answer about 10 quick questions", "Your ZIP, who lives with you, your home, heat, water and budget. No sign-up."],
             ["Get your plan right away", "Exact amounts, a week-by-week checklist and steps for your area's hazards."],
-            ["Buy in the right order", "A shopping list that fits your budget, cheapest or premium, item by item."],
+            ["Buy only what you're missing", "A shopping list in priority order that skips what you already have and fits your budget, basic or premium."],
           ].map(([t, d], i) => (
             <li key={t} className="card p-4">
               <p className="text-sm font-semibold text-brand">Step {i + 1}</p>
@@ -60,6 +60,7 @@ export function Landing({ cta, footer, sampleLink }: { cta: ReactNode; footer?: 
             "A priority list: this week, this month, 60 and 90 days",
             "Steps for your ZIP code's hazards",
             "Heat and power plans, with generator and CO safety",
+            "Backup power for medical devices, and plans for kids and pets",
             "A shopping list that fits your budget",
             "A printable PDF and a one-page fridge checklist",
           ].map((t) => (
@@ -68,7 +69,10 @@ export function Landing({ cta, footer, sampleLink }: { cta: ReactNode; footer?: 
         </ul>
       </section>
 
-      <p className="mt-10 text-sm text-muted">Based on guidance from Ready.gov, FEMA, the CDC, the American Red Cross and the EPA. {footer}</p>
+      <p className="mt-10 text-sm text-muted">
+        Based on guidance from Ready.gov, FEMA, the CDC, the American Red Cross and the EPA. It&apos;s free: we may earn a small commission if you buy through our links,
+        at no extra cost to you. Recommendations come from the specs and your budget, not from commissions. {footer}
+      </p>
     </div>
   );
 }
