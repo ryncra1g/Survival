@@ -94,6 +94,19 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(page.getByRole("heading", { name: "Phase 1 shopping list (life safety)" })).toBeVisible();
   await expect(page.getByRole("link", { name: /^Buy / })).toHaveCount(0); // no affiliate tag set yet
 
+  // Dashboard: progress, headline numbers with math, gear list with "Got it" ticks that persist
+  const dash = page.getByTestId("dashboard");
+  await expect(dash.getByRole("heading", { name: "Your plan at a glance" })).toBeVisible();
+  await expect(dash.getByText("water to store")).toBeVisible();
+  await expect(dash.getByText(/gal\/day × \d+ days/)).toBeVisible();
+  await dash.getByText("Your gear list").click();
+  const gearTotal = await dash.getByRole("checkbox").count();
+  await dash.getByRole("checkbox", { name: "I have: Carbon monoxide alarm" }).check();
+  await expect(dash.getByText(new RegExp(`^1 of ${gearTotal}$`))).toBeVisible();
+  await page.waitForTimeout(800);
+  await page.reload();
+  await expect(page.getByTestId("dashboard").getByText(new RegExp(`^1 of ${gearTotal}$`))).toBeVisible();
+
   // Shorter plan: action sections open, reference sections collapsed to title + summary
   await expect(page.locator("details#priorities")).toHaveAttribute("open", "");
   await expect(page.locator("details#gear")).not.toHaveAttribute("open", "");

@@ -3932,6 +3932,373 @@
   ],
   "disclaimer": "ReadyPlan provides general preparedness guidance, not professional, medical, legal or electrical advice. Follow official instructions from local emergency management. Quantities are planning estimates. Prices and products change — check current specs, recalls and reviews before you buy.",
   "affiliateDisclosure": null,
+  "overview": {
+    "stats": [
+      {
+        "key": "water",
+        "value": "54 gal",
+        "label": "water to store",
+        "math": "3.85 gal/day × 14 days",
+        "anchor": "water"
+      },
+      {
+        "key": "food",
+        "value": "630,000",
+        "label": "calories of food",
+        "math": "7,000/day × 90 days",
+        "anchor": "food"
+      },
+      {
+        "key": "fuel",
+        "value": "3–4.8 gal",
+        "label": "gasoline per day",
+        "math": "12 generator hrs × 0.25–0.4 gal/hr",
+        "anchor": "power"
+      },
+      {
+        "key": "cash",
+        "value": "$1,200",
+        "label": "cash on hand",
+        "math": "$600 × 2 adults",
+        "anchor": "comms"
+      }
+    ],
+    "gear": [
+      {
+        "itemId": "co-alarm",
+        "name": "Carbon monoxide alarm",
+        "qty": 4,
+        "phase": 1,
+        "low": 80,
+        "high": 160,
+        "later": false
+      },
+      {
+        "itemId": "water-jug",
+        "name": "7-gallon water container",
+        "qty": 8,
+        "phase": 1,
+        "low": 160,
+        "high": 280,
+        "later": false
+      },
+      {
+        "itemId": "tub-bladder",
+        "name": "Bathtub water bladder",
+        "qty": 1,
+        "phase": 1,
+        "low": 25,
+        "high": 40,
+        "later": false
+      },
+      {
+        "itemId": "filter-gravity-bag",
+        "name": "Gravity bag filter",
+        "qty": 1,
+        "phase": 1,
+        "low": 90,
+        "high": 140,
+        "later": false
+      },
+      {
+        "itemId": "bleach",
+        "name": "Unscented household bleach",
+        "qty": 1,
+        "phase": 1,
+        "low": 4,
+        "high": 8,
+        "later": false
+      },
+      {
+        "itemId": "lights",
+        "name": "Headlamps + LED lanterns",
+        "qty": 4,
+        "phase": 1,
+        "low": 60,
+        "high": 120,
+        "later": false
+      },
+      {
+        "itemId": "batteries",
+        "name": "AA/AAA battery stock",
+        "qty": 1,
+        "phase": 1,
+        "low": 20,
+        "high": 40,
+        "later": false
+      },
+      {
+        "itemId": "radio",
+        "name": "NOAA weather radio",
+        "qty": 1,
+        "phase": 1,
+        "low": 50,
+        "high": 80,
+        "later": false
+      },
+      {
+        "itemId": "power-bank",
+        "name": "USB power bank",
+        "qty": 2,
+        "phase": 1,
+        "low": 50,
+        "high": 90,
+        "later": false
+      },
+      {
+        "itemId": "first-aid",
+        "name": "First aid kit",
+        "qty": 1,
+        "phase": 1,
+        "low": 30,
+        "high": 80,
+        "later": false
+      },
+      {
+        "itemId": "extinguisher",
+        "name": "Fire extinguisher",
+        "qty": 3,
+        "phase": 1,
+        "low": 90,
+        "high": 180,
+        "later": false
+      },
+      {
+        "itemId": "thermometers",
+        "name": "Fridge/freezer thermometers",
+        "qty": 1,
+        "phase": 1,
+        "low": 8,
+        "high": 15,
+        "later": false
+      },
+      {
+        "itemId": "buddy-heater",
+        "name": "Indoor-rated portable propane heater",
+        "qty": 1,
+        "phase": 1,
+        "low": 100,
+        "high": 200,
+        "later": false
+      },
+      {
+        "itemId": "propane-1lb",
+        "name": "1-lb propane cylinders (heater fuel)",
+        "qty": 1,
+        "phase": 1,
+        "low": 30,
+        "high": 50,
+        "later": false
+      },
+      {
+        "itemId": "sleep-system",
+        "name": "Cold-rated sleeping bags",
+        "qty": 4,
+        "phase": 1,
+        "low": 160,
+        "high": 360,
+        "later": false
+      },
+      {
+        "itemId": "pipe-insulation",
+        "name": "Pipe insulation & faucet covers",
+        "qty": 1,
+        "phase": 1,
+        "low": 20,
+        "high": 50,
+        "later": false
+      },
+      {
+        "itemId": "generator-small",
+        "name": "Small inverter generator",
+        "qty": 1,
+        "phase": 2,
+        "low": 550,
+        "high": 1200,
+        "later": false
+      },
+      {
+        "itemId": "gen-cord",
+        "name": "Generator cord + outdoor extension cords",
+        "qty": 1,
+        "phase": 2,
+        "low": 60,
+        "high": 120,
+        "later": false
+      },
+      {
+        "itemId": "gas-cans",
+        "name": "5-gallon gas cans + stabilizer",
+        "qty": 6,
+        "phase": 2,
+        "low": 180,
+        "high": 270,
+        "later": false
+      },
+      {
+        "itemId": "coolers",
+        "name": "Multi-day cooler",
+        "qty": 1,
+        "phase": 2,
+        "low": 40,
+        "high": 90,
+        "later": false
+      },
+      {
+        "itemId": "inlet-interlock",
+        "name": "Generator inlet + interlock (electrician-installed)",
+        "qty": 1,
+        "phase": 2,
+        "low": 500,
+        "high": 1500,
+        "later": true
+      },
+      {
+        "itemId": "flood-kit",
+        "name": "Flood kit",
+        "qty": 1,
+        "phase": 2,
+        "low": 50,
+        "high": 150,
+        "later": true
+      },
+      {
+        "itemId": "propane-20",
+        "name": "20-lb propane cylinders",
+        "qty": 2,
+        "phase": 2,
+        "low": 100,
+        "high": 140,
+        "later": true
+      },
+      {
+        "itemId": "storage-kit",
+        "name": "Food storage buckets",
+        "qty": 1,
+        "phase": 2,
+        "low": 40,
+        "high": 90,
+        "later": true
+      },
+      {
+        "itemId": "toilet-kit",
+        "name": "Emergency toilet kit",
+        "qty": 1,
+        "phase": 2,
+        "low": 25,
+        "high": 50,
+        "later": true
+      },
+      {
+        "itemId": "window-protection",
+        "name": "Window protection",
+        "qty": 1,
+        "phase": 2,
+        "low": 150,
+        "high": 600,
+        "later": true
+      },
+      {
+        "itemId": "sump-backup",
+        "name": "Battery backup sump pump",
+        "qty": 1,
+        "phase": 2,
+        "low": 250,
+        "high": 500,
+        "later": true
+      },
+      {
+        "itemId": "pet-kit",
+        "name": "Pet go-kit",
+        "qty": 1,
+        "phase": 2,
+        "low": 30,
+        "high": 100,
+        "later": true
+      },
+      {
+        "itemId": "power-station-house",
+        "name": "Portable power station (quiet hours)",
+        "qty": 1,
+        "phase": 3,
+        "low": 400,
+        "high": 900,
+        "later": true
+      },
+      {
+        "itemId": "solar-panel",
+        "name": "Portable solar panel",
+        "qty": 1,
+        "phase": 3,
+        "low": 300,
+        "high": 650,
+        "later": true
+      },
+      {
+        "itemId": "frs-radios",
+        "name": "FRS walkie-talkies",
+        "qty": 1,
+        "phase": 3,
+        "low": 25,
+        "high": 45,
+        "later": true
+      },
+      {
+        "itemId": "docs-pouch",
+        "name": "Fire/water-resistant document pouch",
+        "qty": 1,
+        "phase": 3,
+        "low": 20,
+        "high": 60,
+        "later": true
+      },
+      {
+        "itemId": "morale-kit",
+        "name": "Kids comfort & activity kit",
+        "qty": 1,
+        "phase": 3,
+        "low": 20,
+        "high": 50,
+        "later": true
+      },
+      {
+        "itemId": "go-bag-basic",
+        "name": "Go-bag from a backpack you own",
+        "qty": 2,
+        "phase": 3,
+        "low": 40,
+        "high": 80,
+        "later": true
+      },
+      {
+        "itemId": "vehicle-kit-basic",
+        "name": "Basic vehicle kit",
+        "qty": 1,
+        "phase": 3,
+        "low": 35,
+        "high": 70,
+        "later": true
+      },
+      {
+        "itemId": "tarp-shelter",
+        "name": "Tarp shelter kit",
+        "qty": 1,
+        "phase": 3,
+        "low": 50,
+        "high": 100,
+        "later": true
+      },
+      {
+        "itemId": "raw-land-water",
+        "name": "Water transport for off-grid site",
+        "qty": 1,
+        "phase": 3,
+        "low": 40,
+        "high": 90,
+        "later": true
+      }
+    ]
+  },
   "sources": [
     {
       "name": "Ready.gov — Build a Kit & Make a Plan",

@@ -3,6 +3,8 @@ import { Checklist } from "./Checklist";
 import { ChecksProvider } from "./ChecksContext";
 import { LevelChips } from "./LevelChips";
 import { SectionNav } from "./SectionNav";
+import { BuyIfNeeded } from "./BuyIfNeeded";
+import { Dashboard } from "./Dashboard";
 import { groupIntoChapters } from "@/lib/plan/chapters";
 import { BRAND } from "@/lib/brand";
 import { HelpStrip, productIndex, resolveStep, StepExtras, type StepView } from "./StepExtras";
@@ -42,9 +44,11 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
                   {!b.compact && i.levels && i.group && <LevelChips planId={planId} group={i.group} levels={i.levels} back={sectionId} onChoose={onChoose} />}
                 </div>
                 {i.buyable && (
+                  <BuyIfNeeded itemId={i.itemId}>
                   <a href={buyHref ? buyHref(i.itemId) : `/go/${encodeURIComponent(i.itemId)}?p=${planId}&src=web`} target="_blank" rel="sponsored nofollow noopener" className="btn-ghost shrink-0 text-brand min-h-[40px]" aria-label={`Buy ${i.name} (opens a store, affiliate link)`}>
                     Buy
                   </a>
+                  </BuyIfNeeded>
                 )}
               </li>
             ))}
@@ -154,6 +158,11 @@ export function PlanView({
   return (
     <ChecksProvider planId={planId} initial={checks} sync={sync}>
       <article>
+        <Dashboard
+          overview={doc.overview}
+          stepIds={doc.sections.flatMap((s) => s.blocks.flatMap((b) => (b.type === "checklist" ? b.items.map((i) => i.id) : [])))}
+          buyHref={Object.fromEntries([...ctx.products.keys()].map((id) => [id, ctx.href(id)]))}
+        />
         <SectionNav chapters={chapters.map((ch) => ({ id: ch.id, title: ch.title, short: ch.short, sections: ch.items.map((x) => ({ id: x.id, title: SHORT[x.id] ?? x.title })) }))} />
         <FirstSteps doc={doc} ctx={ctx} />
         {chapters.map((ch) => (

@@ -12,7 +12,7 @@ import {
   MED_RULE,
   TRANSFER_RULE,
 } from "@/lib/safety/required";
-import { DISCLAIMER, SOURCES, type Block, type PlanDocument, type Section } from "./document";
+import { DISCLAIMER, SOURCES, type Block, type Overview, type PlanDocument, type Section } from "./document";
 import { fillTokens, n, plural, range, usd, usdRange } from "./format";
 import { AFFILIATE_DISCLOSURE, buyUrl, emailSafeBuyUrl } from "@/lib/affiliate";
 
@@ -40,6 +40,7 @@ export interface PlanDraft {
   sections: SectionDraft[];
   subtitle: string;
   affiliateDisclosure: string | null;
+  overview: Overview;
 }
 
 let checklistCounter = 0;
@@ -977,7 +978,21 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   });
 
   addHelp(S, prof);
+  const pw2 = cp.power;
+  const hasFuel = pw2.generatorStatus === "recommended" || pw2.generatorStatus === "owned_portable";
+  const overview: Overview = {
+    stats: [
+      { key: "water", value: `${n(cp.water.storedGal)} gal`, label: "water to store", math: `${n(cp.water.dailyGal, 2)} gal/day × ${n(cp.water.storedDays)} days`, anchor: "water" },
+      { key: "food", value: n(cp.food.totalKcal), label: "calories of food", math: `${n(cp.food.dailyKcal)}/day × ${n(a.scenarioDays)} days`, anchor: "food" },
+      ...(hasFuel
+        ? [{ key: "fuel", value: `${range(pw2.gasolineGalPerDay[0], pw2.gasolineGalPerDay[1])} gal`, label: "gasoline per day", math: `${n(pw2.hoursPerDay)} generator hrs × ${range(c.generator.gasolineGalPerHour[0], c.generator.gasolineGalPerHour[1], 2)} gal/hr`, anchor: "power" }]
+        : []),
+      { key: "cash", value: usd(cp.cash.total), label: "cash on hand", math: `${usd(cp.cash.perAdult)} × ${plural(a.adults, "adult")}`, anchor: "comms" },
+    ],
+    gear: [...cp.budget.picks, ...cp.budget.deferred].map((p) => ({ itemId: p.item.id, name: p.item.name, qty: p.qty, phase: p.phase, low: p.low, high: p.high, later: p.status === "deferred" })),
+  };
   return {
+    overview,
     tokens,
     sections: S,
     subtitle: `${plural(h.people, "person", "people")} · ${prof.region} · ${LABELS.scenarioDays[a.scenarioDays]} · ${LABELS.budget[a.budget]}`,
@@ -1003,6 +1018,7 @@ export function assembleDocument(cp: ComputedPlan, draft: PlanDraft, summaries: 
     sections,
     disclaimer: DISCLAIMER,
     affiliateDisclosure: draft.affiliateDisclosure,
+    overview: draft.overview,
     sources: SOURCES,
   };
 }

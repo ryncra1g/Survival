@@ -91,6 +91,24 @@ export const SectionSchema = z.object({
 });
 export type Section = z.infer<typeof SectionSchema>;
 
+/** Dashboard data: headline numbers with their math, and the gear list with costs. Every number comes from the rules engine. */
+export const OverviewSchema = z.object({
+  stats: z.array(z.object({ key: z.string(), value: z.string(), label: z.string(), math: z.string(), anchor: z.string() })),
+  gear: z.array(
+    z.object({
+      itemId: z.string(),
+      name: z.string(),
+      qty: z.number(),
+      phase: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+      /** Total for this line (price × qty), USD. */
+      low: z.number(),
+      high: z.number(),
+      later: z.boolean(),
+    }),
+  ),
+});
+export type Overview = z.infer<typeof OverviewSchema>;
+
 export const PlanDocumentSchema = z.object({
   title: z.string(),
   subtitle: z.string(),
@@ -98,6 +116,8 @@ export const PlanDocumentSchema = z.object({
   rulesVersion: z.string(),
   writer: z.enum(["template", "llm"]),
   sections: z.array(SectionSchema),
+  /** Absent on plans built before the dashboard existed. */
+  overview: OverviewSchema.optional(),
   disclaimer: z.string(),
   affiliateDisclosure: z.string().nullable(),
   sources: z.array(z.object({ name: z.string(), url: z.string() })),

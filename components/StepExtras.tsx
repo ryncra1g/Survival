@@ -1,3 +1,4 @@
+import { BuyIfNeeded } from "./BuyIfNeeded";
 import type { Block, PlanDocument } from "@/lib/plan/document";
 
 type ChecklistItem = Extract<Block, { type: "checklist" }>["items"][number];
@@ -26,9 +27,11 @@ export function StepExtras({ step }: { step: StepView }) {
       {(step.buy || step.link || step.see) && (
         <span className="mt-2 flex flex-wrap items-center gap-2">
           {step.buy && (
+            <BuyIfNeeded itemId={step.buy.itemId}>
             <a href={step.buy.href} target="_blank" rel="sponsored nofollow noopener" className="btn-ghost min-h-[40px] px-3 text-sm text-brand border border-line gap-1 flex-wrap justify-start text-left" aria-label={`Buy ${step.buy.name}, ${step.buy.price} (opens a store, affiliate link)`}>
               <span>Buy: {step.buy.name}</span> <span className="text-muted font-normal whitespace-nowrap">{"· "}{step.buy.price}</span>
             </a>
+            </BuyIfNeeded>
           )}
           {step.see && (
             <a href={`#${step.see.anchor}`} className="text-sm underline text-brand">
@@ -60,9 +63,11 @@ export function HelpStrip({ b, products, href }: { b: Extract<Block, { type: "he
               <span className="min-w-0">
                 <span className="font-medium">{i.name}</span> <span className="text-sm text-muted whitespace-nowrap">{i.price}</span>
               </span>
-              <a href={href(i.itemId)} target="_blank" rel="sponsored nofollow noopener" className="btn-ghost shrink-0 text-brand min-h-[40px] border border-line bg-surface" aria-label={`Buy ${i.name} (opens a store, affiliate link)`}>
-                Buy
-              </a>
+              <BuyIfNeeded itemId={i.itemId}>
+                <a href={href(i.itemId)} target="_blank" rel="sponsored nofollow noopener" className="btn-ghost shrink-0 text-brand min-h-[40px] border border-line bg-surface" aria-label={`Buy ${i.name} (opens a store, affiliate link)`}>
+                  Buy
+                </a>
+              </BuyIfNeeded>
             </li>
           ))}
         </ul>
