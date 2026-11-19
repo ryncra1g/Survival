@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { PDFDocument } from "pdf-lib";
-import { checkConsent, consentRecord, consentStillValid, withoutConsentTicks, HEALTH_REQUIRED_MSG, needsHealthConsent, TERMS_REQUIRED_MSG, TERMS_VERSION } from "@/lib/legal";
+import { healthConsentMessage, checkConsent, consentRecord, consentStillValid, withoutConsentTicks, HEALTH_REQUIRED_MSG, needsHealthConsent, TERMS_REQUIRED_MSG, TERMS_VERSION } from "@/lib/legal";
 import { addPageNumbers } from "@/lib/pdf/PlanPdf";
 
 const none = { hasPrescriptions: false, poweredDevices: [], elderlyOrMobility: false };
@@ -53,5 +53,15 @@ describe("consent is never carried where it shouldn't be", () => {
     expect(consentStillValid(none, { ...consentRecord(none, now), termsVersion: "2000-01-01" })).toBe(false);
     expect(consentStillValid({ ...none, hasPrescriptions: true }, consentRecord(none, now))).toBe(false);
     expect(consentStillValid({ ...none, hasPrescriptions: true }, consentRecord({ ...none, hasPrescriptions: true }, now))).toBe(true);
+  });
+});
+
+describe("health consent message names the answers", () => {
+  const none = { hasPrescriptions: false, poweredDevices: [], elderlyOrMobility: false };
+  it("points to the Household screen for mobility", () => {
+    expect(healthConsentMessage({ ...none, elderlyOrMobility: true })).toMatch(/limited mobility \(on the Household screen\).*that answer to No/);
+  });
+  it("lists several answers", () => {
+    expect(healthConsentMessage({ ...none, hasPrescriptions: true, poweredDevices: ["cpap"] })).toMatch(/daily prescriptions and a powered medical device.*those answers/);
   });
 });

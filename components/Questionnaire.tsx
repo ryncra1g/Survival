@@ -5,7 +5,7 @@ import { AnswersSchema, DEFAULT_ANSWERS, LABELS, type Answers, type PetGroupT } 
 import { DEFAULT_CONSTANTS } from "@/lib/rules/constants";
 import { computeFood, computeWater, household } from "@/lib/rules/engine";
 import { atLeast, lookupZip, type Level, type ZipProfile } from "@/lib/zip/profile";
-import { withoutConsentTicks, checkConsent, HEALTH_REQUIRED_MSG, needsHealthConsent } from "@/lib/legal";
+import { withoutConsentTicks, checkConsent, healthConsentMessage, needsHealthConsent } from "@/lib/legal";
 import { BRAND } from "@/lib/brand";
 
 type Draft = Answers & { _step?: number; _screen?: string; _terms?: boolean; _health?: boolean };
@@ -232,7 +232,7 @@ const SCREENS: Screen[] = [
   {
     id: "medical",
     title: "Medical needs",
-    valid: (a) => (needsHealthConsent(a) && !a._health ? HEALTH_REQUIRED_MSG : null),
+    valid: (a) => (needsHealthConsent(a) && !a._health ? healthConsentMessage(a) : null),
     render: ({ a, set }) => (
       <>
         <p className="text-sm text-muted">We don&apos;t ask about conditions or diagnoses — only what affects supplies and power.</p>
