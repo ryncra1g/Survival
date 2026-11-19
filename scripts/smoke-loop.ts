@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import { execSync } from "node:child_process";
+import { PDFDocument } from "pdf-lib";
 import { PERSONAS } from "@/tests/fixtures/personas";
 
 /**
@@ -58,7 +58,8 @@ async function run(i: number): Promise<R> {
     const buf = Buffer.from(await r.arrayBuffer());
     if (buf.subarray(0, 4).toString() !== "%PDF") fail(`${kind} not a PDF`);
     fs.writeFileSync(`.data/loop/${i}-${kind}.pdf`, buf);
-    const pages = Number(/Pages:\s+(\d+)/.exec(execSync(`pdfinfo .data/loop/${i}-${kind}.pdf`).toString())?.[1]);
+    // Count pages with pdf-lib (works on Windows too; no pdfinfo needed).
+    const pages = (await PDFDocument.load(buf, { updateMetadata: false })).getPageCount();
     res.info[`${kind}Pages`] = pages;
     if (kind === "checklist" && pages !== 1) fail(`fridge checklist is ${pages} pages`);
   }

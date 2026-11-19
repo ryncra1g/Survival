@@ -16,7 +16,8 @@ export default defineConfig({
     launchOptions: fs.existsSync(chromium) ? { executablePath: chromium } : {},
   },
   webServer: {
-    command: `rm -rf ${dataDir} && npx next start -p ${PORT}`,
+    // Clear test data with Node so this works in Windows cmd as well as bash.
+    command: `node -e "require('fs').rmSync('${dataDir}',{recursive:true,force:true})" && npx next start -p ${PORT}`,
     port: PORT,
     reuseExistingServer: false,
     timeout: 120_000,
