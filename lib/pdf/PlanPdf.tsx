@@ -80,7 +80,10 @@ function BlockView({ b }: { b: Block }) {
           {b.items.map((it) => (
             <View key={it.id} style={s.checkRow} wrap={false}>
               <View style={s.box} />
-              <Text style={{ flex: 1 }}>{pdfSafe(it.text)}</Text>
+              <Text style={{ flex: 1 }}>
+                {pdfSafe(it.text)}
+                {it.link ? <Text style={{ color: tone.info, fontSize: 8.5 }}>{`\n${pdfSafe(it.link.label)}: ${it.link.url}`}</Text> : null}
+              </Text>
             </View>
           ))}
         </View>
@@ -112,6 +115,16 @@ function BlockView({ b }: { b: Block }) {
           />
         </View>
       );
+    case "help":
+      return b.links.length || b.note ? (
+        <View wrap={false} style={{ marginTop: 6 }}>
+          <Text style={s.caption}>What you need</Text>
+          {b.note ? <Text style={s.p}>{pdfSafe(b.note)}</Text> : null}
+          {b.links.map((l) => (
+            <Text key={l.url} style={{ fontSize: 8.5, color: tone.info }}>{`${pdfSafe(l.label)}: ${l.url}`}</Text>
+          ))}
+        </View>
+      ) : null;
     case "levelchoice":
       return (
         <View>

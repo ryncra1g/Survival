@@ -132,35 +132,110 @@
           "items": [
             {
               "id": "week-1",
-              "text": "Test or install CO alarms: 4 (one per level plus outside sleeping areas)."
+              "text": "Test or install CO alarms: 4 (one per level plus outside sleeping areas).",
+              "why": "Carbon monoxide from generators, heaters and grills is one of the most common ways people die after storms and outages, and an alarm is the cheapest life-saver in this plan.",
+              "buy": [
+                "co-alarm"
+              ],
+              "link": {
+                "label": "Carbon monoxide safety (CDC)",
+                "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
+              }
             },
             {
               "id": "week-2",
-              "text": "Store your first 3 days of water: 12 gallons."
+              "text": "Store your first 3 days of water: 12 gallons.",
+              "why": "Taps can stop or become unsafe in an outage, and water is the one supply you can't go without for 3 days.",
+              "buy": [
+                "water-jug",
+                "water-bricks",
+                "water-gallons",
+                "water-drum",
+                "filter-gravity",
+                "filter-gravity-bag",
+                "filter-basic"
+              ],
+              "link": {
+                "label": "Make water safe to drink (EPA)",
+                "url": "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water"
+              }
+            },
+            {
+              "id": "week-zone",
+              "text": "Look up your hurricane evacuation zone and the route out, and decide where you'd go.",
+              "why": "Evacuation orders are given by zone. Knowing yours now means you leave early, before roads fill.",
+              "link": {
+                "label": "Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM)",
+                "url": "https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map"
+              }
             },
             {
               "id": "week-3",
-              "text": "Turn on Wireless Emergency Alerts and sign up for your county's alert system."
+              "text": "Turn on Wireless Emergency Alerts and sign up for your county's alert system.",
+              "why": "Official warnings reach your phone even when TV and internet are out.",
+              "buy": [
+                "radio"
+              ],
+              "link": {
+                "label": "Sign up for NY-Alert (New York State)",
+                "url": "https://alert.ny.gov/sign-up-ny-alert"
+              }
             },
             {
               "id": "week-4",
-              "text": "Write your household communications plan (see Communications) and pick an out-of-area contact."
+              "text": "Write your household communications plan (see Communications) and pick an out-of-area contact.",
+              "buy": [
+                "frs-radios",
+                "gmrs",
+                "radio"
+              ],
+              "link": {
+                "label": "Make a plan (Ready.gov)",
+                "url": "https://www.ready.gov/plan"
+              }
             },
             {
               "id": "week-5",
-              "text": "Set aside $1,200 in small bills."
+              "text": "Set aside $1,200 in small bills.",
+              "buy": [
+                "docs-pouch"
+              ],
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
             },
             {
               "id": "week-6",
-              "text": "Find and label your main water shutoff, gas shutoff and electrical panel."
+              "text": "Find and label your main water shutoff, gas shutoff and electrical panel.",
+              "buy": [
+                "quake-kit"
+              ],
+              "link": {
+                "label": "Make a plan (Ready.gov)",
+                "url": "https://www.ready.gov/plan"
+              }
             },
             {
               "id": "week-7",
-              "text": "Buy 2 weeks of diapers (84) and wipes."
+              "text": "Buy 2 weeks of diapers (84) and wipes.",
+              "link": {
+                "label": "Planning with kids (Ready.gov)",
+                "url": "https://www.ready.gov/kids/family-emergency-planning"
+              }
             },
             {
               "id": "week-8",
-              "text": "Keep every gas/diesel vehicle above half a tank from now on."
+              "text": "Keep every gas/diesel vehicle above half a tank from now on.",
+              "buy": [
+                "gas-cans",
+                "vehicle-kit",
+                "vehicle-kit-basic"
+              ],
+              "link": {
+                "label": "Plan your evacuation (Ready.gov)",
+                "url": "https://www.ready.gov/evacuation"
+              }
             }
           ]
         },
@@ -457,35 +532,94 @@
           "items": [
             {
               "id": "month-9",
-              "text": "Finish stored water: 54 gallons (8 7-gal jugs)."
+              "text": "Finish stored water: 54 gallons (8 7-gal jugs).",
+              "buy": [
+                "water-drum",
+                "water-jug",
+                "water-bricks",
+                "water-gallons",
+                "filter-gravity",
+                "filter-gravity-bag",
+                "filter-basic"
+              ],
+              "link": {
+                "label": "Make water safe to drink (EPA)",
+                "url": "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water"
+              }
             },
             {
               "id": "month-10",
-              "text": "Buy Phase 1 gear: carbon monoxide alarm, 7-gallon water container, bathtub water bladder, gravity bag filter, unscented household bleach, headlamps + led lanterns, aa/aaa battery stock, noaa weather radio, usb power bank, first aid kit, fire extinguisher, fridge/freezer thermometers, indoor-rated portable propane heater, 1-lb propane cylinders (heater fuel), cold-rated sleeping bags, pipe insulation & faucet covers."
+              "text": "Buy Phase 1 gear: carbon monoxide alarm, 7-gallon water container, bathtub water bladder, gravity bag filter, unscented household bleach, headlamps + led lanterns, aa/aaa battery stock, noaa weather radio, usb power bank, first aid kit, fire extinguisher, fridge/freezer thermometers, indoor-rated portable propane heater, 1-lb propane cylinders (heater fuel), cold-rated sleeping bags, pipe insulation & faucet covers.",
+              "see": {
+                "label": "Shopping list with Buy buttons",
+                "anchor": "gear"
+              }
             },
             {
               "id": "month-11",
-              "text": "Build a 2-week pantry from the food list (about 98 thousand calories)."
+              "text": "Build a 2-week pantry from the food list (about 98 thousand calories).",
+              "buy": [
+                "storage-kit",
+                "food-freeze-dried"
+              ],
+              "see": {
+                "label": "Your food list",
+                "anchor": "food"
+              }
             },
             {
               "id": "month-12",
-              "text": "Get a licensed electrician's quote for a generator power inlet + interlock (or transfer switch) so the generator can safely run your furnace."
+              "text": "Get a licensed electrician's quote for a generator power inlet + interlock (or transfer switch) so the generator can safely run your furnace.",
+              "buy": [
+                "inlet-interlock"
+              ],
+              "link": {
+                "label": "Power outages (Ready.gov)",
+                "url": "https://www.ready.gov/power-outages"
+              }
             },
             {
               "id": "month-13",
-              "text": "Do the pipe-freeze prep in section 5 (insulate exposed pipes, know how to drain lines)."
+              "text": "Do the pipe-freeze prep in section 5 (insulate exposed pipes, know how to drain lines).",
+              "buy": [
+                "pipe-insulation"
+              ],
+              "link": {
+                "label": "Winter weather (Ready.gov)",
+                "url": "https://www.ready.gov/winter-weather"
+              }
             },
             {
               "id": "month-14",
-              "text": "Stock 2 weeks of pet food; ask your vet how to keep extra medication on hand if your pet takes any."
+              "text": "Stock 2 weeks of pet food; ask your vet how to keep extra medication on hand if your pet takes any.",
+              "buy": [
+                "pet-kit"
+              ],
+              "link": {
+                "label": "Prepare your pets (Ready.gov)",
+                "url": "https://www.ready.gov/pets"
+              }
             },
             {
               "id": "month-15",
-              "text": "Pack a go-bag for each person (see the Evacuation section)."
+              "text": "Pack a go-bag for each person (see the Evacuation section).",
+              "buy": [
+                "go-bag",
+                "go-bag-kit",
+                "go-bag-basic"
+              ],
+              "see": {
+                "label": "Go-bag list",
+                "anchor": "evacuation"
+              }
             },
             {
               "id": "month-16",
-              "text": "Check your flood zone and evacuation zone; review insurance (flood insurance has a 30-day wait)."
+              "text": "Check your flood zone and evacuation zone; review insurance (flood insurance has a 30-day wait).",
+              "link": {
+                "label": "Look up your flood zone (FEMA Flood Map Service Center)",
+                "url": "https://msc.fema.gov/portal/search"
+              }
             }
           ]
         },
@@ -498,23 +632,70 @@
           "items": [
             {
               "id": "d60-17",
-              "text": "Complete the full 90 days food list: 653 lb of staples."
+              "text": "Complete the full 90 days food list: 653 lb of staples.",
+              "buy": [
+                "storage-kit",
+                "food-freeze-dried"
+              ],
+              "see": {
+                "label": "Your food list",
+                "anchor": "food"
+              }
             },
             {
               "id": "d60-18",
-              "text": "Buy the generator and fuel storage; test-run it outdoors, 20+ ft from the house, under load."
+              "text": "Buy the generator and fuel storage; test-run it outdoors, 20+ ft from the house, under load.",
+              "buy": [
+                "generator-dual",
+                "generator-small",
+                "gas-cans",
+                "power-station-large",
+                "power-station",
+                "power-station-small"
+              ],
+              "link": {
+                "label": "Carbon monoxide safety (CDC)",
+                "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
+              }
             },
             {
               "id": "d60-19",
-              "text": "Set up water filtration + collection for days 15–90 (293 gallons)."
+              "text": "Set up water filtration + collection for days 15–90 (293 gallons).",
+              "buy": [
+                "filter-gravity",
+                "filter-gravity-bag",
+                "filter-basic",
+                "water-jug",
+                "water-bricks",
+                "water-gallons",
+                "water-drum"
+              ],
+              "link": {
+                "label": "Make water safe to drink (EPA)",
+                "url": "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water"
+              }
             },
             {
               "id": "d60-20",
-              "text": "Assemble the sanitation kit (two-bucket toilet, bags, absorbent)."
+              "text": "Assemble the sanitation kit (two-bucket toilet, bags, absorbent).",
+              "buy": [
+                "toilet-kit"
+              ],
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
             },
             {
               "id": "d60-21",
-              "text": "Pre-cut and label window protection."
+              "text": "Pre-cut and label window protection.",
+              "buy": [
+                "window-protection"
+              ],
+              "link": {
+                "label": "Hazard-by-hazard guides (Ready.gov)",
+                "url": "https://www.ready.gov/be-informed"
+              }
             }
           ]
         },
@@ -527,19 +708,44 @@
           "items": [
             {
               "id": "d90-22",
-              "text": "Phase 3 items: comfort and communications upgrades."
+              "text": "Phase 3 items: comfort and communications upgrades.",
+              "see": {
+                "label": "Shopping list with Buy buttons",
+                "anchor": "gear"
+              }
             },
             {
               "id": "d90-23",
-              "text": "Run a 'lights-out weekend': live off your plan for 24–48 hours and fix what breaks."
+              "text": "Run a 'lights-out weekend': live off your plan for 24–48 hours and fix what breaks.",
+              "buy": [
+                "lights",
+                "batteries"
+              ],
+              "link": {
+                "label": "Power outages (Ready.gov)",
+                "url": "https://www.ready.gov/power-outages"
+              }
             },
             {
               "id": "d90-24",
-              "text": "Drive the route to your raw land and back; note fuel stops and alternates."
+              "text": "Drive the route to your raw land and back; note fuel stops and alternates.",
+              "buy": [
+                "vehicle-kit",
+                "vehicle-kit-premium",
+                "vehicle-kit-basic"
+              ],
+              "link": {
+                "label": "Plan your evacuation (Ready.gov)",
+                "url": "https://www.ready.gov/evacuation"
+              }
             },
             {
               "id": "d90-25",
-              "text": "Put the maintenance calendar on your phone."
+              "text": "Put the maintenance calendar on your phone.",
+              "see": {
+                "label": "Maintenance calendar",
+                "anchor": "maintenance"
+              }
             }
           ]
         },
@@ -552,31 +758,102 @@
           "items": [
             {
               "id": "skill-26",
-              "text": "First aid: take a Red Cross First Aid/CPR class (about 3 hours, often online + one session)."
+              "text": "First aid: take a Red Cross First Aid/CPR class (about 3 hours, often online + one session).",
+              "buy": [
+                "first-aid"
+              ],
+              "link": {
+                "label": "Find a First Aid/CPR class (American Red Cross)",
+                "url": "https://www.redcross.org/take-a-class"
+              }
             },
             {
               "id": "skill-27",
-              "text": "Shutoffs: have a handy neighbor or your utility show you the gas, water and main electrical shutoffs, and label them."
+              "text": "Shutoffs: have a handy neighbor or your utility show you the gas, water and main electrical shutoffs, and label them.",
+              "buy": [
+                "quake-kit"
+              ],
+              "link": {
+                "label": "Make a plan (Ready.gov)",
+                "url": "https://www.ready.gov/plan"
+              }
             },
             {
               "id": "skill-28",
-              "text": "Camping: spend one night \"camping\" at home: set up the tent, cook on the camp stove outdoors, filter a gallon of water."
+              "text": "Camping: spend one night \"camping\" at home: set up the tent, cook on the camp stove outdoors, filter a gallon of water.",
+              "buy": [
+                "tent",
+                "camp-stove",
+                "filter-gravity",
+                "filter-gravity-bag",
+                "filter-basic"
+              ],
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
             },
             {
               "id": "skill-29",
-              "text": "Generator: practice starting it, plugging in the fridge outdoors, and refueling only after a 15-minute cool-down."
+              "text": "Generator: practice starting it, plugging in the fridge outdoors, and refueling only after a 15-minute cool-down.",
+              "buy": [
+                "gas-cans",
+                "gen-cord"
+              ],
+              "link": {
+                "label": "Carbon monoxide safety (CDC)",
+                "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
+              }
             },
             {
               "id": "skill-30",
-              "text": "Water: filter and disinfect one gallon start to finish."
+              "text": "Water: filter and disinfect one gallon start to finish.",
+              "buy": [
+                "filter-gravity",
+                "filter-gravity-bag",
+                "filter-basic",
+                "bleach"
+              ],
+              "link": {
+                "label": "Make water safe to drink (EPA)",
+                "url": "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water"
+              }
             },
             {
               "id": "skill-31",
-              "text": "Pets: practice getting each pet into its carrier or on a leash in under 2 minutes."
+              "text": "Pets: practice getting each pet into its carrier or on a leash in under 2 minutes.",
+              "buy": [
+                "pet-kit"
+              ],
+              "link": {
+                "label": "Prepare your pets (Ready.gov)",
+                "url": "https://www.ready.gov/pets"
+              }
             },
             {
               "id": "skill-32",
-              "text": "Kids: walk to your meeting place together and make it a game."
+              "text": "Kids: walk to your meeting place together and make it a game.",
+              "buy": [
+                "morale-kit"
+              ],
+              "link": {
+                "label": "Planning with kids (Ready.gov)",
+                "url": "https://www.ready.gov/kids/family-emergency-planning"
+              }
+            }
+          ]
+        },
+        {
+          "type": "help",
+          "buy": [],
+          "links": [
+            {
+              "label": "Make a plan (Ready.gov)",
+              "url": "https://www.ready.gov/plan"
+            },
+            {
+              "label": "Low- and no-cost preparedness (Ready.gov)",
+              "url": "https://www.ready.gov/low-and-no-cost"
             }
           ]
         }
@@ -593,43 +870,126 @@
           "items": [
             {
               "id": "day0-33",
-              "text": "Check CO and smoke alarms; replace batteries if unsure."
+              "text": "Check CO and smoke alarms; replace batteries if unsure.",
+              "buy": [
+                "co-alarm",
+                "batteries"
+              ],
+              "link": {
+                "label": "Carbon monoxide safety (CDC)",
+                "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
+              }
             },
             {
               "id": "day0-34",
-              "text": "Charge every phone, power bank and power station."
+              "text": "Charge every phone, power bank and power station.",
+              "buy": [
+                "power-bank",
+                "power-station-small",
+                "power-station"
+              ],
+              "link": {
+                "label": "Power outages (Ready.gov)",
+                "url": "https://www.ready.gov/power-outages"
+              }
             },
             {
               "id": "day0-35",
-              "text": "Fill the bathtub water bladder and spare containers."
+              "text": "Fill the bathtub water bladder and spare containers.",
+              "buy": [
+                "tub-bladder",
+                "water-jug",
+                "water-bricks",
+                "water-gallons",
+                "water-drum"
+              ],
+              "link": {
+                "label": "Make water safe to drink (EPA)",
+                "url": "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water"
+              }
             },
             {
               "id": "day0-36",
-              "text": "Set fridge to its coldest setting; fill empty freezer space with water bottles."
+              "text": "Set fridge to its coldest setting; fill empty freezer space with water bottles.",
+              "buy": [
+                "thermometers",
+                "coolers"
+              ],
+              "link": {
+                "label": "Food safety in a power outage (FoodSafety.gov)",
+                "url": "https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage"
+              }
             },
             {
               "id": "day0-37",
-              "text": "Get cash and refill prescriptions if you can."
+              "text": "Get cash and refill prescriptions if you can.",
+              "buy": [
+                "docs-pouch"
+              ],
+              "link": {
+                "label": "Older adults and people with disabilities (Ready.gov)",
+                "url": "https://www.ready.gov/older-adults"
+              }
             },
             {
               "id": "day0-38",
-              "text": "Fuel or charge vehicles."
+              "text": "Fuel or charge vehicles.",
+              "buy": [
+                "gas-cans",
+                "vehicle-kit",
+                "vehicle-kit-basic"
+              ],
+              "link": {
+                "label": "Plan your evacuation (Ready.gov)",
+                "url": "https://www.ready.gov/evacuation"
+              }
             },
             {
               "id": "day0-39",
-              "text": "Test-start the generator outdoors; stage fuel and cords."
+              "text": "Test-start the generator outdoors; stage fuel and cords.",
+              "buy": [
+                "gas-cans",
+                "gen-cord"
+              ],
+              "link": {
+                "label": "Carbon monoxide safety (CDC)",
+                "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
+              }
             },
             {
               "id": "day0-40",
-              "text": "Set up your warm room before the cold arrives (see Heat & warmth)."
+              "text": "Set up your warm room before the cold arrives (see Heat & warmth).",
+              "buy": [
+                "buddy-heater",
+                "sleep-system"
+              ],
+              "link": {
+                "label": "Winter weather (Ready.gov)",
+                "url": "https://www.ready.gov/winter-weather"
+              }
             },
             {
               "id": "day0-41",
-              "text": "Bring pets inside and stage their food, meds and carrier."
+              "text": "Bring pets inside and stage their food, meds and carrier.",
+              "buy": [
+                "pet-kit"
+              ],
+              "link": {
+                "label": "Prepare your pets (Ready.gov)",
+                "url": "https://www.ready.gov/pets"
+              }
             },
             {
               "id": "day0-42",
-              "text": "Check on elderly or disabled neighbors."
+              "text": "Check on elderly or disabled neighbors.",
+              "buy": [
+                "frs-radios",
+                "gmrs"
+              ],
+              "link": {
+                "label": "Older adults and people with disabilities (Ready.gov)",
+                "url": "https://www.ready.gov/older-adults"
+              }
             }
           ]
         },
@@ -673,6 +1033,26 @@
               "then": "Do the Day 0 checklist; put up window protection; decide stay vs. go before the warning."
             }
           ]
+        },
+        {
+          "type": "help",
+          "buy": [
+            "tub-bladder",
+            "power-bank",
+            "radio",
+            "lights",
+            "batteries"
+          ],
+          "links": [
+            {
+              "label": "Power outages (Ready.gov)",
+              "url": "https://www.ready.gov/power-outages"
+            },
+            {
+              "label": "Sign up for NY-Alert (New York State)",
+              "url": "https://alert.ny.gov/sign-up-ny-alert"
+            }
+          ]
         }
       ]
     },
@@ -691,15 +1071,36 @@
           "items": [
             {
               "id": "hz-hurricane-high-risk--43",
-              "text": "Look up your evacuation zone (county emergency site)."
+              "text": "Look up your evacuation zone (county emergency site).",
+              "buy": [
+                "radio"
+              ],
+              "link": {
+                "label": "Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM)",
+                "url": "https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map"
+              }
             },
             {
               "id": "hz-hurricane-high-risk--44",
-              "text": "Photograph your home and belongings for insurance."
+              "text": "Photograph your home and belongings for insurance.",
+              "buy": [
+                "docs-pouch"
+              ],
+              "link": {
+                "label": "Make a plan (Ready.gov)",
+                "url": "https://www.ready.gov/plan"
+              }
             },
             {
               "id": "hz-hurricane-high-risk--45",
-              "text": "Know where to shut off power, gas and water."
+              "text": "Know where to shut off power, gas and water.",
+              "buy": [
+                "quake-kit"
+              ],
+              "link": {
+                "label": "Make a plan (Ready.gov)",
+                "url": "https://www.ready.gov/plan"
+              }
             }
           ]
         },
@@ -729,15 +1130,37 @@
           "items": [
             {
               "id": "hz-flooding-high-risk--46",
-              "text": "Check whether you're in a flood zone at FEMA's Flood Map Service Center."
+              "text": "Check whether you're in a flood zone at FEMA's Flood Map Service Center.",
+              "buy": [
+                "flood-kit"
+              ],
+              "link": {
+                "label": "Look up your flood zone (FEMA Flood Map Service Center)",
+                "url": "https://msc.fema.gov/portal/search"
+              }
             },
             {
               "id": "hz-flooding-high-risk--47",
-              "text": "Flood damage usually isn't covered by homeowners insurance; flood policies have a 30-day wait."
+              "text": "Flood damage usually isn't covered by homeowners insurance; flood policies have a 30-day wait.",
+              "buy": [
+                "flood-kit"
+              ],
+              "link": {
+                "label": "Look up your flood zone (FEMA Flood Map Service Center)",
+                "url": "https://msc.fema.gov/portal/search"
+              }
             },
             {
               "id": "hz-flooding-high-risk--48",
-              "text": "Keep documents and valuables in waterproof bins up high."
+              "text": "Keep documents and valuables in waterproof bins up high.",
+              "buy": [
+                "docs-pouch",
+                "flood-kit"
+              ],
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
             }
           ]
         },
@@ -755,6 +1178,26 @@
             {
               "if": "Water is entering your home",
               "then": "Turn off electricity at the main breaker only if you're dry and safe; otherwise leave it and get out."
+            }
+          ]
+        },
+        {
+          "type": "help",
+          "buy": [
+            "radio"
+          ],
+          "links": [
+            {
+              "label": "Hazard-by-hazard guides (Ready.gov)",
+              "url": "https://www.ready.gov/be-informed"
+            },
+            {
+              "label": "Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM)",
+              "url": "https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map"
+            },
+            {
+              "label": "Look up your flood zone (FEMA Flood Map Service Center)",
+              "url": "https://msc.fema.gov/portal/search"
             }
           ]
         }
@@ -852,6 +1295,26 @@
             "Replace tap-filled water every 6 months (mark the date).",
             "Use a 0.1-micron filter for bacteria/protozoa, then disinfect for viruses."
           ]
+        },
+        {
+          "type": "help",
+          "buy": [
+            "water-jug",
+            "water-bricks",
+            "water-gallons",
+            "water-drum",
+            "tub-bladder",
+            "bleach",
+            "filter-gravity",
+            "filter-gravity-bag",
+            "filter-basic"
+          ],
+          "links": [
+            {
+              "label": "Make water safe to drink (EPA)",
+              "url": "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water"
+            }
+          ]
         }
       ]
     },
@@ -932,6 +1395,27 @@
           "tone": "danger",
           "title": "Carbon monoxide",
           "text": "Never run a generator, grill, camp stove, charcoal or any fuel-burning device not rated for indoor use inside your home, garage, basement, crawlspace, tent or on a balcony — not even with doors or windows open. Keep generators outdoors at least 20 feet from doors, windows and vents, with the exhaust pointed away from buildings. Put battery-powered or battery-backup CO alarms on every level and outside sleeping areas. If a CO alarm sounds or anyone feels dizzy, headachy or nauseous, get everyone outside to fresh air right away and call 911."
+        },
+        {
+          "type": "help",
+          "buy": [
+            "buddy-heater",
+            "propane-1lb",
+            "sleep-system",
+            "pipe-insulation",
+            "firewood",
+            "fans-cooling"
+          ],
+          "links": [
+            {
+              "label": "Winter weather (Ready.gov)",
+              "url": "https://www.ready.gov/winter-weather"
+            },
+            {
+              "label": "Carbon monoxide safety (CDC)",
+              "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
+            }
+          ]
         }
       ]
     },
@@ -1026,6 +1510,34 @@
           "tone": "danger",
           "title": "Carbon monoxide",
           "text": "Never run a generator, grill, camp stove, charcoal or any fuel-burning device not rated for indoor use inside your home, garage, basement, crawlspace, tent or on a balcony — not even with doors or windows open. Keep generators outdoors at least 20 feet from doors, windows and vents, with the exhaust pointed away from buildings. Put battery-powered or battery-backup CO alarms on every level and outside sleeping areas. If a CO alarm sounds or anyone feels dizzy, headachy or nauseous, get everyone outside to fresh air right away and call 911."
+        },
+        {
+          "type": "help",
+          "buy": [
+            "generator-dual",
+            "generator-small",
+            "power-station-large",
+            "power-station",
+            "power-station-small",
+            "generator-standby",
+            "gen-cord",
+            "gas-cans",
+            "propane-20",
+            "inlet-interlock",
+            "solar-panel",
+            "well-switch",
+            "med-battery"
+          ],
+          "links": [
+            {
+              "label": "Power outages (Ready.gov)",
+              "url": "https://www.ready.gov/power-outages"
+            },
+            {
+              "label": "Carbon monoxide safety (CDC)",
+              "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
+            }
+          ]
         }
       ]
     },
@@ -1199,6 +1711,26 @@
             "Basement: water and canned food on shelves at least a foot off the floor (your area floods); nothing you'd need in a flood down there.",
             "Garage: water jugs and bulk staples in sealed bins, away from the car's exhaust, chemicals and direct sun; not for anything that spoils in heat."
           ]
+        },
+        {
+          "type": "help",
+          "buy": [
+            "storage-kit",
+            "food-freeze-dried",
+            "coolers",
+            "thermometers"
+          ],
+          "links": [
+            {
+              "label": "Food safety in a power outage (FoodSafety.gov)",
+              "url": "https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage"
+            },
+            {
+              "label": "Power outage food and water safety (CDC)",
+              "url": "https://www.cdc.gov/natural-disasters/safety/power-outage-safety.html"
+            }
+          ],
+          "note": "Rice, beans, oats, pasta, oil and canned goods are cheapest at a grocery store or warehouse club."
         }
       ]
     },
@@ -1238,6 +1770,20 @@
           "tone": "danger",
           "title": "Cook outdoors only",
           "text": "Grills, camp stoves and charcoal give off carbon monoxide. Use them outdoors only — never inside, in a garage or on an enclosed porch."
+        },
+        {
+          "type": "help",
+          "buy": [
+            "camp-stove",
+            "propane-1lb",
+            "propane-20"
+          ],
+          "links": [
+            {
+              "label": "Carbon monoxide safety (CDC)",
+              "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
+            }
+          ]
         }
       ]
     },
@@ -1315,6 +1861,20 @@
             "Wash hands with soap and water, or sanitizer when water is short.",
             "Keep human waste away from food and water areas."
           ]
+        },
+        {
+          "type": "help",
+          "buy": [
+            "toilet-kit",
+            "bleach"
+          ],
+          "links": [
+            {
+              "label": "Build a kit (Ready.gov)",
+              "url": "https://www.ready.gov/kit"
+            }
+          ],
+          "note": "Toilet paper, trash bags, soap and wipes: any grocery or warehouse store."
         }
       ]
     },
@@ -1329,27 +1889,70 @@
           "items": [
             {
               "id": "fa-49",
-              "text": "First aid kit (bandages, gauze, tape, elastic wrap, gloves, shears, tweezers, thermometer)."
+              "text": "First aid kit (bandages, gauze, tape, elastic wrap, gloves, shears, tweezers, thermometer).",
+              "buy": [
+                "first-aid"
+              ],
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
             },
             {
               "id": "fa-50",
-              "text": "Written list of each person's medications, doses as prescribed, allergies and doctors (keep with documents)."
+              "text": "Written list of each person's medications, doses as prescribed, allergies and doctors (keep with documents).",
+              "buy": [
+                "docs-pouch",
+                "flood-kit"
+              ],
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
             },
             {
               "id": "fa-51",
-              "text": "Over-the-counter basics you already use (pain/fever reducer, allergy, stomach) — check expiration dates."
+              "text": "Over-the-counter basics you already use (pain/fever reducer, allergy, stomach) — check expiration dates.",
+              "buy": [
+                "first-aid"
+              ],
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
             },
             {
               "id": "fa-52",
-              "text": "Extra glasses/contacts, hearing aid batteries."
+              "text": "Extra glasses/contacts, hearing aid batteries.",
+              "buy": [
+                "batteries"
+              ],
+              "link": {
+                "label": "Older adults and people with disabilities (Ready.gov)",
+                "url": "https://www.ready.gov/older-adults"
+              }
             },
             {
               "id": "fa-53",
-              "text": "Children's versions of any OTC medicines you use, with the dosing tool that came in the box."
+              "text": "Children's versions of any OTC medicines you use, with the dosing tool that came in the box.",
+              "buy": [
+                "first-aid"
+              ],
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
             },
             {
               "id": "fa-54",
-              "text": "Take a Red Cross First Aid/CPR class."
+              "text": "Take a Red Cross First Aid/CPR class.",
+              "buy": [
+                "first-aid"
+              ],
+              "link": {
+                "label": "Find a First Aid/CPR class (American Red Cross)",
+                "url": "https://www.redcross.org/take-a-class"
+              }
             }
           ]
         },
@@ -1358,6 +1961,22 @@
           "tone": "info",
           "title": "Medications",
           "text": "ReadyPlan never gives medication doses. For any medicine — for people or pets — follow the label or your doctor, pharmacist or vet."
+        },
+        {
+          "type": "help",
+          "buy": [
+            "first-aid"
+          ],
+          "links": [
+            {
+              "label": "Find a First Aid/CPR class (American Red Cross)",
+              "url": "https://www.redcross.org/take-a-class"
+            },
+            {
+              "label": "Older adults and people with disabilities (Ready.gov)",
+              "url": "https://www.ready.gov/older-adults"
+            }
+          ]
         }
       ]
     },
@@ -1406,6 +2025,27 @@
             "Cash: $1,200 ($600 per adult) in small bills; card readers fail in outages.",
             "Documents: copies of IDs, insurance policies, deeds/leases, medication list, pet records, and photos of your home's contents — in a waterproof pouch, plus an encrypted cloud copy."
           ]
+        },
+        {
+          "type": "help",
+          "buy": [
+            "radio",
+            "frs-radios",
+            "gmrs",
+            "sat-messenger",
+            "power-bank",
+            "docs-pouch"
+          ],
+          "links": [
+            {
+              "label": "Sign up for NY-Alert (New York State)",
+              "url": "https://alert.ny.gov/sign-up-ny-alert"
+            },
+            {
+              "label": "Make a plan (Ready.gov)",
+              "url": "https://www.ready.gov/plan"
+            }
+          ]
         }
       ]
     },
@@ -1424,6 +2064,19 @@
             "Neighbor pod: swap numbers with 3–5 nearby households, share skills (medical, tools, childcare), and check on older neighbors.",
             "If you feel unsafe, leave and call 911. Supplies can be replaced; people can't."
           ]
+        },
+        {
+          "type": "help",
+          "buy": [
+            "lights",
+            "frs-radios"
+          ],
+          "links": [
+            {
+              "label": "Make a plan (Ready.gov)",
+              "url": "https://www.ready.gov/plan"
+            }
+          ]
         }
       ]
     },
@@ -1438,31 +2091,95 @@
           "items": [
             {
               "id": "kids-55",
-              "text": "Keep meal, nap and bedtime routines as close to normal as you can."
+              "text": "Keep meal, nap and bedtime routines as close to normal as you can.",
+              "buy": [
+                "morale-kit"
+              ],
+              "link": {
+                "label": "Planning with kids (Ready.gov)",
+                "url": "https://www.ready.gov/kids/family-emergency-planning"
+              }
             },
             {
               "id": "kids-56",
-              "text": "Give each child a 'job' (flashlight checker, water helper) so they feel useful."
+              "text": "Give each child a 'job' (flashlight checker, water helper) so they feel useful.",
+              "buy": [
+                "lights",
+                "quake-bedside",
+                "batteries"
+              ],
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
             },
             {
               "id": "kids-57",
-              "text": "Comfort kit: favorite stuffed animal/blanket, books, cards, coloring, glow sticks."
+              "text": "Comfort kit: favorite stuffed animal/blanket, books, cards, coloring, glow sticks.",
+              "buy": [
+                "morale-kit"
+              ],
+              "link": {
+                "label": "Planning with kids (Ready.gov)",
+                "url": "https://www.ready.gov/kids/family-emergency-planning"
+              }
             },
             {
               "id": "kids-58",
-              "text": "Put an ID card in each child's go-bag/pocket: name, parent phone numbers, out-of-area contact."
+              "text": "Put an ID card in each child's go-bag/pocket: name, parent phone numbers, out-of-area contact.",
+              "buy": [
+                "morale-kit"
+              ],
+              "link": {
+                "label": "Planning with kids (Ready.gov)",
+                "url": "https://www.ready.gov/kids/family-emergency-planning"
+              }
             },
             {
               "id": "kids-59",
-              "text": "Practice the plan as a game: 'lights-out dinner', a family meeting-place walk."
+              "text": "Practice the plan as a game: 'lights-out dinner', a family meeting-place walk.",
+              "buy": [
+                "morale-kit"
+              ],
+              "link": {
+                "label": "Planning with kids (Ready.gov)",
+                "url": "https://www.ready.gov/kids/family-emergency-planning"
+              }
             },
             {
               "id": "kids-60",
-              "text": "Talk simply and honestly; limit news exposure; ask how they're feeling."
+              "text": "Talk simply and honestly; limit news exposure; ask how they're feeling.",
+              "buy": [
+                "morale-kit"
+              ],
+              "link": {
+                "label": "Planning with kids (Ready.gov)",
+                "url": "https://www.ready.gov/kids/family-emergency-planning"
+              }
             },
             {
               "id": "kids-61",
-              "text": "Toddlers: baby gates and covers near any heater or stove; extra outfits and sleep sacks for cold nights."
+              "text": "Toddlers: baby gates and covers near any heater or stove; extra outfits and sleep sacks for cold nights.",
+              "buy": [
+                "sleep-system",
+                "morale-kit"
+              ],
+              "link": {
+                "label": "Planning with kids (Ready.gov)",
+                "url": "https://www.ready.gov/kids/family-emergency-planning"
+              }
+            }
+          ]
+        },
+        {
+          "type": "help",
+          "buy": [
+            "morale-kit"
+          ],
+          "links": [
+            {
+              "label": "Planning with kids (Ready.gov)",
+              "url": "https://www.ready.gov/kids/family-emergency-planning"
             }
           ]
         }
@@ -1494,19 +2211,47 @@
           "items": [
             {
               "id": "pets-62",
-              "text": "Vaccination records and a recent photo of each pet (in the documents pouch)."
+              "text": "Vaccination records and a recent photo of each pet (in the documents pouch).",
+              "buy": [
+                "pet-kit"
+              ],
+              "link": {
+                "label": "Prepare your pets (Ready.gov)",
+                "url": "https://www.ready.gov/pets"
+              }
             },
             {
               "id": "pets-63",
-              "text": "Leash, harness, crate/carrier, collapsible bowls, waste bags or litter."
+              "text": "Leash, harness, crate/carrier, collapsible bowls, waste bags or litter.",
+              "buy": [
+                "pet-kit"
+              ],
+              "link": {
+                "label": "Prepare your pets (Ready.gov)",
+                "url": "https://www.ready.gov/pets"
+              }
             },
             {
               "id": "pets-64",
-              "text": "Microchip details up to date."
+              "text": "Microchip details up to date.",
+              "buy": [
+                "pet-kit"
+              ],
+              "link": {
+                "label": "Prepare your pets (Ready.gov)",
+                "url": "https://www.ready.gov/pets"
+              }
             },
             {
               "id": "pets-65",
-              "text": "Know which shelters and hotels on your route accept pets."
+              "text": "Know which shelters and hotels on your route accept pets.",
+              "buy": [
+                "pet-kit"
+              ],
+              "link": {
+                "label": "Prepare your pets (Ready.gov)",
+                "url": "https://www.ready.gov/pets"
+              }
             }
           ]
         },
@@ -1515,6 +2260,18 @@
           "tone": "info",
           "title": "Pet medications",
           "text": "ReadyPlan never gives medication doses. For any medicine — for people or pets — follow the label or your doctor, pharmacist or vet."
+        },
+        {
+          "type": "help",
+          "buy": [
+            "pet-kit"
+          ],
+          "links": [
+            {
+              "label": "Prepare your pets (Ready.gov)",
+              "url": "https://www.ready.gov/pets"
+            }
+          ]
         }
       ]
     },
@@ -1793,27 +2550,80 @@
           "items": [
             {
               "id": "veh-66",
-              "text": "Jump starter, tire inflator, tow strap"
+              "text": "Jump starter, tire inflator, tow strap",
+              "buy": [
+                "vehicle-kit",
+                "vehicle-kit-premium",
+                "vehicle-kit-basic"
+              ],
+              "link": {
+                "label": "Plan your evacuation (Ready.gov)",
+                "url": "https://www.ready.gov/evacuation"
+              }
             },
             {
               "id": "veh-67",
-              "text": "Paper road map with 2 routes marked"
+              "text": "Paper road map with 2 routes marked",
+              "buy": [
+                "vehicle-kit",
+                "vehicle-kit-premium",
+                "vehicle-kit-basic"
+              ],
+              "link": {
+                "label": "Plan your evacuation (Ready.gov)",
+                "url": "https://www.ready.gov/evacuation"
+              }
             },
             {
               "id": "veh-68",
-              "text": "Blankets, water, snacks"
+              "text": "Blankets, water, snacks",
+              "buy": [
+                "food-freeze-dried",
+                "go-bag",
+                "go-bag-kit",
+                "go-bag-basic"
+              ],
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
             },
             {
               "id": "veh-69",
-              "text": "Phone chargers"
+              "text": "Phone chargers",
+              "buy": [
+                "vehicle-kit",
+                "vehicle-kit-premium",
+                "vehicle-kit-basic"
+              ],
+              "link": {
+                "label": "Plan your evacuation (Ready.gov)",
+                "url": "https://www.ready.gov/evacuation"
+              }
             },
             {
               "id": "veh-70",
-              "text": "Flashlight, reflective triangles"
+              "text": "Flashlight, reflective triangles",
+              "buy": [
+                "lights",
+                "quake-bedside",
+                "batteries"
+              ],
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
             },
             {
               "id": "veh-71",
-              "text": "Never store spare gasoline inside the car cabin"
+              "text": "Never store spare gasoline inside the car cabin",
+              "buy": [
+                "gas-cans"
+              ],
+              "link": {
+                "label": "Carbon monoxide safety (CDC)",
+                "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
+              }
             }
           ]
         },
@@ -1826,43 +2636,128 @@
           "items": [
             {
               "id": "gobag-72",
-              "text": "Water (1 L) and filter bottle"
+              "text": "Water (1 L) and filter bottle",
+              "buy": [
+                "water-jug",
+                "water-bricks",
+                "water-gallons",
+                "water-drum",
+                "filter-gravity",
+                "filter-gravity-bag",
+                "filter-basic"
+              ],
+              "link": {
+                "label": "Make water safe to drink (EPA)",
+                "url": "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water"
+              }
             },
             {
               "id": "gobag-73",
-              "text": "3 days of snacks"
+              "text": "3 days of snacks",
+              "buy": [
+                "food-freeze-dried",
+                "go-bag",
+                "go-bag-kit",
+                "go-bag-basic"
+              ],
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
             },
             {
               "id": "gobag-74",
-              "text": "Change of clothes, rain layer, hat, gloves"
+              "text": "Change of clothes, rain layer, hat, gloves",
+              "buy": [
+                "go-bag",
+                "go-bag-kit",
+                "go-bag-basic"
+              ],
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
             },
             {
               "id": "gobag-75",
-              "text": "Headlamp + batteries"
+              "text": "Headlamp + batteries",
+              "buy": [
+                "lights",
+                "quake-bedside",
+                "batteries"
+              ],
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
             },
             {
               "id": "gobag-76",
-              "text": "Medications (7-day supply), glasses"
+              "text": "Medications (7-day supply), glasses",
+              "buy": [
+                "docs-pouch"
+              ],
+              "link": {
+                "label": "Older adults and people with disabilities (Ready.gov)",
+                "url": "https://www.ready.gov/older-adults"
+              }
             },
             {
               "id": "gobag-77",
-              "text": "Copies of ID and medication list"
+              "text": "Copies of ID and medication list",
+              "buy": [
+                "docs-pouch"
+              ],
+              "link": {
+                "label": "Older adults and people with disabilities (Ready.gov)",
+                "url": "https://www.ready.gov/older-adults"
+              }
             },
             {
               "id": "gobag-78",
-              "text": "Cash in small bills"
+              "text": "Cash in small bills",
+              "buy": [
+                "docs-pouch"
+              ],
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
             },
             {
               "id": "gobag-79",
-              "text": "Whistle, mask, hand sanitizer"
+              "text": "Whistle, mask, hand sanitizer",
+              "buy": [
+                "go-bag",
+                "go-bag-kit",
+                "go-bag-basic"
+              ],
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
             },
             {
               "id": "gobag-80",
-              "text": "Child ID card and comfort item"
+              "text": "Child ID card and comfort item",
+              "buy": [
+                "morale-kit"
+              ],
+              "link": {
+                "label": "Planning with kids (Ready.gov)",
+                "url": "https://www.ready.gov/kids/family-emergency-planning"
+              }
             },
             {
               "id": "gobag-81",
-              "text": "Pet food, leash, records"
+              "text": "Pet food, leash, records",
+              "buy": [
+                "pet-kit"
+              ],
+              "link": {
+                "label": "Prepare your pets (Ready.gov)",
+                "url": "https://www.ready.gov/pets"
+              }
             }
           ]
         },
@@ -1871,6 +2766,31 @@
           "tone": "danger",
           "title": "Tents and fumes",
           "text": "Never use a heater, stove, grill or generator inside a tent or vehicle. Cook and run generators in the open, away from where people sleep."
+        },
+        {
+          "type": "help",
+          "buy": [
+            "go-bag",
+            "go-bag-kit",
+            "go-bag-basic",
+            "vehicle-kit",
+            "vehicle-kit-premium",
+            "vehicle-kit-basic",
+            "docs-pouch",
+            "tent",
+            "tarp-shelter",
+            "canvas-tent"
+          ],
+          "links": [
+            {
+              "label": "Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM)",
+              "url": "https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map"
+            },
+            {
+              "label": "Plan your evacuation (Ready.gov)",
+              "url": "https://www.ready.gov/evacuation"
+            }
+          ]
         }
       ]
     },
@@ -2214,6 +3134,16 @@
           "tone": "info",
           "title": "What to cut first",
           "text": "If money is tight, delay multi-day cooler, pipe insulation & faucet covers, cold-rated sleeping bags. Never cut CO alarms, stored water, or your heat plan. Buy food a little at a time with each grocery trip."
+        },
+        {
+          "type": "help",
+          "buy": [],
+          "links": [
+            {
+              "label": "Low- and no-cost preparedness (Ready.gov)",
+              "url": "https://www.ready.gov/low-and-no-cost"
+            }
+          ]
         }
       ]
     },
@@ -2984,12 +3914,391 @@
               "Review this plan and regenerate it if your household changes."
             ]
           ]
+        },
+        {
+          "type": "help",
+          "buy": [
+            "batteries"
+          ],
+          "links": [
+            {
+              "label": "Build a kit (Ready.gov)",
+              "url": "https://www.ready.gov/kit"
+            }
+          ]
         }
       ]
     }
   ],
   "disclaimer": "ReadyPlan provides general preparedness guidance, not professional, medical, legal or electrical advice. Follow official instructions from local emergency management. Quantities are planning estimates. Prices and products change — check current specs, recalls and reviews before you buy.",
   "affiliateDisclosure": null,
+  "overview": {
+    "stats": [
+      {
+        "key": "water",
+        "value": "54 gal",
+        "label": "water to store",
+        "math": "3.85 gal/day × 14 days",
+        "anchor": "water"
+      },
+      {
+        "key": "food",
+        "value": "630,000",
+        "label": "calories of food",
+        "math": "7,000/day × 90 days",
+        "anchor": "food"
+      },
+      {
+        "key": "fuel",
+        "value": "3–4.8 gal",
+        "label": "gasoline per day",
+        "math": "12 generator hrs × 0.25–0.4 gal/hr",
+        "anchor": "power"
+      },
+      {
+        "key": "cash",
+        "value": "$1,200",
+        "label": "cash on hand",
+        "math": "$600 × 2 adults",
+        "anchor": "comms"
+      }
+    ],
+    "gear": [
+      {
+        "itemId": "co-alarm",
+        "name": "Carbon monoxide alarm",
+        "qty": 4,
+        "phase": 1,
+        "low": 80,
+        "high": 160,
+        "later": false
+      },
+      {
+        "itemId": "water-jug",
+        "name": "7-gallon water container",
+        "qty": 8,
+        "phase": 1,
+        "low": 160,
+        "high": 280,
+        "later": false
+      },
+      {
+        "itemId": "tub-bladder",
+        "name": "Bathtub water bladder",
+        "qty": 1,
+        "phase": 1,
+        "low": 25,
+        "high": 40,
+        "later": false
+      },
+      {
+        "itemId": "filter-gravity-bag",
+        "name": "Gravity bag filter",
+        "qty": 1,
+        "phase": 1,
+        "low": 90,
+        "high": 140,
+        "later": false
+      },
+      {
+        "itemId": "bleach",
+        "name": "Unscented household bleach",
+        "qty": 1,
+        "phase": 1,
+        "low": 4,
+        "high": 8,
+        "later": false
+      },
+      {
+        "itemId": "lights",
+        "name": "Headlamps + LED lanterns",
+        "qty": 4,
+        "phase": 1,
+        "low": 60,
+        "high": 120,
+        "later": false
+      },
+      {
+        "itemId": "batteries",
+        "name": "AA/AAA battery stock",
+        "qty": 1,
+        "phase": 1,
+        "low": 20,
+        "high": 40,
+        "later": false
+      },
+      {
+        "itemId": "radio",
+        "name": "NOAA weather radio",
+        "qty": 1,
+        "phase": 1,
+        "low": 50,
+        "high": 80,
+        "later": false
+      },
+      {
+        "itemId": "power-bank",
+        "name": "USB power bank",
+        "qty": 2,
+        "phase": 1,
+        "low": 50,
+        "high": 90,
+        "later": false
+      },
+      {
+        "itemId": "first-aid",
+        "name": "First aid kit",
+        "qty": 1,
+        "phase": 1,
+        "low": 30,
+        "high": 80,
+        "later": false
+      },
+      {
+        "itemId": "extinguisher",
+        "name": "Fire extinguisher",
+        "qty": 3,
+        "phase": 1,
+        "low": 90,
+        "high": 180,
+        "later": false
+      },
+      {
+        "itemId": "thermometers",
+        "name": "Fridge/freezer thermometers",
+        "qty": 1,
+        "phase": 1,
+        "low": 8,
+        "high": 15,
+        "later": false
+      },
+      {
+        "itemId": "buddy-heater",
+        "name": "Indoor-rated portable propane heater",
+        "qty": 1,
+        "phase": 1,
+        "low": 100,
+        "high": 200,
+        "later": false
+      },
+      {
+        "itemId": "propane-1lb",
+        "name": "1-lb propane cylinders (heater fuel)",
+        "qty": 1,
+        "phase": 1,
+        "low": 30,
+        "high": 50,
+        "later": false
+      },
+      {
+        "itemId": "sleep-system",
+        "name": "Cold-rated sleeping bags",
+        "qty": 4,
+        "phase": 1,
+        "low": 160,
+        "high": 360,
+        "later": false
+      },
+      {
+        "itemId": "pipe-insulation",
+        "name": "Pipe insulation & faucet covers",
+        "qty": 1,
+        "phase": 1,
+        "low": 20,
+        "high": 50,
+        "later": false
+      },
+      {
+        "itemId": "generator-small",
+        "name": "Small inverter generator",
+        "qty": 1,
+        "phase": 2,
+        "low": 550,
+        "high": 1200,
+        "later": false
+      },
+      {
+        "itemId": "gen-cord",
+        "name": "Generator cord + outdoor extension cords",
+        "qty": 1,
+        "phase": 2,
+        "low": 60,
+        "high": 120,
+        "later": false
+      },
+      {
+        "itemId": "gas-cans",
+        "name": "5-gallon gas cans + stabilizer",
+        "qty": 6,
+        "phase": 2,
+        "low": 180,
+        "high": 270,
+        "later": false
+      },
+      {
+        "itemId": "coolers",
+        "name": "Multi-day cooler",
+        "qty": 1,
+        "phase": 2,
+        "low": 40,
+        "high": 90,
+        "later": false
+      },
+      {
+        "itemId": "inlet-interlock",
+        "name": "Generator inlet + interlock (electrician-installed)",
+        "qty": 1,
+        "phase": 2,
+        "low": 500,
+        "high": 1500,
+        "later": true
+      },
+      {
+        "itemId": "flood-kit",
+        "name": "Flood kit",
+        "qty": 1,
+        "phase": 2,
+        "low": 50,
+        "high": 150,
+        "later": true
+      },
+      {
+        "itemId": "propane-20",
+        "name": "20-lb propane cylinders",
+        "qty": 2,
+        "phase": 2,
+        "low": 100,
+        "high": 140,
+        "later": true
+      },
+      {
+        "itemId": "storage-kit",
+        "name": "Food storage buckets",
+        "qty": 1,
+        "phase": 2,
+        "low": 40,
+        "high": 90,
+        "later": true
+      },
+      {
+        "itemId": "toilet-kit",
+        "name": "Emergency toilet kit",
+        "qty": 1,
+        "phase": 2,
+        "low": 25,
+        "high": 50,
+        "later": true
+      },
+      {
+        "itemId": "window-protection",
+        "name": "Window protection",
+        "qty": 1,
+        "phase": 2,
+        "low": 150,
+        "high": 600,
+        "later": true
+      },
+      {
+        "itemId": "sump-backup",
+        "name": "Battery backup sump pump",
+        "qty": 1,
+        "phase": 2,
+        "low": 250,
+        "high": 500,
+        "later": true
+      },
+      {
+        "itemId": "pet-kit",
+        "name": "Pet go-kit",
+        "qty": 1,
+        "phase": 2,
+        "low": 30,
+        "high": 100,
+        "later": true
+      },
+      {
+        "itemId": "power-station-house",
+        "name": "Portable power station (quiet hours)",
+        "qty": 1,
+        "phase": 3,
+        "low": 400,
+        "high": 900,
+        "later": true
+      },
+      {
+        "itemId": "solar-panel",
+        "name": "Portable solar panel",
+        "qty": 1,
+        "phase": 3,
+        "low": 300,
+        "high": 650,
+        "later": true
+      },
+      {
+        "itemId": "frs-radios",
+        "name": "FRS walkie-talkies",
+        "qty": 1,
+        "phase": 3,
+        "low": 25,
+        "high": 45,
+        "later": true
+      },
+      {
+        "itemId": "docs-pouch",
+        "name": "Fire/water-resistant document pouch",
+        "qty": 1,
+        "phase": 3,
+        "low": 20,
+        "high": 60,
+        "later": true
+      },
+      {
+        "itemId": "morale-kit",
+        "name": "Kids comfort & activity kit",
+        "qty": 1,
+        "phase": 3,
+        "low": 20,
+        "high": 50,
+        "later": true
+      },
+      {
+        "itemId": "go-bag-basic",
+        "name": "Go-bag from a backpack you own",
+        "qty": 2,
+        "phase": 3,
+        "low": 40,
+        "high": 80,
+        "later": true
+      },
+      {
+        "itemId": "vehicle-kit-basic",
+        "name": "Basic vehicle kit",
+        "qty": 1,
+        "phase": 3,
+        "low": 35,
+        "high": 70,
+        "later": true
+      },
+      {
+        "itemId": "tarp-shelter",
+        "name": "Tarp shelter kit",
+        "qty": 1,
+        "phase": 3,
+        "low": 50,
+        "high": 100,
+        "later": true
+      },
+      {
+        "itemId": "raw-land-water",
+        "name": "Water transport for off-grid site",
+        "qty": 1,
+        "phase": 3,
+        "low": 40,
+        "high": 90,
+        "later": true
+      }
+    ]
+  },
   "sources": [
     {
       "name": "Ready.gov — Build a Kit & Make a Plan",

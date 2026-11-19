@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { Subtitle } from "@/components/Subtitle";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DemoLinkBanner } from "@/components/DemoLinkBanner";
 import { ChangeAnswer } from "@/components/ChangeAnswer";
 import { EmailMyPlan } from "@/components/EmailMyPlan";
-import { FirstSteps, PlanView } from "@/components/PlanView";
+import { PlanView } from "@/components/PlanView";
 import { PrintButton } from "@/components/PrintButton";
 import { ResendConfirm } from "@/components/ResendConfirm";
 import type { PlanDocument } from "@/lib/plan/document";
@@ -43,7 +44,7 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
       <h1 className="text-3xl font-bold">{doc.title}</h1>
-      <p className="mt-1 text-muted">{doc.subtitle}</p>
+      <Subtitle text={doc.subtitle} />
       <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="#about" className="underline">Sources &amp; disclaimers</a></p>
 
       <div className="mt-3 flex flex-wrap gap-2 no-print">
@@ -53,7 +54,6 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
         {session?.scope === "full" && <Link href="/account" className="btn-ghost">Edit answers</Link>}
       </div>
 
-      <FirstSteps doc={doc} />
       <div className="mt-5" id="email">{emailStatus}</div>
       <ChangeAnswer planId={plan.id} />
       <PlanView doc={doc} planId={plan.id} checks={plan.checks ?? {}} sync />

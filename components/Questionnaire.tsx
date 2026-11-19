@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AnswersSchema, DEFAULT_ANSWERS, LABELS, type Answers, type PetGroupT } from "@/lib/answers/schema";
 import { DEFAULT_CONSTANTS } from "@/lib/rules/constants";
 import { computeFood, computeWater, household } from "@/lib/rules/engine";
+import { atLeast, lookupZip, type Level, type ZipProfile } from "@/lib/zip/profile";
 import { withoutConsentTicks, checkConsent, healthConsentMessage, needsHealthConsent } from "@/lib/legal";
 import { BRAND } from "@/lib/brand";
 
@@ -54,6 +55,32 @@ function YesNo({ value, onChange }: { value: boolean; onChange: (v: boolean) => 
 }
 const toggle = <T,>(arr: T[], v: T) => (arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
 
+/** After a 5-digit ZIP: the region and its hazards rated moderate or higher (approximate, by ZIP prefix). */
+const HAZARD_LABEL: [keyof ZipProfile, string][] = [
+  ["hurricane", "Hurricanes"],
+  ["flood", "Flooding"],
+  ["winter", "Winter storms"],
+  ["heat", "Extreme heat"],
+  ["wildfire", "Wildfire"],
+  ["earthquake", "Earthquakes"],
+  ["tornado", "Tornadoes"],
+];
+function ZipArea({ zip }: { zip: string }) {
+  if (!/^\d{5}$/.test(zip)) return <p id="zip-area" className="sr-only" aria-live="polite" />;
+  const z = lookupZip(zip);
+  const hazards = HAZARD_LABEL.filter(([k]) => atLeast(z[k] as Level, "moderate")).map(([k, label]) => `${label} (${z[k]})`);
+  return (
+    <div id="zip-area" aria-live="polite" className="mt-3 rounded-lg bg-brand-soft p-3 text-sm">
+      <p>
+        <span className="font-semibold text-brand">Your area:</span> {z.approximate ? "we'll use national averages for this ZIP" : `${z.region}, ${z.state}`}
+      </p>
+      {!z.approximate && (
+        <p className="mt-1 text-muted">{hazards.length ? `Your plan will cover: ${hazards.join(", ")}.` : "No hazards rated moderate or higher; your plan covers outages and storms."}</p>
+      )}
+    </div>
+  );
+}
+
 /* ---------- screens ---------- */
 function ConsentBox({ id, checked, onChange, children }: { id: string; checked: boolean; onChange: (v: boolean) => void; children: React.ReactNode }) {
   return (
@@ -94,7 +121,8 @@ const SCREENS: Screen[] = [
         <div>
           <label htmlFor="zip" className="font-semibold">ZIP code</label>
           <p className="text-sm text-muted">Used for your climate and local hazards. We never ask for your street address.</p>
-          <input id="zip" className="input mt-2 text-lg tracking-widest max-w-[10rem]" inputMode="numeric" autoComplete="postal-code" maxLength={5} value={a.zip} onChange={(e) => set({ zip: e.target.value.replace(/\D/g, "").slice(0, 5) })} />
+          <input id="zip" className="input mt-2 text-lg tracking-widest max-w-[10rem]" inputMode="numeric" autoComplete="postal-code" maxLength={5} value={a.zip} onChange={(e) => set({ zip: e.target.value.replace(/\D/g, "").slice(0, 5) })} aria-describedby="zip-area" />
+          <ZipArea zip={a.zip} />
         </div>
         <Group label="Plan for an outage or disruption lasting…">
           <Grid>
@@ -168,7 +196,7 @@ const SCREENS: Screen[] = [
             <div key={i} className="card p-4 space-y-3">
               <div className="flex justify-between items-center">
                 <p className="font-semibold">Pet group {i + 1}</p>
-                <button type="button" className="text-sm underline text-danger" onClick={() => set({ pets: a.pets.filter((_, j) => j !== i) })}>Remove</button>
+                <button type="button" className="text-sm underline text-brand" onClick={() => set({ pets: a.pets.filter((_, j) => j !== i) })}>Remove</button>
               </div>
               <Group label="Type">
                 <div className="grid grid-cols-3 gap-2">
@@ -503,7 +531,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
   if (generating) {
     return (
       <div className="mx-auto max-w-md px-4 py-16 text-center" role="status" aria-live="polite">
-        <div className="mx-auto size-12 rounded-full border-4 border-line border-t-brand animate-spin motion-reduce:animate-none" aria-hidden />
+        <div className="mx-auto size-12 rounded-full border-4 border-line border-t-accent animate-spin motion-reduce:animate-none" aria-hidden />
         <h1 className="mt-6 text-xl font-bold">Building your plan…</h1>
         <ul className="mt-6 space-y-2 text-left inline-block">
           {LOADING_STEPS.map((s, i) => (
@@ -522,7 +550,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
         <span>{last ? "Last step" : `About ${Math.max(1, Math.round(((visible.length - step) * 25) / 60))} min left`} · Saved</span>
       </div>
       <div className="mt-2 h-2 rounded-full bg-line overflow-hidden" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label="Progress">
-        <div className="h-full bg-brand transition-all" style={{ width: `${pct}%` }} />
+        <div className="h-full bg-accent transition-all" style={{ width: `${pct}%` }} />
       </div>
       <h1 ref={heading} tabIndex={-1} className="mt-6 text-2xl font-bold outline-none">{screen.title}</h1>
       <div className="mt-5 space-y-6">{screen.render({ a, set })}</div>
@@ -539,7 +567,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
           </ConsentBox>
         </div>
       )}
-      {error && <p role="alert" className="mt-4 text-danger font-medium">{error}</p>}
+      {error && <p role="alert" className="mt-4 text-warn font-medium">{error}</p>}
       <div className="mt-8 flex gap-3 sticky bottom-0 bg-bg py-3">
         <button type="button" className="btn-ghost" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0}>Back</button>
         {editOne ? (

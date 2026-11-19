@@ -27,7 +27,7 @@ export function ResendConfirm({ email }: { email: string }) {
           {state === "busy" ? "Sending…" : "Didn't get it? Resend"}
         </button>
       )}
-      {msg && <span role="status" className={state === "error" ? "text-danger" : ""}>{msg}</span>}
+      {msg && <span role="status" className={state === "error" ? "text-warn font-medium" : ""}>{msg}</span>}
     </div>
   );
 }

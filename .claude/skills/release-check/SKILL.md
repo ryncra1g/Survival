@@ -23,6 +23,8 @@ Run these in order from the repo root. Stop at the first failure, show its outpu
    ```
    All 10 lines must say PASS. Stop the server afterwards.
 6. `npm run sample` and `npm run demo` — regenerate the sample plan and the shareable demo.
+6b. Official links: open each URL in `ALL_OFFICIAL_LINKS` (`lib/zip/resources.ts`) and confirm it is the right
+   government page. Fix or remove any that moved.
 7. Run the `/code-review` and `/security-review` skills on the changes since the last release.
 
 Report a short table: step → pass/fail → notes. Then list anything that changed user-visible behaviour, so the owner can re-check it on a phone.

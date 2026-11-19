@@ -35,12 +35,12 @@ export function FollowupToggle({ initial }: { initial: boolean }) {
 export function DeleteData() {
   const router = useRouter();
   const [confirming, setConfirming] = useState(false);
-  if (!confirming) return <button className="btn-ghost text-danger" onClick={() => setConfirming(true)}>Delete my data</button>;
+  if (!confirming) return <button className="btn-ghost" onClick={() => setConfirming(true)}>Delete my data</button>;
   return (
-    <div className="card p-4 border-danger space-y-3">
+    <div className="card p-4 border-2 border-warn space-y-3">
       <p>This permanently deletes your account, answers, plans and email history. It can&apos;t be undone.</p>
       <div className="flex gap-3">
-        <button className="btn bg-danger" onClick={async () => {
+        <button className="btn-ghost border-2 border-ink" onClick={async () => {
           await post("/api/account/delete");
           router.push("/?deleted=1");
           router.refresh();
@@ -84,7 +84,7 @@ export function LoginForm() {
     }}>
       <label htmlFor="login-email" className="font-semibold block">Email</label>
       <input id="login-email" className="input" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-      {error && <p role="alert" className="text-danger">{error}</p>}
+      {error && <p role="alert" className="text-warn font-medium">{error}</p>}
       <button className="btn w-full" disabled={state === "busy"}>Email me a sign-in link</button>
     </form>
   );

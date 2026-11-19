@@ -13,7 +13,31 @@ export type LevelOption = z.infer<typeof LevelOptionSchema>;
 export const BlockSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("paragraph"), text: z.string() }),
   z.object({ type: z.literal("bullets"), items: z.array(z.string()) }),
-  z.object({ type: z.literal("checklist"), items: z.array(z.object({ id: z.string(), text: z.string() })) }),
+  z.object({
+    type: z.literal("checklist"),
+    items: z.array(
+      z.object({
+        id: z.string(),
+        text: z.string(),
+        /** One line on why this step matters (shown under the step). Written by code. */
+        why: z.string().optional(),
+        /** Catalog item ids that can fulfil this step, best first. Renderers show a Buy button for the first one
+         *  that is in this plan's gear (so we never sell something the household already has). */
+        buy: z.array(z.string()).optional(),
+        /** An official resource for this step (state/county site). Never an affiliate link. */
+        link: z.object({ label: z.string(), url: z.string().url() }).optional(),
+        /** Where in this plan the step is covered (e.g. the shopping list). */
+        see: z.object({ label: z.string(), anchor: z.string().regex(/^[a-z0-9-]+$/) }).optional(),
+      }),
+    ),
+  }),
+  /** "What you need" strip at the end of a section: catalog items (Buy shown only if in this plan's gear) + official links. */
+  z.object({
+    type: z.literal("help"),
+    buy: z.array(z.string()),
+    links: z.array(z.object({ label: z.string(), url: z.string().url() })),
+    note: z.string().optional(),
+  }),
   z.object({
     type: z.literal("table"),
     caption: z.string().optional(),
@@ -67,6 +91,24 @@ export const SectionSchema = z.object({
 });
 export type Section = z.infer<typeof SectionSchema>;
 
+/** Dashboard data: headline numbers with their math, and the gear list with costs. Every number comes from the rules engine. */
+export const OverviewSchema = z.object({
+  stats: z.array(z.object({ key: z.string(), value: z.string(), label: z.string(), math: z.string(), anchor: z.string() })),
+  gear: z.array(
+    z.object({
+      itemId: z.string(),
+      name: z.string(),
+      qty: z.number(),
+      phase: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+      /** Total for this line (price × qty), USD. */
+      low: z.number(),
+      high: z.number(),
+      later: z.boolean(),
+    }),
+  ),
+});
+export type Overview = z.infer<typeof OverviewSchema>;
+
 export const PlanDocumentSchema = z.object({
   title: z.string(),
   subtitle: z.string(),
@@ -74,6 +116,8 @@ export const PlanDocumentSchema = z.object({
   rulesVersion: z.string(),
   writer: z.enum(["template", "llm"]),
   sections: z.array(SectionSchema),
+  /** Absent on plans built before the dashboard existed. */
+  overview: OverviewSchema.optional(),
   disclaimer: z.string(),
   affiliateDisclosure: z.string().nullable(),
   sources: z.array(z.object({ name: z.string(), url: z.string() })),

@@ -48,6 +48,8 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(page).toHaveURL(/\/q\//);
 
   await page.getByLabel("ZIP code").fill("11746");
+  await expect(page.getByText(/Your area:.*Long Island, NY/)).toBeVisible();
+  await expect(page.getByText(/Your plan will cover: Hurricanes \(high\), Flooding \(high\), Winter storms \(moderate\)/)).toBeVisible();
   await pick(page, /^90 days/);
   await next(page);
   await page.getByLabel("Add a child age").selectOption("2");
@@ -92,10 +94,26 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(page.getByRole("heading", { name: "Phase 1 shopping list (life safety)" })).toBeVisible();
   await expect(page.getByRole("link", { name: /^Buy / })).toHaveCount(0); // no affiliate tag set yet
 
+  // Dashboard: progress, headline numbers with math, gear list with "Got it" ticks that persist
+  const dash = page.getByTestId("dashboard");
+  await expect(dash.getByRole("heading", { name: "Your plan at a glance" })).toBeVisible();
+  await expect(dash.getByText("water to store")).toBeVisible();
+  await expect(dash.getByText(/gal\/day × \d+ days/)).toBeVisible();
+  await dash.getByText("Your gear list").click();
+  const gearTotal = await dash.getByRole("checkbox").count();
+  await dash.getByRole("checkbox", { name: "I have: Carbon monoxide alarm" }).check();
+  await expect(dash.getByText(new RegExp(`^1 of ${gearTotal}$`))).toBeVisible();
+  await page.waitForTimeout(800);
+  await page.reload();
+  await expect(page.getByTestId("dashboard").getByText(new RegExp(`^1 of ${gearTotal}$`))).toBeVisible();
+
   // Shorter plan: action sections open, reference sections collapsed to title + summary
   await expect(page.locator("details#priorities")).toHaveAttribute("open", "");
   await expect(page.locator("details#gear")).not.toHaveAttribute("open", "");
-  await page.getByRole("navigation", { name: "Plan sections" }).getByRole("link", { name: "Gear" }).click();
+  const nav = page.getByRole("navigation", { name: "Plan sections" });
+  await nav.getByRole("link", { name: "Supplies" }).click();
+  await expect(nav.getByRole("link", { name: "Supplies" })).toHaveAttribute("aria-current", "true");
+  await nav.getByRole("link", { name: "Gear" }).click();
   await expect(page.locator("details#gear")).toHaveAttribute("open", "");
 
   // Ticks are saved to the plan, not just this browser
@@ -230,7 +248,7 @@ test("admin: dashboard, catalog, rule constants, affiliate tag → tracked Buy c
 
 test("sample plan is public", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("link", { name: "See a sample plan" }).click();
+  await page.getByRole("link", { name: "See the full sample plan" }).click();
   await expect(page).toHaveURL(/\/sample/);
   await expect(page.getByText(/Store 54 gallons \(14 days\)/)).toBeVisible();
 });

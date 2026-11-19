@@ -56,7 +56,7 @@ export function documentStrings(doc: PlanDocument): string[] {
           s.push(...b.items);
           break;
         case "checklist":
-          s.push(...b.items.map((i) => i.text));
+          s.push(...b.items.flatMap((i) => [i.text, i.why ?? "", i.link?.label ?? ""]).filter(Boolean));
           break;
         case "table":
           if (b.caption) s.push(b.caption);
@@ -71,6 +71,9 @@ export function documentStrings(doc: PlanDocument): string[] {
         case "products":
           if (b.caption) s.push(b.caption);
           for (const i of b.items) s.push(i.name, i.spec, ...i.models, ...(i.levels ?? []).map((l) => l.name));
+          break;
+        case "help":
+          s.push(...b.links.map((l) => l.label), ...(b.note ? [b.note] : []));
           break;
         case "levelchoice":
           s.push(b.caption, ...b.levels.map((l) => l.name));

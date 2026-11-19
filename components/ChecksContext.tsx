@@ -20,6 +20,25 @@ export function ChecksProvider({ planId, initial = {}, sync = false, children }:
     } catch {}
   }, [key, sync]);
 
+  const pending = useRef<Record<string, boolean> | null>(null);
+  const save = useCallback(
+    (keepalive: boolean) => {
+      const body = pending.current;
+      if (!body) return;
+      pending.current = null;
+      if (timer.current) clearTimeout(timer.current);
+      fetch(`/api/plans/${planId}/checks`, { method: "PUT", keepalive, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ checks: body }) }).catch(() => {});
+    },
+    [planId],
+  );
+  // Leaving or reloading within the debounce window: send the last ticks anyway.
+  useEffect(() => {
+    if (!sync) return;
+    const flush = () => save(true);
+    window.addEventListener("pagehide", flush);
+    return () => window.removeEventListener("pagehide", flush);
+  }, [save, sync]);
+
   const toggle = useCallback(
     (id: string) => {
       setChecks((prev) => {
@@ -29,14 +48,13 @@ export function ChecksProvider({ planId, initial = {}, sync = false, children }:
         } catch {}
         if (sync) {
           if (timer.current) clearTimeout(timer.current);
-          timer.current = setTimeout(() => {
-            fetch(`/api/plans/${planId}/checks`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ checks: next }) }).catch(() => {});
-          }, 400);
+          pending.current = next;
+          timer.current = setTimeout(() => save(false), 400);
         }
         return next;
       });
     },
-    [key, planId, sync],
+    [key, save, sync],
   );
   return <ChecksCtx.Provider value={{ checks, toggle }}>{children}</ChecksCtx.Provider>;
 }
