@@ -10,7 +10,8 @@ const item = SEED_CATALOG.find((i) => i.id === "co-alarm")!;
 const NOW = new Date("2026-11-18");
 
 describe("affiliate links", () => {
-  it("no tag and no item URL → no Buy button", () => expect(buyUrl(item, "")).toBeNull());
+  it("no tag → a plain (untagged) Amazon search, so the item still has a Buy link", () =>
+    expect(buyUrl(item, "")).toBe("https://www.amazon.com/s?k=Kidde%20KN-COPP-3"));
   it("tag → Amazon search for the first example model, tagged", () =>
     expect(buyUrl(item, "mysite-20")).toBe("https://www.amazon.com/s?k=Kidde%20KN-COPP-3&tag=mysite-20"));
   it("an item's own affiliate URL wins", () => expect(buyUrl({ ...item, affiliateUrl: "https://example.com/x" }, "mysite-20")).toBe("https://example.com/x"));
@@ -20,12 +21,17 @@ describe("affiliate links", () => {
   });
   it("rejects tags with unsafe characters", () => expect(() => mergeConstants({ affiliate: { amazonTag: "x&evil=1" } })).toThrow());
 
-  it("without a tag: no Buy buttons and no disclosure", async () => {
+  it("without a tag: every item has a Buy link, but no commission disclosure (nothing earns one)", async () => {
     const r = await generatePlan(SAMPLE_HOUSEHOLD, DEFAULT_CONSTANTS, SEED_CATALOG, { useLlm: false, now: NOW });
     const items = r.document.sections.flatMap((s) => s.blocks).flatMap((b) => (b.type === "products" ? b.items : []));
     expect(items.length).toBeGreaterThan(10);
-    expect(items.some((i) => i.buyable)).toBe(false);
+    expect(items.every((i) => i.buyable)).toBe(true);
     expect(r.document.affiliateDisclosure).toBeNull();
+  });
+  it("without a tag, an item with its own affiliate URL turns the disclosure on", async () => {
+    const cat = SEED_CATALOG.map((i) => (i.id === "radio" ? { ...i, affiliateUrl: "https://www.example-store.com/radio?aff=1" } : i));
+    const r = await generatePlan(SAMPLE_HOUSEHOLD, DEFAULT_CONSTANTS, cat, { useLlm: false, now: NOW });
+    expect(r.document.affiliateDisclosure).toMatch(/commission/);
   });
 
   it("with a tag: Buy buttons in the shopping list and gear list, disclosure on, tracked links in email", async () => {
