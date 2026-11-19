@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useCallback, useState } from "react";
 import { suggestEmail } from "@/lib/email/typos";
 import { Turnstile } from "./Turnstile";
+import { BRAND } from "@/lib/brand";
 
 type Result = { status: "sent" | "confirm"; email: string; demoLink?: string };
 
@@ -86,7 +87,7 @@ export function EmailMyPlan({ planId, siteKey = "", onSubmit, idPrefix = "emp" }
       </label>
       <Turnstile siteKey={siteKey} onToken={onToken} />
       {error && <p role="alert" className="text-danger font-medium">{error}</p>}
-      <p className="text-xs text-muted">Only used for ReadyPlan, never sold. <Link href="/privacy" className="underline">Privacy policy</Link>.</p>
+      <p className="text-xs text-muted">Only used for {BRAND.name}, never sold. <Link href="/privacy" className="underline">Privacy policy</Link>.</p>
     </form>
   );
 }

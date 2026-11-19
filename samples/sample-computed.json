@@ -502,7 +502,7 @@
           "id": "filter-gravity-bag",
           "category": "Water",
           "name": "Gravity bag filter",
-          "spec": "Hang-and-forget gravity bag, 0.2-micron hollow fiber, filters several liters per minute for a family",
+          "spec": "Hang-and-forget gravity bag, 0.2-micron hollow fiber, filters several liters per minute for a whole household",
           "models": [
             "Platypus GravityWorks 4L",
             "Sawyer Gravity system"
@@ -684,7 +684,7 @@
           "reviewedAt": "2026-11-01",
           "id": "first-aid",
           "category": "First aid",
-          "name": "Family first aid kit",
+          "name": "First aid kit",
           "spec": "200+ piece kit with trauma pads, gauze, tape, elastic wrap, gloves, thermometer, tweezers, shears",
           "models": [
             "Adventure Medical Kits Family",
@@ -1379,7 +1379,7 @@
           "id": "frs-radios",
           "category": "Communications",
           "name": "FRS walkie-talkies",
-          "spec": "License-free FRS pair, AA or rechargeable, for family use within about a mile",
+          "spec": "License-free FRS pair, AA or rechargeable, for household use within about a mile",
           "models": [
             "Motorola Talkabout T110",
             "Cobra RX100"
@@ -1844,7 +1844,7 @@
           {
             "level": "standard",
             "itemId": "tent",
-            "name": "Family tent + tarps",
+            "name": "Tent + tarps",
             "qty": 1,
             "low": 150,
             "high": 450

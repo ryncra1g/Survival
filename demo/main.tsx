@@ -1,7 +1,7 @@
 /**
  * Standalone browser demo: the real questionnaire, rules engine, plan builder and safety
  * linter, running entirely in the page. No server, nothing saved or sent.
- * Build: npm run demo  →  demo/dist/readyplan-demo.html
+ * Build: npm run demo  →  demo/dist/demo.html
  */
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
@@ -19,6 +19,7 @@ import { computePlan } from "@/lib/rules/engine";
 import { lintDocument } from "@/lib/safety/linter";
 import { buyUrl } from "@/lib/affiliate";
 import { SAMPLE_HOUSEHOLD } from "@/lib/plan/sample";
+import { BRAND } from "@/lib/brand";
 
 // The demo shows Buy buttons as they'd appear with an Associates tag, but links go to a plain Amazon search.
 const DEMO_CONSTANTS = { ...DEFAULT_CONSTANTS, affiliate: { amazonTag: "demo" } };
@@ -59,7 +60,7 @@ function App() {
     <>
       <header className="border-b border-line bg-surface">
         <div className="mx-auto max-w-3xl px-4 h-14 flex items-center justify-between gap-3">
-          <button type="button" className="font-bold text-lg text-brand" onClick={() => setView({ kind: "home" })}>ReadyPlan</button>
+          <button type="button" className="font-bold text-lg text-brand" onClick={() => setView({ kind: "home" })}>{BRAND.name}</button>
           <span className="text-xs text-muted text-right">Demo · nothing is saved or sent</span>
         </div>
       </header>

@@ -27,6 +27,6 @@ export async function GET(req: Request, { params }: { params: Promise<{ itemId: 
   const res = NextResponse.redirect(dest, 302);
   res.headers.set("X-Robots-Tag", "noindex");
   res.headers.set("Referrer-Policy", "no-referrer-when-downgrade");
-  res.headers.set("X-ReadyPlan-Source", src);
+  res.headers.set("X-Plan-Source", src);
   return res;
 }

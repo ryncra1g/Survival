@@ -3,6 +3,7 @@ import { Checklist } from "./Checklist";
 import { ChecksProvider } from "./ChecksContext";
 import { LevelChips } from "./LevelChips";
 import { SectionNav } from "./SectionNav";
+import { BRAND } from "@/lib/brand";
 
 const toneCls = { danger: "border-danger text-danger", warning: "border-warn text-warn", info: "border-info text-info" } as const;
 
@@ -22,7 +23,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose }: { b: Block; plan
         <div className="my-4">
           {b.caption && <h3 className="mt-5 mb-2 font-semibold">{b.caption}</h3>}
           {b.compact && <p className="text-sm text-muted -mt-1 mb-2">What to look for is in <a href="#gear" className="underline">Recommended gear</a>.</p>}
-          {b.items.some((i) => i.buyable) && <p className="text-xs text-muted mb-1">Buy links may earn ReadyPlan a commission, at no cost to you. <a href="#about" className="underline">Details</a></p>}
+          {b.items.some((i) => i.buyable) && <p className="text-sm text-ink mb-2" data-testid="affiliate-disclosure"><strong>Affiliate links:</strong> {BRAND.name} may earn a commission if you buy through these Buy links, at no extra cost to you. <a href="#about" className="underline">Details</a></p>}
           <ul className="divide-y divide-line border-y border-line">
             {b.items.map((i) => (
               <li key={i.itemId} className={`${b.compact ? "py-2 items-center" : "py-3 items-start"} flex gap-3`}>

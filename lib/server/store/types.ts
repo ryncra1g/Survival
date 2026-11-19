@@ -1,3 +1,4 @@
+import type { PlanConsent } from "@/lib/legal";
 import type { CatalogItem } from "@/lib/catalog/types";
 
 export interface UserRow {
@@ -37,6 +38,8 @@ export interface PlanRow {
   writer: string;
   /** Checklist ticks: { "<checklist item id>": true }. Not sensitive (ids only), stored unencrypted. */
   checks?: Record<string, boolean>;
+  /** Terms version + timestamps agreed before this plan was built (clickwrap + health-data consent). */
+  consent?: PlanConsent | null;
   created_at: string;
 }
 

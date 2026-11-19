@@ -1,15 +1,16 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import "./globals.css";
+import { BRAND } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: { default: "ReadyPlan — your family's emergency plan", template: "%s · ReadyPlan" },
+  title: { default: `${BRAND.name} — your emergency plan`, template: `%s · ${BRAND.name}` },
   description: "A personalized emergency plan and supply list for your home, built in about 5 minutes.",
   metadataBase: new URL(process.env.APP_URL || "http://localhost:3000"),
   openGraph: {
     type: "website",
-    siteName: "ReadyPlan",
-    title: "ReadyPlan — your family's emergency plan in 5 minutes",
+    siteName: BRAND.name,
+    title: `${BRAND.name} — your emergency plan in 5 minutes`,
     description: "Exact water, food and fuel amounts for your household, a week-by-week checklist and steps for your area's hazards. Free, no sign-up.",
   },
   twitter: { card: "summary_large_image" },
@@ -23,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 btn">Skip to content</a>
         <header className="border-b border-line bg-surface">
           <div className="mx-auto max-w-3xl px-4 h-14 flex items-center justify-between">
-            <Link href="/" className="font-bold text-lg text-brand">ReadyPlan</Link>
+            <Link href="/" className="font-bold text-lg text-brand">{BRAND.name}</Link>
             <nav className="text-sm flex gap-4">
               <Link href="/account" className="underline-offset-4 hover:underline">My plan</Link>
             </nav>

@@ -1,4 +1,5 @@
 import type { CatalogItem } from "@/lib/catalog/types";
+import { BRAND } from "@/lib/brand";
 
 /** Destination for an item's Buy button, or null when it has none. Amazon search links carry the Associates tag. */
 export function buyUrl(item: Pick<CatalogItem, "affiliateUrl" | "models" | "name">, amazonTag: string): string | null {
@@ -9,7 +10,7 @@ export function buyUrl(item: Pick<CatalogItem, "affiliateUrl" | "models" | "name
 }
 
 export const AFFILIATE_DISCLOSURE =
-  "ReadyPlan earns a commission when you buy through Buy links, at no extra cost to you. Recommendations come from the specs and your budget, not from commissions.";
+  `${BRAND.name} earns a commission when you buy through Buy links, at no extra cost to you. Recommendations come from the specs and your budget, not from commissions.`;
 
 /**
  * Amazon's Associates agreement doesn't allow its links in email or offline material (PDFs).

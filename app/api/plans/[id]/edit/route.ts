@@ -1,3 +1,4 @@
+import { withoutConsentTicks } from "@/lib/legal";
 import { NextResponse } from "next/server";
 import { loadPlanFor } from "@/lib/server/access";
 import { env } from "@/lib/server/env";
@@ -22,7 +23,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const q = await store.createQuestionnaire({
     user_id: plan.user_id,
     session_nonce: session.nonce,
-    answers: { ...(source?.answers ?? {}), _screen: (EDIT_SCREENS as readonly string[]).includes(screen) ? screen : "location", _step: undefined },
+    answers: { ...withoutConsentTicks(source?.answers ?? {}), _screen: (EDIT_SCREENS as readonly string[]).includes(screen) ? screen : "location", _step: undefined },
     complete: false,
     version: 1,
   });

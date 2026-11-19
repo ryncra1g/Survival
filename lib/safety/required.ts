@@ -1,3 +1,4 @@
+import { BRAND } from "@/lib/brand";
 /**
  * Safety text that the plan builder inserts verbatim. It's written by code, never by the LLM,
  * and the guardrail tests assert it is present wherever it applies.
@@ -12,7 +13,7 @@ export const TRANSFER_RULE =
   "Power house circuits only through a power inlet with an interlock or a transfer switch installed by a licensed electrician. Until then, plug appliances directly into the generator with outdoor-rated extension cords.";
 
 export const MED_RULE =
-  "ReadyPlan never gives medication doses. For any medicine — for people or pets — follow the label or your doctor, pharmacist or vet.";
+  `${BRAND.name} never gives medication doses. For any medicine — for people or pets — follow the label or your doctor, pharmacist or vet.`;
 
 export const APARTMENT_GENERATOR_RULE =
   "Portable generators are not safe to run in or next to an apartment: balconies, patios, breezeways, parking garages and spots near windows all let exhaust into homes, including your neighbors'. " +

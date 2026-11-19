@@ -1,6 +1,8 @@
 import React from "react";
 import { Document, Page, StyleSheet, Text, View, renderToBuffer } from "@react-pdf/renderer";
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import type { Block, PlanDocument } from "@/lib/plan/document";
+import { BRAND } from "@/lib/brand";
 
 /** Server-side PDF of the same PlanDocument structure. Uses built-in Helvetica (no font fetch). */
 const ink = "#1c2430";
@@ -113,7 +115,7 @@ function BlockView({ b }: { b: Block }) {
     case "levelchoice":
       return (
         <View>
-          <Text style={s.caption}>{pdfSafe(b.caption)}</Text>
+          <Text style={s.caption} minPresenceAhead={60}>{pdfSafe(b.caption)}</Text>
           {b.levels.map((l) => (
             <Text key={l.level} style={s.p}>{l.selected ? "[x] " : "[ ] "}{pdfSafe(l.name)}: {pdfSafe(l.price)}</Text>
           ))}
@@ -133,9 +135,9 @@ function BlockView({ b }: { b: Block }) {
 
 export function PlanPdf({ doc }: { doc: PlanDocument }) {
   return (
-    <Document title={doc.title} author="ReadyPlan" subject="Emergency preparedness plan">
+    <Document title={doc.title} author={BRAND.name} subject="Emergency preparedness plan">
       <Page size="LETTER" style={s.page} wrap>
-        <Text style={s.brand}>ReadyPlan</Text>
+        <Text style={s.brand}>{BRAND.name}</Text>
         <Text style={s.h1}>{pdfSafe(doc.title)}</Text>
         <Text style={s.sub}>{pdfSafe(doc.subtitle)} · Generated {doc.generatedAt.slice(0, 10)}</Text>
         <Text style={{ fontSize: 8, color: muted, marginBottom: 6 }}>General guidance, not professional advice. Full disclaimer and sources at the end.</Text>
@@ -158,12 +160,29 @@ export function PlanPdf({ doc }: { doc: PlanDocument }) {
             {src.name} — {src.url}
           </Text>
         ))}
-        <Text style={s.footer} fixed>ReadyPlan · General guidance, not professional advice</Text>
+        <Text style={s.footer} fixed>{BRAND.name} · General guidance, not professional advice</Text>
       </Page>
     </Document>
   );
 }
 
+/**
+ * Stamps "Page X of Y" on every page after rendering. react-pdf 4.9's dynamic `render` prop either
+ * crashes ("unsupported number") or draws nothing in a long wrapped document, so we post-process instead.
+ */
+export async function addPageNumbers(pdf: Uint8Array): Promise<Buffer> {
+  const out = await PDFDocument.load(pdf, { updateMetadata: false });
+  const font = await out.embedFont(StandardFonts.Helvetica);
+  const pages = out.getPages();
+  pages.forEach((page, i) => {
+    const label = `Page ${i + 1} of ${pages.length}`;
+    const size = 7.5;
+    const { width } = page.getSize();
+    page.drawText(label, { x: width - 36 - font.widthOfTextAtSize(label, size), y: 25.5, size, font, color: rgb(0.36, 0.4, 0.45) });
+  });
+  return Buffer.from(await out.save());
+}
+
 export async function renderPlanPdf(doc: PlanDocument): Promise<Buffer> {
-  return renderToBuffer(<PlanPdf doc={doc} />);
+  return addPageNumbers(await renderToBuffer(<PlanPdf doc={doc} />));
 }

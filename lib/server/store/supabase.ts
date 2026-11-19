@@ -1,3 +1,4 @@
+import type { PlanConsent } from "@/lib/legal";
 import "server-only";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { catIn, catOut, type CatalogDb } from "@/lib/catalog/db";
@@ -20,9 +21,14 @@ function must<T>(r: { data: T; error: { message: string } | null }): T {
 }
 
 type QDb = Omit<QuestionnaireRow, "answers"> & { answers_json: Sealed };
-type PDb = Omit<PlanRow, "computed_quantities" | "plan"> & { computed_quantities_json: Sealed; plan_json: Sealed };
+type PDb = Omit<PlanRow, "computed_quantities" | "plan" | "consent"> & { computed_quantities_json: Sealed; plan_json: Sealed; consent_json?: Sealed | null };
 const qOut = ({ answers_json, ...r }: QDb): QuestionnaireRow => ({ ...r, answers: unseal(answers_json) });
-const pOut = ({ computed_quantities_json, plan_json, ...r }: PDb): PlanRow => ({ ...r, computed_quantities: unseal(computed_quantities_json), plan: unseal(plan_json) });
+const pOut = ({ computed_quantities_json, plan_json, consent_json, ...r }: PDb): PlanRow => ({
+  ...r,
+  computed_quantities: unseal(computed_quantities_json),
+  plan: unseal(plan_json),
+  consent: consent_json ? unseal<PlanConsent>(consent_json) : null,
+});
 
 async function count(table: string, filter?: (q: ReturnType<ReturnType<SupabaseClient["from"]>["select"]>) => unknown): Promise<number> {
   let q = db().from(table).select("*", { count: "exact", head: true });
@@ -78,8 +84,8 @@ export const supabaseStore: Store = {
   async listQuestionnaires(userId) {
     return (must(await db().from("questionnaires").select("*").eq("user_id", userId)) as QDb[]).map(qOut);
   },
-  async createPlan({ computed_quantities, plan, ...p }) {
-    return pOut(must(await db().from("plans").insert({ ...p, computed_quantities_json: seal(computed_quantities), plan_json: seal(plan) }).select().single()) as PDb);
+  async createPlan({ computed_quantities, plan, consent, ...p }) {
+    return pOut(must(await db().from("plans").insert({ ...p, computed_quantities_json: seal(computed_quantities), plan_json: seal(plan), consent_json: consent ? seal(consent) : null }).select().single()) as PDb);
   },
   async getPlan(id) {
     const r = must(await db().from("plans").select("*").eq("id", id).maybeSingle()) as PDb | null;

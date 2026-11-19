@@ -15,7 +15,7 @@ export async function POST(req: Request) {
   try {
     mergeConstants(overrides);
   } catch {
-    return err("Tags may contain letters, numbers and hyphens only (e.g. readyplan-20).");
+    return err("Tags may contain letters, numbers and hyphens only (e.g. yoursite-20).");
   }
   const row = await store.saveRuleConstants(overrides, admin.email);
   return json({ ok: true, version: row.version });

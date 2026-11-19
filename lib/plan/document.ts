@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { BRAND } from "@/lib/brand";
 
 const LevelOptionSchema = z.object({
   level: z.enum(["essential", "standard", "premium"]),
@@ -90,6 +91,6 @@ export const SOURCES = [
 ];
 
 export const DISCLAIMER =
-  "ReadyPlan provides general preparedness guidance, not professional, medical, legal or electrical advice. " +
+  `${BRAND.name} provides general preparedness guidance, not professional, medical, legal or electrical advice. ` +
   "Follow official instructions from local emergency management. Quantities are planning estimates. " +
   "Prices and products change — check current specs, recalls and reviews before you buy.";

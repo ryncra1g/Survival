@@ -4,8 +4,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AnswersSchema, DEFAULT_ANSWERS, LABELS, type Answers, type PetGroupT } from "@/lib/answers/schema";
 import { DEFAULT_CONSTANTS } from "@/lib/rules/constants";
 import { computeFood, computeWater, household } from "@/lib/rules/engine";
+import { withoutConsentTicks, checkConsent, healthConsentMessage, needsHealthConsent } from "@/lib/legal";
+import { BRAND } from "@/lib/brand";
 
-type Draft = Answers & { _step?: number; _screen?: string };
+type Draft = Answers & { _step?: number; _screen?: string; _terms?: boolean; _health?: boolean };
 
 /* ---------- small building blocks ---------- */
 function Choice({ selected, onClick, children, sub }: { selected: boolean; onClick: () => void; children: React.ReactNode; sub?: string }) {
@@ -53,6 +55,23 @@ function YesNo({ value, onChange }: { value: boolean; onChange: (v: boolean) => 
 const toggle = <T,>(arr: T[], v: T) => (arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
 
 /* ---------- screens ---------- */
+function ConsentBox({ id, checked, onChange, children }: { id: string; checked: boolean; onChange: (v: boolean) => void; children: React.ReactNode }) {
+  return (
+    <label htmlFor={id} className="flex items-start gap-3 rounded-lg border border-line bg-surface p-3 text-sm">
+      <input id={id} type="checkbox" className="mt-0.5 size-5 shrink-0 accent-[var(--brand)]" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+      <span>{children}</span>
+    </label>
+  );
+}
+
+function HealthConsent({ a, set }: { a: Draft; set: (patch: Partial<Draft>) => void }) {
+  return (
+    <ConsentBox id="healthConsent" checked={!!a._health} onChange={(_health) => set({ _health })}>
+      I agree that {BRAND.name} can use my medical and mobility answers to build my plan. They&apos;re encrypted, never sold and never used for marketing emails.
+    </ConsentBox>
+  );
+}
+
 interface ScreenProps {
   a: Draft;
   set: (patch: Partial<Draft>) => void;
@@ -185,6 +204,7 @@ const SCREENS: Screen[] = [
   {
     id: "medical",
     title: "Medical needs",
+    valid: (a) => (needsHealthConsent(a) && !a._health ? healthConsentMessage(a) : null),
     render: ({ a, set }) => (
       <>
         <p className="text-sm text-muted">We don&apos;t ask about conditions or diagnoses — only what affects supplies and power.</p>
@@ -199,6 +219,7 @@ const SCREENS: Screen[] = [
             <Choice selected={a.poweredDevices.length === 0} onClick={() => set({ poweredDevices: [] })}>None</Choice>
           </Grid>
         </Group>
+        {needsHealthConsent(a) && <HealthConsent a={a} set={set} />}
       </>
     ),
   },
@@ -408,7 +429,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
     try {
       const local = JSON.parse(localStorage.getItem(`rp_q_${id}`) ?? "null") as Partial<Draft> | null;
       if (local) {
-        setA((prev) => ({ ...prev, ...local }));
+        setA((prev) => ({ ...prev, ...withoutConsentTicks(local) }));
         if (typeof local._step === "number") setStep(local._step);
       }
     } catch {}
@@ -416,7 +437,8 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
 
   // Autosave: localStorage immediately, server debounced. Answers go in the body, never the URL.
   useEffect(() => {
-    const draft = { ...a, _step: step };
+    // Consent ticks stay on this screen only: never saved, so a copied plan never starts pre-ticked.
+    const draft = { ...withoutConsentTicks(a), _step: step };
     try {
       localStorage.setItem(`rp_q_${id}`, JSON.stringify(draft));
     } catch {}
@@ -442,6 +464,10 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
   async function build() {
     const parsed = parsedAnswers();
     if (!parsed.success) return setError(parsed.error.issues[0]?.message ?? "Please check your answers.");
+    const consent = { terms: !!a._terms, health: !!a._health };
+    const consentError = checkConsent(parsed.data, consent);
+    if (consentError) return setError(consentError);
+    if (saveTimer.current) clearTimeout(saveTimer.current);
     setGenerating(true);
     const timer = setInterval(() => setLoadingStep((s) => Math.min(s + 1, LOADING_STEPS.length - 1)), 1200);
     try {
@@ -450,7 +476,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
         await onGenerate(parsed.data);
         return;
       }
-      const r = await fetch(`/api/questionnaire/${id}/generate`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ answers: parsed.data }) });
+      const r = await fetch(`/api/questionnaire/${id}/generate`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ answers: parsed.data, consent }) });
       const j = (await r.json()) as { planId?: string; error?: string };
       if (!r.ok || !j.planId) throw new Error(j.error ?? "Couldn't build the plan.");
       try {
@@ -504,6 +530,15 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
         const p = parsedAnswers();
         return p.success ? <div className="mt-8"><Teaser a={p.data} /></div> : null;
       })()}
+      {(last || editOne) && (
+        <div className="mt-6 space-y-3">
+          {screen.id !== "medical" && needsHealthConsent(a) && <HealthConsent a={a} set={set} />}
+          <ConsentBox id="termsConsent" checked={!!a._terms} onChange={(_terms) => set({ _terms })}>
+            I understand this plan is general guidance, not professional advice, and I agree to the{" "}
+            <a href="/terms" target="_blank" rel="noopener" className="underline">Terms of Use</a>.
+          </ConsentBox>
+        </div>
+      )}
       {error && <p role="alert" className="mt-4 text-danger font-medium">{error}</p>}
       <div className="mt-8 flex gap-3 sticky bottom-0 bg-bg py-3">
         <button type="button" className="btn-ghost" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0}>Back</button>

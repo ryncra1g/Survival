@@ -12,8 +12,8 @@ const NOW = new Date("2026-11-18");
 describe("affiliate links", () => {
   it("no tag and no item URL → no Buy button", () => expect(buyUrl(item, "")).toBeNull());
   it("tag → Amazon search for the first example model, tagged", () =>
-    expect(buyUrl(item, "readyplan-20")).toBe("https://www.amazon.com/s?k=Kidde%20KN-COPP-3&tag=readyplan-20"));
-  it("an item's own affiliate URL wins", () => expect(buyUrl({ ...item, affiliateUrl: "https://example.com/x" }, "readyplan-20")).toBe("https://example.com/x"));
+    expect(buyUrl(item, "mysite-20")).toBe("https://www.amazon.com/s?k=Kidde%20KN-COPP-3&tag=mysite-20"));
+  it("an item's own affiliate URL wins", () => expect(buyUrl({ ...item, affiliateUrl: "https://example.com/x" }, "mysite-20")).toBe("https://example.com/x"));
   it("generic examples ('Any …', local supplier) search by item name instead", () => {
     const wood = SEED_CATALOG.find((i) => i.id === "firewood")!;
     expect(buyUrl(wood, "t-20")).toContain(encodeURIComponent(wood.name));
@@ -29,7 +29,7 @@ describe("affiliate links", () => {
   });
 
   it("with a tag: Buy buttons in the shopping list and gear list, disclosure on, tracked links in email", async () => {
-    const c = mergeConstants({ affiliate: { amazonTag: "readyplan-20" } });
+    const c = mergeConstants({ affiliate: { amazonTag: "mysite-20" } });
     const r = await generatePlan(SAMPLE_HOUSEHOLD, c, SEED_CATALOG, { useLlm: false, now: NOW });
     const pr = r.document.sections.find((s) => s.id === "priorities")!;
     const shop = pr.blocks.find((b) => b.type === "products");

@@ -10,16 +10,17 @@ import { SEED_CATALOG } from "@/lib/catalog/seed";
 import { renderPlanEmail } from "@/lib/email/render";
 import { renderPlanPdf } from "@/lib/pdf/PlanPdf";
 import { SAMPLE_HOUSEHOLD } from "@/tests/fixtures/households";
+import { BRAND } from "@/lib/brand";
 
 const out = path.join(process.cwd(), "samples");
 fs.mkdirSync(out, { recursive: true });
 const now = new Date("2026-11-18T12:00:00Z");
 const r = await generatePlan(SAMPLE_HOUSEHOLD, DEFAULT_CONSTANTS, SEED_CATALOG, { now });
 const meta = {
-  appUrl: "https://readyplan.example",
-  planUrl: "https://readyplan.example/plan/sample",
-  unsubscribeUrl: "https://readyplan.example/api/unsubscribe?u=sample",
-  mailingAddress: "ReadyPlan · 123 Example St, Suite 100 · Huntington, NY 11743",
+  appUrl: "https://example.com",
+  planUrl: "https://example.com/plan/sample",
+  unsubscribeUrl: "https://example.com/api/unsubscribe?u=sample",
+  mailingAddress: `${BRAND.name} · 123 Example St, Suite 100 · Huntington, NY 11743`,
   pdfAttached: true,
 };
 const email = renderPlanEmail(r.document, meta);

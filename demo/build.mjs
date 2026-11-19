@@ -24,11 +24,14 @@ const shim = {
 const js = await build({
   entryPoints: [path.join(root, "demo/main.tsx")],
   bundle: true, minify: process.env.NO_MINIFY !== "1", format: "iife", write: false, platform: "browser", target: "es2020",
-  jsx: "automatic", alias: { "@": root }, plugins: [shim], define: { "process.env.NODE_ENV": '"production"' },
+  jsx: "automatic", alias: { "@": root }, plugins: [shim], define: { "process.env.NODE_ENV": '"production"', "process.env.NEXT_PUBLIC_BRAND_NAME": JSON.stringify(process.env.NEXT_PUBLIC_BRAND_NAME ?? "") },
 });
 const cssIn = fs.readFileSync(path.join(root, "demo/demo.css"), "utf8");
 const css = await postcss([tailwind({ base: root, optimize: true })]).process(cssIn, { from: path.join(root, "demo/demo.css") });
-const html = `<title>ReadyPlan Demo</title>
+// Same fallback as lib/brand.ts, read from it so the two can't drift.
+const WORKING_NAME = fs.readFileSync(path.join(root, "lib/brand.ts"), "utf8").match(/WORKING_NAME = "([^"]+)"/)[1];
+const brand = (process.env.NEXT_PUBLIC_BRAND_NAME ?? "").trim() || WORKING_NAME;
+const html = `<title>${brand} demo</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>${css.css}</style>
 <div id="root"></div>
@@ -37,6 +40,6 @@ ${inline ? "" : `<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.
 <script>${js.outputFiles[0].text.replace(/<\/script/gi, "<\\/script")}</script>
 `;
 fs.mkdirSync(path.join(root, "demo/dist"), { recursive: true });
-const out = inline ? "demo/dist/readyplan-demo-offline.html" : "demo/dist/readyplan-demo.html";
+const out = inline ? "demo/dist/demo-offline.html" : "demo/dist/demo.html";
 fs.writeFileSync(path.join(root, out), html);
 console.log(`${out} ${(html.length / 1024).toFixed(0)} KB`);

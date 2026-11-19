@@ -1,5 +1,5 @@
 {
-  "title": "Your ReadyPlan",
+  "title": "Your emergency plan",
   "subtitle": "4 people · Long Island · 90 days · $1,500–5,000",
   "generatedAt": "2026-11-18T12:00:00.000Z",
   "rulesVersion": "1.0.0",
@@ -144,7 +144,7 @@
             },
             {
               "id": "week-4",
-              "text": "Write the family communications plan (see Communications) and pick an out-of-area contact."
+              "text": "Write your household communications plan (see Communications) and pick an out-of-area contact."
             },
             {
               "id": "week-5",
@@ -238,7 +238,7 @@
               "itemId": "filter-gravity-bag",
               "name": "Gravity bag filter",
               "category": "Water",
-              "spec": "Hang-and-forget gravity bag, 0.2-micron hollow fiber, filters several liters per minute for a family",
+              "spec": "Hang-and-forget gravity bag, 0.2-micron hollow fiber, filters several liters per minute for a whole household",
               "models": [
                 "Platypus GravityWorks 4L",
                 "Sawyer Gravity system"
@@ -346,7 +346,7 @@
             },
             {
               "itemId": "first-aid",
-              "name": "Family first aid kit",
+              "name": "First aid kit",
               "category": "First aid",
               "spec": "200+ piece kit with trauma pads, gauze, tape, elastic wrap, gloves, thermometer, tweezers, shears",
               "models": [
@@ -461,7 +461,7 @@
             },
             {
               "id": "month-10",
-              "text": "Buy Phase 1 gear: carbon monoxide alarm, 7-gallon water container, bathtub water bladder, gravity bag filter, unscented household bleach, headlamps + led lanterns, aa/aaa battery stock, noaa weather radio, usb power bank, family first aid kit, fire extinguisher, fridge/freezer thermometers, indoor-rated portable propane heater, 1-lb propane cylinders (heater fuel), cold-rated sleeping bags, pipe insulation & faucet covers."
+              "text": "Buy Phase 1 gear: carbon monoxide alarm, 7-gallon water container, bathtub water bladder, gravity bag filter, unscented household bleach, headlamps + led lanterns, aa/aaa battery stock, noaa weather radio, usb power bank, first aid kit, fire extinguisher, fridge/freezer thermometers, indoor-rated portable propane heater, 1-lb propane cylinders (heater fuel), cold-rated sleeping bags, pipe insulation & faucet covers."
             },
             {
               "id": "month-11",
@@ -764,7 +764,7 @@
       "id": "water",
       "number": 5,
       "title": "Water",
-      "summary": "Your household uses about 3.85 gallons a day. Store 54 gallons (14 days). After that, filter and disinfect collected water for the remaining 76 days.",
+      "summary": "Your household uses about 3.85 gal of water a day. Store 54 gallons (14 days). After that, filter and disinfect collected water for the remaining 76 days.",
       "blocks": [
         {
           "type": "table",
@@ -1329,7 +1329,7 @@
           "items": [
             {
               "id": "fa-49",
-              "text": "Family first aid kit (bandages, gauze, tape, elastic wrap, gloves, shears, tweezers, thermometer)."
+              "text": "First aid kit (bandages, gauze, tape, elastic wrap, gloves, shears, tweezers, thermometer)."
             },
             {
               "id": "fa-50",
@@ -1365,11 +1365,11 @@
       "id": "comms",
       "number": 12,
       "title": "Communications, cash & documents",
-      "summary": "Agree on how your family will reach each other, keep $1,200 in small bills, and keep copies of key documents in a waterproof pouch.",
+      "summary": "Agree on how your household will reach each other, keep $1,200 in small bills, and keep copies of key documents in a waterproof pouch.",
       "blocks": [
         {
           "type": "table",
-          "caption": "Family communications plan (fill in)",
+          "caption": "Communications plan (fill in)",
           "columns": [
             "Item",
             "Plan"
@@ -1402,7 +1402,7 @@
           "items": [
             "Text, don't call — texts get through congested networks.",
             "NOAA weather radio for alerts when cell and internet are down.",
-            "FRS/GMRS radios for family and neighbors within a few miles (GMRS needs an FCC license, no exam).",
+            "FRS/GMRS radios to reach your household and neighbors within a few miles (GMRS needs an FCC license, no exam).",
             "Cash: $1,200 ($600 per adult) in small bills; card readers fail in outages.",
             "Documents: copies of IDs, insurance policies, deeds/leases, medication list, pet records, and photos of your home's contents — in a waterproof pouch, plus an encrypted cloud copy."
           ]
@@ -1582,7 +1582,7 @@
           "rows": [
             [
               "Shelter",
-              "Family tent, 2 heavy tarps, paracord, stakes",
+              "Tent that sleeps everyone, 2 heavy tarps, paracord, stakes",
               "Raw land has no buildings"
             ],
             [
@@ -1630,7 +1630,7 @@
               "itemId": "frs-radios",
               "name": "FRS walkie-talkies",
               "category": "Communications",
-              "spec": "License-free FRS pair, AA or rechargeable, for family use within about a mile",
+              "spec": "License-free FRS pair, AA or rechargeable, for household use within about a mile",
               "models": [
                 "Motorola Talkabout T110",
                 "Cobra RX100"
@@ -1754,7 +1754,7 @@
                 },
                 {
                   "level": "standard",
-                  "name": "Family tent + tarps",
+                  "name": "Tent + tarps",
                   "price": "$150–$450",
                   "selected": false
                 },
@@ -1962,7 +1962,7 @@
               ""
             ],
             [
-              "  Family first aid kit",
+              "  First aid kit",
               "",
               "$30–$80",
               ""
@@ -2295,7 +2295,7 @@
               "itemId": "filter-gravity-bag",
               "name": "Gravity bag filter",
               "category": "Water",
-              "spec": "Hang-and-forget gravity bag, 0.2-micron hollow fiber, filters several liters per minute for a family",
+              "spec": "Hang-and-forget gravity bag, 0.2-micron hollow fiber, filters several liters per minute for a whole household",
               "models": [
                 "Platypus GravityWorks 4L",
                 "Sawyer Gravity system"
@@ -2403,7 +2403,7 @@
             },
             {
               "itemId": "first-aid",
-              "name": "Family first aid kit",
+              "name": "First aid kit",
               "category": "First aid",
               "spec": "200+ piece kit with trauma pads, gauze, tape, elastic wrap, gloves, thermometer, tweezers, shears",
               "models": [
@@ -2753,7 +2753,7 @@
               "itemId": "frs-radios",
               "name": "FRS walkie-talkies",
               "category": "Communications",
-              "spec": "License-free FRS pair, AA or rechargeable, for family use within about a mile",
+              "spec": "License-free FRS pair, AA or rechargeable, for household use within about a mile",
               "models": [
                 "Motorola Talkabout T110",
                 "Cobra RX100"
@@ -2906,7 +2906,7 @@
                 },
                 {
                   "level": "standard",
-                  "name": "Family tent + tarps",
+                  "name": "Tent + tarps",
                   "price": "$150–$450",
                   "selected": false
                 },
