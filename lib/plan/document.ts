@@ -13,7 +13,22 @@ export type LevelOption = z.infer<typeof LevelOptionSchema>;
 export const BlockSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("paragraph"), text: z.string() }),
   z.object({ type: z.literal("bullets"), items: z.array(z.string()) }),
-  z.object({ type: z.literal("checklist"), items: z.array(z.object({ id: z.string(), text: z.string() })) }),
+  z.object({
+    type: z.literal("checklist"),
+    items: z.array(
+      z.object({
+        id: z.string(),
+        text: z.string(),
+        /** One line on why this step matters (shown under the step). Written by code. */
+        why: z.string().optional(),
+        /** Catalog item ids that can fulfil this step, best first. Renderers show a Buy button for the first one
+         *  that is in this plan's gear (so we never sell something the household already has). */
+        buy: z.array(z.string()).optional(),
+        /** An official resource for this step (state/county site). Never an affiliate link. */
+        link: z.object({ label: z.string(), url: z.string().url() }).optional(),
+      }),
+    ),
+  }),
   z.object({
     type: z.literal("table"),
     caption: z.string().optional(),

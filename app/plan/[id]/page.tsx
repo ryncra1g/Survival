@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { DemoLinkBanner } from "@/components/DemoLinkBanner";
 import { ChangeAnswer } from "@/components/ChangeAnswer";
 import { EmailMyPlan } from "@/components/EmailMyPlan";
-import { FirstSteps, PlanView } from "@/components/PlanView";
+import { PlanView } from "@/components/PlanView";
 import { PrintButton } from "@/components/PrintButton";
 import { ResendConfirm } from "@/components/ResendConfirm";
 import type { PlanDocument } from "@/lib/plan/document";
@@ -54,7 +54,6 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
         {session?.scope === "full" && <Link href="/account" className="btn-ghost">Edit answers</Link>}
       </div>
 
-      <FirstSteps doc={doc} />
       <div className="mt-5" id="email">{emailStatus}</div>
       <ChangeAnswer planId={plan.id} />
       <PlanView doc={doc} planId={plan.id} checks={plan.checks ?? {}} sync />

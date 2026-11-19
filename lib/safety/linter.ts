@@ -56,7 +56,7 @@ export function documentStrings(doc: PlanDocument): string[] {
           s.push(...b.items);
           break;
         case "checklist":
-          s.push(...b.items.map((i) => i.text));
+          s.push(...b.items.flatMap((i) => [i.text, i.why ?? "", i.link?.label ?? ""]).filter(Boolean));
           break;
         case "table":
           if (b.caption) s.push(b.caption);

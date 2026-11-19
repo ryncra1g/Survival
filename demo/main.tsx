@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { Subtitle } from "@/components/Subtitle";
 import { createRoot } from "react-dom/client";
 import { Questionnaire } from "@/components/Questionnaire";
-import { FirstSteps, PlanView } from "@/components/PlanView";
+import { PlanView } from "@/components/PlanView";
 import { EmailMyPlan } from "@/components/EmailMyPlan";
 import { StartButton } from "@/components/StartButton";
 import { Landing } from "@/components/Landing";
@@ -72,20 +72,13 @@ function App() {
         )}
         {view.kind === "plan" && (
           <div className="mx-auto max-w-3xl px-4 py-6">
-            <div className="card p-4 mb-5 flex flex-wrap items-center justify-between gap-3">
-              <p className="min-w-0 flex-1">
-                {view.sample ? (
-                  <><strong>Sample plan:</strong> a Long Island family of four with a dog, gas heat and no generator, planning for 90 days.</>
-                ) : (
-                  <><strong>Your plan.</strong> No sign-up needed. Emailing it is optional (the box below is simulated in this demo).</>
-                )}
-              </p>
-              <button type="button" className="btn" onClick={() => setView({ kind: "home" })}>{view.sample ? "Build your own plan" : "Start over"}</button>
+            <div className="mb-4 flex items-center justify-between gap-3 text-sm text-muted">
+              <p className="min-w-0">{view.sample ? "Sample: a Long Island family of four with a dog, 90 days." : "Your plan. No sign-up needed."}</p>
+              <button type="button" className="btn-ghost shrink-0 border border-line text-sm" onClick={() => setView({ kind: "home" })}>{view.sample ? "Build your own" : "Start over"}</button>
             </div>
             <h1 className="text-3xl font-bold">{view.doc.title}</h1>
             <Subtitle text={view.doc.subtitle} />
             <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="#about" className="underline">Sources &amp; disclaimers</a></p>
-            <FirstSteps doc={view.doc} />
             {!view.sample && <div className="mt-5"><EmailMyPlan planId="demo" onSubmit={() => {}} /></div>}
             <PlanView
               doc={view.doc}

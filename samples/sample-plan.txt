@@ -40,7 +40,8 @@ Start with life safety this week, then water and food this month, then power and
 This week
 [ ] Test or install CO alarms: 4 (one per level plus outside sleeping areas).
 [ ] Store your first 3 days of water: 12 gallons.
-[ ] Turn on Wireless Emergency Alerts and sign up for your county's alert system.
+[ ] Look up your hurricane evacuation zone and the route out, and decide where you'd go. (Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM): https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map)
+[ ] Turn on Wireless Emergency Alerts and sign up for your county's alert system. (Sign up for NY-Alert (New York State): https://alert.ny.gov/sign-up-ny-alert)
 [ ] Write your household communications plan (see Communications) and pick an out-of-area contact.
 [ ] Set aside $1,200 in small bills.
 [ ] Find and label your main water shutoff, gas shutoff and electrical panel.
@@ -71,7 +72,7 @@ This month
 [ ] Do the pipe-freeze prep in section 5 (insulate exposed pipes, know how to drain lines).
 [ ] Stock 2 weeks of pet food; ask your vet how to keep extra medication on hand if your pet takes any.
 [ ] Pack a go-bag for each person (see the Evacuation section).
-[ ] Check your flood zone and evacuation zone; review insurance (flood insurance has a 30-day wait).
+[ ] Check your flood zone and evacuation zone; review insurance (flood insurance has a 30-day wait). (Look up your flood zone (FEMA Flood Map Service Center): https://msc.fema.gov/portal/search)
 Within 60 days
 [ ] Complete the full 90 days food list: 653 lb of staples.
 [ ] Buy the generator and fuel storage; test-run it outdoors, 20+ ft from the house, under load.

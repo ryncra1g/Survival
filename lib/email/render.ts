@@ -65,7 +65,7 @@ function block(b: Block, ctx: { appUrl: string; planId?: string } = { appUrl: ""
     case "bullets":
       return `<ul style="margin:8px 0;padding-left:20px">${b.items.map((i) => `<li style="margin:3px 0">${esc(i)}</li>`).join("")}</ul>`;
     case "checklist":
-      return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:6px 0">${b.items.map((i) => `<tr><td valign="top" style="padding:2px 8px 2px 0">&#9744;</td><td style="padding:2px 0">${esc(i.text)}</td></tr>`).join("")}</table>`;
+      return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:6px 0">${b.items.map((i) => `<tr><td valign="top" style="padding:2px 8px 2px 0">&#9744;</td><td style="padding:2px 0">${esc(i.text)}${i.link ? `<br><a href="${esc(i.link.url)}" style="color:${C.info};font-size:13px">${esc(i.link.label)}</a>` : ""}</td></tr>`).join("")}</table>`;
     case "table":
       return `${b.caption ? `<p style="margin:12px 0 4px;font-size:13px;font-weight:600;color:${C.muted}">${esc(b.caption)}</p>` : ""}<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:6px 0"><tr>${b.columns.map((c) => th(c)).join("")}</tr>${b.rows.map((r) => `<tr>${r.map(td).join("")}</tr>`).join("")}</table>`;
     case "ifthen":
@@ -105,10 +105,14 @@ export function firstStepItems(doc: PlanDocument): string[] {
   const b = doc.sections.find((x) => x.id === "priorities")?.blocks.find((x) => x.type === "checklist");
   return b && b.type === "checklist" ? b.items.slice(0, 3).map((i) => i.text) : [];
 }
+function firstStepRows(doc: PlanDocument) {
+  const b = doc.sections.find((x) => x.id === "priorities")?.blocks.find((x) => x.type === "checklist");
+  return b && b.type === "checklist" ? b.items.slice(0, 3) : [];
+}
 function firstSteps(doc: PlanDocument): string {
-  const items = firstStepItems(doc);
+  const items = firstStepRows(doc);
   if (!items.length) return "";
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:12px 0"><tr><td style="border:2px solid ${C.brand};border-radius:8px;padding:12px 14px"><p style="margin:0 0 6px;font-weight:700;font-size:16px">Start here: your first 3 steps</p><ol style="margin:0;padding-left:20px">${items.map((t) => `<li style="margin:4px 0">${esc(t)}</li>`).join("")}</ol></td></tr></table>`;
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:12px 0"><tr><td style="border:2px solid ${C.brand};border-radius:8px;padding:12px 14px"><p style="margin:0 0 6px;font-weight:700;font-size:16px">Start here: your first 3 steps</p><ol style="margin:0;padding-left:20px">${items.map((t) => `<li style="margin:6px 0">${esc(t.text)}${t.why ? `<br><span style="color:${C.muted};font-size:13px">${esc(t.why)}</span>` : ""}${t.link ? `<br><a href="${esc(t.link.url)}" style="color:${C.info};font-size:13px">${esc(t.link.label)}</a>` : ""}</li>`).join("")}</ol></td></tr></table>`;
 }
 
 /** e.g. "Your 90-day emergency plan for Long Island is ready" */
@@ -125,7 +129,7 @@ export function planToText(doc: PlanDocument, meta: EmailMeta & { planUrl: strin
     for (const b of s.blocks) {
       if (b.type === "paragraph" || b.type === "subheading") lines.push(b.text);
       if (b.type === "bullets") lines.push(...b.items.map((i) => `- ${i}`));
-      if (b.type === "checklist") lines.push(...b.items.map((i) => `[ ] ${i.text}`));
+      if (b.type === "checklist") lines.push(...b.items.map((i) => `[ ] ${i.text}${i.link ? ` (${i.link.label}: ${i.link.url})` : ""}`));
       if (b.type === "table") lines.push(...(b.caption ? [b.caption] : []), b.columns.join(" | "), ...b.rows.map((r) => r.join(" | ")));
       if (b.type === "ifthen") lines.push(...b.rows.map((r) => `IF ${r.if} -> ${r.then}`));
       if (b.type === "callout") lines.push(`!! ${b.title}: ${b.text}`);

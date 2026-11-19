@@ -4,8 +4,8 @@ export function Subtitle({ text, className = "mt-1 text-muted" }: { text: string
   return (
     <p className={className}>
       {parts.map((p, i) => (
-        <span key={i} className="whitespace-nowrap">
-          {p}
+        <span key={i}>
+          <span className="whitespace-nowrap">{p}</span>
           {i < parts.length - 1 ? " · " : ""}
         </span>
       ))}

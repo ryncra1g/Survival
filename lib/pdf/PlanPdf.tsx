@@ -80,7 +80,10 @@ function BlockView({ b }: { b: Block }) {
           {b.items.map((it) => (
             <View key={it.id} style={s.checkRow} wrap={false}>
               <View style={s.box} />
-              <Text style={{ flex: 1 }}>{pdfSafe(it.text)}</Text>
+              <Text style={{ flex: 1 }}>
+                {pdfSafe(it.text)}
+                {it.link ? <Text style={{ color: tone.info, fontSize: 8.5 }}>{`\n${pdfSafe(it.link.label)}: ${it.link.url}`}</Text> : null}
+              </Text>
             </View>
           ))}
         </View>

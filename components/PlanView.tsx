@@ -5,12 +5,15 @@ import { LevelChips } from "./LevelChips";
 import { SectionNav } from "./SectionNav";
 import { groupIntoChapters } from "@/lib/plan/chapters";
 import { BRAND } from "@/lib/brand";
+import { productIndex, resolveStep, StepExtras, type StepView } from "./StepExtras";
 
 const toneCls = { danger: "border-danger text-danger", warning: "border-warn text-warn", info: "border-info text-info" } as const;
 
 type ChooseFn = (group: string, level: "essential" | "standard" | "premium") => void;
 
-function BlockView({ b, planId, buyHref, sectionId, onChoose }: { b: Block; planId: string; buyHref?: (itemId: string) => string; sectionId: string; onChoose?: ChooseFn }) {
+type Ctx = { products: ReturnType<typeof productIndex>; href: (itemId: string) => string };
+
+function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block; planId: string; buyHref?: (itemId: string) => string; sectionId: string; onChoose?: ChooseFn; ctx: Ctx }) {
   switch (b.type) {
     case "levelchoice":
       return (
@@ -57,7 +60,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose }: { b: Block; plan
         </ul>
       );
     case "checklist":
-      return <Checklist items={b.items} />;
+      return <Checklist items={b.items.map((i) => resolveStep(i, ctx.products, ctx.href))} />;
     case "table":
       return (
         <div className="my-4 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
@@ -145,10 +148,12 @@ export function PlanView({
   onChoose?: ChooseFn;
 }) {
   const chapters = groupIntoChapters(doc.sections);
+  const ctx: Ctx = { products: productIndex(doc), href: (id) => (buyHref ? buyHref(id) : `/go/${encodeURIComponent(id)}?p=${planId}&src=web`) };
   return (
     <ChecksProvider planId={planId} initial={checks} sync={sync}>
       <article>
         <SectionNav chapters={chapters.map((ch) => ({ id: ch.id, title: ch.title, short: ch.short, sections: ch.items.map((x) => ({ id: x.id, title: SHORT[x.id] ?? x.title })) }))} />
+        <FirstSteps doc={doc} ctx={ctx} />
         {chapters.map((ch) => (
           <section key={ch.id} id={`ch-${ch.id}`} data-chapter={ch.id} aria-labelledby={`ch-${ch.id}-h`} className="scroll-mt-32 pt-4">
             <h2 id={`ch-${ch.id}-h`} className="text-2xl font-bold text-brand mt-4">{ch.title}</h2>
@@ -162,7 +167,7 @@ export function PlanView({
                   <span className="mt-2 block p-3 rounded bg-brand-soft">{s.summary}</span>
                 </summary>
                 <div className="px-4 sm:px-6 pb-5">
-                  {s.blocks.map((b, i) => <BlockView key={i} b={b} planId={planId} buyHref={buyHref} sectionId={s.id} onChoose={onChoose} />)}
+                  {s.blocks.map((b, i) => <BlockView key={i} b={b} planId={planId} buyHref={buyHref} sectionId={s.id} onChoose={onChoose} ctx={ctx} />)}
                 </div>
               </details>
             ))}
@@ -182,18 +187,27 @@ export function PlanView({
   );
 }
 
-/** The three most important actions, up top, so the plan starts with something doable today. */
-export function FirstSteps({ doc }: { doc: PlanDocument }) {
+/** The three most important actions, up top, so the plan starts with something doable today: why, what to buy, where to go. */
+function FirstSteps({ doc, ctx }: { doc: PlanDocument; ctx: Ctx }) {
   const pr = doc.sections.find((s) => s.id === "priorities");
   const week = pr?.blocks.find((b) => b.type === "checklist");
   if (!week || week.type !== "checklist") return null;
+  const steps: StepView[] = week.items.slice(0, 3).map((i) => resolveStep(i, ctx.products, ctx.href));
   return (
     <section aria-labelledby="first-steps" className="mt-5 rounded-xl border-2 border-accent bg-surface p-4 sm:p-5">
       <h2 id="first-steps" className="text-lg font-bold">Start here: your first 3 steps</h2>
-      <ol className="mt-3 space-y-2 list-decimal pl-5">
-        {week.items.slice(0, 3).map((i) => <li key={i.id}>{i.text}</li>)}
+      <ol className="mt-3 space-y-4 list-decimal pl-5">
+        {steps.map((st) => (
+          <li key={st.id}>
+            <span className="font-medium">{st.text}</span>
+            <StepExtras step={st} />
+          </li>
+        ))}
       </ol>
-      <a href="#priorities" className="mt-3 inline-block text-sm underline no-print">See the full priority list</a>
+      <p className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm no-print">
+        <a href="#priorities" className="underline">Full priority list</a>
+        {doc.sections.some((s) => s.id === "gear") && <a href="#gear" className="underline">Everything to buy</a>}
+      </p>
     </section>
   );
 }
