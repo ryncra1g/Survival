@@ -99,7 +99,8 @@ describe("every recommendation has something for the customer", () => {
       for (const st of steps(doc)) {
         const r = resolveStep(st, products, href);
         if (!r.buy && !r.link && !r.see) empty.push(`${p.name}: ${st.text}`);
-        if (r.see) expect(doc.sections.some((x) => x.id === r.see!.anchor), `${p.name}: ${r.see.anchor}`).toBe(true);
+        // A pointer goes to a plan section, or to the dashboard's shopping list (which needs gear in the plan).
+        if (r.see) expect(r.see.anchor === "shopping" ? (doc.overview?.gear.length ?? 0) > 0 : doc.sections.some((x) => x.id === r.see!.anchor), `${p.name}: ${r.see.anchor}`).toBe(true);
       }
     }
     expect(empty).toEqual([]);

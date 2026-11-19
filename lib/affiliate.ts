@@ -8,9 +8,17 @@ import { BRAND } from "@/lib/brand";
  */
 export function buyUrl(item: Pick<CatalogItem, "affiliateUrl" | "models" | "name">, amazonTag: string): string | null {
   if (item.affiliateUrl) return item.affiliateUrl;
-  const query = item.models[0] && !/^any\b/i.test(item.models[0]) && !/local supplier|device-maker|^local\b|already own/i.test(item.models[0]) ? item.models[0] : item.name;
+  // "Use what you own" or "buy locally" items get no store link: the plan never sells what someone already has.
+  if (item.models.length && item.models.every((m) => NOT_A_PRODUCT.test(m))) return null;
+  const specific = item.models.find((m) => !GENERIC.test(m) && !NOT_A_PRODUCT.test(m));
+  const query = specific ?? item.name;
   return `https://www.amazon.com/s?k=${encodeURIComponent(query)}${amazonTag ? `&tag=${encodeURIComponent(amazonTag)}` : ""}`;
 }
+
+/** Example "models" that are advice, not products (reuse what you own, buy locally). */
+const NOT_A_PRODUCT = /already own|use old|match current|rotate favorites|local supplier|local shed builder|^local\b/i;
+/** Generic examples ("Any store brand"): search by the item's name instead. */
+const GENERIC = /^any\b|device-maker/i;
 
 /** True when buying through this item's link earns a commission (its own affiliate URL, or a tagged Amazon search). */
 export function earnsCommission(item: Pick<CatalogItem, "affiliateUrl">, amazonTag: string): boolean {

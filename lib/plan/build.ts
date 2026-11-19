@@ -13,7 +13,7 @@ import {
   TRANSFER_RULE,
 } from "@/lib/safety/required";
 import { DISCLAIMER, SOURCES, type Block, type Overview, type PlanDocument, type Section } from "./document";
-import { fillTokens, n, plural, range, usd, usdRange } from "./format";
+import { fillTokens, lowerFirst, n, plural, range, usd, usdRange } from "./format";
 import { AFFILIATE_DISCLOSURE, buyUrl, earnsCommission, emailSafeBuyUrl } from "@/lib/affiliate";
 
 /**
@@ -227,6 +227,11 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   const month: Step[] = [];
   const d60: Step[] = [];
   const d90: Step[] = [];
+  /** "Buy … gear: 18 items, about $1,234–$2,345." The full list with Buy buttons is the shopping list. */
+  const phaseStep = (phase: 1 | 3, lead: string) => {
+    const items = gearPhaseItems(cp, phase);
+    return `${lead}: ${plural(items.length, "item")}, about ${usdRange(items.reduce((t, g) => t + g.low, 0), items.reduce((t, g) => t + g.high, 0))}.`;
+  };
   if (cp.flags.medicalDevicePriority)
     week.push({ text: "TOP PRIORITY: Call your medical-device supplier about battery backup, and register with your electric utility's medical-needs / life-support registry.", buy: ["med-battery"] });
   if (cp.flags.wellPumpPriority)
@@ -271,7 +276,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   if (a.vehicleFuels.includes("ev")) week.push("Keep EVs charged to at least 80% when severe weather is forecast.");
 
   month.push({ text: `Finish stored water: ${n(w.storedGal)} gallons (${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${plural(w.jugs, "7-gal jug")}).`, buy: ["water-drum", "water-jug", "water-bricks", "water-gallons"] });
-  month.push(`Buy Phase 1 gear: ${gearPhaseItems(cp, 1).map((g) => g.item.name.toLowerCase()).join(", ")}.`);
+  month.push(phaseStep(1, "Buy the rest of your Phase 1 (life safety) gear"));
   month.push(`Build a 2-week pantry from the food list (about ${n(Math.ceil((cp.food.dailyKcal * 14) / 1000))} thousand calories).`);
   if (hasGen && cp.flags.furnaceNeedsPower && !apt)
     month.push("Get a licensed electrician's quote for a generator power inlet + interlock (or transfer switch) so the generator can safely run your furnace.");
@@ -288,7 +293,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   if (atLeast(prof.hurricane, "moderate") && !apt) d60.push({ text: "Pre-cut and label window protection.", buy: ["window-protection"] });
   if (d60.length < 3) d60.push("Rotate the first stored water and check expiration dates.");
 
-  d90.push(`Phase 3 items: ${gearPhaseItems(cp, 3).map((g) => g.item.name.toLowerCase()).join(", ") || "comfort and communications upgrades"}.`);
+  d90.push(gearPhaseItems(cp, 3).length ? phaseStep(3, "Buy your Phase 3 upgrades") : "Buy Phase 3 upgrades: comfort and communications.");
   d90.push("Run a 'lights-out weekend': live off your plan for 24–48 hours and fix what breaks.");
   if (cp.evacuation)
     d90.push(
@@ -939,7 +944,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         type: "callout",
         tone: "info",
         title: "What to cut first",
-        text: `If money is tight, delay ${b.cutFirst.length ? b.cutFirst.map((s) => s.toLowerCase()).join(", ") : "Phase 3 items"}. Never cut CO alarms, stored water, or ${cp.flags.medicalDevicePriority ? "medical-device backup" : "your heat plan"}. Buy food a little at a time with each grocery trip.`,
+        text: `If money is tight, delay ${b.cutFirst.length ? b.cutFirst.map(lowerFirst).join(", ") : "Phase 3 items"}. Never cut CO alarms, stored water, or ${cp.flags.medicalDevicePriority ? "medical-device backup" : "your heat plan"}. Buy food a little at a time with each grocery trip.`,
       },
     ],
   });

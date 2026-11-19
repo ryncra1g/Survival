@@ -1,5 +1,6 @@
 import { BuyIfNeeded } from "./BuyIfNeeded";
 import type { Block, PlanDocument } from "@/lib/plan/document";
+import { lowerFirst } from "@/lib/plan/format";
 
 type ChecklistItem = Extract<Block, { type: "checklist" }>["items"][number];
 type Product = Extract<Block, { type: "products" }>["items"][number];
@@ -18,6 +19,10 @@ export function resolveStep(it: ChecklistItem, products: Map<string, Product>, h
   return { id: it.id, text: it.text, why: it.why, link: it.link, see: it.see, buy: p ? { itemId: p.itemId, name: p.name, price: p.price, href: href(p.itemId) } : undefined };
 }
 
+
+/** "Typical $20–$40 each" → "$20–$40". */
+const shortPrice = (p: string) => p.replace(/^Typical\s+/i, "").replace(/\s+each$/i, "");
+
 /** Why line, Buy button and official link under a step. Server-safe (no hooks). */
 export function StepExtras({ step }: { step: StepView }) {
   if (!step.why && !step.buy && !step.link && !step.see) return null;
@@ -28,8 +33,8 @@ export function StepExtras({ step }: { step: StepView }) {
         <span className="mt-2 flex flex-wrap items-center gap-2">
           {step.buy && (
             <BuyIfNeeded itemId={step.buy.itemId}>
-            <a href={step.buy.href} target="_blank" rel="sponsored nofollow noopener" className="btn-ghost min-h-[40px] px-3 text-sm text-brand border border-line gap-1 flex-wrap justify-start text-left" aria-label={`Buy ${step.buy.name}, ${step.buy.price} (opens a store, affiliate link)`}>
-              <span>Buy: {step.buy.name}</span> <span className="text-muted font-normal whitespace-nowrap">{"· "}{step.buy.price}</span>
+            <a href={step.buy.href} target="_blank" rel="sponsored nofollow noopener" className="inline-block rounded-lg border border-line bg-surface px-3 py-2 text-sm font-semibold text-brand no-underline leading-snug" aria-label={`Buy ${lowerFirst(step.buy.name)}, ${shortPrice(step.buy.price)} (opens a store)`}>
+              Buy {lowerFirst(step.buy.name)} <span className="font-normal text-muted whitespace-nowrap">· {shortPrice(step.buy.price)}</span>
             </a>
             </BuyIfNeeded>
           )}

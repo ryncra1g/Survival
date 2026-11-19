@@ -16,9 +16,9 @@ export default async function Sample() {
   const { document: doc } = await generatePlan(SAMPLE_HOUSEHOLD, DEFAULT_CONSTANTS, SEED_CATALOG, { useLlm: false });
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
-      <div className="card p-4 mb-5 flex flex-wrap items-center justify-between gap-3">
-        <p className="min-w-0 flex-1"><strong>Sample plan:</strong> a Long Island family of four with a dog, gas heat and no generator, planning for 90 days.</p>
-        <StartButton label="Build your own" />
+      <div className="mb-4 flex items-center justify-between gap-3 text-sm text-muted">
+        <p className="min-w-0">Sample: a Long Island family of four with a dog, 90 days.</p>
+        <StartButton label="Build your own" small />
       </div>
       <h1 className="text-3xl font-bold">{doc.title}</h1>
       <Subtitle text={doc.subtitle} />
