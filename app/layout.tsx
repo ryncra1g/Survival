@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import "./globals.css";
 import { BRAND } from "@/lib/brand";
+import { SiteMenu } from "@/components/SiteMenu";
 
 export const metadata: Metadata = {
   title: { default: `${BRAND.name} — your emergency plan`, template: `%s · ${BRAND.name}` },
@@ -32,9 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <header className="border-b border-line bg-surface">
           <div className="mx-auto max-w-3xl px-4 h-14 flex items-center justify-between">
             <Link href="/" className="font-bold text-lg text-brand">{BRAND.name}</Link>
-            <nav className="text-sm flex gap-4">
-              <Link href="/account" className="underline-offset-4 hover:underline">My plan</Link>
-            </nav>
+            <SiteMenu />
           </div>
         </header>
         <main id="main" className="flex-1">{children}</main>
@@ -44,7 +43,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <p className="flex flex-wrap gap-x-4 gap-y-1">
               <Link href="/privacy" className="underline">Privacy</Link>
               <Link href="/terms" className="underline">Terms</Link>
-              <Link href="/account" className="underline">Export or delete my data</Link>
+              <Link href="/sources" className="underline">Sources &amp; safety</Link>
+              <Link href="/account#data" className="underline">Export or delete my data</Link>
               <a href="https://www.ready.gov" className="underline" rel="noopener">Ready.gov</a>
             </p>
           </div>
