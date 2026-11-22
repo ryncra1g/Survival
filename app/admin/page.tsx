@@ -21,6 +21,7 @@ export default async function Admin() {
     ["Plans generated", s.plansGenerated],
     ["Email capture", pct(s.plansWithEmail, s.plansGenerated), `${s.plansWithEmail} plans with an email`],
     ["Buy clicks", s.affiliateClicks, `${s.plansGenerated ? (s.affiliateClicks / s.plansGenerated).toFixed(2) : "0"} per plan`],
+    ["Copy for AI", s.aiCopies, `${s.plansGenerated ? (s.aiCopies / s.plansGenerated).toFixed(2) : "0"} per plan`],
     ["Emails sent", s.emailsSent],
     ["Email opens", s.emailOpens, pct(s.emailOpens, s.emailsSent) + " open rate"],
     ["Unsubscribed", s.unsubscribed],

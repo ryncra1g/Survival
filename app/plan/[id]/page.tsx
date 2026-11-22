@@ -6,6 +6,9 @@ import { DemoLinkBanner } from "@/components/DemoLinkBanner";
 import { ChangeAnswer } from "@/components/ChangeAnswer";
 import { SaveBar } from "@/components/SaveBar";
 import { ShareMenu } from "@/components/ShareMenu";
+import { CopyForAI } from "@/components/CopyForAI";
+import { aiSummary } from "@/lib/plan/aiSummary";
+import type { ComputedPlan } from "@/lib/rules/engine";
 import { flags } from "@/lib/flags";
 import { PlanView } from "@/components/PlanView";
 import { ResendConfirm } from "@/components/ResendConfirm";
@@ -48,7 +51,7 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
       <Subtitle text={doc.subtitle} />
       <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="/sources" className="underline">Sources &amp; safety</a></p>
       <div className="mt-3 flex flex-wrap gap-2 no-print">
-        <ShareMenu planId={plan.id} email={!user} />
+        <ShareMenu planId={plan.id} email={!user} extra={<CopyForAI variant="menu" planId={plan.id} text={aiSummary(doc, (plan.computed_quantities as ComputedPlan).answers)} />} />
         {session?.scope === "full" && <Link href="/account" className="btn-ghost border border-line text-sm px-3 min-h-[44px]">Edit answers</Link>}
       </div>
 

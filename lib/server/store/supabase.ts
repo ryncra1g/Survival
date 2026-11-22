@@ -6,6 +6,7 @@ import { env } from "../env";
 import { seal, unseal, type Sealed } from "../crypto";
 import { clickStats } from "./file";
 import type { EmailEventRow, PlanRow, QuestionnaireRow, RuleConstantsRow, Stats, Store, UserRow } from "./types";
+import { AI_COPY_EVENT } from "./types";
 
 /**
  * Production store on Supabase Postgres, using the service-role key from the server only.
@@ -142,7 +143,7 @@ export const supabaseStore: Store = {
   },
   async stats(): Promise<Stats> {
     const clicks = (must(await db().from("email_events").select("type, provider_id").eq("type", "affiliate_click").limit(50_000)) ?? []) as { type: string; provider_id: string | null }[];
-    const [signups, confirmed, started, completed, plans, sent, opens, unsub, withEmail] = await Promise.all([
+    const [signups, confirmed, started, completed, plans, sent, opens, unsub, withEmail, aiCopies] = await Promise.all([
       count("users"),
       count("users", (q) => q.not("double_opt_in_at", "is", null)),
       count("questionnaires"),
@@ -152,7 +153,8 @@ export const supabaseStore: Store = {
       count("email_events", (q) => q.eq("type", "opened")),
       count("users", (q) => q.not("unsubscribed_at", "is", null)),
       count("plans", (q) => q.not("user_id", "is", null)),
+      count("email_events", (q) => q.eq("type", AI_COPY_EVENT)),
     ]);
-    return { signups, confirmed, questionnairesStarted: started, questionnairesCompleted: completed, plansGenerated: plans, emailsSent: sent, emailOpens: opens, unsubscribed: unsub, plansWithEmail: withEmail, ...clickStats(clicks) };
+    return { signups, confirmed, questionnairesStarted: started, questionnairesCompleted: completed, plansGenerated: plans, emailsSent: sent, emailOpens: opens, unsubscribed: unsub, plansWithEmail: withEmail, aiCopies, ...clickStats(clicks) };
   },
 };
