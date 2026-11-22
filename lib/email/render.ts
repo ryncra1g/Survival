@@ -204,3 +204,10 @@ export function renderFollowupEmail(kind: FollowupKind, planUrl: string, meta: E
   const body = `<h1 style="margin:0 0 8px;font-size:22px">${c.h}</h1>${c.p.map((p) => `<p>${esc(p)}</p>`).join("")}${button(planUrl, "Open my plan")}`;
   return { subject: c.subject, html: shell(c.h, body, meta), text: `${c.p.join("\n\n")}\n\n${planUrl}\n\n${meta.mailingAddress}\nUnsubscribe: ${meta.unsubscribeUrl}` };
 }
+
+/** D12 (accounts track): opt-in maintenance reminder. Task text only: no links to stores, no health details, no addresses. */
+export function renderReminderEmail(tasks: { when: string; task: string }[], planUrl: string, meta: EmailMeta) {
+  const subject = tasks.length === 1 ? `Reminder: ${tasks[0].task}` : `${tasks.length} preparedness checks are due`;
+  const body = `<h1 style="margin:0 0 8px;font-size:22px">Time for a quick check</h1><ul>${tasks.map((t) => `<li><strong>${esc(t.when)}:</strong> ${esc(t.task)}</li>`).join("")}</ul><p style="font-size:13px;color:${C.muted}">You asked for these reminders. Change or turn them off any time on the Reminders page.</p>${button(planUrl, "Open my plan")}`;
+  return { subject, html: shell("Time for a quick check", body, meta), text: `${tasks.map((t) => `- ${t.when}: ${t.task}`).join("\n")}\n\n${planUrl}\n\n${meta.mailingAddress}\nUnsubscribe: ${meta.unsubscribeUrl}` };
+}

@@ -40,7 +40,7 @@ export function InventoryEditor({ planId, items, initial, accounts }: { planId: 
         {items.map((it) => {
           const e = inv[it.itemId];
           return (
-            <li key={it.itemId} className="py-3" data-item={it.itemId}>
+            <li key={it.itemId} id={it.itemId} className="py-3 scroll-mt-20" data-item={it.itemId}>
               <p className="font-semibold">{it.name} <span className="text-muted font-normal">× {it.qty}</span></p>
               <div className="mt-2 flex flex-wrap items-end gap-2">
                 <label className="text-sm">

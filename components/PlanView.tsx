@@ -9,6 +9,8 @@ import { Chevron } from "./Chevron";
 import { groupIntoChapters } from "@/lib/plan/chapters";
 import { BRAND } from "@/lib/brand";
 import { HelpStrip, productIndex, resolveStep, StepExtras, type StepView } from "./StepExtras";
+import { matchMaterials } from "@/lib/tips/match";
+import { TIP_MATERIALS } from "@/lib/tips/library";
 import { KIND_LABEL, kindLabelsAt, kindOf, type Kind } from "@/lib/plan/kinds";
 
 /** D8: a small label where the kind of content changes: Good to know / To do / To have. */
@@ -22,10 +24,20 @@ const toneCls = { danger: "border-danger text-danger", warning: "border-warn tex
 type ChooseFn = (group: string, level: "mix" | "essential" | "standard" | "premium") => void;
 
 /** `affiliate`: some Buy links earn a commission, so the inline disclosure shows. */
-type Ctx = { products: ReturnType<typeof productIndex>; href: (itemId: string) => string; affiliate: boolean; budget?: Overview["budget"]; diyTips: boolean };
+type Ctx = {
+  products: ReturnType<typeof productIndex>;
+  href: (itemId: string) => string;
+  affiliate: boolean;
+  budget?: Overview["budget"];
+  diyTips: boolean;
+  /** Accounts track (D8): "To have" items link to their inventory row. */
+  inventoryHref?: (itemId: string) => string;
+  /** Accounts track (D3b × D2): names of inventory items the household has, to match tip materials. */
+  ownedNames?: string[];
+};
 
 /** D3b: "No time to buy? Use what you have." Only rendered when DIY_TIPS_ENABLED is on. */
-function TipsBox({ b }: { b: Extract<Block, { type: "tips" }> }) {
+function TipsBox({ b, ownedNames }: { b: Extract<Block, { type: "tips" }>; ownedNames?: string[] }) {
   return (
     <aside className="my-4 rounded-lg border border-line bg-surface p-4" data-testid="diy-tips">
       <h4 className="font-semibold">No time to buy? Use what you have</h4>
@@ -34,6 +46,10 @@ function TipsBox({ b }: { b: Extract<Block, { type: "tips" }> }) {
           <li key={t.id}>
             <strong>{t.situation}</strong> {t.steps.join(" ")}{" "}
             <a href={t.source.url} className="underline" rel="noopener">{t.source.label}</a>
+            {ownedNames && (() => {
+              const m = matchMaterials(TIP_MATERIALS[t.id] ?? [], ownedNames);
+              return m.length ? <span className="block text-ok" data-testid="tip-have">You have: {m.join(", ")}</span> : null;
+            })()}
           </li>
         ))}
       </ul>
@@ -48,7 +64,7 @@ function TipsBox({ b }: { b: Extract<Block, { type: "tips" }> }) {
 function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block; planId: string; buyHref?: (itemId: string) => string; sectionId: string; onChoose?: ChooseFn; ctx: Ctx }) {
   switch (b.type) {
     case "tips":
-      return ctx.diyTips ? <TipsBox b={b} /> : null;
+      return ctx.diyTips ? <TipsBox b={b} ownedNames={ctx.ownedNames} /> : null;
     case "help":
       return <HelpStrip b={b} products={ctx.products} href={ctx.href} />;
     case "levelchoice":
@@ -73,6 +89,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
                   </p>
                   {!b.compact && <p className="text-sm text-muted mt-0.5">{i.spec}</p>}
                   <p className="text-sm mt-0.5">{i.price}{!b.compact && i.models.length ? ` · e.g. ${i.models.join("; ")}` : ""}</p>
+                  {ctx.inventoryHref && <a href={ctx.inventoryHref(i.itemId)} className="text-sm underline no-print" data-testid="to-have-inventory">In my inventory</a>}
                   {!b.compact && i.levels && i.group && <CompareOptions planId={planId} group={i.group} levels={i.levels} back={sectionId} budget={ctx.budget} models={i.models} onChoose={onChoose} />}
                 </div>
                 {i.buyable && (
@@ -181,7 +198,12 @@ export function PlanView({
   onChoose,
   afterDashboard,
   diyTips = false,
+  inventoryBase,
+  ownedNames,
 }: {
+  /** Accounts track (ACCOUNTS_ENABLED): link "To have" items to the inventory, and match tip materials. */
+  inventoryBase?: string;
+  ownedNames?: string[];
   /** D3b: show "No time to buy? Use what you have" boxes (DIY_TIPS_ENABLED, passed by the server page). */
   diyTips?: boolean;
   /** Shown right under the dashboard (e.g. email, PDF, change an answer), before the plan chapters. */
@@ -195,7 +217,7 @@ export function PlanView({
   onChoose?: ChooseFn;
 }) {
   const chapters = groupIntoChapters(doc.sections);
-  const ctx: Ctx = { products: productIndex(doc), href: (id) => (buyHref ? buyHref(id) : `/go/${encodeURIComponent(id)}?p=${planId}&src=web`), affiliate: !!doc.affiliateDisclosure, budget: doc.overview?.budget, diyTips };
+  const ctx: Ctx = { products: productIndex(doc), href: (id) => (buyHref ? buyHref(id) : `/go/${encodeURIComponent(id)}?p=${planId}&src=web`), affiliate: !!doc.affiliateDisclosure, budget: doc.overview?.budget, diyTips, inventoryHref: inventoryBase ? (id) => `${inventoryBase}#${id}` : undefined, ownedNames };
   return (
     <ChecksProvider planId={planId} initial={checks} sync={sync}>
       <article>
