@@ -49,6 +49,18 @@ const seed: Seed[] = [
     models: ["Any store brand"], priceLow: 4, priceHigh: 8, tier: 1, phase: 1, priority: 5, qty: 1, tags: [], essential: true,
   },
   {
+    // D6 water kit: the light backup treatment method.
+    id: "water-tablets", category: "Water", name: "Water treatment tablets (chlorine dioxide)",
+    spec: "Chlorine dioxide tablets as a light backup to your filter or boiling; follow the label for amount and wait time",
+    models: ["Katadyn Micropur MP1", "Aquamira water treatment tablets"], priceLow: 10, priceHigh: 20, tier: 1, phase: 3, priority: 6, qty: 1, tags: [],
+  },
+  {
+    // D6 water kit: spare elements for the household filter.
+    id: "filter-spare", category: "Water", name: "Spare filter elements or cartridges",
+    spec: "Replacement elements for your household filter, or a backflush kit; match your filter's brand and model",
+    models: ["Your filter maker's replacement elements"], priceLow: 20, priceHigh: 60, tier: 2, phase: 3, priority: 7, qty: 1, tags: ["filter_kit"],
+  },
+  {
     id: "filter-basic", category: "Water", name: "Hollow-fiber water filter",
     spec: "0.1-micron hollow fiber (removes bacteria & protozoa; boil or disinfect for viruses); gravity or squeeze",
     models: ["Sawyer Squeeze", "LifeStraw Family 2.0"], priceLow: 35, priceHigh: 90, tier: 1, phase: 1, priority: 6,

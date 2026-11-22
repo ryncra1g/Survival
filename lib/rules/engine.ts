@@ -468,6 +468,8 @@ export function computeTags(a: Answers, profile: ZipProfile, power: PowerResult,
   if (a.evacuation.destination === "hotel") t.add("evac_hotel");
   if (a.evacuation.destination === "public_shelter") t.add("evac_shelter");
   if (hasPersonalFilter(a)) t.add("has_personal_filter");
+  // D6 water kit: spare elements for a household filter they own or are told to buy.
+  if (hasHouseholdFilter(a) || a.scenarioDays > 14) t.add("filter_kit");
   if (a.storage.includes("none")) t.add("no_storage");
   if (a.vehicleFuels.length) t.add("vehicles");
   if (a.vehicleFuels.includes("ev")) t.add("ev");

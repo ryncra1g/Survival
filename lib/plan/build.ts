@@ -602,6 +602,29 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         ],
       },
       { type: "callout", tone: "info", title: "How to disinfect water", text: BLEACH_RULE },
+      // D6 / WT-01: treatment in layers, each with what it does NOT remove (CDC). No amounts: labels and CDC/EPA give them.
+      {
+        type: "table",
+        caption: "Safe water, in this order",
+        columns: ["Way", "When", "What it does not remove"],
+        rows: [
+          ["1. Stored water", "Drink it first.", "Nothing to treat if it was stored clean; replace tap-filled water every 6 months."],
+          ["2. Household filter (gravity or pump)", "The main way to make more water.", "Viruses and chemicals: disinfect after filtering."],
+          ["3. Treatment tablets", "A light backup to the filter.", "Chemicals and fuel. Iodine and chlorine tablets don't reliably kill Cryptosporidium; chlorine dioxide can, when you follow the label."],
+          ["4. Boiling", "The fallback if you have no filter or tablets.", "Chemicals, fuel and toxins."],
+          ["5. Straw or bottle filter", "In your go-bag, for one person.", "Viruses and chemicals."],
+        ],
+      },
+      { type: "callout", tone: "warning", title: "Fuel or chemicals in the water", text: "Water with fuel or toxic chemicals in it can't be made safe by boiling or disinfecting. Use stored or bottled water, and contact your health department." },
+      { type: "paragraph", text: "This plan never gives treatment amounts: follow the product label and CDC/EPA guidance." },
+      { type: "subheading", text: "Your water kit" },
+      check("water", [
+        { id: "water-kit-containers", text: `Containers for ${n(w.storedGal)} gallons, filled and sealed.`, buy: ["water-jug", "water-bricks", "water-gallons", "water-drum"], link: HOWTO.cdcWater },
+        { id: "water-kit-dispense", text: w.drums ? "A way to get water out: the drum pump or siphon, and the spigot on each jug." : "A way to get water out: the spigot on each jug, or a clean pitcher.", link: HOWTO.kit },
+        { id: "water-kit-labels", text: "Rotation labels: write the fill date on every container.", link: HOWTO.kit },
+        ...(hasHouseholdFilter(a) || w.filterDays > 0 ? [{ id: "water-kit-spares", text: "Spare filter elements or a backflush kit for your household filter.", buy: ["filter-spare"] }] : []),
+        { id: "water-kit-backup", text: "A backup method: treatment tablets, plus unscented bleach, used as the labels direct.", buy: ["water-tablets", "bleach"], link: HOWTO.waterSafety },
+      ]),
       ...(hasHouseholdFilter(a) ? [{ type: "paragraph" as const, text: "You already have a household filter: test it now, and keep spare cartridges or a backflush kit with it." }] : []),
       ...(hasPersonalFilter(a) ? [{ type: "paragraph" as const, text: "Your straw or bottle filter is for one person on the move: keep it in your go-bag." }] : []),
       { type: "bullets", items: ["Store water in food-grade containers away from sunlight and chemicals.", "Replace tap-filled water every 6 months (mark the date).", "Use a 0.1-micron filter for bacteria/protozoa, then disinfect for viruses."] },
@@ -758,7 +781,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   if (fm.kcal.bulk) mixRows.push(["Bulk staples you store yourself", `${Math.round(fm.shares.bulk * 100)}%`, `${n(fm.kcal.bulk)} kcal: ${n(fm.bulk.totalLbs)} lb (table below)`, usd(fm.bulk.cost)]);
   if (fm.kcal.kits) mixRows.push(["Ration & freeze-dried kits", `${Math.round(fm.shares.kits * 100)}%`, `about ${n(fm.kcal.kits)} kcal${fdItem ? ` (${plural(fdItem.qty, "1-person, 30-day kit")})` : ""}`, fdItem ? usdRange(fdItem.low, fdItem.high) : "see gear"]);
   const foodBlocks: Block[] = [
-    { type: "table", caption: "Daily calories", columns: ["Person", "kcal/day"], rows: [...f.perPerson.map((p) => [p.label, n(p.kcal)]), ["Total", n(f.dailyKcal)]] },
+    { type: "table", caption: "Daily calories", columns: ["Person", "kcal/day"], rows: [...f.perPerson.map((p) => [p.label, n(p.kcal)]), ["Total", n(f.dailyKcal)]], detail: true },
     {
       type: "table",
       caption: `Your food mix: ${fm.choice === "mix" ? "recommended for your household" : "your choice"} (${n(f.totalKcal)} kcal in all)`,

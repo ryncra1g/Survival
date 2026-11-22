@@ -70,6 +70,8 @@ function block(b: Block, ctx: { appUrl: string; planId?: string; seen?: Set<stri
     case "levelchoice":
       return `<p style="margin:10px 0 4px;font-weight:600">${esc(b.caption)}</p><p style="margin:0 0 8px;font-size:13px">${b.levels.map((l) => `${l.selected ? "<strong>✓ " : ""}${esc(l.name)}: ${esc(l.price)}${l.selected ? "</strong>" : ""}`).join("<br>")}</p>`;
     case "products":
+      // The compact shopping list repeats Recommended gear (which has every item with its Buy link): one line instead.
+      if (b.compact) return `<p style="margin:8px 0;font-size:14px">Your shopping list, with prices, is under <strong>Recommended gear</strong> below.</p>`;
       return `${b.caption ? `<p style="margin:12px 0 4px;font-size:13px;font-weight:600;color:${C.muted}">${esc(b.caption)}</p>` : ""}<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:6px 0"><tr>${th("Item")}${th("Price")}${th("")}</tr>${b.items
         .map(
           (i) =>
