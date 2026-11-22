@@ -46,7 +46,8 @@ const th = (v: string, w = "") => `<th class="c"${w ? ` width="${w}"` : ""}>${es
 export const goPath = (itemId: string, planId?: string, src = "web") => `/go/${encodeURIComponent(itemId)}?${planId ? `p=${encodeURIComponent(planId)}&` : ""}src=${src}`;
 
 const levelLine = (levels?: { level: string; price: string; selected: boolean }[]) =>
-  levels ? `<br><span style="color:${C.muted};font-size:12px">Levels: ${levels.map((l) => `${l.selected ? "<strong>" : ""}${esc(l.level[0].toUpperCase() + l.level.slice(1))} ${esc(l.price)}${l.selected ? "</strong>" : ""}`).join(" · ")}</span>` : "";
+  // Only the chosen level; Compare options (every level, the difference and new total) is on the plan page.
+  levels?.some((l) => l.selected) ? `<br><span style="color:${C.muted};font-size:12px">Level: ${esc(levels.find((l) => l.selected)!.level[0].toUpperCase() + levels.find((l) => l.selected)!.level.slice(1))} · other levels on your plan page</span>` : "";
 
 /** National how-to pages are listed once in each section's "What you need" line; steps keep only local links. */
 const GENERAL_HOWTO = new Set(Object.values(HOWTO).map((l) => l.url));
@@ -84,6 +85,7 @@ function block(b: Block, ctx: { appUrl: string; planId?: string; seen?: Set<stri
     case "checklist":
       return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:6px 0">${b.items.map((i) => `<tr><td valign="top" style="padding:2px 8px 2px 0">&#9744;</td><td style="padding:2px 0">${esc(i.text)}${i.link && !GENERAL_HOWTO.has(i.link.url) && once(ctx, i.link.url) ? `<br><a href="${esc(i.link.url)}" style="color:${C.info};font-size:13px">${esc(i.link.label)}</a>` : ""}</td></tr>`).join("")}</table>`;
     case "table":
+      if (b.detail) return "";
       return `${b.caption ? `<p style="margin:12px 0 4px;font-size:13px;font-weight:600;color:${C.muted}">${esc(b.caption)}</p>` : ""}<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:6px 0"><tr>${b.columns.map((c) => th(c)).join("")}</tr>${b.rows.map((r) => `<tr>${r.map(td).join("")}</tr>`).join("")}</table>`;
     case "ifthen":
       return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:8px 0"><tr>${th("If…", "45%")}${th("Then…")}</tr>${b.rows.map((r) => `<tr>${td(r.if)}${td(r.then)}</tr>`).join("")}</table>`;

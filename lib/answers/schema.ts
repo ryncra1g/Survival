@@ -254,3 +254,14 @@ export const LABELS = {
 /** A household filter (not a straw or bottle) is what makes more water for everyone (D6). */
 export const hasHouseholdFilter = (a: Pick<Answers, "waterFilter">) => a.waterFilter === "household" || a.waterFilter === "both";
 export const hasPersonalFilter = (a: Pick<Answers, "waterFilter">) => a.waterFilter === "personal" || a.waterFilter === "both";
+
+/**
+ * Apply one à la carte choice. "mix" (food only, D7) clears the food choice so the recommended mix
+ * from the household's answers applies again.
+ */
+export function withGearChoice(a: Answers, group: (typeof GEAR_SLOTS)[number], level: z.infer<typeof GearLevel> | "mix"): Answers {
+  const next = { ...(a.gearChoices ?? {}) };
+  if (level === "mix") delete next[group];
+  else next[group] = level;
+  return { ...a, gearChoices: next };
+}

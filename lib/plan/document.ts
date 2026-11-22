@@ -2,7 +2,8 @@ import { z } from "zod";
 import { BRAND } from "@/lib/brand";
 
 const LevelOptionSchema = z.object({
-  level: z.enum(["essential", "standard", "premium"]),
+  /** "mix" only in the food slot: the recommended mix of food approaches (D7). */
+  level: z.enum(["mix", "essential", "standard", "premium"]),
   name: z.string(),
   price: z.string(),
   selected: z.boolean(),
@@ -52,6 +53,8 @@ export const BlockSchema = z.discriminatedUnion("type", [
     caption: z.string().optional(),
     columns: z.array(z.string()),
     rows: z.array(z.array(z.string())),
+    /** Reference detail shown on the web and in the PDF but left out of the email (keeps it under the clipping limit). */
+    detail: z.boolean().optional(),
   }),
   z.object({ kind: Kind.optional(), type: z.literal("ifthen"), rows: z.array(z.object({ if: z.string(), then: z.string() })) }),
   z.object({

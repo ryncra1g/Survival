@@ -1,7 +1,5 @@
 import type { LevelOption, Overview } from "@/lib/plan/document";
-import { compareOptions, type CompareRow } from "@/lib/plan/compare";
-
-const LABEL = { essential: "Essential", standard: "Standard", premium: "Premium" } as const;
+import { compareOptions, LEVEL_LABEL as LABEL, type CompareRow } from "@/lib/plan/compare";
 
 /**
  * D3 / GEAR-01: one main pick per slot, plus "Compare options": Lower-cost, Upgrade and Other choices,
@@ -25,9 +23,9 @@ export function CompareOptions({
   models?: string[];
   onChoose?: (group: string, level: LevelOption["level"]) => void;
 }) {
-  const { current, lower, upgrade } = compareOptions(levels, budget);
+  const { current, lower, upgrade, alternatives } = compareOptions(levels, budget);
   // Plans saved before Compare options had no prices per level: list the levels to switch to.
-  const fallback: CompareRow[] = current && !lower.length && !upgrade.length
+  const fallback: CompareRow[] = current && !lower.length && !upgrade.length && !alternatives.length
     ? levels.filter((l) => !l.selected).map((l) => ({ level: l.level, name: l.name, price: l.price, diff: "", newTotal: "", over: null }))
     : [];
   const Row = ({ r }: { r: CompareRow }) => {
@@ -79,11 +77,12 @@ export function CompareOptions({
               <ul className="divide-y divide-line">{upgrade.map((r) => <Row key={r.level} r={r} />)}</ul>
             </>
           )}
+          {alternatives.length > 0 && <ul className="divide-y divide-line">{alternatives.map((r) => <Row key={r.level} r={r} />)}</ul>}
           {fallback.length > 0 && <ul className="divide-y divide-line">{fallback.map((r) => <Row key={r.level} r={r} />)}</ul>}
           {models.length > 1 && (
             <>
               <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-muted">Other choices</p>
-              <p className="text-sm">Same price range, other makers: {models.join("; ")}.</p>
+              <p className="text-sm">Same kind of item from other makers: {models.join("; ")}.</p>
             </>
           )}
           <p className="mt-2 text-xs text-muted">Your budget is a target, not a limit. Safety items come first; commissions never change the order.</p>

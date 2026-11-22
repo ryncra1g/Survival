@@ -19,7 +19,7 @@ function KindLabel({ kind }: { kind: Kind }) {
 
 const toneCls = { danger: "border-danger text-danger", warning: "border-warn text-warn", info: "border-info text-info" } as const;
 
-type ChooseFn = (group: string, level: "essential" | "standard" | "premium") => void;
+type ChooseFn = (group: string, level: "mix" | "essential" | "standard" | "premium") => void;
 
 /** `affiliate`: some Buy links earn a commission, so the inline disclosure shows. */
 type Ctx = { products: ReturnType<typeof productIndex>; href: (itemId: string) => string; affiliate: boolean; budget?: Overview["budget"] };

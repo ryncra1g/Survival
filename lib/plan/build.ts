@@ -1,6 +1,6 @@
 import { hasHouseholdFilter, hasPersonalFilter, LABELS, type Answers } from "@/lib/answers/schema";
 import { labelKinds } from "./kinds";
-import type { ComputedPlan, GearPick } from "@/lib/rules/engine";
+import { mixLabel, type ComputedPlan, type GearPick } from "@/lib/rules/engine";
 import type { RuleConstants } from "@/lib/rules/constants";
 import { atLeast } from "@/lib/zip/profile";
 import { addHelp } from "./help";
@@ -151,7 +151,8 @@ export function buildTokens(cp: ComputedPlan): Record<string, string> {
   t["food.dailyKcal"] = n(f.dailyKcal);
   t["food.totalKcal"] = n(f.totalKcal);
   t["food.totalLbs"] = n(f.totalLbs);
-  t["food.cost"] = usd(f.cost);
+  t["food.cost"] = usd(cp.foodMix.bulk.cost + cp.foodMix.readyCost);
+  t["food.mix"] = mixLabel(cp.foodMix.shares);
   t["power.hoursPerDay"] = n(p.hoursPerDay);
   t["power.gasPerDay"] = range(p.gasolineGalPerDay[0], p.gasolineGalPerDay[1]);
   t["power.propanePerDay"] = range(p.propaneGalPerDay[0], p.propaneGalPerDay[1]);
@@ -366,7 +367,8 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   const dest = destinationStep(a);
   if (dest) month.push(dest);
 
-  if (a.scenarioDays >= 30) d60.push(`Complete the full ${LABELS.scenarioDays[a.scenarioDays]} food list: ${n(cp.food.totalLbs)} lb of staples.`);
+  if (a.scenarioDays >= 30)
+    d60.push(cp.foodMix.bulk.totalLbs ? `Complete the full ${LABELS.scenarioDays[a.scenarioDays]} food list: ${n(cp.foodMix.bulk.totalLbs)} lb of bulk staples plus the rest of your food mix.` : `Complete the full ${LABELS.scenarioDays[a.scenarioDays]} food supply: ${n(cp.food.totalKcal)} calories in all (see Food).`);
   if (pw.generatorStatus === "recommended") d60.push({ text: "Buy the generator and fuel storage; test-run it outdoors, 20+ ft from the house, under load.", buy: ["generator-dual", "generator-small", "gas-cans"] });
   if (pw.generatorStatus === "owned_portable") d60.push("Service your generator (oil, plug, fresh stabilized fuel) and test-run it under load outdoors.");
   if (w.filterDays > 0) d60.push({ text: `Set up water filtration + collection for days ${n(w.storedDays + 1)}–${n(a.scenarioDays)} (${n(w.filterGal)} gallons).`, buy: ["filter-gravity", "filter-gravity-bag", "filter-basic"] });
@@ -746,39 +748,88 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   });
 
   // 7. Food -----------------------------------------------------------------------
+  // D7: the calorie total is fixed by the rules; the mix (bulk staples / ready-to-eat / kits) only changes how
+  // it's supplied. Ready-to-eat and kits are shown as calorie targets, never as can or pouch counts.
   const f = cp.food;
+  const fm = cp.foodMix;
+  const fdItem = [...cp.budget.picks, ...cp.budget.deferred].find((p) => p.item.id === "food-freeze-dried");
+  const mixRows: string[][] = [];
+  if (fm.kcal.ready) mixRows.push(["Ready-to-eat: canned meals, soups, pouches", `${Math.round(fm.shares.ready * 100)}%`, `about ${n(fm.kcal.ready)} kcal (check the labels)`, usd(fm.readyCost)]);
+  if (fm.kcal.bulk) mixRows.push(["Bulk staples you store yourself", `${Math.round(fm.shares.bulk * 100)}%`, `${n(fm.kcal.bulk)} kcal: ${n(fm.bulk.totalLbs)} lb (table below)`, usd(fm.bulk.cost)]);
+  if (fm.kcal.kits) mixRows.push(["Ration & freeze-dried kits", `${Math.round(fm.shares.kits * 100)}%`, `about ${n(fm.kcal.kits)} kcal${fdItem ? ` (${plural(fdItem.qty, "1-person, 30-day kit")})` : ""}`, fdItem ? usdRange(fdItem.low, fdItem.high) : "see gear"]);
+  const foodBlocks: Block[] = [
+    { type: "table", caption: "Daily calories", columns: ["Person", "kcal/day"], rows: [...f.perPerson.map((p) => [p.label, n(p.kcal)]), ["Total", n(f.dailyKcal)]] },
+    {
+      type: "table",
+      caption: `Your food mix: ${fm.choice === "mix" ? "recommended for your household" : "your choice"} (${n(f.totalKcal)} kcal in all)`,
+      columns: ["Approach", "Share", "Calories", "Est. cost"],
+      rows: mixRows,
+    },
+  ];
+  if (fm.kcal.bulk)
+    foodBlocks.push({
+      type: "table",
+      caption: `Bulk staples (${n(fm.kcal.bulk)} kcal)`,
+      columns: ["Staple", "Pounds", "Buy", "Est. cost"],
+      rows: [...fm.bulk.staples.map((st) => [st.name, n(st.lbs), `${n(st.units)} × ${st.unit}`, usd(st.cost)]), ["Total", n(fm.bulk.totalLbs), "", usd(fm.bulk.cost)]],
+    });
+  else
+    foodBlocks.push({
+      type: "table",
+      caption: `If you switch to bulk staples: the full list for ${n(f.totalKcal)} kcal (for reference)`,
+      columns: ["Staple", "Pounds", "Buy", "Est. cost"],
+      rows: [...f.staples.map((st) => [st.name, n(st.lbs), `${n(st.units)} × ${st.unit}`, usd(st.cost)]), ["Total", n(f.totalLbs), "", usd(f.cost)]],
+      detail: true,
+    });
+  if (cp.formula)
+    foodBlocks.push({ type: "paragraph", text: `Infant formula: plan on ${plural(cp.formula.cans, "can")} of powdered formula (planning figure). Ask your pediatrician what to use and follow the label for mixing; use stored or boiled water.` });
+  if (h.toddlersOnMilk)
+    foodBlocks.push({ type: "paragraph", text: fm.kcal.bulk ? "Toddler milk: the powdered milk above is included for this; shelf-stable UHT milk boxes are an easy add." : "Toddler milk: add shelf-stable UHT milk boxes or powdered milk to your ready-to-eat food." });
+  foodBlocks.push(
+    {
+      type: "table",
+      caption: "Eating order",
+      columns: ["When", "Eat"],
+      rows: [
+        ["First 4 hours", "Normal meals; keep the fridge closed."],
+        ["Day 1–2", "Fridge perishables that are still below 40°F, then freezer food (a full freezer holds ~48 h)."],
+        ["Day 3–14", "Pantry and canned food, ready-to-eat items."],
+        ["Day 15+", fm.kcal.bulk ? "Bulk staples: rice, beans, oats, pasta with oil, peanut butter, canned protein and produce." : "The rest of your ready-to-eat food and kits."],
+      ],
+    },
+    {
+      type: "table",
+      caption: "Compare food options",
+      detail: true,
+      columns: ["", "Bulk staples", "Ready-to-eat", "Ration & freeze-dried kits"],
+      rows: [
+        ["Cost for your whole supply", usd(cp.budget.slots.find((x) => x.group === "food")?.options.find((o) => o.itemId === "food-diy")?.low ?? fm.bulk.cost), usd(cp.budget.slots.find((x) => x.group === "food")?.options.find((o) => o.itemId === "food-ready")?.low ?? fm.readyCost), (() => { const o = cp.budget.slots.find((x) => x.group === "food")?.options.find((x) => x.level === "premium"); return o ? usdRange(o.low, o.high) : "—"; })()],
+        ["Preparation", "Cook: simmer rice, beans and oats", "Open and eat; heat if you can", "Add hot water to freeze-dried meals; ration bars are ready"],
+        ["Water and fuel", "Water and fuel to cook", "Little or none", "Hot water for freeze-dried meals"],
+        ["Space", "Buckets: compact for the calories", "Most space for the calories", "Compact"],
+        ["Shelf life", "Long when sealed; rotate into meals", "Check the dates; rotate into meals", "Longest; check the label"],
+      ],
+    },
+    {
+      type: "bullets",
+      items: [
+        ...(fm.kcal.bulk ? [`Store bulk staples in sealed food-grade buckets or mylar, cool and dry: about ${plural(fm.bulk.buckets, "5-gallon bucket")} for ${n(fm.bulk.totalLbs)} lb.`] : []),
+        "Ration bars are for go-bags and the first days, not your whole supply.",
+        ...(fm.kcal.kits ? ["Freeze-dried meals need hot water: count it in your water and cooking fuel."] : []),
+        "Adjust for any allergies or diets in your household.",
+        "Include comfort foods, spices, and a manual can opener.",
+        ...(a.pets.some((p) => p.specialDiet) ? ["Stock your pet's special diet separately (see Pets)."] : []),
+      ],
+    },
+  );
+  if (levelsFor("food")) foodBlocks.push({ type: "levelchoice", group: "food", caption: "Switch or mix your food: the calorie total stays the same", levels: levelsFor("food")! });
   S.push({
     id: "food",
     title: "Food",
-    summaryTemplate: "Your household needs about {{food.dailyKcal}} calories a day — {{food.totalKcal}} for the full {{scenario.label}}. The staples below provide it for roughly {{food.cost}}. Eat perishables first, then pantry food, then bulk staples.",
+    summaryTemplate: "Your household needs about {{food.dailyKcal}} calories a day — {{food.totalKcal}} for the full {{scenario.label}}. Your mix: {{food.mix}}. Eat perishables first, then pantry food, then bulk staples.",
     facts: ["Rotate stored food into normal meals so nothing expires"],
     blocks: [
-      { type: "table", caption: "Daily calories", columns: ["Person", "kcal/day"], rows: [...f.perPerson.map((p) => [p.label, n(p.kcal)]), ["Total", n(f.dailyKcal)]] },
-      {
-        type: "table",
-        caption: `Bulk staples for ${LABELS.scenarioDays[a.scenarioDays]} (${n(f.totalKcal)} kcal)`,
-        columns: ["Staple", "Pounds", "Buy", "Est. cost"],
-        rows: [...f.staples.map((s) => [s.name, n(s.lbs), `${n(s.units)} × ${s.unit}`, usd(s.cost)]), ["Total", n(f.totalLbs), "", usd(f.cost)]],
-      },
-      ...(cp.formula
-        ? [{ type: "paragraph" as const, text: `Infant formula: plan on ${plural(cp.formula.cans, "can")} of powdered formula (planning figure). Ask your pediatrician what to use and follow the label for mixing; use stored or boiled water.` }]
-        : []),
-      ...(h.toddlersOnMilk ? [{ type: "paragraph" as const, text: "Toddler milk: the powdered milk above is included for this; shelf-stable UHT milk boxes are an easy add." }] : []),
-      {
-        type: "table",
-        caption: "Eating order",
-        columns: ["When", "Eat"],
-        rows: [
-          ["First 4 hours", "Normal meals; keep the fridge closed."],
-          ["Day 1–2", "Fridge perishables that are still below 40°F, then freezer food (a full freezer holds ~48 h)."],
-          ["Day 3–14", "Pantry and canned food, ready-to-eat items."],
-          ["Day 15+", "Bulk staples: rice, beans, oats, pasta with oil, peanut butter, canned protein and produce."],
-        ],
-      },
-      { type: "bullets", items: ["Store staples in sealed food-grade buckets or mylar, cool and dry.", "Include comfort foods, spices, and a manual can opener.", ...(a.pets.some((p) => p.specialDiet) ? ["Stock your pet's special diet separately (see Pets)."] : [])] },
-      ...(levelsFor("food")
-        ? [{ type: "levelchoice" as const, group: "food", caption: "Food level: store it yourself, or buy ready-made", levels: levelsFor("food")! }]
-        : []),
+      ...foodBlocks,
       { type: "subheading", text: "Where to keep it" },
       check("store", storeTips),
     ],

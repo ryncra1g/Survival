@@ -171,19 +171,21 @@ export const FOOD_LEVEL: Record<SlotLevel, FoodApproach> = { essential: "bulk", 
 
 /**
  * D7: the recommended mix, from answers the household already gave.
+ * It follows the plan's eating order: ready-to-eat (pantry, canned, pouches) for the first 14 days,
+ * bulk staples after that.
  * - No suitable storage, or no way to cook without grid power (apartment, non-gas stove, no backup power):
  *   all ready-to-eat (bulk staples need storage and cooking).
- * - 72-hour plans: all ready-to-eat.
- * - Very limited space: mostly ready-to-eat (75%), some bulk staples (25%).
- * - Otherwise half bulk staples, half ready-to-eat.
+ * - Otherwise ready-to-eat covers min(days, 14) of the days; bulk staples the rest.
  * - A $5,000+ budget moves a quarter of the bulk share to ration & freeze-dried kits.
  */
+export const READY_DAYS = 14;
 export function defaultFoodMix(a: Answers): Record<FoodApproach, number> {
   const canCook = a.cooking === "gas" || a.backupPower !== "none" || a.homeType !== "apartment";
-  if (a.storage.includes("none") || !canCook || a.scenarioDays <= 3) return { bulk: 0, ready: 1, kits: 0 };
-  const base = a.storage.includes("limited") ? { bulk: 0.25, ready: 0.75, kits: 0 } : { bulk: 0.5, ready: 0.5, kits: 0 };
-  if (a.budget === "5000_plus") return { bulk: base.bulk - 0.25 * base.bulk, ready: base.ready, kits: 0.25 * base.bulk };
-  return base;
+  if (a.storage.includes("none") || !canCook) return { bulk: 0, ready: 1, kits: 0 };
+  const ready = Math.min(a.scenarioDays, READY_DAYS) / a.scenarioDays;
+  const bulk = 1 - ready;
+  if (a.budget === "5000_plus" && bulk > 0) return { bulk: bulk * 0.75, ready, kits: bulk * 0.25 };
+  return { bulk, ready, kits: 0 };
 }
 
 export function computeFoodMix(a: Answers, c: RuleConstants, food: FoodResult): FoodMixResult {
@@ -506,7 +508,8 @@ export interface BudgetPhase {
 export type SlotLevel = "essential" | "standard" | "premium";
 const LEVEL_RANK: Record<SlotLevel, number> = { essential: 0, standard: 1, premium: 2 };
 export interface SlotOption {
-  level: SlotLevel;
+  /** "mix" only for the food slot: the recommended mix of approaches (D7). */
+  level: SlotLevel | "mix";
   itemId: string;
   name: string;
   qty: number;
@@ -517,7 +520,7 @@ export interface SlotOption {
 export interface Slot {
   group: string;
   chosen: string | null;
-  chosenLevel: SlotLevel | null;
+  chosenLevel: SlotLevel | "mix" | null;
   byChoice: boolean;
   options: SlotOption[];
 }
@@ -539,7 +542,7 @@ export function isStale(item: CatalogItem, now: Date, c: RuleConstants): boolean
   return (now.getTime() - reviewed.getTime()) / 86_400_000 > c.catalog.staleAfterDays;
 }
 
-export function resolveQty(item: CatalogItem, ctx: { water: WaterResult; power: PowerResult; h: Household; a: Answers; foodKcal: number }): number {
+export function resolveQty(item: CatalogItem, ctx: { water: WaterResult; power: PowerResult; h: Household; a: Answers; foodKcal: number; foodBuckets?: number }): number {
   if (typeof item.qty === "number") return item.qty;
   switch (item.qty) {
     case "co_alarms":
@@ -548,6 +551,8 @@ export function resolveQty(item: CatalogItem, ctx: { water: WaterResult; power: 
       return ctx.water.jugs;
     case "water_bricks":
       return Math.ceil(Math.max(0, ctx.water.storedGal - ctx.water.drums * 55) / 3.5);
+    case "food_buckets":
+      return ctx.foodBuckets ?? 0;
     case "freeze_dried_units":
       return Math.ceil(ctx.foodKcal / (2000 * 30));
     case "water_gallons":
@@ -576,9 +581,11 @@ export function computeBudget(
   c: RuleConstants,
   catalog: CatalogItem[],
   tags: Set<string>,
-  ctx: { water: WaterResult; power: PowerResult; h: Household; a: Answers; foodKcal: number },
+  ctx: { water: WaterResult; power: PowerResult; h: Household; a: Answers; foodKcal: number; foodBuckets?: number },
   consumables: ConsumableLine[],
   now: Date,
+  /** D7: include ration & freeze-dried kits as gear (the food mix has a kits share). */
+  kitsWanted = false,
 ): BudgetResult {
   const planningAmount = c.budget.planningAmount[a.budget];
   const tier = c.budget.tierByBudget[a.budget];
@@ -595,7 +602,7 @@ export function computeBudget(
       staleHidden.push(it.id);
       return false;
     }
-    if (it.group === "food") return choices.food === "premium";
+    if (it.group === "food") return kitsWanted; // kits are gear when the food mix includes them (D7)
     if (it.group) return true; // every level of a slot is listed; the default level depends on the budget
     if (it.tier > tier && !it.essential && it.phase === 1) aboveTier.push(it);
     return it.tier <= tier || it.essential;
@@ -766,6 +773,8 @@ export interface ComputedPlan {
   tags: string[];
   water: WaterResult;
   food: FoodResult;
+  /** D7: how the calories are supplied (bulk / ready-to-eat / kits) and the containers bulk needs. */
+  foodMix: FoodMixResult;
   diapers: DiaperResult | null;
   formula: FormulaResult | null;
   sanitation: SanitationResult;
@@ -807,32 +816,43 @@ export function computePlan(a: Answers, c: RuleConstants, catalog: CatalogItem[]
   consumables.push({ key: "sanitation", label: `Toilet paper (${sanitation.toiletPaperRolls} rolls) + waste bags (${sanitation.wasteBags})`, phase: 1, cost: sanitation.cost });
   if (diapers) consumables.push({ key: "diapers", label: `Diapers (${diapers.total}) + wipes (${diapers.wipesPacks} packs)`, phase: 1, cost: diapers.cost });
   if (formula) consumables.push({ key: "formula", label: `Infant formula (${formula.cans} cans)`, phase: 1, cost: formula.cost });
+  // D7: food comes from a mix of approaches (bulk staples, ready-to-eat, ration & freeze-dried kits).
+  // The calorie total never changes; only how it's supplied. Bulk + ready-to-eat are grocery consumables;
+  // kits are catalog gear (freeze-dried units sized to the kits' calories).
+  const foodMix = computeFoodMix(a, c, food);
+  const groceryCost = foodMix.bulk.cost + foodMix.readyCost;
   const p2Days = Math.min(a.scenarioDays, c.foodBuild.phase2Days);
-  const p2Cost = round((food.cost * p2Days) / a.scenarioDays, 0);
-  consumables.push({ key: "food", label: `Food staples, first ${p2Days} days`, phase: 2, cost: p2Cost });
-  if (a.scenarioDays > p2Days)
-    consumables.push({ key: "food_rest", label: `Food staples, days ${p2Days + 1}–${a.scenarioDays} (build up with each grocery trip)`, phase: 3, cost: food.cost - p2Cost, ongoing: true });
+  const p2Cost = round((groceryCost * p2Days) / a.scenarioDays, 0);
+  if (groceryCost > 0) {
+    consumables.push({ key: "food", label: `Food, first ${p2Days} days`, phase: 2, cost: p2Cost });
+    if (a.scenarioDays > p2Days)
+      consumables.push({ key: "food_rest", label: `Food, days ${p2Days + 1}–${a.scenarioDays} (build up with each grocery trip)`, phase: 3, cost: groceryCost - p2Cost, ongoing: true });
+  }
   if (pets) consumables.push({ key: "pet_food", label: `Pet food (${pets.foodLbs} lb)`, phase: 2, cost: pets.cost });
 
-  // Food slot: DIY bulk staples (default) or freeze-dried long-term food (premium, by choice only).
-  const freezeDried = a.gearChoices?.food === "premium";
-  const cons = freezeDried ? consumables.filter((l) => l.key !== "food" && l.key !== "food_rest") : consumables;
-  const ctx = { water, power, h, a, foodKcal: food.totalKcal };
-  const budget = computeBudget(a, c, catalog, tags, ctx, cons, now);
+  const ctx = { water, power, h, a, foodKcal: foodMix.kcal.kits, foodBuckets: foodMix.bulk.buckets };
+  const budget = computeBudget(a, c, catalog, tags, ctx, consumables, now, foodMix.kcal.kits > 0);
   const fd = catalog.find((i) => i.id === "food-freeze-dried" && i.active);
   if (fd) {
-    const qty = resolveQty(fd, ctx);
-    const others = budget.slots.filter((s) => s.group !== "food");
+    // Every approach priced for the whole supply, so "Compare food options" shows real differences.
+    const all = computeFoodMix({ ...a, gearChoices: { ...a.gearChoices, food: "essential" } }, c, food);
+    const ready = computeFoodMix({ ...a, gearChoices: { ...a.gearChoices, food: "standard" } }, c, food);
+    const kitQty = Math.ceil(food.totalKcal / (2000 * 30));
+    const mixLow = groceryCost + (foodMix.kcal.kits ? fd.priceLow * resolveQty(fd, ctx) : 0);
+    const mixHigh = groceryCost + (foodMix.kcal.kits ? fd.priceHigh * resolveQty(fd, ctx) : 0);
+    const chosenLevel: SlotLevel | "mix" = foodMix.choice === "mix" ? "mix" : foodMix.choice === "bulk" ? "essential" : foodMix.choice === "ready" ? "standard" : "premium";
     budget.slots = [
-      ...others,
+      ...budget.slots.filter((s) => s.group !== "food"),
       {
         group: "food",
-        chosen: freezeDried ? fd.id : "food-diy",
-        chosenLevel: freezeDried ? "premium" : "essential",
-        byChoice: freezeDried,
+        chosen: { mix: "food-mix", essential: "food-diy", standard: "food-ready", premium: fd.id }[chosenLevel],
+        chosenLevel,
+        byChoice: foodMix.choice !== "mix",
         options: [
-          { level: "essential", itemId: "food-diy", name: "Bulk staples you store yourself", qty: 1, low: food.cost, high: food.cost },
-          { level: "premium", itemId: fd.id, name: fd.name, qty, low: fd.priceLow * qty, high: fd.priceHigh * qty },
+          { level: "mix", itemId: "food-mix", name: `Recommended mix: ${mixLabel(foodMix.shares)}`, qty: 1, low: mixLow, high: mixHigh },
+          { level: "essential", itemId: "food-diy", name: "Bulk staples you store yourself", qty: 1, low: all.bulk.cost, high: all.bulk.cost },
+          { level: "standard", itemId: "food-ready", name: "Ready-to-eat: canned meals and pouches", qty: 1, low: ready.readyCost, high: ready.readyCost },
+          { level: "premium", itemId: fd.id, name: "Ration & freeze-dried kits", qty: kitQty, low: fd.priceLow * kitQty, high: fd.priceHigh * kitQty },
         ],
       },
     ];
@@ -848,6 +868,7 @@ export function computePlan(a: Answers, c: RuleConstants, catalog: CatalogItem[]
     tags: [...tags].sort(),
     water,
     food,
+    foodMix,
     diapers,
     formula,
     sanitation,
@@ -858,4 +879,11 @@ export function computePlan(a: Answers, c: RuleConstants, catalog: CatalogItem[]
     evacuation,
     budget,
   };
+}
+
+/** "half bulk staples, half ready-to-eat" style label for a food mix. */
+export function mixLabel(s: Record<FoodApproach, number>): string {
+  const name = { bulk: "bulk staples", ready: "ready-to-eat", kits: "ration & freeze-dried kits" };
+  const parts = (Object.keys(name) as FoodApproach[]).filter((k) => s[k] > 0).map((k) => `${Math.round(s[k] * 100)}% ${name[k]}`);
+  return parts.length === 1 ? `all ${parts[0].replace(/^100% /, "")}` : parts.join(", ");
 }

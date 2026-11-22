@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { hasHouseholdFilter, isDrive, type Answers } from "@/lib/answers/schema";
+import { GEAR_SLOTS, hasHouseholdFilter, isDrive, withGearChoice, type Answers } from "@/lib/answers/schema";
 import { SEED_CATALOG } from "@/lib/catalog/seed";
 import { generatePlan } from "@/lib/plan/generate";
 import { DEFAULT_CONSTANTS as C } from "@/lib/rules/constants";
@@ -13,7 +13,7 @@ import { SAMPLE_HOUSEHOLD } from "./fixtures/households";
  */
 const NOW = new Date("2026-11-18");
 const plan = (a: Answers) => generatePlan(a, C, SEED_CATALOG, { useLlm: false, now: NOW });
-const RANK = { essential: 0, standard: 1, premium: 2 } as const;
+const RANK = { mix: -1, essential: 0, standard: 1, premium: 2 } as const;
 const FUEL_GEAR = ["gas-cans", "gen-cord", "propane-20", "inlet-interlock", "buddy-heater", "propane-1lb", "camp-stove"];
 
 describe("à la carte levels: 10 households × every slot × every level", () => {
@@ -23,19 +23,20 @@ describe("à la carte levels: 10 households × every slot × every level", () =>
     expect(slots.length).toBeGreaterThan(1);
     for (const slot of slots) {
       // levels are listed cheapest first and get more expensive
-      for (let i = 1; i < slot.options.length; i++) {
+      // The food slot lists approaches (recommended mix, bulk, ready-to-eat, kits), not price levels (D7).
+      if (slot.group !== "food") for (let i = 1; i < slot.options.length; i++) {
         expect(RANK[slot.options[i].level]).toBeGreaterThan(RANK[slot.options[i - 1].level]);
         expect(slot.options[i].high).toBeGreaterThanOrEqual(slot.options[i - 1].low);
       }
       for (const opt of slot.options) {
-        const a = { ...base, gearChoices: { ...(base.gearChoices ?? {}), [slot.group]: opt.level } } as Answers;
+        const a = withGearChoice(base, slot.group as (typeof GEAR_SLOTS)[number], opt.level);
         const r = await plan(a);
         const why = `${slot.group}=${opt.level}`;
         const s2 = r.computed.budget.slots.find((x) => x.group === slot.group)!;
         expect(s2.chosen, why).toBe(opt.itemId);
         expect(lintDocument(r.document), why).toEqual([]);
         const all = [...r.computed.budget.picks, ...r.computed.budget.deferred];
-        if (opt.itemId !== "food-diy") expect(r.computed.budget.picks.some((p) => p.item.id === opt.itemId), why).toBe(true);
+        if (!["food-diy", "food-ready", "food-mix"].includes(opt.itemId)) expect(r.computed.budget.picks.some((p) => p.item.id === opt.itemId), why).toBe(true);
         // a standby generator replaces fuel cans, cords, the inlet and propane cylinders
         if (opt.itemId === "generator-standby") for (const id of ["gas-cans", "gen-cord", "propane-20", "inlet-interlock"]) expect(all.some((p) => p.item.id === id), `${why} ${id}`).toBe(false);
         // apartments never get fuel-burning gear at any level

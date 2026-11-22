@@ -219,9 +219,9 @@ const seed: Seed[] = [
   },
   {
     id: "storage-kit", category: "Food", name: "Food storage buckets",
-    spec: "Food-grade 5-gal buckets with gamma seal lids, mylar bags and oxygen absorbers for rice/beans/oats",
-    models: ["Gamma Seal lid kit", "ShieldPro mylar kit"], priceLow: 40, priceHigh: 90, tier: 1, phase: 2, priority: 10,
-    qty: 1, tags: ["long_scenario"],
+    spec: "One food-grade 5-gal bucket with a gamma seal lid, mylar bag and oxygen absorbers for rice, beans or oats; enough buckets for your bulk staples",
+    models: ["Gamma Seal lid kit", "ShieldPro mylar kit"], priceLow: 20, priceHigh: 35, tier: 1, phase: 2, priority: 10,
+    qty: "food_buckets", tags: [], notes: "Priced per bucket (estimate); the plan sizes the count to the bulk staples (D7)",
   },
   {
     id: "toilet-kit", category: "Sanitation", name: "Emergency toilet kit",

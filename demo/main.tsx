@@ -11,7 +11,7 @@ import { PlanView } from "@/components/PlanView";
 import { SaveBar } from "@/components/SaveBar";
 import { StartButton } from "@/components/StartButton";
 import { Landing } from "@/components/Landing";
-import type { Answers } from "@/lib/answers/schema";
+import { withGearChoice, type Answers, type GEAR_SLOTS } from "@/lib/answers/schema";
 import { SEED_CATALOG } from "@/lib/catalog/seed";
 import { assembleDocument, buildDraft } from "@/lib/plan/build";
 import type { PlanDocument } from "@/lib/plan/document";
@@ -104,7 +104,7 @@ function App() {
               planId={view.sample ? "sample" : "demo"}
               buyHref={demoBuyHref}
               onChoose={(group, level) => {
-                const answers = { ...view.answers, gearChoices: { ...(view.answers.gearChoices ?? {}), [group]: level } } as Answers;
+                const answers = withGearChoice(view.answers, group as (typeof GEAR_SLOTS)[number], level);
                 setView({ ...view, answers, doc: makePlan(answers) });
               }}
             />
