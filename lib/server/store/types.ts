@@ -1,5 +1,6 @@
 import type { PlanConsent } from "@/lib/legal";
 import type { CatalogItem } from "@/lib/catalog/types";
+import type { Inventory, Place, ReminderPrefs } from "@/lib/accountData";
 
 export interface UserRow {
   id: string;
@@ -40,6 +41,8 @@ export interface PlanRow {
   checks?: Record<string, boolean>;
   /** Terms version + timestamps agreed before this plan was built (clickwrap + health-data consent). */
   consent?: PlanConsent | null;
+  /** D2 (accounts track): the household's inventory for this plan. Decrypted; stored encrypted. */
+  inventory?: Inventory | null;
   created_at: string;
 }
 
@@ -101,7 +104,14 @@ export interface Store {
 
   createPlan(p: Omit<PlanRow, "id" | "created_at">): Promise<PlanRow>;
   getPlan(id: string): Promise<PlanRow | null>;
-  updatePlan(id: string, patch: Partial<Pick<PlanRow, "pdf_url" | "emailed_at" | "user_id" | "checks">>): Promise<void>;
+  updatePlan(id: string, patch: Partial<Pick<PlanRow, "pdf_url" | "emailed_at" | "user_id" | "checks" | "inventory">>): Promise<void>;
+
+  /** D4 (accounts track): My places, encrypted per user. */
+  getPlaces(userId: string): Promise<Place[]>;
+  setPlaces(userId: string, places: Place[]): Promise<void>;
+  /** D12 (accounts track): opt-in email reminder preferences, separate from marketing. */
+  getReminderPrefs(userId: string): Promise<ReminderPrefs>;
+  setReminderPrefs(userId: string, prefs: ReminderPrefs): Promise<void>;
   listPlans(userId: string): Promise<PlanRow[]>;
 
   createToken(t: TokenRow): Promise<void>;
