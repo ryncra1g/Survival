@@ -16,33 +16,33 @@ Entry types: **Owner request** (Ryan asked for it), **Assistant recommendation**
 
 | ID | Item | Priority | Status |
 | --- | --- | --- | --- |
-| **DB-03** | **Dashboard with tabs, account / settings menu and an inventory page to come back to** | **High** | **Open (new)** |
-| LP-01 | Top-right profile / product menu | High | Open (folded into DB-03) |
+| **DB-03** | **Dashboard with tabs, account / settings menu and an inventory page to come back to** | **High** | **Open (new)**; **Decided (D2, D9, D10 (tabs Overview / Inventory / Report in Batch D))** |
+| LP-01 | Top-right profile / product menu | High | Open (folded into DB-03); **Decided (D9)** |
 | LP-02 | Remove the eyebrow line above the headline | Medium | **Done** (branch `claude/headline-copy`) |
 | LP-03 | New headline: "Get what you need. Know what to do." | High | **Done as working copy** (branch `claude/headline-copy`) |
 | LP-04 | Short supporting line | High | **Done as working copy** (branch `claude/headline-copy`) |
-| LP-05 | Sticky sample-plan tabs; visual discovery-style cards | High | Partly done: tabs are one sticky row (PR #5). Card grid open |
-| LP-06 | Redesign "What's in your plan" | High | Open |
-| LP-07 | Loading screen and animation | Medium | Open |
-| DB-01 | Three-stage readiness journey | Product direction | Partly started: dashboard home (PR #5). Scope decision needed |
-| DB-02 | Inventory and shopping status tied to the plan | Medium | Partly done: "I have this" ticks remove Buy buttons and cut the total (PR #5). Purchased / low / expiry open |
-| AI-01 | Admin-managed readiness assistant | Later phase | Explore |
-| HOU-01 | Attic option? | Open question | Open |
-| HOU-02 | Home features vs storage question overlap | Medium | Open |
-| EV-01 | Shelter-at-home preference vs backup destination | Medium | Open |
-| EV-02 | Printable map to saved destinations | Medium | Open |
+| LP-05 | Sticky sample-plan tabs; visual discovery-style cards | High | Partly done: tabs are one sticky row (PR #5). Card grid open; **Decided (D10)** |
+| LP-06 | Redesign "What's in your plan" | High | Open; **Decided (D10)** |
+| LP-07 | Loading screen and animation | Medium | Open; **Decided (D11)** |
+| DB-01 | Three-stage readiness journey | Product direction | Partly started: dashboard home (PR #5). Scope decision needed; **Decided (D1, D2 (Later: Days Ready score, Tasks tab))** |
+| DB-02 | Inventory and shopping status tied to the plan | Medium | Partly done: "I have this" ticks remove Buy buttons and cut the total (PR #5). Purchased / low / expiry open; **Decided (D2 (Batch D inventory))** |
+| AI-01 | Admin-managed readiness assistant | Later phase | Explore; **Decided (D13: not now; count Copy-for-AI clicks. Stays Later)** |
+| HOU-01 | Attic option? | Open question | Open; **Decided (D5: no attic now (Later, heat/cold-tolerant gear only))** |
+| HOU-02 | Home features vs storage question overlap | Medium | Open; **Decided (D5)** |
+| EV-01 | Shelter-at-home preference vs backup destination | Medium | Open; **Decided (D4)** |
+| EV-02 | Printable map to saved destinations | Medium | Open; **Decided (D4)** |
 | PL-01 | Supplies tagged to their plan sections | High | **Done**: "What you need" strip in each section (merged with PR #2) |
-| PL-02 | Separate guidance, actions and pack items | High | Open (storage tips became actions on `claude/headline-copy`) |
-| PL-03 | Smaller Sources & disclaimers card | Medium | Partly done: moved to the bottom earlier. Menu placement open (DB-03) |
-| PL-04 | Share / Download / Print menu | Medium | Open (PR #5 groups them under the dashboard; a menu is still open) |
-| GEAR-01 | Full catalog regardless of starting budget | Medium | Partly done: every slot can switch Essential / Standard / Premium. "See all options" and "Revisit budget" open |
-| MT-01 | Exportable maintenance calendar and reminders | Medium | Open |
-| FD-01 | Food review and ration-kit choices | High | Open |
-| FD-02 | Containers and storage when a food approach needs them | High | Open |
-| FD-03 | Food constraints that change recommendations | Medium | Open |
-| WT-01 | More water-treatment choices | High | Open |
-| WT-02 | Complete water-readiness kit | Medium | Open |
-| WT-03 | What counts as an existing emergency filter (LifeStraw?) | Open question | Open |
+| PL-02 | Separate guidance, actions and pack items | High | Open (storage tips became actions on `claude/headline-copy`); **Decided (D8)** |
+| PL-03 | Smaller Sources & disclaimers card | Medium | Partly done: moved to the bottom earlier. Menu placement open (DB-03); **Decided (D9)** |
+| PL-04 | Share / Download / Print menu | Medium | Open (PR #5 groups them under the dashboard; a menu is still open); **Decided (D9)** |
+| GEAR-01 | Full catalog regardless of starting budget | Medium | Partly done: every slot can switch Essential / Standard / Premium. "See all options" and "Revisit budget" open; **Decided (D3)** |
+| MT-01 | Exportable maintenance calendar and reminders | Medium | Open; **Decided (D12)** |
+| FD-01 | Food review and ration-kit choices | High | Open; **Decided (D7)** |
+| FD-02 | Containers and storage when a food approach needs them | High | Open; **Decided (D7)** |
+| FD-03 | Food constraints that change recommendations | Medium | Open; **Decided (D7 (diet/allergy question Later))** |
+| WT-01 | More water-treatment choices | High | Open; **Decided (D6)** |
+| WT-02 | Complete water-readiness kit | Medium | Open; **Decided (D6)** |
+| WT-03 | What counts as an existing emergency filter (LifeStraw?) | Open question | Open; **Decided (D6 (personal filter counts for the go-bag only))** |
 | WIZ-01 | Every question and answer traces to a product or resource | High | **Done** (branch `claude/headline-copy`); follow-ups below |
 | FG-01 | Front-page focus group (20 simulated participants) | Medium | **Done**; findings below |
 | GRID-01 | Say plainly that the plan assumes no grid power for the whole period | Medium | Open (proposed November 18, not yet approved) |
@@ -387,28 +387,37 @@ household gravity), since a personal filter doesn't supply a household.
 
 ## 11. Open decisions (owner's log, section 10, plus new)
 
-1. Budget: flexible target by default, with an optional hard cap? How to browse / save above-budget gear?
-2. Profile menu for signed-out visitors: shown? What does it contain?
-3. Are the three dashboard stages the long-term structure, or introduced gradually after the no-sign-up flow?
-4. Inventory without an account (this browser only), or only with a saved plan / magic-link account? (DB-03)
-5. Sample-plan tabs: stick to the viewport, or only within the sample area?
-6. Maintenance reminder channels first: calendar file, email, push, or a mix?
-7. Which food approaches and water-treatment methods are supported in the first release?
-8. Does the existing-filter question include personal straw filters?
-9. How should the questionnaire separate a shelter-at-home preference from a required evacuation?
-10. Map for every saved destination? What detail is needed before a map can be made?
-11. Which loading states get the redesigned loading screen, and which real milestones can be shown?
-12. Share / Download / Print menu contents: email, PDF and print only, or the fridge checklist and more?
-13. Attic option: what should it capture?
-14. First AI assistant release: read-only? From which sections and sources?
-15. Which profile, inventory, task, maintenance and destination changes may the assistant propose later?
-16. Chat history storage and consent / retention before any household or health data reaches the AI provider?
-17. Which admin roles edit, review, publish and roll back AI knowledge?
-18. How do "Your home has…" answers feed "Where can you store supplies?" without repeating questions?
-19. **New:** Which dashboard tabs ship first (DB-03)?
+1. ~~Budget: flexible target by default, with an optional hard cap? How to browse / save above-budget gear?~~ **Closed: D3: flexible target, no hard cap; Compare options.**
+2. ~~Profile menu for signed-out visitors: shown? What does it contain?~~ **Closed: D9.**
+3. ~~Are the three dashboard stages the long-term structure, or introduced gradually after the no-sign-up flow?~~ **Closed: D1/D2: launch lean; dashboard tabs in the accounts track.**
+4. ~~Inventory without an account (this browser only), or only with a saved plan / magic-link account? (DB-03)~~ **Closed: D2: saved on this device for 30 days without an account; account = any device.**
+5. ~~Sample-plan tabs: stick to the viewport, or only within the sample area?~~ **Closed: D10: pinned while in the plan.**
+6. ~~Maintenance reminder channels first: calendar file, email, push, or a mix?~~ **Closed: D12: calendar file + printable list at launch; opt-in email with accounts.**
+7. ~~Which food approaches and water-treatment methods are supported in the first release?~~ **Closed: D6, D7.**
+8. ~~Does the existing-filter question include personal straw filters?~~ **Closed: D6: yes, counts for the go-bag only.**
+9. ~~How should the questionnaire separate a shelter-at-home preference from a required evacuation?~~ **Closed: D4.**
+10. ~~Map for every saved destination? What detail is needed before a map can be made?~~ **Closed: D4: printable page with a directions link, no embedded map.**
+11. ~~Which loading states get the redesigned loading screen, and which real milestones can be shown?~~ **Closed: D11.**
+12. ~~Share / Download / Print menu contents: email, PDF and print only, or the fridge checklist and more?~~ **Closed: D9.**
+13. ~~Attic option: what should it capture?~~ **Closed: D5: no attic now.**
+14. ~~First AI assistant release: read-only? From which sections and sources?~~ **Closed: D13: not now.**
+15. ~~Which profile, inventory, task, maintenance and destination changes may the assistant propose later?~~ **Closed: D13: not now.**
+16. ~~Chat history storage and consent / retention before any household or health data reaches the AI provider?~~ **Closed: D13: not now.**
+17. ~~Which admin roles edit, review, publish and roll back AI knowledge?~~ **Closed: D13: not now.**
+18. ~~How do "Your home has…" answers feed "Where can you store supplies?" without repeating questions?~~ **Closed: D5.**
+19. ~~**New:** Which dashboard tabs ship first (DB-03)?~~ **Closed: D9/D10 + Batch D: Overview / Inventory / Report.**
 20. **New:** Say "no grid power for the whole period" in the question and plan (GRID-01)?
 
-## 12. New notes
+## 12. Owner decisions, November 22, 2026 (docs/BUILD_BRIEF.md)
+
+D1–D13 are recorded in docs/BUILD_BRIEF.md. The build log is docs/BUILD_LOG.md, and the fact-check list is docs/FACTCHECK.md.
+- **Launch track** (Batches A, B, C): menus and save bar, front page, loading screen, Copy for AI, evacuation / storage / filter questions, content kinds, card-grid plan view, Compare options, food approaches, water treatment, DIY tips (flag off), When you must leave, calendar.
+- **Accounts track** (Batch D, `ACCOUNTS_ENABLED` off): account tiers, inventory, My places, dashboard tabs, food mixing, tip matching, email reminders, full export and delete.
+
+### Later (decided to wait)
+AI-01 in-app assistant · diet/allergy question · attic for gear · phone notifications · inventory expiry reminders · shared household editing · hard budget cap · Tasks tab · Days Ready score.
+
+## 13. New notes
 
 Append new observations under the right area with a new ID: the screen or page, what happens, the desired result,
 and any screenshot reference. Mark entries Updated or Superseded when direction changes; don't overwrite.
