@@ -21,6 +21,11 @@ _(written at the end of the run)_
 - [A5] The generate route streams only when the client asks (Accept: application/x-ndjson); other callers get the same JSON as before. If a host buffers the stream, all stages tick when the plan is ready.
 - [A6] Copy for AI drops any clause that mentions a health topic, even generic ones in shared text (e.g. "medication lists" in the yearly maintenance line), as a second guard. Region is the ZIP's region name (e.g. "Long Island"), never the ZIP.
 - [A7] /release-check's /code-review and /security-review steps were done as a focused manual review of each batch's auth-touching code (new routes use sameOrigin + loadPlanFor; /api/auth/me returns no personal data), not as separate multi-agent runs.
+- [B1] Q2 destinations: Family or friends, Second property, Raw land, Hotel or motel, Public shelter, Not sure yet. A distance is asked for the first four (they're driven to), so hotel gets the fuel math; public shelter and "not sure yet" get their own steps instead.
+- [B1] v1 migration: "shelter in place" → approach "Stay home when it's safe" + destination "Not sure yet"; a v1 fallback → that destination, approach "Family or friends" (friends/family) or "Another property" (second property, raw land).
+- [B2] Storage that implies a feature (e.g. garage) also sets the feature (hasGarage), rather than rejecting the answer. This keeps old saved answers valid; the questionnaire only offers spaces the home has. "Very limited space" and "No suitable storage" can't be combined with other spaces (validation).
+- [B2] A shed someone can't use for supplies still gets a step: it's the place for gas cans and propane (same guidance as the existing shed storage step).
+- [B3] The personal-filter note says only that it belongs in the go-bag; a claim that it can't supply a household was left out (no official source).
 
 ## Tasks
 | ID | Decision | Status | Commit | Note |
@@ -34,6 +39,10 @@ _(written at the end of the run)_
 | A5 | D11 | done | 8a6d55b | Three real stages streamed as NDJSON; calm card; reduced motion; live region; rebuild keeps spinner |
 | A6 | D12b, D13 | done | c46914c | Copy for AI (allow-list text, 5 ground rules); "ai_copy" events; admin tile |
 | A7 | — | done | 2066524 | Batch A verified: lint ✓, 398 unit ✓, build ✓, 11 e2e ✓, smoke 10/10 ✓, screenshots light+dark ✓ |
+| B1 | D4 | done | 0075087 | Approach + destination questions on their own screen; hotel/shelter/not-sure steps with Ready.gov / Red Cross links (one schema bump with B2–B3) |
+| B2 | D5 | done | 0075087 | Home features = property only (adds shed); storage offers only spaces the home has + Closets / Other indoor / Very limited / No suitable storage |
+| B3 | D6 | done | 0075087 | Filter type household / personal / both / none; personal counts for the go-bag only |
+| B4 | — | done | (this commit) | Batch B verified: lint ✓, 429 unit ✓ (incl. pathways 69 + 80 pairwise, migrate), build ✓, 10 e2e ✓, smoke 10/10 ✓, screenshots light+dark ✓ |
 
 ## Blocked
 _(none yet)_

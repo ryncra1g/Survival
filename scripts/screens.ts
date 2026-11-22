@@ -25,7 +25,20 @@ async function makePlan(page: Page): Promise<string> {
 
 const open = async (page: Page, testId: string) => page.getByTestId(testId).locator("summary").first().click();
 
+/** Open the questionnaire on screen `step` with the sample household's answers (via the local draft). */
+async function questionScreen(page: Page, step: number) {
+  await page.goto(`${BASE}/`);
+  await page.getByRole("button", { name: "Build my free plan" }).click();
+  await page.waitForURL(/\/q\//);
+  await page.evaluate(([a, s]) => localStorage.setItem(`rp_q_${location.pathname.split("/q/")[1]}`, JSON.stringify({ ...(a as object), _step: s })), [SAMPLE_HOUSEHOLD, step] as const);
+  await page.reload();
+}
+
 export const SHOTS: Shot[] = [
+  { name: "q-home", run: (p) => questionScreen(p, 5) },
+  { name: "q-water-filter", run: async (p) => { await questionScreen(p, 6); await p.getByText("Do you already have a water filter").scrollIntoViewIfNeeded(); } },
+  { name: "q-storage", run: (p) => questionScreen(p, 8) },
+  { name: "q-evacuation", run: (p) => questionScreen(p, 9) },
   { name: "front", run: async (p) => void (await p.goto(`${BASE}/`)) },
   { name: "front-menu", run: async (p) => { await p.goto(`${BASE}/`); await open(p, "site-menu"); } },
   { name: "sources", run: async (p) => void (await p.goto(`${BASE}/sources`)) },

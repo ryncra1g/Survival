@@ -13,11 +13,13 @@ Scenario | 90 days
 People | 2 adults, 2 children (ages 2, 4)
 Pets | 1 medium dog
 Home | House, 2 floors, basement, garage, yard
+Storage | Garage, Basement / lower level
 Heat / cooking | Natural gas / Gas
 Water | Municipal
 Backup power | None
 Vehicles | Gasoline, Gasoline
-Fallback location | Raw land, ~120 miles
+In an emergency | Another property
+If you must leave | Raw land, ~120 miles
 Budget | $1,500–5,000
 Gear level | Well prepared: items default to Standard level; change any item to go cheaper or bigger
 Local hazard profile (approximate, by ZIP prefix)
@@ -73,6 +75,7 @@ This month
 [ ] Stock 2 weeks of pet food; ask your vet how to keep extra medication on hand if your pet takes any. (Prepare your pets (Ready.gov): https://www.ready.gov/pets)
 [ ] Pack a go-bag for each person (see the Evacuation section).
 [ ] Check your flood zone and evacuation zone; review insurance (flood insurance has a 30-day wait). (Look up your flood zone (FEMA Flood Map Service Center): https://msc.fema.gov/portal/search)
+[ ] Get your other property ready to use: keys, how to turn on utilities, and supplies kept there. (Evacuation (Ready.gov): https://www.ready.gov/evacuation)
 Within 60 days
 [ ] Complete the full 90 days food list: 653 lb of staples.
 [ ] Buy the generator and fuel storage; test-run it outdoors, 20+ ft from the house, under load. (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/prevention/)
