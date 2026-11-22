@@ -29,6 +29,7 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
   const doc = plan.plan as PlanDocument;
   const confirmed = !!user?.double_opt_in_at;
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+  const aiText = aiSummary(doc, (plan.computed_quantities as ComputedPlan).answers);
 
   // Email status: none yet → optional capture; given but unconfirmed → resend; confirmed → sent.
   const emailStatus = !user ? (
@@ -51,7 +52,7 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
       <Subtitle text={doc.subtitle} />
       <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="/sources" className="underline">Sources &amp; safety</a></p>
       <div className="mt-3 flex flex-wrap gap-2 no-print">
-        <ShareMenu planId={plan.id} email={!user} extra={<CopyForAI variant="menu" planId={plan.id} text={aiSummary(doc, (plan.computed_quantities as ComputedPlan).answers)} />} />
+        <ShareMenu planId={plan.id} email={!user} extra={<><a href={`/api/plans/${plan.id}/calendar`} className="flex w-full min-h-11 items-center rounded-md px-3 text-sm hover:bg-line/40">Add to my calendar</a><CopyForAI variant="menu" planId={plan.id} text={aiText} /></>} />
         {session?.scope === "full" && <Link href="/account" className="btn-ghost border border-line text-sm px-3 min-h-[44px]">Edit answers</Link>}
       </div>
 
@@ -65,6 +66,17 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
         afterDashboard={
           <div className="no-print">
             <div className="mt-5">{emailStatus}</div>
+            {/* D12 / D12b: stay ready without an account. */}
+            <section className="mt-4 card p-4" aria-labelledby="stay-h" data-testid="stay-ready">
+              <h2 id="stay-h" className="font-bold">Stay ready</h2>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <a href={`/api/plans/${plan.id}/calendar`} className="btn-ghost border border-line text-sm px-3 min-h-[44px] inline-flex items-center">Add to my calendar</a>
+                <a href={`/plan/${plan.id}/maintenance`} className="btn-ghost border border-line text-sm px-3 min-h-[44px] inline-flex items-center">Printable maintenance list</a>
+              </div>
+              <div className="mt-3">
+                <CopyForAI planId={plan.id} text={aiText} />
+              </div>
+            </section>
             <ChangeAnswer planId={plan.id} />
           </div>
         }

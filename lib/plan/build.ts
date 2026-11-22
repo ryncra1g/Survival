@@ -1,5 +1,6 @@
 import { hasHouseholdFilter, hasPersonalFilter, LABELS, type Answers } from "@/lib/answers/schema";
 import { labelKinds } from "./kinds";
+import { maintenanceItems } from "./maintenance";
 import { DONT_DO, tipsFor, type TipArea } from "@/lib/tips/library";
 import { mixLabel, type ComputedPlan, type GearPick } from "@/lib/rules/engine";
 import type { RuleConstants } from "@/lib/rules/constants";
@@ -1204,17 +1205,8 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   const affiliate = [...b.picks, ...b.deferred].some((p) => isBuyable(p) && earnsCommission(p.item, c.affiliate.amazonTag));
 
   // 18. Maintenance ------------------------------------------------------------
-  const maint: string[][] = [
-    ["Monthly", "Test CO and smoke alarms."],
-    ...(hasGen ? [["Monthly", "Run the generator under load outdoors for 20 minutes."]] : []),
-    ["Every 6 months", "Replace tap-filled stored water; check food dates and rotate into meals; refresh go-bags for the season."],
-    ["Every 12 months", "Rotate stabilized gasoline into cars; replace bleach; check first aid kit; update documents, photos and medication lists."],
-    ...(a.heatSources.includes("wood") ? [["Every fall", "Chimney inspection and sweeping."]] : []),
-    ...(winter ? [["November", "Winter check: heat plan, pipe insulation, sleeping bags, propane."]] : []),
-    ...(atLeast(prof.hurricane, "moderate") ? [["June", "Hurricane season check: window protection, evacuation zone, insurance, fuel."]] : []),
-    ...(atLeast(prof.wildfire, "moderate") ? [["Spring", "Wildfire check: clear 5 ft around the house, N95 masks, go-bags."]] : []),
-    ["Every 12 months", "Review this plan and regenerate it if your household changes."],
-  ];
+  // D12: the schedule is data (lib/plan/maintenance.ts), so the calendar file and reminders use the same lines.
+  const maint: string[][] = maintenanceItems(cp).map((m) => [m.when, m.task]);
   S.push({
     id: "maintenance",
     title: "Maintenance calendar",

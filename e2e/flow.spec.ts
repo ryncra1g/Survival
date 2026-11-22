@@ -304,7 +304,8 @@ test("admin: dashboard, catalog, rule constants, affiliate tag → tracked Buy c
   await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.goto(`/plan/${planId}`);
   await page.getByTestId("share-menu").locator("summary").click();
-  await page.getByRole("button", { name: "Copy for your AI assistant" }).click();
+  await page.getByTestId("share-menu").getByRole("button", { name: "Copy for your AI assistant" }).click();
+  await expect(page.getByTestId("stay-ready").getByRole("button", { name: "Copy for your AI assistant" })).toBeVisible(); // also next to Add to my calendar
   await expect(page.getByText("Copied. Paste it into your AI assistant to get started.")).toBeVisible();
   const copied = await page.evaluate(() => navigator.clipboard.readText());
   expect(copied).toContain("Use these amounts exactly; don't recalculate them.");
@@ -385,4 +386,16 @@ test("D4 places page: the typed address is printed but never sent anywhere", asy
   await page.emulateMedia({ media: "screen" });
   await page.waitForTimeout(500);
   expect(sent.some((s) => s.includes("Evergreen") || s.includes("742%20Evergreen"))).toBe(false);
+});
+
+test("D12: Add to my calendar downloads a .ics; the maintenance list prints", async ({ page }) => {
+  const planId = await quickPlan(page);
+  await page.goto(`/plan/${planId}`);
+  await expect(page.getByTestId("stay-ready").getByRole("link", { name: "Add to my calendar" })).toBeVisible();
+  const r = await page.request.get(`/api/plans/${planId}/calendar`);
+  expect(r.status()).toBe(200);
+  expect(r.headers()["content-type"]).toContain("text/calendar");
+  expect(await r.text()).toContain("BEGIN:VEVENT");
+  await page.goto(`/plan/${planId}/maintenance`);
+  await expect(page.getByTestId("maintenance-list")).toContainText("Test CO and smoke alarms.");
 });
