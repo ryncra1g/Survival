@@ -9,6 +9,13 @@ import { Chevron } from "./Chevron";
 import { groupIntoChapters } from "@/lib/plan/chapters";
 import { BRAND } from "@/lib/brand";
 import { HelpStrip, productIndex, resolveStep, StepExtras, type StepView } from "./StepExtras";
+import { KIND_LABEL, kindLabelsAt, kindOf, type Kind } from "@/lib/plan/kinds";
+
+/** D8: a small label where the kind of content changes: Good to know / To do / To have. */
+function KindLabel({ kind }: { kind: Kind }) {
+  const tone = kind === "do" ? "text-brand" : kind === "have" ? "text-ink bg-accent/25" : "text-muted";
+  return <p className={`mt-4 mb-1 inline-block rounded px-1.5 py-0.5 text-[0.7rem] font-semibold uppercase tracking-wide ${tone}`} data-kind={kind}>{KIND_LABEL[kind]}</p>;
+}
 
 const toneCls = { danger: "border-danger text-danger", warning: "border-warn text-warn", info: "border-info text-info" } as const;
 
@@ -169,7 +176,7 @@ export function PlanView({
         <Dashboard
           overview={doc.overview}
           priority={prioritySteps(doc, ctx)}
-          allStepIds={doc.sections.flatMap((s) => s.blocks.flatMap((b) => (b.type === "checklist" ? b.items.map((i) => i.id) : [])))}
+          allStepIds={doc.sections.flatMap((s) => s.blocks.flatMap((b) => (b.type === "checklist" && kindOf(b) === "do" ? b.items.map((i) => i.id) : [])))}
           buyHref={Object.fromEntries([...ctx.products.keys()].map((id) => [id, ctx.href(id)]))}
         />
         {afterDashboard}
@@ -195,11 +202,18 @@ export function PlanView({
                   <span className="mt-1 block text-muted group-open:mt-3 group-open:rounded group-open:bg-brand-soft group-open:p-3 group-open:text-ink">{s.summary}</span>
                 </summary>
                 <div className="px-4 sm:px-6 pb-5">
-                  {s.blocks
+                  {(() => {
                     // The dashboard's shopping list replaces the compact shopping list inside the Priority list on the web
                     // (email and PDF keep it).
-                    .filter((b) => !(doc.overview && s.id === "priorities" && b.type === "products" && b.compact))
-                    .map((b, i) => <BlockView key={i} b={b} planId={planId} buyHref={buyHref} sectionId={s.id} onChoose={onChoose} ctx={ctx} />)}
+                    const blocks = s.blocks.filter((b) => !(doc.overview && s.id === "priorities" && b.type === "products" && b.compact));
+                    const labels = kindLabelsAt(blocks);
+                    return blocks.map((b, i) => (
+                      <div key={i}>
+                        {labels[i] && <KindLabel kind={labels[i]} />}
+                        <BlockView b={b} planId={planId} buyHref={buyHref} sectionId={s.id} onChoose={onChoose} ctx={ctx} />
+                      </div>
+                    ));
+                  })()}
                 </div>
               </details>
             ))}

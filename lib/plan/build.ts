@@ -1,4 +1,5 @@
 import { hasHouseholdFilter, hasPersonalFilter, LABELS, type Answers } from "@/lib/answers/schema";
+import { labelKinds } from "./kinds";
 import type { ComputedPlan, GearPick } from "@/lib/rules/engine";
 import type { RuleConstants } from "@/lib/rules/constants";
 import { atLeast } from "@/lib/zip/profile";
@@ -1061,6 +1062,8 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   });
 
   addHelp(S, prof);
+  // D8: every block gets its kind (Good to know / To do / To have).
+  labelKinds(S);
   const pw2 = cp.power;
   const hasFuel = pw2.generatorStatus === "recommended" || pw2.generatorStatus === "owned_portable";
   const overview: Overview = {

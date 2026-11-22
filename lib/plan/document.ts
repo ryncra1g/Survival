@@ -9,11 +9,15 @@ const LevelOptionSchema = z.object({
 });
 export type LevelOption = z.infer<typeof LevelOptionSchema>;
 
+/** D8: Good to know / To do / To have (lib/plan/kinds.ts). Optional so plans saved before kinds still parse. */
+const Kind = z.enum(["know", "do", "have"]);
+
 /** The one plan structure rendered on screen, in the PDF and in the email. */
 export const BlockSchema = z.discriminatedUnion("type", [
-  z.object({ type: z.literal("paragraph"), text: z.string() }),
-  z.object({ type: z.literal("bullets"), items: z.array(z.string()) }),
+  z.object({ kind: Kind.optional(), type: z.literal("paragraph"), text: z.string() }),
+  z.object({ kind: Kind.optional(), type: z.literal("bullets"), items: z.array(z.string()) }),
   z.object({
+    kind: Kind.optional(),
     type: z.literal("checklist"),
     items: z.array(
       z.object({
@@ -33,29 +37,33 @@ export const BlockSchema = z.discriminatedUnion("type", [
   }),
   /** "What you need" strip at the end of a section: catalog items (Buy shown only if in this plan's gear) + official links. */
   z.object({
+    kind: Kind.optional(),
     type: z.literal("help"),
     buy: z.array(z.string()),
     links: z.array(z.object({ label: z.string(), url: z.string().url() })),
     note: z.string().optional(),
   }),
   z.object({
+    kind: Kind.optional(),
     type: z.literal("table"),
     caption: z.string().optional(),
     columns: z.array(z.string()),
     rows: z.array(z.array(z.string())),
   }),
-  z.object({ type: z.literal("ifthen"), rows: z.array(z.object({ if: z.string(), then: z.string() })) }),
+  z.object({ kind: Kind.optional(), type: z.literal("ifthen"), rows: z.array(z.object({ if: z.string(), then: z.string() })) }),
   z.object({
+    kind: Kind.optional(),
     type: z.literal("callout"),
     tone: z.enum(["danger", "warning", "info"]),
     title: z.string(),
     text: z.string(),
   }),
-  z.object({ type: z.literal("subheading"), text: z.string() }),
+  z.object({ kind: Kind.optional(), type: z.literal("subheading"), text: z.string() }),
   /** A level chooser for a slot that isn't a single product row (e.g. food: bulk staples vs freeze-dried). */
-  z.object({ type: z.literal("levelchoice"), group: z.string(), caption: z.string(), levels: z.array(LevelOptionSchema) }),
+  z.object({ kind: Kind.optional(), type: z.literal("levelchoice"), group: z.string(), caption: z.string(), levels: z.array(LevelOptionSchema) }),
   /** Gear with optional Buy buttons. Renderers build the tracked link from itemId (/go/<itemId>). */
   z.object({
+    kind: Kind.optional(),
     type: z.literal("products"),
     caption: z.string().optional(),
     /** Compact rows (name, qty, price, Buy) for the shopping list; full specs live in Recommended gear. */
