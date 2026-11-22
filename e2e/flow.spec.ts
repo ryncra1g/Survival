@@ -178,7 +178,7 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   // One slim save bar instead of the big email box; it says where the plan is saved.
   await expect(page.getByTestId("save-bar")).toHaveCount(1);
   await expect(page.getByTestId("save-bar")).toContainText("Saved on this device for 30 days. Confirm your email to keep it and use it on any device.");
-  await expect(page.locator("form", { has: page.getByRole("heading", { name: "Email me my plan" }) })).toHaveCount(1);
+  await expect(page.locator("form:has(input[type=email])")).toHaveCount(1); // one email entry point
   await share.getByRole("link", { name: "Email me my plan" }).click();
 
   // Optional email: typo check, then confirm flow
@@ -280,6 +280,18 @@ test("admin: dashboard, catalog, rule constants, affiliate tag → tracked Buy c
   await page.goto("/admin");
   await expect(page.getByText("Carbon monoxide alarm — 1")).toBeVisible();
 
+  // D12b / D13: Copy for your AI assistant copies the summary and is counted on the admin dashboard
+  await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto(`/plan/${planId}`);
+  await page.getByTestId("share-menu").locator("summary").click();
+  await page.getByRole("button", { name: "Copy for your AI assistant" }).click();
+  await expect(page.getByText("Copied. Paste it into your AI assistant to get started.")).toBeVisible();
+  const copied = await page.evaluate(() => navigator.clipboard.readText());
+  expect(copied).toContain("Use these amounts exactly; don't recalculate them.");
+  expect(copied).not.toMatch(/\b\d{5}\b/);
+  await page.goto("/admin");
+  await expect(page.getByTestId("stat-Copy for AI").getByTestId("stat-value")).toHaveText("1");
+
   // reset so other runs start from defaults
   await page.request.post("/api/admin/rules", { data: { overrides: {} }, headers: O });
 });
@@ -314,4 +326,18 @@ test("à la carte: switch a gear item's level from the plan", async ({ page }) =
   expect(page.url()).not.toContain(planId);
   await expect(page.locator("details#gear").getByText("Stackable water bricks").first()).toBeVisible();
   await expect(page.locator("details#gear [aria-current=true]").filter({ hasText: "Premium" }).first()).toBeVisible();
+});
+
+test("site menu (D9): visitor items on a phone, and every page it links to exists", async ({ page }) => {
+  await page.goto("/");
+  const menu = page.getByTestId("site-menu");
+  await menu.locator("summary").click();
+  const nav = menu.getByRole("navigation", { name: "Site menu" });
+  for (const label of ["Sign in", "Help", "About", "Sources & safety", "Terms", "Privacy"]) await expect(nav.getByRole("link", { name: label })).toBeVisible();
+  await expect(nav.getByRole("link", { name: "My places" })).toHaveCount(0); // accounts track is off
+  await page.keyboard.press("Escape");
+  await expect(nav).toBeHidden();
+  for (const p of ["/help", "/about", "/sources"]) expect((await page.request.get(p)).status()).toBe(200);
+  await page.goto("/sources");
+  await expect(page.getByRole("heading", { name: "Sources & safety" })).toBeVisible();
 });

@@ -31,9 +31,9 @@ export default async function Admin() {
       <h1 className="text-2xl font-bold">Admin</h1>
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         {tiles.map(([label, value, sub]) => (
-          <div key={label} className="card p-4">
+          <div key={label} className="card p-4" data-testid={`stat-${label}`}>
             <p className="text-sm text-muted">{label}</p>
-            <p className="text-2xl font-bold mt-1">{value}</p>
+            <p className="text-2xl font-bold mt-1" data-testid="stat-value">{value}</p>
             {sub && <p className="text-xs text-muted mt-1">{sub}</p>}
           </div>
         ))}
