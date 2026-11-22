@@ -26,6 +26,9 @@ _(written at the end of the run)_
 - [B2] Storage that implies a feature (e.g. garage) also sets the feature (hasGarage), rather than rejecting the answer. This keeps old saved answers valid; the questionnaire only offers spaces the home has. "Very limited space" and "No suitable storage" can't be combined with other spaces (validation).
 - [B2] A shed someone can't use for supplies still gets a step: it's the place for gas cans and propane (same guidance as the existing shed storage step).
 - [B3] The personal-filter note says only that it belongs in the go-bag; a claim that it can't supply a household was left out (no official source).
+- [C2] Section cards show a key number where the engine has one (water, calories, steps, fuel reserve, pet food...) and a 2-line summary otherwise.
+- [C3] "$X over your budget" compares with the top of the stated range ($500 / $1,500 / $5,000; none for $5,000+), using the middle of each price range. The first aid kit is now essential (never deferred) so safety items always lead.
+- [C4] Draft food-mix rules (not live yet): no storage, no way to cook without grid power, or a 72-hour plan → all ready-to-eat; very limited space → 75% ready / 25% bulk; otherwise 50/50; $5,000+ moves a quarter of the bulk share to kits. Ready-to-eat planning cost $3 per 1,000 kcal and 30 lb per 5-gal bucket are estimates for owner review.
 
 ## Tasks
 | ID | Decision | Status | Commit | Note |
@@ -43,6 +46,12 @@ _(written at the end of the run)_
 | B2 | D5 | done | 0075087 | Home features = property only (adds shed); storage offers only spaces the home has + Closets / Other indoor / Very limited / No suitable storage |
 | B3 | D6 | done | 0075087 | Filter type household / personal / both / none; personal counts for the go-bag only |
 | B4 | — | done | (this commit) | Batch B verified: lint ✓, 429 unit ✓ (incl. pathways 69 + 80 pairwise, migrate), build ✓, 10 e2e ✓, smoke 10/10 ✓, screenshots light+dark ✓ |
+| C1 | D8 | done | 8f2a7ec | Kinds on every block (Good to know / To do / To have), labels on web + PDF, tests/kinds.test.ts |
+| C2 | D10 | done | e9fea6c + 04ac3fd | Card grid per chapter (2 across on phones) with engine key numbers; e2e 10/10 after fix |
+| C3 | D3 | done | bc59569 | Compare options (Lower-cost / Upgrade / Other choices, difference, new total, $X over budget); safety-first order; first aid essential; tests/budget.test.ts |
+| C4 | D7 | in progress | (next commit) | RESUME HERE. Done: constants.foodMix + defaultFoodMix/computeFoodMix in engine.ts (not wired yet). Left: wire into computePlan (consumables, kits candidate when kits share > 0, ctx.foodKcal = kits kcal, storage-kit qty 'food_buckets'), food slot options incl. 'mix', choose route accepts 'mix', food section text + comparison table, Teaser shows calories, tests, FACTCHECK |
+| C5–C9 | D6, D3b, D4, D12 | not started | — | Water layers + kit; tip library + linter (flag off); When you must leave + places page; maintenance data + .ics; batch wrap-up |
+| D1–D10 | D2, D4, D7, D8, D3b, D12 | not started | — | Accounts track (behind ACCOUNTS_ENABLED) |
 
 ## Blocked
 _(none yet)_

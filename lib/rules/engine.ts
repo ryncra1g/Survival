@@ -153,6 +153,64 @@ export function computeFood(a: Answers, c: RuleConstants): FoodResult {
   };
 }
 
+// ---------------------------------------------------------------- food approaches (D7)
+export type FoodApproach = "bulk" | "ready" | "kits";
+export interface FoodMixResult {
+  /** "mix" = the recommended mix from the household's answers; otherwise the one approach they chose. */
+  choice: "mix" | FoodApproach;
+  shares: Record<FoodApproach, number>;
+  /** Calories from each approach. Always sums to the household's total (never changed by the choice). */
+  kcal: Record<FoodApproach, number>;
+  /** Bulk staples for their share, and food-grade buckets sized to those pounds (none without bulk). */
+  bulk: { staples: FoodResult["staples"]; totalLbs: number; cost: number; buckets: number };
+  readyCost: number;
+}
+
+/** gearChoices.food → approach: essential = bulk staples, standard = ready-to-eat, premium = ration & freeze-dried kits. */
+export const FOOD_LEVEL: Record<SlotLevel, FoodApproach> = { essential: "bulk", standard: "ready", premium: "kits" };
+
+/**
+ * D7: the recommended mix, from answers the household already gave.
+ * - No suitable storage, or no way to cook without grid power (apartment, non-gas stove, no backup power):
+ *   all ready-to-eat (bulk staples need storage and cooking).
+ * - 72-hour plans: all ready-to-eat.
+ * - Very limited space: mostly ready-to-eat (75%), some bulk staples (25%).
+ * - Otherwise half bulk staples, half ready-to-eat.
+ * - A $5,000+ budget moves a quarter of the bulk share to ration & freeze-dried kits.
+ */
+export function defaultFoodMix(a: Answers): Record<FoodApproach, number> {
+  const canCook = a.cooking === "gas" || a.backupPower !== "none" || a.homeType !== "apartment";
+  if (a.storage.includes("none") || !canCook || a.scenarioDays <= 3) return { bulk: 0, ready: 1, kits: 0 };
+  const base = a.storage.includes("limited") ? { bulk: 0.25, ready: 0.75, kits: 0 } : { bulk: 0.5, ready: 0.5, kits: 0 };
+  if (a.budget === "5000_plus") return { bulk: base.bulk - 0.25 * base.bulk, ready: base.ready, kits: 0.25 * base.bulk };
+  return base;
+}
+
+export function computeFoodMix(a: Answers, c: RuleConstants, food: FoodResult): FoodMixResult {
+  const chosen = a.gearChoices?.food;
+  const choice: FoodMixResult["choice"] = chosen ? FOOD_LEVEL[chosen] : "mix";
+  const shares = choice === "mix" ? defaultFoodMix(a) : { bulk: 0, ready: 0, kits: 0, [choice]: 1 };
+  const kcalOf = (k: FoodApproach) => Math.round(food.totalKcal * shares[k]);
+  const kcal = { bulk: kcalOf("bulk"), ready: kcalOf("ready"), kits: 0 };
+  kcal.kits = food.totalKcal - kcal.bulk - kcal.ready; // exact total, no rounding drift
+  const staples = shares.bulk > 0
+    ? c.staples.map((s) => {
+        const k = food.totalKcal * shares.bulk * s.share;
+        const lbs = ceil(round(k / s.kcalPerLb, 4));
+        const units = ceil(round(lbs / s.unitLbs, 4));
+        return { key: s.key, name: s.name, kcal: Math.round(k), lbs, units, unit: s.unit, cost: round(units * s.costPerUnit, 0) };
+      })
+    : [];
+  const totalLbs = staples.reduce((t, s) => t + s.lbs, 0);
+  return {
+    choice,
+    shares,
+    kcal,
+    bulk: { staples, totalLbs, cost: staples.reduce((t, s) => t + s.cost, 0), buckets: totalLbs ? ceil(totalLbs / c.foodMix.bucketLbs) : 0 },
+    readyCost: round((kcal.ready / 1000) * c.foodMix.readyCostPer1000Kcal, 0),
+  };
+}
+
 // ---------------------------------------------------------------- diapers / formula
 export interface DiaperResult {
   children: number;
