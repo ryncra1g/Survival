@@ -80,7 +80,7 @@ const seed: Seed[] = [
     id: "first-aid", category: "First aid", name: "First aid kit",
     spec: "200+ piece kit with trauma pads, gauze, tape, elastic wrap, gloves, thermometer, tweezers, shears",
     models: ["Adventure Medical Kits Family", "American Red Cross Deluxe Family Kit"], priceLow: 30, priceHigh: 80, tier: 1, phase: 1, priority: 10,
-    qty: 1, tags: [],
+    qty: 1, tags: [], essential: true,
   },
   {
     id: "extinguisher", category: "Life safety", name: "Fire extinguisher",

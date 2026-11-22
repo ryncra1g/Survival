@@ -340,7 +340,12 @@ test("à la carte: switch a gear item's level from the plan", async ({ page }) =
   await page.goto(`/plan/${planId}#gear`);
   const gear = page.locator("details#gear");
   await expect(gear).toHaveAttribute("open", "");
-  const premiumWater = gear.getByRole("button", { name: /Switch to Premium: Stackable water bricks/ });
+  // D3: each slot shows its main pick; "Compare options" lists Lower-cost / Upgrade with the difference and new total
+  const water = gear.getByTestId("compare-options").filter({ hasText: "7-gallon" }).first();
+  await water.getByText("Compare options").click();
+  await expect(water.getByText("Upgrade", { exact: true })).toBeVisible();
+  await expect(water.getByText(/new total \$/).first()).toBeVisible();
+  const premiumWater = water.getByRole("button", { name: /Switch to Premium: Stackable water bricks/ });
   await premiumWater.click();
   await expect(page).toHaveURL(/\/plan\/[0-9a-f-]{36}#gear/);
   expect(page.url()).not.toContain(planId);

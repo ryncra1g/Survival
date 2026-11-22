@@ -672,7 +672,18 @@ export function computeBudget(
   const ongoingCost = consumables.filter((l) => l.ongoing).reduce((t, l) => t + l.cost, 0);
   // Excluded items (e.g. gas cans with a standby generator) never show as picks or next purchases.
   const keep = (p: GearPick) => !excluded.has(p.item.id);
-  return { planningAmount, totalMid: round(spent, 0), phases, consumables, ongoingCost, picks: picks.filter(keep), deferred: deferred.filter(keep), staleHidden, cutFirst, slots };
+  // D3: safety items always come first (CO alarms, then water, then first aid). The sort is stable and uses
+  // only the item's role, never price or commission, so everything else keeps the engine's order.
+  const ordered = [...picks].sort((x, y) => safetyRank(x) - safetyRank(y));
+  return { planningAmount, totalMid: round(spent, 0), phases, consumables, ongoingCost, picks: ordered.filter(keep), deferred: deferred.filter(keep), staleHidden, cutFirst, slots };
+}
+
+/** D3: CO alarms, water and first aid lead the shopping list. Everything else ranks after them, unchanged. */
+export function safetyRank(p: { item: Pick<CatalogItem, "id" | "group"> }): number {
+  if (p.item.id === "co-alarm") return 0;
+  if (p.item.group === "water") return 1; // stored-water containers (the water slot)
+  if (p.item.id === "first-aid") return 2;
+  return 3;
 }
 
 // ---------------------------------------------------------------- top level

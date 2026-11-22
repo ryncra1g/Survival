@@ -81,6 +81,9 @@ export interface PlanDraft {
   overview: Overview;
 }
 
+/** D3: the top of each stated budget range ("$X over your budget" compares with it). The stated budget is never changed. */
+const BUDGET_CAP: Record<Answers["budget"], number | null> = { under_500: 500, "500_1500": 1500, "1500_5000": 5000, "5000_plus": null };
+
 let checklistCounter = 0;
 /** A checklist step: plain text, or text plus why / what to buy / an official link. */
 type Step = string | { text: string; why?: string; buy?: string[]; link?: OfficialLink; id?: string };
@@ -196,7 +199,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   const levelsFor = (group?: string) => {
     const slot = group ? cp.budget.slots.find((x) => x.group === group) : undefined;
     if (!slot || slot.options.length < 2) return undefined;
-    return slot.options.map((o) => ({ level: o.level, name: o.name, price: usdRange(o.low, o.high), selected: o.itemId === slot.chosen }));
+    return slot.options.map((o) => ({ level: o.level, name: o.name, price: usdRange(o.low, o.high), selected: o.itemId === slot.chosen, low: o.low, high: o.high }));
   };
   const productsBlock = (picks: GearPick[], later: (p: GearPick) => boolean, caption?: string, compact?: boolean): Block => ({
     type: "products",
@@ -1105,6 +1108,12 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   const pw2 = cp.power;
   const hasFuel = pw2.generatorStatus === "recommended" || pw2.generatorStatus === "owned_portable";
   const overview: Overview = {
+    budget: {
+      label: LABELS.budget[a.budget],
+      cap: BUDGET_CAP[a.budget],
+      totalLow: cp.budget.picks.reduce((t, p) => t + p.low, 0),
+      totalHigh: cp.budget.picks.reduce((t, p) => t + p.high, 0),
+    },
     stats: [
       { key: "water", value: `${n(cp.water.storedGal)} gal`, label: "water to store", math: `${n(cp.water.dailyGal, 2)} gal/day × ${n(cp.water.storedDays)} days`, anchor: "water" },
       { key: "food", value: n(cp.food.totalKcal), label: "calories of food", math: `${n(cp.food.dailyKcal)}/day × ${n(a.scenarioDays)} days`, anchor: "food" },

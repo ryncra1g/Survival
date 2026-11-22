@@ -1,7 +1,7 @@
-import type { Block, PlanDocument } from "@/lib/plan/document";
+import type { Block, Overview, PlanDocument } from "@/lib/plan/document";
 import { Checklist } from "./Checklist";
 import { ChecksProvider } from "./ChecksContext";
-import { LevelChips } from "./LevelChips";
+import { CompareOptions } from "./CompareOptions";
 import { SectionNav } from "./SectionNav";
 import { BuyIfNeeded } from "./BuyIfNeeded";
 import { Dashboard, type PriorityStep } from "./Dashboard";
@@ -22,7 +22,7 @@ const toneCls = { danger: "border-danger text-danger", warning: "border-warn tex
 type ChooseFn = (group: string, level: "essential" | "standard" | "premium") => void;
 
 /** `affiliate`: some Buy links earn a commission, so the inline disclosure shows. */
-type Ctx = { products: ReturnType<typeof productIndex>; href: (itemId: string) => string; affiliate: boolean };
+type Ctx = { products: ReturnType<typeof productIndex>; href: (itemId: string) => string; affiliate: boolean; budget?: Overview["budget"] };
 
 function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block; planId: string; buyHref?: (itemId: string) => string; sectionId: string; onChoose?: ChooseFn; ctx: Ctx }) {
   switch (b.type) {
@@ -32,7 +32,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
       return (
         <div className="my-4">
           <h4 className="font-semibold">{b.caption}</h4>
-          <LevelChips planId={planId} group={b.group} levels={b.levels} back={sectionId} onChoose={onChoose} />
+          <CompareOptions planId={planId} group={b.group} levels={b.levels} back={sectionId} budget={ctx.budget} onChoose={onChoose} />
         </div>
       );
     case "products":
@@ -50,7 +50,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
                   </p>
                   {!b.compact && <p className="text-sm text-muted mt-0.5">{i.spec}</p>}
                   <p className="text-sm mt-0.5">{i.price}{!b.compact && i.models.length ? ` · e.g. ${i.models.join("; ")}` : ""}</p>
-                  {!b.compact && i.levels && i.group && <LevelChips planId={planId} group={i.group} levels={i.levels} back={sectionId} onChoose={onChoose} />}
+                  {!b.compact && i.levels && i.group && <CompareOptions planId={planId} group={i.group} levels={i.levels} back={sectionId} budget={ctx.budget} models={i.models} onChoose={onChoose} />}
                 </div>
                 {i.buyable && (
                   <BuyIfNeeded itemId={i.itemId}>
@@ -169,7 +169,7 @@ export function PlanView({
   onChoose?: ChooseFn;
 }) {
   const chapters = groupIntoChapters(doc.sections);
-  const ctx: Ctx = { products: productIndex(doc), href: (id) => (buyHref ? buyHref(id) : `/go/${encodeURIComponent(id)}?p=${planId}&src=web`), affiliate: !!doc.affiliateDisclosure };
+  const ctx: Ctx = { products: productIndex(doc), href: (id) => (buyHref ? buyHref(id) : `/go/${encodeURIComponent(id)}?p=${planId}&src=web`), affiliate: !!doc.affiliateDisclosure, budget: doc.overview?.budget };
   return (
     <ChecksProvider planId={planId} initial={checks} sync={sync}>
       <article>

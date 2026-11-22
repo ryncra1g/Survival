@@ -6,6 +6,9 @@ const LevelOptionSchema = z.object({
   name: z.string(),
   price: z.string(),
   selected: z.boolean(),
+  /** D3: line totals for this level (USD), so Compare options can show the difference and the new total. */
+  low: z.number().optional(),
+  high: z.number().optional(),
 });
 export type LevelOption = z.infer<typeof LevelOptionSchema>;
 
@@ -103,6 +106,8 @@ export type Section = z.infer<typeof SectionSchema>;
 
 /** Dashboard data: headline numbers with their math, and the gear list with costs. Every number comes from the rules engine. */
 export const OverviewSchema = z.object({
+  /** D3: the stated budget (never changed) and this plan's gear total. `cap` is the top of the chosen range; null for "$5,000+". */
+  budget: z.object({ label: z.string(), cap: z.number().nullable(), totalLow: z.number(), totalHigh: z.number() }).optional(),
   stats: z.array(z.object({ key: z.string(), value: z.string(), label: z.string(), math: z.string(), anchor: z.string() })),
   gear: z.array(
     z.object({
