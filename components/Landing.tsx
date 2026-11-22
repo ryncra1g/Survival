@@ -6,9 +6,9 @@ export function Landing({ cta, footer, sampleLink }: { cta: ReactNode; footer?: 
   const sample = sampleSummary();
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:py-14">
-      <p className="text-sm font-semibold tracking-wide text-brand">Free · No sign-up · About 5 minutes</p>
-      <h1 className="mt-2 text-[1.85rem] sm:text-5xl font-bold leading-tight text-balance">Know exactly what to do when the power goes out.</h1>
-      <p className="mt-3 sm:text-lg text-muted max-w-2xl">A plan built for your household, whether it&apos;s just you or a full house, in a house or an apartment. How much water, food and fuel to keep, what to buy first, and what to do when a storm hits.</p>
+      {/* LP-02: no eyebrow line. LP-03 / LP-04: owner's headline direction (working copy). */}
+      <h1 className="text-[2.1rem] sm:text-6xl font-bold leading-tight text-balance">Get what you need. Know what to do.</h1>
+      <p className="mt-3 sm:text-lg text-muted max-w-2xl">Take the guesswork out of getting prepared. Know what to keep on hand, what to do first and how to stay ready.</p>
       <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3">
         {cta}
         <span className="text-sm text-muted text-center sm:text-left">Every amount is worked out for your household, with the math shown.</span>

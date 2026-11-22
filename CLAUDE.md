@@ -15,7 +15,8 @@ optionally emails it, and can buy gear through tracked affiliate links. See READ
   answers never go in URLs. Email is optional; marketing consent is a separate unticked box.
 - **Every answer must change the plan, and the plan must never sell what someone already has.**
   `tests/pathways.test.ts` enforces it (58 single-answer changes + 68 pairwise households covering all
-  1,844 answer pairs); see docs/PATHWAYS.md. A new question or answer needs a line there.
+  1,844 answer pairs); see docs/PATHWAYS.md. A new question or answer needs a line there. Every answer must also
+  trace to a product, a quantity, or a step with a Buy option or official link (same test file).
 - **Gear levels (à la carte):** items in a `group` are a slot with `level` essential/standard/premium; the budget sets the
   default (`budget.defaultLevel`), `answers.gearChoices` overrides it, and `excludes` removes items a choice replaces.
   `tests/levels.test.ts` loops every slot × level for the 10 personas. New slots go in `GEAR_SLOTS` (lib/answers/schema.ts).
@@ -43,6 +44,8 @@ optionally emails it, and can buy gear through tracked affiliate links. See READ
 - Gear catalog seed: `lib/catalog/seed.ts` (admin-editable at `/admin/catalog`)
 - Data: `lib/server/store/` (file store for demo, Supabase for prod; SQL in `supabase/migrations/`)
 - Business/launch plan: docs/LAUNCH_PLAN.md (links to the owner's Claude Docs plan)
+- **To-do list / backlog: docs/BACKLOG.md** — the owner's improvement log with status per item. Read it when
+  resuming work; update statuses as items land; never treat a suggestion there as approved.
 
 ## Project skills
 - `/release-check` — everything that must pass before deploying

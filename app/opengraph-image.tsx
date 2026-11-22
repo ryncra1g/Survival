@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { BRAND } from "@/lib/brand";
 
-export const alt = `${BRAND.name}: know exactly what to do when the power goes out`;
+export const alt = `${BRAND.name}: get what you need, know what to do`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -15,8 +15,8 @@ export default function OgImage() {
           <div style={{ fontSize: 40, fontWeight: 700, color: "#1e3a5c" }}>{BRAND.name}</div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-          <div style={{ fontSize: 72, fontWeight: 700, lineHeight: 1.1 }}>Know exactly what to do when the power goes out</div>
-          <div style={{ fontSize: 34, color: "#4a5663" }}>A plan built for your home in 5 minutes · exact water, food and fuel · free, no sign-up</div>
+          <div style={{ fontSize: 80, fontWeight: 700, lineHeight: 1.1 }}>Get what you need. Know what to do.</div>
+          <div style={{ fontSize: 34, color: "#4a5663" }}>An emergency plan built for your household · exact water, food and fuel · free</div>
         </div>
       </div>
     ),

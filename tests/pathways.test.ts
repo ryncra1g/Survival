@@ -62,6 +62,30 @@ describe("every answer changes the plan", () => {
   });
 });
 
+/**
+ * Every answer leads to something to act on: a different product or quantity, or a step that carries a
+ * product or official link. Text-only changes don't count. These three share the base answer's resources
+ * (same vehicle kit, fuel and evacuation guidance) and change amounts in tables, so they're exempt.
+ */
+const SAME_RESOURCES_AS_BASE = new Set(["diesel", "hybrid", "far fallback"]);
+describe("every answer traces to a product or resource", () => {
+  const resources = (x: Plan) => {
+    // Gear in the plan now or marked "later" both count as a product the answer leads to.
+    const out = new Set([...x.computed.budget.picks, ...x.computed.budget.deferred].map((p) => `${p.item.id}×${p.qty}`));
+    for (const s of x.document.sections)
+      for (const bl of s.blocks) {
+        if (bl.type === "checklist") for (const i of bl.items) if (i.link || i.buy?.length) out.add(`${i.text} → ${i.link?.url ?? i.buy?.[0]}`);
+        if (bl.type === "help") for (const l of bl.links) out.add(l.url);
+      }
+    return out;
+  };
+  it.each(VARIANTS.filter(([n]) => !SAME_RESOURCES_AS_BASE.has(n)))("%s", async (_name, v) => {
+    const [b, r] = await Promise.all([plan(BASE), plan({ ...BASE, ...v } as Answers)]);
+    const before = resources(b), after = resources(r);
+    expect([...after].some((x) => !before.has(x)) || [...before].some((x) => !after.has(x))).toBe(true);
+  });
+});
+
 // ------------------------------------------------------------------ 2. pairwise households
 type Field = { key: string; values: Partial<Answers>[] };
 const FIELDS: Field[] = [
