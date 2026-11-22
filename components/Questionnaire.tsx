@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AnswersSchema, DEFAULT_ANSWERS, LABELS, type Answers, type PetGroupT } from "@/lib/answers/schema";
+import { AnswersSchema, DEFAULT_ANSWERS, isDrive, LABELS, migrateAnswers, storageOptions, type Answers, type PetGroupT } from "@/lib/answers/schema";
 import { DEFAULT_CONSTANTS } from "@/lib/rules/constants";
 import { computeFood, computeWater, household } from "@/lib/rules/engine";
 import { atLeast, lookupZip, type Level, type ZipProfile } from "@/lib/zip/profile";
@@ -56,6 +56,8 @@ function YesNo({ value, onChange }: { value: boolean; onChange: (v: boolean) => 
   );
 }
 const toggle = <T,>(arr: T[], v: T) => (arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
+/** Remove a storage space the home no longer has; fall back to closets so one option stays picked. */
+const dropStorage = (s: Answers["storage"], x: Answers["storage"][number]): Answers["storage"] => { const left = s.filter((v) => v !== x); return left.length ? left : ["closets"]; };
 
 /** After a 5-digit ZIP: the region and its hazards rated moderate or higher (approximate, by ZIP prefix). */
 const HAZARD_LABEL: [keyof ZipProfile, string][] = [
@@ -268,11 +270,12 @@ const SCREENS: Screen[] = [
         <Group label="Floors (not counting a basement)">
           <Stepper label="floors" value={a.floors} min={1} max={5} onChange={(floors) => set({ floors })} />
         </Group>
-        <Group label="Your home has… (select all)">
-          <div className="grid grid-cols-3 gap-2">
-            <Choice selected={a.hasBasement} onClick={() => set({ hasBasement: !a.hasBasement })}>Basement / lower level</Choice>
-            <Choice selected={a.hasGarage} onClick={() => set({ hasGarage: !a.hasGarage })}>Garage</Choice>
+        <Group label="Your home has… (select all)" hint="Just the property. You'll pick where you can store supplies later.">
+          <div className="grid grid-cols-2 gap-2">
+            <Choice selected={a.hasBasement} onClick={() => set({ hasBasement: !a.hasBasement, storage: a.hasBasement ? dropStorage(a.storage, "basement") : a.storage })}>Basement / lower level</Choice>
+            <Choice selected={a.hasGarage} onClick={() => set({ hasGarage: !a.hasGarage, storage: a.hasGarage ? dropStorage(a.storage, "garage") : a.storage })}>Garage</Choice>
             <Choice selected={a.hasYard} onClick={() => set({ hasYard: !a.hasYard })}>Yard</Choice>
+            <Choice selected={a.hasShed} onClick={() => set({ hasShed: !a.hasShed, storage: a.hasShed ? dropStorage(a.storage, "shed") : a.storage })}>Shed</Choice>
           </div>
         </Group>
       </>
@@ -304,8 +307,13 @@ const SCREENS: Screen[] = [
             <Choice selected={a.waterSource === "well"} onClick={() => set({ waterSource: "well" })} sub="Pump needs electricity">Private well</Choice>
           </Grid>
         </Group>
-        <Group label="Do you already have a water filter for emergencies?" hint="A gravity or hollow-fiber filter, not a fridge or pitcher filter.">
-          <YesNo value={a.hasFiltration} onChange={(hasFiltration) => set({ hasFiltration })} />
+        <Group label="Do you already have a water filter for emergencies?" hint="Not a fridge or pitcher filter.">
+          <Grid>
+            <Choice selected={a.waterFilter === "household"} onClick={() => set({ waterFilter: "household" })} sub="Gravity or pump, fills containers">Household filter</Choice>
+            <Choice selected={a.waterFilter === "personal"} onClick={() => set({ waterFilter: "personal" })} sub="Straw or bottle, like LifeStraw">Personal filter</Choice>
+            <Choice selected={a.waterFilter === "both"} onClick={() => set({ waterFilter: "both" })}>Both</Choice>
+            <Choice selected={a.waterFilter === "none"} onClick={() => set({ waterFilter: "none" })}>None</Choice>
+          </Grid>
         </Group>
       </>
     ),
@@ -344,34 +352,48 @@ const SCREENS: Screen[] = [
   },
   {
     id: "storage",
-    title: "Storage and evacuation",
-    valid: (a) => (!a.storage.length ? "Pick at least one storage option." : a.evacuation.mode === "fallback" && (!a.evacuation.locationType || !a.evacuation.distanceMiles) ? "Pick your fallback location type and distance." : null),
+    title: "Storage",
+    valid: (a) => (!a.storage.length ? "Pick at least one option." : null),
+    render: ({ a, set }) => (
+      <Group label="Which spaces can you realistically use for emergency supplies? (select all)">
+        <Grid>
+          {storageOptions(a).map((s) => (
+            <Choice
+              key={s}
+              selected={a.storage.includes(s)}
+              sub={s === "limited" ? "Compact kits" : s === "none" ? "Buy when a storm is forecast" : undefined}
+              onClick={() => set({ storage: s === "limited" || s === "none" ? [s] : toggle(a.storage.filter((x) => x !== "limited" && x !== "none"), s) })}
+            >
+              {LABELS.storage[s]}
+            </Choice>
+          ))}
+        </Grid>
+      </Group>
+    ),
+  },
+  {
+    id: "evacuation",
+    title: "If you have to leave",
+    valid: (a) => (isDrive(a.evacuation.destination) && !a.evacuation.distanceMiles ? "Pick about how far away it is." : null),
     render: ({ a, set }) => (
       <>
-        <Group label="Where can you store supplies? (select all)">
-          <Grid>
-            {(["garage", "basement", "closets", "shed", "limited"] as const).map((s) => (
-              <Choice
-                key={s}
-                selected={a.storage.includes(s)}
-                onClick={() => set({ storage: s === "limited" ? ["limited"] : toggle(a.storage.filter((x) => x !== "limited"), s) })}
-              >
-                {{ garage: "Garage", basement: "Basement", closets: "Closets", shed: "Shed", limited: "Very limited space" }[s]}
-              </Choice>
-            ))}
-          </Grid>
-        </Group>
-        <Group label="If you had to leave home, where would you go?">
+        <Group label="During an emergency, what's your preferred approach?">
           <Grid cols={1}>
-            <Choice selected={a.evacuation.mode === "shelter_only"} onClick={() => set({ evacuation: { mode: "shelter_only" } })}>We&apos;d shelter in place / public shelter</Choice>
-            {(["friends_family", "second_property", "raw_land"] as const).map((t) => (
-              <Choice key={t} selected={a.evacuation.mode === "fallback" && a.evacuation.locationType === t} onClick={() => set({ evacuation: { mode: "fallback", locationType: t, distanceMiles: a.evacuation.distanceMiles ?? 50 } })}>
-                {LABELS.fallback[t]}
+            {(["stay_home", "family_friends", "another_property", "hotel_shelter", "not_sure"] as const).map((p) => (
+              <Choice key={p} selected={a.approach === p} onClick={() => set({ approach: p })}>{LABELS.approach[p]}</Choice>
+            ))}
+          </Grid>
+        </Group>
+        <Group label="If your home becomes unsafe or officials order an evacuation, where could you go?">
+          <Grid>
+            {(["friends_family", "second_property", "raw_land", "hotel", "public_shelter", "not_sure"] as const).map((d) => (
+              <Choice key={d} selected={a.evacuation.destination === d} onClick={() => set({ evacuation: isDrive(d) ? { destination: d, distanceMiles: a.evacuation.distanceMiles ?? 50 } : { destination: d } })}>
+                {LABELS.fallback[d]}
               </Choice>
             ))}
           </Grid>
         </Group>
-        {a.evacuation.mode === "fallback" && (
+        {isDrive(a.evacuation.destination) && (
           <Group label="About how far away is it?">
             <div className="grid grid-cols-3 gap-2">
               {[25, 50, 120, 250, 500, 1000].map((d) => (
@@ -439,7 +461,7 @@ function Teaser({ a }: { a: Answers }) {
 /** `onGenerate` replaces the server round-trip (standalone demo build): the caller builds the plan. */
 export function Questionnaire({ id, initial, onGenerate }: { id: string; initial: Record<string, unknown>; onGenerate?: (answers: Answers, onStage: OnStage) => Promise<void> }) {
   const router = useRouter();
-  const [a, setA] = useState<Draft>(() => ({ ...DEFAULT_ANSWERS, ...(initial as Partial<Draft>) }) as Draft);
+  const [a, setA] = useState<Draft>(() => ({ ...DEFAULT_ANSWERS, ...(migrateAnswers(initial) as Partial<Draft>) }) as Draft);
   const visible = useMemo(() => SCREENS.filter((s) => !s.show || s.show(a)), [a]);
   // "Change an answer" from a plan opens straight on that screen and offers "Update my plan".
   const editOne = typeof (initial as Draft)._screen === "string";
@@ -458,7 +480,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
     try {
       const local = JSON.parse(localStorage.getItem(`rp_q_${id}`) ?? "null") as Partial<Draft> | null;
       if (local) {
-        setA((prev) => ({ ...prev, ...withoutConsentTicks(local) }));
+        setA((prev) => ({ ...prev, ...(migrateAnswers(withoutConsentTicks(local)) as Partial<Draft>) }));
         if (typeof local._step === "number") setStep(local._step);
       }
     } catch {}

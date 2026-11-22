@@ -70,6 +70,8 @@ export const HOWTO = {
   waterSafety: { label: "Make water safe to drink (EPA)", url: "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water" },
   foodSafety: { label: "Food safety in a power outage (FoodSafety.gov)", url: "https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage" },
   outageHealth: { label: "Power outage food and water safety (CDC)", url: "https://www.cdc.gov/natural-disasters/safety/power-outage-safety.html" },
+  evacuation: { label: "Evacuation (Ready.gov)", url: "https://www.ready.gov/evacuation" },
+  findShelter: { label: "Find an open shelter (American Red Cross)", url: "https://www.redcross.org/get-help/disaster-relief-and-recovery-services/find-an-open-shelter.html" },
 } satisfies Record<string, OfficialLink>;
 
 ALL_OFFICIAL_LINKS.push(...Object.values(HOWTO));

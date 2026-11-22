@@ -1,4 +1,4 @@
-import type { Answers } from "@/lib/answers/schema";
+import { hasHouseholdFilter, hasPersonalFilter, isDrive, type Answers, type DriveDestination } from "@/lib/answers/schema";
 import type { CatalogItem } from "@/lib/catalog/types";
 import { atLeast, lookupZip, type ZipProfile } from "@/lib/zip/profile";
 import type { RuleConstants } from "./constants";
@@ -350,7 +350,8 @@ export function heatStrategy(a: Answers, profile: ZipProfile, power: PowerResult
 
 // ---------------------------------------------------------------- evacuation
 export interface EvacResult {
-  locationType: "friends_family" | "second_property" | "raw_land";
+  /** Where they'd drive to (D4 Q2). Public shelter and "not sure yet" have no drive, so no fuel math. */
+  locationType: DriveDestination;
   distanceMiles: number;
   oneWayGalPerVehicle: number;
   reserveGalPerVehicle: number;
@@ -359,11 +360,12 @@ export interface EvacResult {
   vehicles: number;
 }
 export function computeEvac(a: Answers, c: RuleConstants): EvacResult | null {
-  if (a.evacuation.mode !== "fallback" || !a.evacuation.locationType || !a.evacuation.distanceMiles) return null;
+  const dest = a.evacuation.destination;
+  if (!isDrive(dest) || !a.evacuation.distanceMiles) return null;
   const d = a.evacuation.distanceMiles;
   const oneWay = round(d / c.evacuation.assumedMpg, 1);
   return {
-    locationType: a.evacuation.locationType,
+    locationType: dest,
     distanceMiles: d,
     oneWayGalPerVehicle: oneWay,
     reserveGalPerVehicle: round(oneWay * c.evacuation.fuelReserveFactor, 1),
@@ -401,13 +403,18 @@ export function computeTags(a: Answers, profile: ZipProfile, power: PowerResult,
   if (h.infants) t.add("infant");
   if (h.children) t.add("children");
   if (a.pets.length) t.add("pets");
-  if (a.evacuation.mode === "fallback") t.add("evacuation");
-  if (a.evacuation.locationType === "raw_land") t.add("raw_land");
+  if (isDrive(a.evacuation.destination) && a.evacuation.distanceMiles) t.add("evacuation");
+  if (a.evacuation.destination === "raw_land") t.add("raw_land");
+  if (a.evacuation.destination === "hotel") t.add("evac_hotel");
+  if (a.evacuation.destination === "public_shelter") t.add("evac_shelter");
+  if (hasPersonalFilter(a)) t.add("has_personal_filter");
+  if (a.storage.includes("none")) t.add("no_storage");
   if (a.vehicleFuels.length) t.add("vehicles");
   if (a.vehicleFuels.includes("ev")) t.add("ev");
   if (a.cooking !== "gas") t.add("needs_alt_cooking");
   if (a.scenarioDays > 14) t.add("long_scenario");
-  if (a.scenarioDays > 14 && !a.hasFiltration) t.add("needs_filter");
+  // A personal (straw or bottle) filter is for the go-bag; only a household filter covers the household (D6).
+  if (a.scenarioDays > 14 && !hasHouseholdFilter(a)) t.add("needs_filter");
   if (a.storage.some((s) => s === "garage" || s === "basement" || s === "shed")) t.add("large_storage");
   return t;
 }

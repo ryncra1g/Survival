@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { Answers } from "@/lib/answers/schema";
+import { hasHouseholdFilter, isDrive, type Answers } from "@/lib/answers/schema";
 import { SEED_CATALOG } from "@/lib/catalog/seed";
 import { generatePlan } from "@/lib/plan/generate";
 import { DEFAULT_CONSTANTS as C } from "@/lib/rules/constants";
@@ -47,10 +47,10 @@ describe("à la carte levels: 10 households × every slot × every level", () =>
     // never offered: what they already have, at any level
     if (base.backupPower !== "none") expect(slots.some((x) => x.group === "generator")).toBe(false);
     if (base.backupPower === "solar_battery") expect(slots.some((x) => x.group === "battery-house")).toBe(false);
-    if (base.hasFiltration) expect(slots.some((x) => x.group === "filter")).toBe(false);
+    if (hasHouseholdFilter(base)) expect(slots.some((x) => x.group === "filter")).toBe(false);
     // bug-out slots only for households with a fallback location; shelter only for raw land
-    expect(slots.some((x) => x.group === "go-bag")).toBe(base.evacuation.mode === "fallback");
-    expect(slots.some((x) => x.group === "shelter")).toBe(base.evacuation.locationType === "raw_land");
+    expect(slots.some((x) => x.group === "go-bag")).toBe(isDrive(base.evacuation.destination) && !!base.evacuation.distanceMiles);
+    expect(slots.some((x) => x.group === "shelter")).toBe(base.evacuation.destination === "raw_land");
   }, 120_000);
 
   it("default level follows the budget; a choice overrides it", async () => {

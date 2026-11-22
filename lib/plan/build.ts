@@ -1,4 +1,4 @@
-import { LABELS } from "@/lib/answers/schema";
+import { hasHouseholdFilter, hasPersonalFilter, LABELS, type Answers } from "@/lib/answers/schema";
 import type { ComputedPlan, GearPick } from "@/lib/rules/engine";
 import type { RuleConstants } from "@/lib/rules/constants";
 import { atLeast } from "@/lib/zip/profile";
@@ -56,6 +56,33 @@ const check = (prefix: string, items: Step[]): Block => ({
   }),
 });
 
+/** D4 Q1: a step for the preferred approach in an emergency. Every one links to official evacuation guidance. */
+function approachStep(a: Answers): Step {
+  const pets = a.pets.length > 0;
+  const text = {
+    stay_home: "Plan to stay home when it's safe, and still know where you'd go if officials order an evacuation.",
+    family_friends: "Agree with the family or friends you'd stay with: when you'd come, what to bring, and who else could host you if they can't.",
+    another_property: "Get your other property ready to use: keys, how to turn on utilities, and supplies kept there.",
+    hotel_shelter: `Know your options for a hotel or a public shelter: hotels outside your area, and your nearest shelter${pets ? ", and whether it accepts pets" : ""}.`,
+    not_sure: "Decide where you'd go if you had to leave home: family or friends, a hotel, or a public shelter.",
+  }[a.approach];
+  return { id: "month-approach", text, link: a.approach === "hotel_shelter" ? HOWTO.findShelter : HOWTO.evacuation };
+}
+
+/** D4 Q2: destinations without a drive plan get their own step (drive destinations get the route step and the Evacuation section). */
+function destinationStep(a: Answers): Step | null {
+  switch (a.evacuation.destination) {
+    case "hotel":
+      return { id: "month-destination", text: "List 2–3 hotels or motels in different directions from home, and call ahead before you leave.", link: HOWTO.evacuation };
+    case "public_shelter":
+      return { id: "month-destination", text: "Find your nearest public shelter and how you'd get there; shelters open when officials announce them.", link: HOWTO.findShelter };
+    case "not_sure":
+      return { id: "month-destination", text: "Choose a backup destination outside your area, and write down its address and how to get there.", link: HOWTO.evacuation };
+    default:
+      return null;
+  }
+}
+
 function gearPhaseItems(cp: ComputedPlan, phase: 1 | 2 | 3) {
   return cp.budget.picks.filter((p) => p.phase === phase);
 }
@@ -108,7 +135,7 @@ export function buildTokens(cp: ComputedPlan): Record<string, string> {
     t["evac.distance"] = n(cp.evacuation.distanceMiles);
     t["evac.oneWayGal"] = n(cp.evacuation.oneWayGalPerVehicle, 1);
     t["evac.reserveGal"] = n(cp.evacuation.reserveGalPerVehicle, 1);
-    t["evac.location"] = { friends_family: "a friend or family member's home", second_property: "your second property", raw_land: "your raw land" }[cp.evacuation.locationType];
+    t["evac.location"] = { friends_family: "a friend or family member's home", second_property: "your second property", raw_land: "your raw land", hotel: "a hotel or motel" }[cp.evacuation.locationType];
   }
   return t;
 }
@@ -185,12 +212,14 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
           ["Scenario", LABELS.scenarioDays[a.scenarioDays]],
           ["People", `${plural(h.adults, "adult")}, ${kidsText}${h.elderlyOrMobility ? "; someone elderly or with limited mobility" : ""}`],
           ["Pets", petsText],
-          ["Home", `${LABELS.home[a.homeType]}, ${plural(a.floors, "floor")}${a.hasBasement ? ", basement" : ""}${a.hasGarage ? ", garage" : ""}${a.hasYard ? ", yard" : ""}`],
+          ["Home", `${LABELS.home[a.homeType]}, ${plural(a.floors, "floor")}${a.hasBasement ? ", basement" : ""}${a.hasGarage ? ", garage" : ""}${a.hasYard ? ", yard" : ""}${a.hasShed ? ", shed" : ""}`],
+          ["Storage", a.storage.map((s) => LABELS.storage[s]).join(", ")],
           ["Heat / cooking", `${a.heatSources.map((s) => LABELS.heat[s]).join(", ")} / ${LABELS.cooking[a.cooking]}`],
-          ["Water", `${a.waterSource === "well" ? "Private well" : "Municipal"}${a.hasFiltration ? ", has filtration" : ""}`],
+          ["Water", `${a.waterSource === "well" ? "Private well" : "Municipal"}${a.waterFilter !== "none" ? `; filter: ${LABELS.waterFilter[a.waterFilter].toLowerCase()}` : ""}`],
           ["Backup power", LABELS.backupPower[a.backupPower]],
           ["Vehicles", a.vehicleFuels.length ? a.vehicleFuels.map((v) => LABELS.fuel[v]).join(", ") : "None"],
-          ["Fallback location", cp.evacuation ? `${LABELS.fallback[cp.evacuation.locationType]}, ~${n(cp.evacuation.distanceMiles)} miles` : "Shelter in place only"],
+          ["In an emergency", LABELS.approach[a.approach]],
+          ["If you must leave", cp.evacuation ? `${LABELS.fallback[cp.evacuation.locationType]}, ~${n(cp.evacuation.distanceMiles)} miles` : LABELS.fallback[a.evacuation.destination]],
           ["Budget", LABELS.budget[a.budget]],
           ["Gear level", `${{ under_500: "Starter", "500_1500": "Ready", "1500_5000": "Well prepared", "5000_plus": "Premium" }[a.budget]}: items default to ${{ essential: "Essential", standard: "Standard", premium: "Premium" }[(c.budget.defaultLevel[a.budget] ?? "standard") as "essential"]} level; change any item to go cheaper or bigger`],
         ],
@@ -291,6 +320,10 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   if (cp.pets) month.push({ text: "Stock 2 weeks of pet food; ask your vet how to keep extra medication on hand if your pet takes any.", buy: ["pet-kit"] });
   if (cp.evacuation) month.push({ text: "Pack a go-bag for each person (see the Evacuation section).", buy: ["go-bag", "go-bag-kit", "go-bag-basic"] });
   if (atLeast(prof.hurricane, "moderate")) month.push({ text: "Check your flood zone and evacuation zone; review insurance (flood insurance has a 30-day wait).", link: FEMA_FLOOD_MAP });
+  // D4: the preferred approach and where they could go. Fixed ids, so other checklist ids don't shift.
+  month.push(approachStep(a));
+  const dest = destinationStep(a);
+  if (dest) month.push(dest);
 
   if (a.scenarioDays >= 30) d60.push(`Complete the full ${LABELS.scenarioDays[a.scenarioDays]} food list: ${n(cp.food.totalLbs)} lb of staples.`);
   if (pw.generatorStatus === "recommended") d60.push({ text: "Buy the generator and fuel storage; test-run it outdoors, 20+ ft from the house, under load.", buy: ["generator-dual", "generator-small", "gas-cans"] });
@@ -330,7 +363,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   if (a.heatSources.includes("wood")) practice.push("Wood stove: practice a clean fire and safe ash disposal (metal can, outside, away from the house).");
   if (a.waterSource === "well" && pw.generatorStatus !== "owned_standby") practice.push("Well: learn to switch the pump to backup power with the transfer switch.");
   if (a.poweredDevices.length) practice.push("Medical device: switch it to battery power and time how long the battery lasts.");
-  if (w.filterDays > 0 || a.hasFiltration) practice.push("Water: filter and disinfect one gallon start to finish.");
+  if (w.filterDays > 0 || a.waterFilter !== "none") practice.push("Water: filter and disinfect one gallon start to finish.");
   if (a.pets.length) practice.push("Pets: practice getting each pet into its carrier or on a leash in under 2 minutes.");
   if (h.children) practice.push("Kids: walk to your meeting place together and make it a game.");
   S.push({
@@ -463,6 +496,17 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     storeTips.push({ id: "store-shed", text: "Shed: the right place for gas cans and propane cylinders (detached from the house); too hot or cold for food, water and medicine.", buy: ["gas-cans", "propane-20"], link: HOWTO.powerOutages });
   if (a.storage.includes("closets"))
     storeTips.push({ id: "store-closets", text: "Closets: water bricks or 7-gallon jugs on the floor, food in labelled bins on the top shelf, go-bags by the door.", buy: ["water-bricks", "water-jug", "storage-kit"], link: HOWTO.kit });
+  if (a.storage.includes("other_indoor"))
+    storeTips.push({ id: "store-other-indoor", text: "Other indoor space (a spare room, under the stairs or beds): water bricks and labelled bins, away from heaters and direct sun.", buy: ["water-bricks", "storage-kit", "water-jug"], link: HOWTO.kit });
+  if (a.hasShed && !a.storage.includes("shed"))
+    storeTips.push({ id: "store-shed-fuel", text: "Shed: even if it isn't right for supplies, it's the place for gas cans and propane cylinders, away from the house.", buy: ["gas-cans", "propane-20"], link: HOWTO.powerOutages });
+  if (a.storage.includes("none"))
+    storeTips.push({
+      id: "store-none",
+      text: "No suitable storage: keep the first 3 days of water and a go-bag, and buy the rest as soon as a storm or shortage is forecast, before stores sell out.",
+      buy: ["water-bricks", "go-bag-basic"],
+      link: HOWTO.kit,
+    });
   if (a.storage.includes("limited"))
     storeTips.push({
       id: "store-limited",
@@ -515,7 +559,8 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         ],
       },
       { type: "callout", tone: "info", title: "How to disinfect water", text: BLEACH_RULE },
-      ...(a.hasFiltration ? [{ type: "paragraph" as const, text: "You already have a filter: test it now, and keep spare cartridges or a backflush kit with it." }] : []),
+      ...(hasHouseholdFilter(a) ? [{ type: "paragraph" as const, text: "You already have a household filter: test it now, and keep spare cartridges or a backflush kit with it." }] : []),
+      ...(hasPersonalFilter(a) ? [{ type: "paragraph" as const, text: "Your straw or bottle filter is for one person on the move: keep it in your go-bag." }] : []),
       { type: "bullets", items: ["Store water in food-grade containers away from sunlight and chemicals.", "Replace tap-filled water every 6 months (mark the date).", "Use a 0.1-micron filter for bacteria/protozoa, then disinfect for viruses."] },
     ],
   });
@@ -938,7 +983,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         ...(ev.vehicles ? [{ type: "subheading" as const, text: "Vehicle kit" }] : []),
         ...(ev.vehicles ? [check("veh", ["Jump starter, tire inflator, tow strap", "Paper road map with 2 routes marked", "Blankets, water, snacks", "Phone chargers", "Flashlight, reflective triangles", ...(a.vehicleFuels.some((v) => v !== "ev") ? ["Never store spare gasoline inside the car cabin"] : [])])] : []),
         { type: "subheading", text: ev.vehicles ? "Go-bag (one per person)" : "Go-bag (one per person; pack light enough to carry and walk with)" },
-        check("gobag", ["Water (1 L) and filter bottle", "3 days of snacks", "Change of clothes, rain layer, hat, gloves", "Headlamp + batteries", "Medications (7-day supply), glasses", "Copies of ID and medication list", "Cash in small bills", "Whistle, mask, hand sanitizer", ...(h.children ? ["Child ID card and comfort item"] : []), ...(cp.pets ? ["Pet food, leash, records"] : [])]),
+        check("gobag", [hasPersonalFilter(a) ? { text: "Water (1 L) and your straw or bottle filter", link: HOWTO.waterSafety } : "Water (1 L) and filter bottle", "3 days of snacks", "Change of clothes, rain layer, hat, gloves", "Headlamp + batteries", "Medications (7-day supply), glasses", "Copies of ID and medication list", "Cash in small bills", "Whistle, mask, hand sanitizer", ...(h.children ? ["Child ID card and comfort item"] : []), ...(cp.pets ? ["Pet food, leash, records"] : [])]),
         ...(rawLand ? [{ type: "callout" as const, tone: "danger" as const, title: "Tents and fumes", text: "Never use a heater, stove, grill or generator inside a tent or vehicle. Cook and run generators in the open, away from where people sleep." }] : []),
       ],
     });
