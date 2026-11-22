@@ -11,7 +11,7 @@ const LABEL: Record<InventoryEntry["status"], string> = { have: "Have", need: "N
  */
 export function InventoryEditor({ planId, items, initial, accounts }: { planId: string; items: Item[]; initial: Inventory; accounts: boolean }) {
   const [inv, setInv] = useState<Inventory>(initial);
-  const [state, setState] = useState<"saved" | "saving" | "error">("saved");
+  const [state, setState] = useState<"idle" | "saved" | "saving" | "error">("idle");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const first = useRef(true);
 
@@ -34,7 +34,7 @@ export function InventoryEditor({ planId, items, initial, accounts }: { planId: 
   return (
     <div data-testid="inventory">
       <p className="text-sm text-muted" role="status">
-        {state === "saving" ? "Saving…" : state === "error" ? "Couldn't save. Check your connection." : accounts ? "Saved." : ""}
+        {state === "saving" ? "Saving…" : state === "error" ? "Couldn't save. Check your connection." : state === "saved" && accounts ? "Saved." : ""}
       </p>
       <ul className="mt-2 divide-y divide-line border-y border-line">
         {items.map((it) => {

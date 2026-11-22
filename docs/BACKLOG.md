@@ -16,7 +16,7 @@ Entry types: **Owner request** (Ryan asked for it), **Assistant recommendation**
 
 | ID | Item | Priority | Status |
 | --- | --- | --- | --- |
-| **DB-03** | **Dashboard with tabs, account / settings menu and an inventory page to come back to** | **High** | **Open (new)**; **Decided (D2, D9, D10 (tabs Overview / Inventory / Report in Batch D))** |
+| **DB-03** | **Dashboard with tabs, account / settings menu and an inventory page to come back to** | **High** | **Open (new)**; **Decided (D2, D9, D10 (tabs Overview / Inventory / Report in Batch D))** **Built behind ACCOUNTS_ENABLED (Batch D): tabs, account menu, inventory, places, reminders.** |
 | LP-01 | Top-right profile / product menu | High | Open (folded into DB-03); **Decided (D9)** **Built (Batch A, claude/launch-a-shell).** |
 | LP-02 | Remove the eyebrow line above the headline | Medium | **Done** (branch `claude/headline-copy`) |
 | LP-03 | New headline: "Get what you need. Know what to do." | High | **Done as working copy** (branch `claude/headline-copy`) |
@@ -25,7 +25,7 @@ Entry types: **Owner request** (Ryan asked for it), **Assistant recommendation**
 | LP-06 | Redesign "What's in your plan" | High | Open; **Decided (D10)** **Built (Batch A).** |
 | LP-07 | Loading screen and animation | Medium | Open; **Decided (D11)** **Built (Batch A).** |
 | DB-01 | Three-stage readiness journey | Product direction | Partly started: dashboard home (PR #5). Scope decision needed; **Decided (D1, D2 (Later: Days Ready score, Tasks tab))** |
-| DB-02 | Inventory and shopping status tied to the plan | Medium | Partly done: "I have this" ticks remove Buy buttons and cut the total (PR #5). Purchased / low / expiry open; **Decided (D2 (Batch D inventory))** |
+| DB-02 | Inventory and shopping status tied to the plan | Medium | Partly done: "I have this" ticks remove Buy buttons and cut the total (PR #5). Purchased / low / expiry open; **Decided (D2 (Batch D inventory))** **Built behind ACCOUNTS_ENABLED (Batch D).** |
 | AI-01 | Admin-managed readiness assistant | Later phase | Explore; **Decided (D13: not now; count Copy-for-AI clicks. Stays Later)** |
 | HOU-01 | Attic option? | Open question | Open; **Decided (D5: no attic now (Later, heat/cold-tolerant gear only))** **No attic (D5).** |
 | HOU-02 | Home features vs storage question overlap | Medium | Open; **Decided (D5)** **Built (Batch B).** |

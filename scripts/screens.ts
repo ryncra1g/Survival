@@ -23,6 +23,13 @@ async function makePlan(page: Page): Promise<string> {
   return ((await r.json()) as { planId: string }).planId;
 }
 
+/** Confirm an email for this plan (demo mode gives the link back), so account pages open. */
+async function signIn(page: Page, planId: string) {
+  const r = await page.request.post(`${BASE}/api/plans/${planId}/claim`, { headers: { origin: BASE }, data: { email: `shots-${Date.now()}@example.com`, updates: false } });
+  const link = (await r.json()).demoLink as string | undefined;
+  if (link) await page.goto(link);
+}
+
 const open = async (page: Page, testId: string) => page.getByTestId(testId).locator("summary").first().click();
 
 /** Open the questionnaire on screen `step` with the sample household's answers (via the local draft). */
@@ -54,6 +61,13 @@ export const SHOTS: Shot[] = [
   { name: "plan-stay-ready", run: async (p, id) => { await p.goto(`${BASE}/plan/${id}`); await p.getByTestId("stay-ready").scrollIntoViewIfNeeded(); } },
   { name: "places", run: async (p, id) => { await p.goto(`${BASE}/plan/${id}/places`); await p.getByLabel("Address").fill("1 Example Road"); } },
   { name: "maintenance-list", run: async (p, id) => void (await p.goto(`${BASE}/plan/${id}/maintenance`)) },
+  // Accounts track (run against a server with ACCOUNTS_ENABLED=true and DIY_TIPS_ENABLED=true).
+  { name: "d-plan-tabs", run: async (p, id) => void (await p.goto(`${BASE}/plan/${id}`)) },
+  { name: "d-food-card", run: async (p, id) => { await p.goto(`${BASE}/plan/${id}`); await p.getByTestId("food-mix-card").scrollIntoViewIfNeeded(); } },
+  { name: "d-tips", run: async (p, id) => { await p.goto(`${BASE}/plan/${id}#water`); await p.locator("details#water").getByTestId("diy-tips").scrollIntoViewIfNeeded(); } },
+  { name: "d-inventory", run: async (p, id) => void (await p.goto(`${BASE}/plan/${id}/inventory`)) },
+  { name: "d-places", run: async (p, id) => { await signIn(p, id); await p.goto(`${BASE}/account/places`); } },
+  { name: "d-reminders", run: async (p, id) => { await signIn(p, id); await p.goto(`${BASE}/account/reminders`); await p.getByText("Email me when maintenance is due").click(); } },
   {
     name: "loading",
     run: async (p) => {
