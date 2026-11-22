@@ -96,6 +96,7 @@
     "children",
     "diapers",
     "evacuation",
+    "filter_kit",
     "flood",
     "flood_basement",
     "fuel_furnace",
@@ -245,6 +246,108 @@
     "totalLbs": 653,
     "cost": 1234
   },
+  "foodMix": {
+    "choice": "mix",
+    "shares": {
+      "bulk": 0.8444444444444444,
+      "ready": 0.15555555555555556,
+      "kits": 0
+    },
+    "kcal": {
+      "bulk": 532000,
+      "ready": 98000,
+      "kits": 0
+    },
+    "bulk": {
+      "staples": [
+        {
+          "key": "rice",
+          "name": "White rice",
+          "kcal": 138320,
+          "lbs": 84,
+          "units": 5,
+          "unit": "20-lb bag",
+          "cost": 90
+        },
+        {
+          "key": "beans",
+          "name": "Dry beans/lentils",
+          "kcal": 69160,
+          "lbs": 45,
+          "units": 5,
+          "unit": "10-lb bag",
+          "cost": 80
+        },
+        {
+          "key": "oats",
+          "name": "Rolled oats",
+          "kcal": 53200,
+          "lbs": 32,
+          "units": 13,
+          "unit": "42-oz canister",
+          "cost": 65
+        },
+        {
+          "key": "pasta",
+          "name": "Pasta",
+          "kcal": 53200,
+          "lbs": 32,
+          "units": 32,
+          "unit": "1-lb box",
+          "cost": 48
+        },
+        {
+          "key": "peanut_butter",
+          "name": "Peanut butter",
+          "kcal": 42560,
+          "lbs": 17,
+          "units": 7,
+          "unit": "40-oz jar",
+          "cost": 49
+        },
+        {
+          "key": "oil",
+          "name": "Cooking oil",
+          "kcal": 42560,
+          "lbs": 11,
+          "units": 2,
+          "unit": "1-gal jug",
+          "cost": 28
+        },
+        {
+          "key": "canned_protein",
+          "name": "Canned protein (chicken, tuna, beans)",
+          "kcal": 53200,
+          "lbs": 71,
+          "units": 92,
+          "unit": "12.5-oz can",
+          "cost": 276
+        },
+        {
+          "key": "canned_produce",
+          "name": "Canned fruit & vegetables",
+          "kcal": 53200,
+          "lbs": 242,
+          "units": 258,
+          "unit": "15-oz can",
+          "cost": 335
+        },
+        {
+          "key": "milk_powder",
+          "name": "Powdered milk",
+          "kcal": 26600,
+          "lbs": 17,
+          "units": 5,
+          "unit": "4-lb bag",
+          "cost": 110
+        }
+      ],
+      "totalLbs": 551,
+      "cost": 1081,
+      "buckets": 19
+    },
+    "readyCost": 294
+  },
   "diapers": {
     "children": 1,
     "perDay": 6,
@@ -345,7 +448,7 @@
   },
   "budget": {
     "planningAmount": 3250,
-    "totalMid": 3407,
+    "totalMid": 3404,
     "phases": [
       {
         "phase": 1,
@@ -357,16 +460,16 @@
       {
         "phase": 2,
         "target": 1625,
-        "includedMid": 1747,
-        "includedLow": 1322,
-        "includedHigh": 2172
+        "includedMid": 1729,
+        "includedLow": 1329,
+        "includedHigh": 2129
       },
       {
         "phase": 3,
         "target": 650,
-        "includedMid": 0,
-        "includedLow": 0,
-        "includedHigh": 0
+        "includedMid": 15,
+        "includedLow": 10,
+        "includedHigh": 20
       }
     ],
     "consumables": [
@@ -384,15 +487,15 @@
       },
       {
         "key": "food",
-        "label": "Food staples, first 30 days",
+        "label": "Food, first 30 days",
         "phase": 2,
-        "cost": 411
+        "cost": 458
       },
       {
         "key": "food_rest",
-        "label": "Food staples, days 31–90 (build up with each grocery trip)",
+        "label": "Food, days 31–90 (build up with each grocery trip)",
         "phase": 3,
-        "cost": 823,
+        "cost": 917,
         "ongoing": true
       },
       {
@@ -402,7 +505,7 @@
         "cost": 81
       }
     ],
-    "ongoingCost": 823,
+    "ongoingCost": 917,
     "picks": [
       {
         "item": {
@@ -463,6 +566,36 @@
         "low": 160,
         "high": 280,
         "mid": 220,
+        "phase": 1,
+        "status": "included"
+      },
+      {
+        "item": {
+          "essential": true,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
+          "id": "first-aid",
+          "category": "First aid",
+          "name": "First aid kit",
+          "spec": "200+ piece kit with trauma pads, gauze, tape, elastic wrap, gloves, thermometer, tweezers, shears",
+          "models": [
+            "Adventure Medical Kits Family",
+            "American Red Cross Deluxe Family Kit"
+          ],
+          "priceLow": 30,
+          "priceHigh": 80,
+          "tier": 1,
+          "phase": 1,
+          "priority": 10,
+          "qty": 1,
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 30,
+        "high": 80,
+        "mid": 55,
         "phase": 1,
         "status": "included"
       },
@@ -675,36 +808,6 @@
         "low": 50,
         "high": 90,
         "mid": 70,
-        "phase": 1,
-        "status": "included"
-      },
-      {
-        "item": {
-          "essential": false,
-          "notes": "",
-          "reviewedAt": "2026-11-01",
-          "id": "first-aid",
-          "category": "First aid",
-          "name": "First aid kit",
-          "spec": "200+ piece kit with trauma pads, gauze, tape, elastic wrap, gloves, thermometer, tweezers, shears",
-          "models": [
-            "Adventure Medical Kits Family",
-            "American Red Cross Deluxe Family Kit"
-          ],
-          "priceLow": 30,
-          "priceHigh": 80,
-          "tier": 1,
-          "phase": 1,
-          "priority": 10,
-          "qty": 1,
-          "tags": [],
-          "affiliateUrl": null,
-          "active": true
-        },
-        "qty": 1,
-        "low": 30,
-        "high": 80,
-        "mid": 55,
         "phase": 1,
         "status": "included"
       },
@@ -1007,29 +1110,29 @@
           "essential": false,
           "notes": "",
           "reviewedAt": "2026-11-01",
-          "id": "coolers",
-          "category": "Food",
-          "name": "Multi-day cooler",
-          "spec": "Rotomolded or 5-day-rated cooler, 45–70 qt",
+          "id": "water-tablets",
+          "category": "Water",
+          "name": "Water treatment tablets (chlorine dioxide)",
+          "spec": "Chlorine dioxide tablets as a light backup to your filter or boiling; follow the label for amount and wait time",
           "models": [
-            "Coleman Xtreme 70 qt",
-            "Igloo MaxCold"
+            "Katadyn Micropur MP1",
+            "Aquamira water treatment tablets"
           ],
-          "priceLow": 40,
-          "priceHigh": 90,
+          "priceLow": 10,
+          "priceHigh": 20,
           "tier": 1,
-          "phase": 2,
-          "priority": 9,
+          "phase": 3,
+          "priority": 6,
           "qty": 1,
           "tags": [],
           "affiliateUrl": null,
           "active": true
         },
         "qty": 1,
-        "low": 40,
-        "high": 90,
-        "mid": 65,
-        "phase": 2,
+        "low": 10,
+        "high": 20,
+        "mid": 15,
+        "phase": 3,
         "status": "included"
       }
     ],
@@ -1144,23 +1247,21 @@
           "essential": false,
           "notes": "",
           "reviewedAt": "2026-11-01",
-          "id": "storage-kit",
+          "id": "coolers",
           "category": "Food",
-          "name": "Food storage buckets",
-          "spec": "Food-grade 5-gal buckets with gamma seal lids, mylar bags and oxygen absorbers for rice/beans/oats",
+          "name": "Multi-day cooler",
+          "spec": "Rotomolded or 5-day-rated cooler, 45–70 qt",
           "models": [
-            "Gamma Seal lid kit",
-            "ShieldPro mylar kit"
+            "Coleman Xtreme 70 qt",
+            "Igloo MaxCold"
           ],
           "priceLow": 40,
           "priceHigh": 90,
           "tier": 1,
           "phase": 2,
-          "priority": 10,
+          "priority": 9,
           "qty": 1,
-          "tags": [
-            "long_scenario"
-          ],
+          "tags": [],
           "affiliateUrl": null,
           "active": true
         },
@@ -1168,6 +1269,37 @@
         "low": 40,
         "high": 90,
         "mid": 65,
+        "phase": 2,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "Priced per bucket (estimate); the plan sizes the count to the bulk staples (D7)",
+          "reviewedAt": "2026-11-01",
+          "id": "storage-kit",
+          "category": "Food",
+          "name": "Food storage buckets",
+          "spec": "One food-grade 5-gal bucket with a gamma seal lid, mylar bag and oxygen absorbers for rice, beans or oats; enough buckets for your bulk staples",
+          "models": [
+            "Gamma Seal lid kit",
+            "ShieldPro mylar kit"
+          ],
+          "priceLow": 20,
+          "priceHigh": 35,
+          "tier": 1,
+          "phase": 2,
+          "priority": 10,
+          "qty": "food_buckets",
+          "tags": [],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 19,
+        "low": 380,
+        "high": 665,
+        "mid": 523,
         "phase": 2,
         "status": "deferred",
         "reason": "Doesn't fit the remaining budget — buy next"
@@ -1473,6 +1605,38 @@
           "essential": false,
           "notes": "",
           "reviewedAt": "2026-11-01",
+          "id": "filter-spare",
+          "category": "Water",
+          "name": "Spare filter elements or cartridges",
+          "spec": "Replacement elements for your household filter, or a backflush kit; match your filter's brand and model",
+          "models": [
+            "Your filter maker's replacement elements"
+          ],
+          "priceLow": 20,
+          "priceHigh": 60,
+          "tier": 2,
+          "phase": 3,
+          "priority": 7,
+          "qty": 1,
+          "tags": [
+            "filter_kit"
+          ],
+          "affiliateUrl": null,
+          "active": true
+        },
+        "qty": 1,
+        "low": 20,
+        "high": 60,
+        "mid": 40,
+        "phase": 3,
+        "status": "deferred",
+        "reason": "Doesn't fit the remaining budget — buy next"
+      },
+      {
+        "item": {
+          "essential": false,
+          "notes": "",
+          "reviewedAt": "2026-11-01",
           "id": "go-bag-basic",
           "category": "Evacuation",
           "name": "Go-bag from a backpack you own",
@@ -1607,9 +1771,9 @@
     ],
     "staleHidden": [],
     "cutFirst": [
-      "Multi-day cooler",
       "Pipe insulation & faucet covers",
-      "Cold-rated sleeping bags"
+      "Cold-rated sleeping bags",
+      "1-lb propane cylinders (heater fuel)"
     ],
     "slots": [
       {
@@ -1862,10 +2026,18 @@
       },
       {
         "group": "food",
-        "chosen": "food-diy",
-        "chosenLevel": "essential",
+        "chosen": "food-mix",
+        "chosenLevel": "mix",
         "byChoice": false,
         "options": [
+          {
+            "level": "mix",
+            "itemId": "food-mix",
+            "name": "Recommended mix: 84% bulk staples, 16% ready-to-eat",
+            "qty": 1,
+            "low": 1375,
+            "high": 1375
+          },
           {
             "level": "essential",
             "itemId": "food-diy",
@@ -1875,9 +2047,17 @@
             "high": 1234
           },
           {
+            "level": "standard",
+            "itemId": "food-ready",
+            "name": "Ready-to-eat: canned meals and pouches",
+            "qty": 1,
+            "low": 1890,
+            "high": 1890
+          },
+          {
             "level": "premium",
             "itemId": "food-freeze-dried",
-            "name": "Freeze-dried long-term food",
+            "name": "Ration & freeze-dried kits",
             "qty": 11,
             "low": 7700,
             "high": 12100

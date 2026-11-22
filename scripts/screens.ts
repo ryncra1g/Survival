@@ -46,6 +46,14 @@ export const SHOTS: Shot[] = [
   { name: "plan-top", run: async (p, id) => void (await p.goto(`${BASE}/plan/${id}`)) },
   { name: "plan-share-menu", run: async (p, id) => { await p.goto(`${BASE}/plan/${id}`); await open(p, "share-menu"); } },
   { name: "plan-save-bar", run: async (p, id) => { await p.goto(`${BASE}/plan/${id}#email`); await p.getByTestId("save-bar").scrollIntoViewIfNeeded(); } },
+  { name: "plan-cards", run: async (p, id) => { await p.goto(`${BASE}/plan/${id}`); await p.locator("#ch-supplies").scrollIntoViewIfNeeded(); } },
+  { name: "plan-water-open", run: async (p, id) => { await p.goto(`${BASE}/plan/${id}#water`); } },
+  { name: "plan-food-open", run: async (p, id) => { await p.goto(`${BASE}/plan/${id}#food`); await p.getByText("Your food mix").first().scrollIntoViewIfNeeded(); } },
+  { name: "plan-compare", run: async (p, id) => { await p.goto(`${BASE}/plan/${id}#gear`); const c = p.getByTestId("compare-options").first(); await c.getByText("Compare options").click(); await c.scrollIntoViewIfNeeded(); } },
+  { name: "plan-leave", run: async (p, id) => { await p.goto(`${BASE}/plan/${id}#evacuation`); } },
+  { name: "plan-stay-ready", run: async (p, id) => { await p.goto(`${BASE}/plan/${id}`); await p.getByTestId("stay-ready").scrollIntoViewIfNeeded(); } },
+  { name: "places", run: async (p, id) => { await p.goto(`${BASE}/plan/${id}/places`); await p.getByLabel("Address").fill("1 Example Road"); } },
+  { name: "maintenance-list", run: async (p, id) => void (await p.goto(`${BASE}/plan/${id}/maintenance`)) },
   {
     name: "loading",
     run: async (p) => {

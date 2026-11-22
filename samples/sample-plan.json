@@ -10,6 +10,10 @@
       "number": 1,
       "title": "Household snapshot & planning assumptions",
       "summary": "This plan covers 4 people in the Long Island area for a 90-day disruption. Every quantity below comes from the planning assumptions in this section.",
+      "key": {
+        "value": "4 people",
+        "label": "90 days"
+      },
       "blocks": [
         {
           "type": "table",
@@ -74,7 +78,8 @@
               "Gear level",
               "Well prepared: items default to Standard level; change any item to go cheaper or bigger"
             ]
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "table",
@@ -112,7 +117,8 @@
               "Tornado",
               "low"
             ]
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "bullets",
@@ -121,7 +127,8 @@
             "Food: 2,300 kcal/adult/day; children by age band (≤0: 800, ≤3: 1,000, ≤8: 1,400, ≤13: 1,800, ≤17: 2,200).",
             "Toilet paper: 1 roll/person/week. Diapers: 6/day per child in diapers.",
             "Generator: 12 hours/day (furnace/boiler blower + ignition in cold weather, plus fridge and charging); inverter generator burns 0.25–0.4 gal gasoline/hour at ~half load."
-          ]
+          ],
+          "kind": "know"
         }
       ]
     },
@@ -130,10 +137,15 @@
       "number": 2,
       "title": "Priority list",
       "summary": "Start with life safety this week, then water and food this month, then power and comfort. Check items off as you go.",
+      "key": {
+        "value": "9",
+        "label": "steps this week"
+      },
       "blocks": [
         {
           "type": "subheading",
-          "text": "This week"
+          "text": "This week",
+          "kind": "know"
         },
         {
           "type": "checklist",
@@ -245,7 +257,8 @@
                 "url": "https://www.ready.gov/evacuation"
               }
             }
-          ]
+          ],
+          "kind": "do"
         },
         {
           "type": "products",
@@ -286,21 +299,42 @@
                   "level": "essential",
                   "name": "Gallon water jugs or refilled bottles (low-cost)",
                   "price": "$54–$81",
-                  "selected": false
+                  "selected": false,
+                  "low": 54,
+                  "high": 81
                 },
                 {
                   "level": "standard",
                   "name": "7-gallon water container",
                   "price": "$160–$280",
-                  "selected": true
+                  "selected": true,
+                  "low": 160,
+                  "high": 280
                 },
                 {
                   "level": "premium",
                   "name": "Stackable water bricks",
                   "price": "$400–$560",
-                  "selected": false
+                  "selected": false,
+                  "low": 400,
+                  "high": 560
                 }
               ],
+              "later": false
+            },
+            {
+              "itemId": "first-aid",
+              "name": "First aid kit",
+              "category": "First aid",
+              "spec": "200+ piece kit with trauma pads, gauze, tape, elastic wrap, gloves, thermometer, tweezers, shears",
+              "models": [
+                "Adventure Medical Kits Family",
+                "American Red Cross Deluxe Family Kit"
+              ],
+              "price": "Typical $30–$80 each",
+              "qty": "",
+              "buyable": true,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -336,19 +370,25 @@
                   "level": "essential",
                   "name": "Hollow-fiber water filter",
                   "price": "$35–$90",
-                  "selected": false
+                  "selected": false,
+                  "low": 35,
+                  "high": 90
                 },
                 {
                   "level": "standard",
                   "name": "Gravity bag filter",
                   "price": "$90–$140",
-                  "selected": true
+                  "selected": true,
+                  "low": 90,
+                  "high": 140
                 },
                 {
                   "level": "premium",
                   "name": "Countertop gravity filter",
                   "price": "$250–$450",
-                  "selected": false
+                  "selected": false,
+                  "low": 250,
+                  "high": 450
                 }
               ],
               "later": false
@@ -423,21 +463,6 @@
               ],
               "price": "Typical $25–$45 each",
               "qty": "× 2",
-              "buyable": true,
-              "emailSafe": false,
-              "later": false
-            },
-            {
-              "itemId": "first-aid",
-              "name": "First aid kit",
-              "category": "First aid",
-              "spec": "200+ piece kit with trauma pads, gauze, tape, elastic wrap, gloves, thermometer, tweezers, shears",
-              "models": [
-                "Adventure Medical Kits Family",
-                "American Red Cross Deluxe Family Kit"
-              ],
-              "price": "Typical $30–$80 each",
-              "qty": "",
               "buyable": true,
               "emailSafe": false,
               "later": false
@@ -529,11 +554,13 @@
               "emailSafe": false,
               "later": false
             }
-          ]
+          ],
+          "kind": "have"
         },
         {
           "type": "subheading",
-          "text": "This month"
+          "text": "This month",
+          "kind": "know"
         },
         {
           "type": "checklist",
@@ -637,18 +664,20 @@
                 "url": "https://www.ready.gov/evacuation"
               }
             }
-          ]
+          ],
+          "kind": "do"
         },
         {
           "type": "subheading",
-          "text": "Within 60 days"
+          "text": "Within 60 days",
+          "kind": "know"
         },
         {
           "type": "checklist",
           "items": [
             {
               "id": "d60-17",
-              "text": "Complete the full 90 days food list: 653 lb of staples.",
+              "text": "Complete the full 90 days food list: 551 lb of bulk staples plus the rest of your food mix.",
               "buy": [
                 "storage-kit",
                 "food-freeze-dried"
@@ -713,18 +742,20 @@
                 "url": "https://www.ready.gov/be-informed"
               }
             }
-          ]
+          ],
+          "kind": "do"
         },
         {
           "type": "subheading",
-          "text": "Within 90 days"
+          "text": "Within 90 days",
+          "kind": "know"
         },
         {
           "type": "checklist",
           "items": [
             {
               "id": "d90-22",
-              "text": "Buy Phase 3 upgrades: comfort and communications.",
+              "text": "Buy your Phase 3 upgrades: 1 item, about $10–$20.",
               "see": {
                 "label": "Open your shopping list",
                 "anchor": "shopping"
@@ -763,11 +794,13 @@
                 "anchor": "maintenance"
               }
             }
-          ]
+          ],
+          "kind": "do"
         },
         {
           "type": "subheading",
-          "text": "Skills to practice"
+          "text": "Skills to practice",
+          "kind": "know"
         },
         {
           "type": "checklist",
@@ -857,7 +890,8 @@
                 "url": "https://www.ready.gov/kids/family-emergency-planning"
               }
             }
-          ]
+          ],
+          "kind": "do"
         },
         {
           "type": "help",
@@ -871,7 +905,8 @@
               "label": "Low- and no-cost preparedness (Ready.gov)",
               "url": "https://www.ready.gov/low-and-no-cost"
             }
-          ]
+          ],
+          "kind": "have"
         }
       ]
     },
@@ -880,6 +915,10 @@
       "number": 3,
       "title": "Day 0 checklist & decision triggers",
       "summary": "When an outage or storm is coming, run this checklist. Once it hits, use the if/then table so decisions are made in advance, not under stress.",
+      "key": {
+        "value": "10",
+        "label": "steps when it happens"
+      },
       "blocks": [
         {
           "type": "checklist",
@@ -1007,7 +1046,8 @@
                 "url": "https://www.ready.gov/older-adults"
               }
             }
-          ]
+          ],
+          "kind": "do"
         },
         {
           "type": "ifthen",
@@ -1048,7 +1088,34 @@
               "if": "A hurricane watch is issued",
               "then": "Do the Day 0 checklist; put up window protection; decide stay vs. go before the warning."
             }
-          ]
+          ],
+          "kind": "know"
+        },
+        {
+          "type": "tips",
+          "compact": true,
+          "tips": [
+            {
+              "id": "day0-now",
+              "situation": "It's happening and you haven't bought anything yet.",
+              "steps": [
+                "Fill containers and the tub with water, and charge every phone.",
+                "Keep the fridge and freezer closed."
+              ],
+              "source": {
+                "label": "Ready.gov: Power outages",
+                "url": "https://www.ready.gov/power-outages"
+              }
+            }
+          ],
+          "dontDo": [
+            "Don't use candle or terracotta-pot heaters.",
+            "Never use a grill or camp stove indoors or in a garage.",
+            "Don't use a gas oven or stovetop to heat your home.",
+            "Never run a car in an attached garage, even with the door open.",
+            "Never plug a generator into a wall outlet."
+          ],
+          "kind": "know"
         },
         {
           "type": "help",
@@ -1068,7 +1135,8 @@
               "label": "Sign up for NY-Alert (New York State)",
               "url": "https://alert.ny.gov/sign-up-ny-alert"
             }
-          ]
+          ],
+          "kind": "have"
         }
       ]
     },
@@ -1077,10 +1145,15 @@
       "number": 4,
       "title": "Your area's hazards",
       "summary": "These are the hazards rated moderate or higher for the Long Island area, with the steps to take before and during each one.",
+      "key": {
+        "value": "3",
+        "label": "hazards to prepare for"
+      },
       "blocks": [
         {
           "type": "subheading",
-          "text": "Hurricane (high risk)"
+          "text": "Hurricane (high risk)",
+          "kind": "know"
         },
         {
           "type": "checklist",
@@ -1118,7 +1191,8 @@
                 "url": "https://www.ready.gov/plan"
               }
             }
-          ]
+          ],
+          "kind": "do"
         },
         {
           "type": "ifthen",
@@ -1135,11 +1209,13 @@
               "if": "The eye passes and it goes calm",
               "then": "Stay inside; the back half of the storm is coming."
             }
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "subheading",
-          "text": "Flooding (high risk)"
+          "text": "Flooding (high risk)",
+          "kind": "know"
         },
         {
           "type": "checklist",
@@ -1178,7 +1254,8 @@
                 "url": "https://www.ready.gov/kit"
               }
             }
-          ]
+          ],
+          "kind": "do"
         },
         {
           "type": "ifthen",
@@ -1195,7 +1272,8 @@
               "if": "Water is entering your home",
               "then": "Turn off electricity at the main breaker only if you're dry and safe; otherwise leave it and get out."
             }
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "help",
@@ -1215,7 +1293,8 @@
               "label": "Look up your flood zone (FEMA Flood Map Service Center)",
               "url": "https://msc.fema.gov/portal/search"
             }
-          ]
+          ],
+          "kind": "have"
         }
       ]
     },
@@ -1224,6 +1303,10 @@
       "number": 5,
       "title": "Water",
       "summary": "Your household uses about 3.85 gal of water a day. Store 54 gallons (14 days). After that, filter and disinfect collected water for the remaining 76 days.",
+      "key": {
+        "value": "54 gal",
+        "label": "water to store"
+      },
       "blocks": [
         {
           "type": "table",
@@ -1249,7 +1332,8 @@
               "Total",
               "3.85 gal/day"
             ]
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "table",
@@ -1275,7 +1359,8 @@
               "Bathtub bladder (storm warning)",
               "~100 gal for flushing/washing"
             ]
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "ifthen",
@@ -1296,13 +1381,124 @@
               "if": "Stored water runs low",
               "then": "Collect rain or surface water, filter it, then disinfect it."
             }
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "callout",
           "tone": "info",
           "title": "How to disinfect water",
-          "text": "EPA emergency disinfection: if water is cloudy, filter it first. Add 8 drops of regular unscented 6% bleach (or 6 drops of 8.25%) per gallon, stir, and wait 30 minutes. It should smell slightly of chlorine — if not, repeat once and wait another 15 minutes. Boiling for 1 full minute (3 minutes above 6,500 ft) also works."
+          "text": "If water is cloudy, let it settle or filter it first. Then disinfect it with regular unscented bleach, using the amount and wait time on the bleach label and in EPA's emergency disinfection steps, or bring it to a rolling boil for 1 minute (3 minutes above 6,500 ft), as CDC advises. Never guess an amount.",
+          "kind": "know"
+        },
+        {
+          "type": "table",
+          "caption": "Safe water, in this order",
+          "columns": [
+            "Way",
+            "When",
+            "What it does not remove"
+          ],
+          "rows": [
+            [
+              "1. Stored water",
+              "Drink it first.",
+              "Nothing to treat if it was stored clean; replace tap-filled water every 6 months."
+            ],
+            [
+              "2. Household filter (gravity or pump)",
+              "The main way to make more water.",
+              "Viruses and chemicals: disinfect after filtering."
+            ],
+            [
+              "3. Treatment tablets",
+              "A light backup to the filter.",
+              "Chemicals and fuel. Iodine and chlorine tablets don't reliably kill Cryptosporidium; chlorine dioxide can, when you follow the label."
+            ],
+            [
+              "4. Boiling",
+              "The fallback if you have no filter or tablets.",
+              "Chemicals, fuel and toxins."
+            ],
+            [
+              "5. Straw or bottle filter",
+              "In your go-bag, for one person.",
+              "Viruses and chemicals."
+            ]
+          ],
+          "kind": "know"
+        },
+        {
+          "type": "callout",
+          "tone": "warning",
+          "title": "Fuel or chemicals in the water",
+          "text": "Water with fuel or toxic chemicals in it can't be made safe by boiling or disinfecting. Use stored or bottled water, and contact your health department.",
+          "kind": "know"
+        },
+        {
+          "type": "paragraph",
+          "text": "This plan never gives treatment amounts: follow the product label and CDC/EPA guidance.",
+          "kind": "know"
+        },
+        {
+          "type": "subheading",
+          "text": "Your water kit",
+          "kind": "know"
+        },
+        {
+          "type": "checklist",
+          "items": [
+            {
+              "id": "water-kit-containers",
+              "text": "Containers for 54 gallons, filled and sealed.",
+              "buy": [
+                "water-jug",
+                "water-bricks",
+                "water-gallons",
+                "water-drum"
+              ],
+              "link": {
+                "label": "How to make water safe in an emergency (CDC)",
+                "url": "https://www.cdc.gov/water-emergency/about/index.html"
+              }
+            },
+            {
+              "id": "water-kit-dispense",
+              "text": "A way to get water out: the spigot on each jug, or a clean pitcher.",
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
+            },
+            {
+              "id": "water-kit-labels",
+              "text": "Rotation labels: write the fill date on every container.",
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
+            },
+            {
+              "id": "water-kit-spares",
+              "text": "Spare filter elements or a backflush kit for your household filter.",
+              "buy": [
+                "filter-spare"
+              ]
+            },
+            {
+              "id": "water-kit-backup",
+              "text": "A backup method: treatment tablets, plus unscented bleach, used as the labels direct.",
+              "buy": [
+                "water-tablets",
+                "bleach"
+              ],
+              "link": {
+                "label": "Make water safe to drink (EPA)",
+                "url": "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water"
+              }
+            }
+          ],
+          "kind": "do"
         },
         {
           "type": "bullets",
@@ -1310,7 +1506,47 @@
             "Store water in food-grade containers away from sunlight and chemicals.",
             "Replace tap-filled water every 6 months (mark the date).",
             "Use a 0.1-micron filter for bacteria/protozoa, then disinfect for viruses."
-          ]
+          ],
+          "kind": "know"
+        },
+        {
+          "type": "tips",
+          "tips": [
+            {
+              "id": "water-fill-now",
+              "situation": "A storm is coming and you have no stored water.",
+              "steps": [
+                "Fill clean pots, pitchers and bottles with tap water for drinking while it's still safe.",
+                "Fill the bathtub for flushing and washing, not for drinking."
+              ],
+              "source": {
+                "label": "Ready.gov: Water",
+                "url": "https://www.ready.gov/water"
+              }
+            },
+            {
+              "id": "water-boil",
+              "situation": "You have no filter and no treatment tablets.",
+              "steps": [
+                "Let cloudy water settle, or strain it through a clean cloth.",
+                "Boil it as CDC directs, let it cool, and store it in clean covered containers."
+              ],
+              "source": {
+                "label": "CDC: Make water safe in an emergency",
+                "url": "https://www.cdc.gov/water-emergency/about/index.html"
+              }
+            }
+          ],
+          "dontDo": [
+            "Don't use candle or terracotta-pot heaters.",
+            "Never use a grill or camp stove indoors or in a garage.",
+            "Don't use a gas oven or stovetop to heat your home.",
+            "Never run a car in an attached garage, even with the door open.",
+            "Never plug a generator into a wall outlet.",
+            "Don't store drinking water in containers that held chemicals.",
+            "Don't drink water that may have fuel or chemicals in it; boiling won't fix that."
+          ],
+          "kind": "know"
         },
         {
           "type": "help",
@@ -1330,7 +1566,8 @@
               "label": "Make water safe to drink (EPA)",
               "url": "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water"
             }
-          ]
+          ],
+          "kind": "have"
         }
       ]
     },
@@ -1342,13 +1579,15 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Your natural gas heat needs electricity for the blower, ignition or circulator pump. The safest way to keep it running is a generator (recommended below) connected through a licensed electrician's power inlet and interlock (or a transfer switch). Furnaces draw roughly 400–800 W running, so a 2,500 W+ inverter generator can handle it along with the fridge."
+          "text": "Your natural gas heat needs electricity for the blower, ignition or circulator pump. The safest way to keep it running is a generator (recommended below) connected through a licensed electrician's power inlet and interlock (or a transfer switch). Furnaces draw roughly 400–800 W running, so a 2,500 W+ inverter generator can handle it along with the fridge.",
+          "kind": "know"
         },
         {
           "type": "callout",
           "tone": "warning",
           "title": "Backup heater rules",
-          "text": "Use only a propane heater labeled for indoor use with an oxygen depletion sensor (ODS) and tip-over shutoff, follow its manual's ventilation requirement, keep 3 feet of clearance, never leave it running while everyone sleeps, and keep a working CO alarm in the same room."
+          "text": "Use only a propane heater labeled for indoor use with an oxygen depletion sensor (ODS) and tip-over shutoff, follow its manual's ventilation requirement, keep 3 feet of clearance, never leave it running while everyone sleeps, and keep a working CO alarm in the same room.",
+          "kind": "know"
         },
         {
           "type": "bullets",
@@ -1357,7 +1596,8 @@
             "Close doors to unused rooms; hang blankets over windows and doorways; put rugs/towels at door gaps.",
             "Layer up: base layer, fleece, hat, socks; cold-rated sleeping bags at night.",
             "Eat and drink warm calories; keep kids and older adults warm first."
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "table",
@@ -1383,7 +1623,8 @@
               "Pipe bursts",
               "Shut off main water; call a plumber; move valuables; photograph damage for insurance."
             ]
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "ifthen",
@@ -1404,13 +1645,41 @@
               "if": "House below 45°F and dropping",
               "then": "Relocate to a warming center, friends/family, or your fallback location."
             }
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "callout",
           "tone": "danger",
           "title": "Carbon monoxide",
-          "text": "Never run a generator, grill, camp stove, charcoal or any fuel-burning device not rated for indoor use inside your home, garage, basement, crawlspace, tent or on a balcony — not even with doors or windows open. Keep generators outdoors at least 20 feet from doors, windows and vents, with the exhaust pointed away from buildings. Put battery-powered or battery-backup CO alarms on every level and outside sleeping areas. If a CO alarm sounds or anyone feels dizzy, headachy or nauseous, get everyone outside to fresh air right away and call 911."
+          "text": "Never run a generator, grill, camp stove, charcoal or any fuel-burning device not rated for indoor use inside your home, garage, basement, crawlspace, tent or on a balcony — not even with doors or windows open. Keep generators outdoors at least 20 feet from doors, windows and vents, with the exhaust pointed away from buildings. Put battery-powered or battery-backup CO alarms on every level and outside sleeping areas. If a CO alarm sounds or anyone feels dizzy, headachy or nauseous, get everyone outside to fresh air right away and call 911.",
+          "kind": "know"
+        },
+        {
+          "type": "tips",
+          "tips": [
+            {
+              "id": "heat-one-room",
+              "situation": "The power is out in cold weather and you have no backup heat.",
+              "steps": [
+                "Pick one room to keep warm and close the doors to the rest.",
+                "Cover windows and drafts with blankets or towels.",
+                "Wear layers, and sleep under extra blankets together in that room."
+              ],
+              "source": {
+                "label": "Ready.gov: Winter weather",
+                "url": "https://www.ready.gov/winter-weather"
+              }
+            }
+          ],
+          "dontDo": [
+            "Don't use candle or terracotta-pot heaters.",
+            "Never use a grill or camp stove indoors or in a garage.",
+            "Don't use a gas oven or stovetop to heat your home.",
+            "Never run a car in an attached garage, even with the door open.",
+            "Never plug a generator into a wall outlet."
+          ],
+          "kind": "know"
         },
         {
           "type": "help",
@@ -1431,7 +1700,8 @@
               "label": "Carbon monoxide safety (CDC)",
               "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
             }
-          ]
+          ],
+          "kind": "have"
         }
       ]
     },
@@ -1440,10 +1710,15 @@
       "number": 7,
       "title": "Power & fuel math",
       "summary": "Plan on about 12 generator hours a day, burning 3–4.8 gallons of gasoline. Stored fuel of 30 gallons lasts about 6.3–10 days.",
+      "key": {
+        "value": "3–4.8 gal",
+        "label": "gasoline a day"
+      },
       "blocks": [
         {
           "type": "paragraph",
-          "text": "You don't have backup power yet. A dual-fuel inverter generator is the best value for your home; a battery power station covers quiet overnight loads."
+          "text": "You don't have backup power yet. A dual-fuel inverter generator is the best value for your home; a battery power station covers quiet overnight loads.",
+          "kind": "know"
         },
         {
           "type": "table",
@@ -1479,7 +1754,8 @@
               "4.2–7.2 gal",
               "3.3–5.6 days"
             ]
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "bullets",
@@ -1488,7 +1764,8 @@
             "Stretch fuel: run in blocks (for example 2 hours on, 2 off) — a full fridge stays cold for hours between runs.",
             "Gasoline goes stale: add stabilizer and rotate into your cars every 12 months. Propane doesn't go stale, so it's better for long storage.",
             "For a long outage you can't store enough gasoline: plan on propane cylinders, rationed runtime, and refueling when stations reopen."
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "ifthen",
@@ -1513,19 +1790,48 @@
               "if": "Utility lines down near home",
               "then": "Stay 35+ ft away and call the utility."
             }
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "callout",
           "tone": "danger",
           "title": "Connecting a generator to your house",
-          "text": "Never back-feed your house through a dryer outlet or any double-male (\"suicide\") cord — it can electrocute you, your neighbors and utility line workers, and start fires. Power house circuits only through a power inlet with an interlock or a transfer switch installed by a licensed electrician. Until then, plug appliances directly into the generator with outdoor-rated extension cords."
+          "text": "Never back-feed your house through a dryer outlet or any double-male (\"suicide\") cord — it can electrocute you, your neighbors and utility line workers, and start fires. Power house circuits only through a power inlet with an interlock or a transfer switch installed by a licensed electrician. Until then, plug appliances directly into the generator with outdoor-rated extension cords.",
+          "kind": "know"
         },
         {
           "type": "callout",
           "tone": "danger",
           "title": "Carbon monoxide",
-          "text": "Never run a generator, grill, camp stove, charcoal or any fuel-burning device not rated for indoor use inside your home, garage, basement, crawlspace, tent or on a balcony — not even with doors or windows open. Keep generators outdoors at least 20 feet from doors, windows and vents, with the exhaust pointed away from buildings. Put battery-powered or battery-backup CO alarms on every level and outside sleeping areas. If a CO alarm sounds or anyone feels dizzy, headachy or nauseous, get everyone outside to fresh air right away and call 911."
+          "text": "Never run a generator, grill, camp stove, charcoal or any fuel-burning device not rated for indoor use inside your home, garage, basement, crawlspace, tent or on a balcony — not even with doors or windows open. Keep generators outdoors at least 20 feet from doors, windows and vents, with the exhaust pointed away from buildings. Put battery-powered or battery-backup CO alarms on every level and outside sleeping areas. If a CO alarm sounds or anyone feels dizzy, headachy or nauseous, get everyone outside to fresh air right away and call 911.",
+          "kind": "know"
+        },
+        {
+          "type": "tips",
+          "tips": [
+            {
+              "id": "light-flashlights",
+              "situation": "The power is out and you have no lanterns or power bank.",
+              "steps": [
+                "Use flashlights for light, and keep phones for calls and alerts.",
+                "Dim screens and turn on battery saver."
+              ],
+              "source": {
+                "label": "Ready.gov: Power outages",
+                "url": "https://www.ready.gov/power-outages"
+              }
+            }
+          ],
+          "dontDo": [
+            "Don't use candle or terracotta-pot heaters.",
+            "Never use a grill or camp stove indoors or in a garage.",
+            "Don't use a gas oven or stovetop to heat your home.",
+            "Never run a car in an attached garage, even with the door open.",
+            "Never plug a generator into a wall outlet.",
+            "Use flashlights, not candles: candles can start fires."
+          ],
+          "kind": "know"
         },
         {
           "type": "help",
@@ -1553,7 +1859,8 @@
               "label": "Carbon monoxide safety (CDC)",
               "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
             }
-          ]
+          ],
+          "kind": "have"
         }
       ]
     },
@@ -1561,7 +1868,11 @@
       "id": "food",
       "number": 8,
       "title": "Food",
-      "summary": "Your household needs about 7,000 calories a day — 630,000 for the full 90 days. The staples below provide it for roughly $1,234. Eat perishables first, then pantry food, then bulk staples.",
+      "summary": "Your household needs about 7,000 calories a day — 630,000 for the full 90 days. Your mix: 84% bulk staples, 16% ready-to-eat. Eat perishables first, then pantry food, then bulk staples.",
+      "key": {
+        "value": "630,000",
+        "label": "calories of food"
+      },
       "blocks": [
         {
           "type": "table",
@@ -1591,11 +1902,38 @@
               "Total",
               "7,000"
             ]
-          ]
+          ],
+          "detail": true,
+          "kind": "know"
         },
         {
           "type": "table",
-          "caption": "Bulk staples for 90 days (630,000 kcal)",
+          "caption": "Your food mix: recommended for your household (630,000 kcal in all)",
+          "columns": [
+            "Approach",
+            "Share",
+            "Calories",
+            "Est. cost"
+          ],
+          "rows": [
+            [
+              "Ready-to-eat: canned meals, soups, pouches",
+              "16%",
+              "about 98,000 kcal (check the labels)",
+              "$294"
+            ],
+            [
+              "Bulk staples you store yourself",
+              "84%",
+              "532,000 kcal: 551 lb (table below)",
+              "$1,081"
+            ]
+          ],
+          "kind": "know"
+        },
+        {
+          "type": "table",
+          "caption": "Bulk staples (532,000 kcal)",
           "columns": [
             "Staple",
             "Pounds",
@@ -1605,65 +1943,66 @@
           "rows": [
             [
               "White rice",
-              "100",
+              "84",
               "5 × 20-lb bag",
               "$90"
             ],
             [
               "Dry beans/lentils",
-              "53",
-              "6 × 10-lb bag",
-              "$96"
+              "45",
+              "5 × 10-lb bag",
+              "$80"
             ],
             [
               "Rolled oats",
-              "38",
-              "15 × 42-oz canister",
-              "$75"
+              "32",
+              "13 × 42-oz canister",
+              "$65"
             ],
             [
               "Pasta",
-              "38",
-              "38 × 1-lb box",
-              "$57"
+              "32",
+              "32 × 1-lb box",
+              "$48"
             ],
             [
               "Peanut butter",
-              "20",
-              "8 × 40-oz jar",
-              "$56"
+              "17",
+              "7 × 40-oz jar",
+              "$49"
             ],
             [
               "Cooking oil",
-              "13",
+              "11",
               "2 × 1-gal jug",
               "$28"
             ],
             [
               "Canned protein (chicken, tuna, beans)",
-              "84",
-              "108 × 12.5-oz can",
-              "$324"
+              "71",
+              "92 × 12.5-oz can",
+              "$276"
             ],
             [
               "Canned fruit & vegetables",
-              "287",
-              "306 × 15-oz can",
-              "$398"
+              "242",
+              "258 × 15-oz can",
+              "$335"
             ],
             [
               "Powdered milk",
-              "20",
+              "17",
               "5 × 4-lb bag",
               "$110"
             ],
             [
               "Total",
-              "653",
+              "551",
               "",
-              "$1,234"
+              "$1,081"
             ]
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "table",
@@ -1689,37 +2028,107 @@
               "Day 15+",
               "Bulk staples: rice, beans, oats, pasta with oil, peanut butter, canned protein and produce."
             ]
-          ]
+          ],
+          "kind": "know"
+        },
+        {
+          "type": "table",
+          "caption": "Compare food options",
+          "detail": true,
+          "columns": [
+            "",
+            "Bulk staples",
+            "Ready-to-eat",
+            "Ration & freeze-dried kits"
+          ],
+          "rows": [
+            [
+              "Cost for your whole supply",
+              "$1,234",
+              "$1,890",
+              "$7,700–$12,100"
+            ],
+            [
+              "Preparation",
+              "Cook: simmer rice, beans and oats",
+              "Open and eat; heat if you can",
+              "Add hot water to freeze-dried meals; ration bars are ready"
+            ],
+            [
+              "Water and fuel",
+              "Water and fuel to cook",
+              "Little or none",
+              "Hot water for freeze-dried meals"
+            ],
+            [
+              "Space",
+              "Buckets: compact for the calories",
+              "Most space for the calories",
+              "Compact"
+            ],
+            [
+              "Shelf life",
+              "Long when sealed; rotate into meals",
+              "Check the dates; rotate into meals",
+              "Longest; check the label"
+            ]
+          ],
+          "kind": "know"
         },
         {
           "type": "bullets",
           "items": [
-            "Store staples in sealed food-grade buckets or mylar, cool and dry.",
+            "Store bulk staples in sealed food-grade buckets or mylar, cool and dry: about 19 5-gallon buckets for 551 lb.",
+            "Ration bars are for go-bags and the first days, not your whole supply.",
+            "Adjust for any allergies or diets in your household.",
             "Include comfort foods, spices, and a manual can opener."
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "levelchoice",
           "group": "food",
-          "caption": "Food level: store it yourself, or buy ready-made",
+          "caption": "Switch or mix your food: the calorie total stays the same",
           "levels": [
+            {
+              "level": "mix",
+              "name": "Recommended mix: 84% bulk staples, 16% ready-to-eat",
+              "price": "$1,375",
+              "selected": true,
+              "low": 1375,
+              "high": 1375
+            },
             {
               "level": "essential",
               "name": "Bulk staples you store yourself",
               "price": "$1,234",
-              "selected": true
+              "selected": false,
+              "low": 1234,
+              "high": 1234
+            },
+            {
+              "level": "standard",
+              "name": "Ready-to-eat: canned meals and pouches",
+              "price": "$1,890",
+              "selected": false,
+              "low": 1890,
+              "high": 1890
             },
             {
               "level": "premium",
-              "name": "Freeze-dried long-term food",
+              "name": "Ration & freeze-dried kits",
               "price": "$7,700–$12,100",
-              "selected": false
+              "selected": false,
+              "low": 7700,
+              "high": 12100
             }
-          ]
+          ],
+          "kind": "have"
         },
         {
           "type": "subheading",
-          "text": "Where to keep it"
+          "text": "Where to keep it",
+          "kind": "know"
         },
         {
           "type": "checklist",
@@ -1750,7 +2159,8 @@
                 "url": "https://www.ready.gov/kit"
               }
             }
-          ]
+          ],
+          "kind": "do"
         },
         {
           "type": "help",
@@ -1770,7 +2180,8 @@
               "url": "https://www.cdc.gov/natural-disasters/safety/power-outage-safety.html"
             }
           ],
-          "note": "Rice, beans, oats, pasta, oil and canned goods are cheapest at a grocery store or warehouse club."
+          "note": "Rice, beans, oats, pasta, oil and canned goods are cheapest at a grocery store or warehouse club.",
+          "kind": "have"
         }
       ]
     },
@@ -1782,7 +2193,8 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "A gas range usually works in an outage if you light the burners with a match (check your manual; ovens with electronic controls usually won't work). Run the range hood or crack a window, and keep the CO alarm working."
+          "text": "A gas range usually works in an outage if you light the burners with a match (check your manual; ovens with electronic controls usually won't work). Run the range hood or crack a window, and keep the CO alarm working.",
+          "kind": "know"
         },
         {
           "type": "ifthen",
@@ -1803,13 +2215,15 @@
               "if": "Cooler use",
               "then": "Keep it in the shade and packed with ice; check with a thermometer."
             }
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "callout",
           "tone": "danger",
           "title": "Cook outdoors only",
-          "text": "Grills, camp stoves and charcoal give off carbon monoxide. Use them outdoors only — never inside, in a garage or on an enclosed porch."
+          "text": "Grills, camp stoves and charcoal give off carbon monoxide. Use them outdoors only — never inside, in a garage or on an enclosed porch.",
+          "kind": "know"
         },
         {
           "type": "help",
@@ -1823,7 +2237,8 @@
               "label": "Carbon monoxide safety (CDC)",
               "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
             }
-          ]
+          ],
+          "kind": "have"
         }
       ]
     },
@@ -1832,6 +2247,10 @@
       "number": 10,
       "title": "Sanitation, hygiene & diapers",
       "summary": "Store 52 rolls of toilet paper and 540 diapers (6 a day). If toilets can't flush, switch to a two-bucket toilet.",
+      "key": {
+        "value": "56",
+        "label": "waste bags"
+      },
       "blocks": [
         {
           "type": "table",
@@ -1872,11 +2291,13 @@
               "Baby wipes",
               "720 (9 packs)"
             ]
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "paragraph",
-          "text": "Kids grow fast in a long scenario: half the diapers are in the next size up."
+          "text": "Kids grow fast in a long scenario: half the diapers are in the next size up.",
+          "kind": "know"
         },
         {
           "type": "ifthen",
@@ -1893,14 +2314,42 @@
               "if": "Sewer backing up or officials say don't flush",
               "then": "Line the toilet or a bucket with two bags, add absorbent after each use, tie off and store outside in a lidded can."
             }
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "bullets",
           "items": [
             "Wash hands with soap and water, or sanitizer when water is short.",
             "Keep human waste away from food and water areas."
-          ]
+          ],
+          "kind": "know"
+        },
+        {
+          "type": "tips",
+          "tips": [
+            {
+              "id": "sanitation-bag-toilet",
+              "situation": "The toilet won't flush and you have no sanitation kit.",
+              "steps": [
+                "Line the bucket or bowl with a heavy trash bag.",
+                "Cover waste with litter or sawdust if you have it, tie the bag closed, and keep it outside, away from water."
+              ],
+              "source": {
+                "label": "Ready.gov: Build a kit (garbage bags and ties for sanitation)",
+                "url": "https://www.ready.gov/kit"
+              }
+            }
+          ],
+          "dontDo": [
+            "Don't use candle or terracotta-pot heaters.",
+            "Never use a grill or camp stove indoors or in a garage.",
+            "Don't use a gas oven or stovetop to heat your home.",
+            "Never run a car in an attached garage, even with the door open.",
+            "Never plug a generator into a wall outlet.",
+            "Don't dump waste where it can reach drinking water."
+          ],
+          "kind": "know"
         },
         {
           "type": "help",
@@ -1914,7 +2363,8 @@
               "url": "https://www.ready.gov/kit"
             }
           ],
-          "note": "Toilet paper, trash bags, soap and wipes: any grocery or warehouse store."
+          "note": "Toilet paper, trash bags, soap and wipes: any grocery or warehouse store.",
+          "kind": "have"
         }
       ]
     },
@@ -1994,13 +2444,15 @@
                 "url": "https://www.redcross.org/take-a-class"
               }
             }
-          ]
+          ],
+          "kind": "do"
         },
         {
           "type": "callout",
           "tone": "info",
           "title": "Medications",
-          "text": "ReadyReport never gives medication doses. For any medicine — for people or pets — follow the label or your doctor, pharmacist or vet."
+          "text": "ReadyReport never gives medication doses. For any medicine — for people or pets — follow the label or your doctor, pharmacist or vet.",
+          "kind": "know"
         },
         {
           "type": "help",
@@ -2016,7 +2468,8 @@
               "label": "Older adults and people with disabilities (Ready.gov)",
               "url": "https://www.ready.gov/older-adults"
             }
-          ]
+          ],
+          "kind": "have"
         }
       ]
     },
@@ -2054,7 +2507,8 @@
               "School/daycare pickup",
               "Who picks up, and the school's emergency plan"
             ]
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "bullets",
@@ -2064,7 +2518,8 @@
             "FRS/GMRS radios to reach your household and neighbors within a few miles (GMRS needs an FCC license, no exam).",
             "Cash: $1,200 ($600 per adult) in small bills; card readers fail in outages.",
             "Documents: copies of IDs, insurance policies, deeds/leases, medication list, pet records, and photos of your home's contents — in a waterproof pouch, plus an encrypted cloud copy."
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "help",
@@ -2085,7 +2540,8 @@
               "label": "Make a plan (Ready.gov)",
               "url": "https://www.ready.gov/plan"
             }
-          ]
+          ],
+          "kind": "have"
         }
       ]
     },
@@ -2103,7 +2559,8 @@
             "Lock doors and windows; keep exterior lights on a battery or solar motion light.",
             "Neighbor pod: swap numbers with 3–5 nearby households, share skills (medical, tools, childcare), and check on older neighbors.",
             "If you feel unsafe, leave and call 911. Supplies can be replaced; people can't."
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "help",
@@ -2116,7 +2573,8 @@
               "label": "Make a plan (Ready.gov)",
               "url": "https://www.ready.gov/plan"
             }
-          ]
+          ],
+          "kind": "have"
         }
       ]
     },
@@ -2125,6 +2583,10 @@
       "number": 14,
       "title": "Kids & morale",
       "summary": "Kids cope better when they have a routine and a job. Keep things predictable and give them a role in the plan.",
+      "key": {
+        "value": "2",
+        "label": "children"
+      },
       "blocks": [
         {
           "type": "checklist",
@@ -2209,7 +2671,8 @@
                 "url": "https://www.ready.gov/kids/family-emergency-planning"
               }
             }
-          ]
+          ],
+          "kind": "do"
         },
         {
           "type": "help",
@@ -2221,7 +2684,8 @@
               "label": "Planning with kids (Ready.gov)",
               "url": "https://www.ready.gov/kids/family-emergency-planning"
             }
-          ]
+          ],
+          "kind": "have"
         }
       ]
     },
@@ -2230,6 +2694,10 @@
       "number": 15,
       "title": "Pets",
       "summary": "Store 54 pounds of pet food and add 0.35 gallons of water a day for your pets. Keep records and a carrier ready.",
+      "key": {
+        "value": "54 lb",
+        "label": "pet food"
+      },
       "blocks": [
         {
           "type": "table",
@@ -2244,7 +2712,8 @@
               "54 lb",
               "0.35 gal"
             ]
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "checklist",
@@ -2293,13 +2762,15 @@
                 "url": "https://www.ready.gov/pets"
               }
             }
-          ]
+          ],
+          "kind": "do"
         },
         {
           "type": "callout",
           "tone": "info",
           "title": "Pet medications",
-          "text": "ReadyReport never gives medication doses. For any medicine — for people or pets — follow the label or your doctor, pharmacist or vet."
+          "text": "ReadyReport never gives medication doses. For any medicine — for people or pets — follow the label or your doctor, pharmacist or vet.",
+          "kind": "know"
         },
         {
           "type": "help",
@@ -2311,16 +2782,42 @@
               "label": "Prepare your pets (Ready.gov)",
               "url": "https://www.ready.gov/pets"
             }
-          ]
+          ],
+          "kind": "have"
         }
       ]
     },
     {
       "id": "evacuation",
       "number": 16,
-      "title": "Evacuation / bug-out plan",
+      "title": "When you must leave",
       "summary": "Your fallback is your raw land, about 120 miles away. Leave early on clear triggers, keep each tank above 7.2 gallons, and keep go-bags ready.",
+      "key": {
+        "value": "7.2 gal",
+        "label": "fuel reserve per vehicle"
+      },
       "blocks": [
+        {
+          "type": "callout",
+          "tone": "danger",
+          "title": "Official evacuation orders override this plan",
+          "text": "Official evacuation orders override this plan. If officials tell you to leave, go, using the routes they give.",
+          "kind": "know"
+        },
+        {
+          "type": "checklist",
+          "items": [
+            {
+              "id": "evac-destination",
+              "text": "Add your backup destination: name, address and how to get there, printed for each go-bag.",
+              "link": {
+                "label": "Evacuation (Ready.gov)",
+                "url": "https://www.ready.gov/evacuation"
+              }
+            }
+          ],
+          "kind": "do"
+        },
         {
           "type": "ifthen",
           "rows": [
@@ -2348,7 +2845,8 @@
               "if": "Roads closed or unsafe to drive",
               "then": "Shelter in place and use this plan's shelter-in-place sections."
             }
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "table",
@@ -2366,7 +2864,8 @@
               "Keep in each tank, minimum",
               "7.2 gal (one-way + 50% for detours/traffic)"
             ]
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "table",
@@ -2417,7 +2916,8 @@
               "Saw, hatchet, work gloves, headlamps",
               ""
             ]
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "products",
@@ -2442,19 +2942,25 @@
                   "level": "essential",
                   "name": "FRS walkie-talkies",
                   "price": "$25–$45",
-                  "selected": false
+                  "selected": false,
+                  "low": 25,
+                  "high": 45
                 },
                 {
                   "level": "standard",
                   "name": "GMRS/FRS handheld radios",
                   "price": "$60–$150",
-                  "selected": false
+                  "selected": false,
+                  "low": 60,
+                  "high": 150
                 },
                 {
                   "level": "premium",
                   "name": "Satellite messenger",
                   "price": "$200–$400",
-                  "selected": false
+                  "selected": false,
+                  "low": 200,
+                  "high": 400
                 }
               ],
               "later": true
@@ -2477,19 +2983,25 @@
                   "level": "essential",
                   "name": "Go-bag from a backpack you own",
                   "price": "$40–$80",
-                  "selected": false
+                  "selected": false,
+                  "low": 40,
+                  "high": 80
                 },
                 {
                   "level": "standard",
                   "name": "Go-bag backpack",
                   "price": "$80–$240",
-                  "selected": false
+                  "selected": false,
+                  "low": 80,
+                  "high": 240
                 },
                 {
                   "level": "premium",
                   "name": "Premium pre-packed go-bag",
                   "price": "$600–$900",
-                  "selected": false
+                  "selected": false,
+                  "low": 600,
+                  "high": 900
                 }
               ],
               "later": true
@@ -2512,19 +3024,25 @@
                   "level": "essential",
                   "name": "Basic vehicle kit",
                   "price": "$35–$70",
-                  "selected": false
+                  "selected": false,
+                  "low": 35,
+                  "high": 70
                 },
                 {
                   "level": "standard",
                   "name": "Vehicle emergency kit",
                   "price": "$100–$200",
-                  "selected": false
+                  "selected": false,
+                  "low": 100,
+                  "high": 200
                 },
                 {
                   "level": "premium",
                   "name": "Recovery + cargo kit",
                   "price": "$700–$1,500",
-                  "selected": false
+                  "selected": false,
+                  "low": 700,
+                  "high": 1500
                 }
               ],
               "later": true
@@ -2547,19 +3065,25 @@
                   "level": "essential",
                   "name": "Tarp shelter kit",
                   "price": "$50–$100",
-                  "selected": false
+                  "selected": false,
+                  "low": 50,
+                  "high": 100
                 },
                 {
                   "level": "standard",
                   "name": "Tent + tarps",
                   "price": "$150–$450",
-                  "selected": false
+                  "selected": false,
+                  "low": 150,
+                  "high": 450
                 },
                 {
                   "level": "premium",
                   "name": "Canvas bell or cabin tent",
                   "price": "$600–$1,400",
-                  "selected": false
+                  "selected": false,
+                  "low": 600,
+                  "high": 1400
                 }
               ],
               "later": true
@@ -2579,11 +3103,13 @@
               "emailSafe": false,
               "later": true
             }
-          ]
+          ],
+          "kind": "have"
         },
         {
           "type": "subheading",
-          "text": "Vehicle kit"
+          "text": "Vehicle kit",
+          "kind": "know"
         },
         {
           "type": "checklist",
@@ -2665,11 +3191,13 @@
                 "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
               }
             }
-          ]
+          ],
+          "kind": "do"
         },
         {
           "type": "subheading",
-          "text": "Go-bag (one per person)"
+          "text": "Go-bag (one per person)",
+          "kind": "know"
         },
         {
           "type": "checklist",
@@ -2799,13 +3327,15 @@
                 "url": "https://www.ready.gov/pets"
               }
             }
-          ]
+          ],
+          "kind": "do"
         },
         {
           "type": "callout",
           "tone": "danger",
           "title": "Tents and fumes",
-          "text": "Never use a heater, stove, grill or generator inside a tent or vehicle. Cook and run generators in the open, away from where people sleep."
+          "text": "Never use a heater, stove, grill or generator inside a tent or vehicle. Cook and run generators in the open, away from where people sleep.",
+          "kind": "know"
         },
         {
           "type": "help",
@@ -2830,7 +3360,8 @@
               "label": "Plan your evacuation (Ready.gov)",
               "url": "https://www.ready.gov/evacuation"
             }
-          ]
+          ],
+          "kind": "have"
         }
       ]
     },
@@ -2838,7 +3369,11 @@
       "id": "budget",
       "number": 17,
       "title": "Budget by phase",
-      "summary": "Within your $1,500–5,000 range we planned around $3,250. Phase 1 buys life safety first; the whole list comes to about $3,407.",
+      "summary": "Within your $1,500–5,000 range we planned around $3,250. Phase 1 buys life safety first; the whole list comes to about $3,404.",
+      "key": {
+        "value": "$1,777–$3,503",
+        "label": "gear in your budget"
+      },
       "blocks": [
         {
           "type": "table",
@@ -2880,6 +3415,12 @@
               ""
             ],
             [
+              "  First aid kit",
+              "",
+              "$30–$80",
+              "Essential"
+            ],
+            [
               "  Bathtub water bladder",
               "",
               "$25–$40",
@@ -2919,12 +3460,6 @@
               "  USB power bank",
               "× 2",
               "$50–$90",
-              ""
-            ],
-            [
-              "  First aid kit",
-              "",
-              "$30–$80",
               ""
             ],
             [
@@ -2976,9 +3511,9 @@
               ""
             ],
             [
-              "  Food staples, first 30 days",
+              "  Food, first 30 days",
               "",
-              "$411",
+              "$458",
               ""
             ],
             [
@@ -3006,15 +3541,9 @@
               ""
             ],
             [
-              "  Multi-day cooler",
-              "",
-              "$40–$90",
-              ""
-            ],
-            [
               "  Phase 2 subtotal (target $1,625)",
               "",
-              "~$1,747",
+              "~$1,729",
               ""
             ],
             [
@@ -3024,30 +3553,37 @@
               ""
             ],
             [
-              "  Food staples, days 31–90 (build up with each grocery trip)",
+              "  Food, days 31–90 (build up with each grocery trip)",
               "",
-              "$823",
+              "$917",
               "Ongoing, from grocery budget"
+            ],
+            [
+              "  Water treatment tablets (chlorine dioxide)",
+              "",
+              "$10–$20",
+              ""
             ],
             [
               "  Phase 3 subtotal (target $650)",
               "",
-              "~$0",
+              "~$15",
               ""
             ],
             [
               "Total (midpoint estimate)",
               "",
-              "~$3,407",
+              "~$3,404",
               "Planning budget $3,250"
             ],
             [
               "Plus ongoing food build-up",
               "",
-              "~$823",
+              "~$917",
               "Spread over grocery trips"
             ]
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "table",
@@ -3078,9 +3614,15 @@
               "Phase 2"
             ],
             [
-              "Food storage buckets",
+              "Multi-day cooler",
               "",
               "$40–$90",
+              "Phase 2"
+            ],
+            [
+              "Food storage buckets",
+              "× 19",
+              "$380–$665",
               "Phase 2"
             ],
             [
@@ -3138,6 +3680,12 @@
               "Phase 3"
             ],
             [
+              "Spare filter elements or cartridges",
+              "",
+              "$20–$60",
+              "Phase 3"
+            ],
+            [
               "Go-bag from a backpack you own",
               "× 2",
               "$40–$80",
@@ -3161,19 +3709,22 @@
               "$40–$90",
               "Phase 3"
             ]
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "callout",
           "tone": "info",
           "title": "Go cheaper or bigger, item by item",
-          "text": "Items with levels (water, power, filters, radios, go-bags, shelter, vehicle kit, food) can each be switched to Essential, Standard or Premium in Recommended gear. Totals update when you switch."
+          "text": "Items with levels (water, power, filters, radios, go-bags, shelter, vehicle kit, food) can each be switched to Essential, Standard or Premium in Recommended gear. Totals update when you switch.",
+          "kind": "know"
         },
         {
           "type": "callout",
           "tone": "info",
           "title": "What to cut first",
-          "text": "If money is tight, delay multi-day cooler, pipe insulation & faucet covers, cold-rated sleeping bags. Never cut CO alarms, stored water, or your heat plan. Buy food a little at a time with each grocery trip."
+          "text": "If money is tight, delay pipe insulation & faucet covers, cold-rated sleeping bags, 1-lb propane cylinders (heater fuel). Never cut CO alarms, stored water, or your heat plan. Buy food a little at a time with each grocery trip.",
+          "kind": "know"
         },
         {
           "type": "help",
@@ -3183,7 +3734,8 @@
               "label": "Low- and no-cost preparedness (Ready.gov)",
               "url": "https://www.ready.gov/low-and-no-cost"
             }
-          ]
+          ],
+          "kind": "have"
         }
       ]
     },
@@ -3192,6 +3744,10 @@
       "number": 18,
       "title": "Recommended gear",
       "summary": "Buy to the spec, not the brand. The example models are just a starting point for comparing.",
+      "key": {
+        "value": "39",
+        "label": "items"
+      },
       "blocks": [
         {
           "type": "products",
@@ -3230,21 +3786,42 @@
                   "level": "essential",
                   "name": "Gallon water jugs or refilled bottles (low-cost)",
                   "price": "$54–$81",
-                  "selected": false
+                  "selected": false,
+                  "low": 54,
+                  "high": 81
                 },
                 {
                   "level": "standard",
                   "name": "7-gallon water container",
                   "price": "$160–$280",
-                  "selected": true
+                  "selected": true,
+                  "low": 160,
+                  "high": 280
                 },
                 {
                   "level": "premium",
                   "name": "Stackable water bricks",
                   "price": "$400–$560",
-                  "selected": false
+                  "selected": false,
+                  "low": 400,
+                  "high": 560
                 }
               ],
+              "later": false
+            },
+            {
+              "itemId": "first-aid",
+              "name": "First aid kit",
+              "category": "First aid",
+              "spec": "200+ piece kit with trauma pads, gauze, tape, elastic wrap, gloves, thermometer, tweezers, shears",
+              "models": [
+                "Adventure Medical Kits Family",
+                "American Red Cross Deluxe Family Kit"
+              ],
+              "price": "Typical $30–$80 each",
+              "qty": "",
+              "buyable": true,
+              "emailSafe": false,
               "later": false
             },
             {
@@ -3280,19 +3857,25 @@
                   "level": "essential",
                   "name": "Hollow-fiber water filter",
                   "price": "$35–$90",
-                  "selected": false
+                  "selected": false,
+                  "low": 35,
+                  "high": 90
                 },
                 {
                   "level": "standard",
                   "name": "Gravity bag filter",
                   "price": "$90–$140",
-                  "selected": true
+                  "selected": true,
+                  "low": 90,
+                  "high": 140
                 },
                 {
                   "level": "premium",
                   "name": "Countertop gravity filter",
                   "price": "$250–$450",
-                  "selected": false
+                  "selected": false,
+                  "low": 250,
+                  "high": 450
                 }
               ],
               "later": false
@@ -3367,21 +3950,6 @@
               ],
               "price": "Typical $25–$45 each",
               "qty": "× 2",
-              "buyable": true,
-              "emailSafe": false,
-              "later": false
-            },
-            {
-              "itemId": "first-aid",
-              "name": "First aid kit",
-              "category": "First aid",
-              "spec": "200+ piece kit with trauma pads, gauze, tape, elastic wrap, gloves, thermometer, tweezers, shears",
-              "models": [
-                "Adventure Medical Kits Family",
-                "American Red Cross Deluxe Family Kit"
-              ],
-              "price": "Typical $30–$80 each",
-              "qty": "",
               "buyable": true,
               "emailSafe": false,
               "later": false
@@ -3492,19 +4060,25 @@
                   "level": "essential",
                   "name": "Small inverter generator",
                   "price": "$790–$1,590",
-                  "selected": true
+                  "selected": true,
+                  "low": 790,
+                  "high": 1590
                 },
                 {
                   "level": "standard",
                   "name": "Dual-fuel inverter generator",
                   "price": "$1,140–$1,890",
-                  "selected": false
+                  "selected": false,
+                  "low": 1140,
+                  "high": 1890
                 },
                 {
                   "level": "premium",
                   "name": "Whole-home standby generator (professionally installed)",
                   "price": "$9,000–$18,000",
-                  "selected": false
+                  "selected": false,
+                  "low": 9000,
+                  "high": 18000
                 }
               ],
               "later": false
@@ -3540,15 +4114,15 @@
               "later": false
             },
             {
-              "itemId": "coolers",
-              "name": "Multi-day cooler",
-              "category": "Food",
-              "spec": "Rotomolded or 5-day-rated cooler, 45–70 qt",
+              "itemId": "water-tablets",
+              "name": "Water treatment tablets (chlorine dioxide)",
+              "category": "Water",
+              "spec": "Chlorine dioxide tablets as a light backup to your filter or boiling; follow the label for amount and wait time",
               "models": [
-                "Coleman Xtreme 70 qt",
-                "Igloo MaxCold"
+                "Katadyn Micropur MP1",
+                "Aquamira water treatment tablets"
               ],
-              "price": "Typical $40–$90 each",
+              "price": "Typical $10–$20 each",
               "qty": "",
               "buyable": true,
               "emailSafe": false,
@@ -3600,16 +4174,31 @@
               "later": true
             },
             {
+              "itemId": "coolers",
+              "name": "Multi-day cooler",
+              "category": "Food",
+              "spec": "Rotomolded or 5-day-rated cooler, 45–70 qt",
+              "models": [
+                "Coleman Xtreme 70 qt",
+                "Igloo MaxCold"
+              ],
+              "price": "Typical $40–$90 each",
+              "qty": "",
+              "buyable": true,
+              "emailSafe": false,
+              "later": true
+            },
+            {
               "itemId": "storage-kit",
               "name": "Food storage buckets",
               "category": "Food",
-              "spec": "Food-grade 5-gal buckets with gamma seal lids, mylar bags and oxygen absorbers for rice/beans/oats",
+              "spec": "One food-grade 5-gal bucket with a gamma seal lid, mylar bag and oxygen absorbers for rice, beans or oats; enough buckets for your bulk staples",
               "models": [
                 "Gamma Seal lid kit",
                 "ShieldPro mylar kit"
               ],
-              "price": "Typical $40–$90 each",
-              "qty": "",
+              "price": "Typical $20–$35 each",
+              "qty": "× 19",
               "buyable": true,
               "emailSafe": false,
               "later": true
@@ -3693,13 +4282,17 @@
                   "level": "standard",
                   "name": "Portable power station (quiet hours)",
                   "price": "$400–$900",
-                  "selected": false
+                  "selected": false,
+                  "low": 400,
+                  "high": 900
                 },
                 {
                   "level": "premium",
                   "name": "Large expandable power station (quiet hours)",
                   "price": "$2,200–$3,800",
-                  "selected": false
+                  "selected": false,
+                  "low": 2200,
+                  "high": 3800
                 }
               ],
               "later": true
@@ -3738,19 +4331,25 @@
                   "level": "essential",
                   "name": "FRS walkie-talkies",
                   "price": "$25–$45",
-                  "selected": false
+                  "selected": false,
+                  "low": 25,
+                  "high": 45
                 },
                 {
                   "level": "standard",
                   "name": "GMRS/FRS handheld radios",
                   "price": "$60–$150",
-                  "selected": false
+                  "selected": false,
+                  "low": 60,
+                  "high": 150
                 },
                 {
                   "level": "premium",
                   "name": "Satellite messenger",
                   "price": "$200–$400",
-                  "selected": false
+                  "selected": false,
+                  "low": 200,
+                  "high": 400
                 }
               ],
               "later": true
@@ -3785,6 +4384,20 @@
               "later": true
             },
             {
+              "itemId": "filter-spare",
+              "name": "Spare filter elements or cartridges",
+              "category": "Water",
+              "spec": "Replacement elements for your household filter, or a backflush kit; match your filter's brand and model",
+              "models": [
+                "Your filter maker's replacement elements"
+              ],
+              "price": "Typical $20–$60 each",
+              "qty": "",
+              "buyable": true,
+              "emailSafe": false,
+              "later": true
+            },
+            {
               "itemId": "go-bag-basic",
               "name": "Go-bag from a backpack you own",
               "category": "Evacuation",
@@ -3802,19 +4415,25 @@
                   "level": "essential",
                   "name": "Go-bag from a backpack you own",
                   "price": "$40–$80",
-                  "selected": false
+                  "selected": false,
+                  "low": 40,
+                  "high": 80
                 },
                 {
                   "level": "standard",
                   "name": "Go-bag backpack",
                   "price": "$80–$240",
-                  "selected": false
+                  "selected": false,
+                  "low": 80,
+                  "high": 240
                 },
                 {
                   "level": "premium",
                   "name": "Premium pre-packed go-bag",
                   "price": "$600–$900",
-                  "selected": false
+                  "selected": false,
+                  "low": 600,
+                  "high": 900
                 }
               ],
               "later": true
@@ -3837,19 +4456,25 @@
                   "level": "essential",
                   "name": "Basic vehicle kit",
                   "price": "$35–$70",
-                  "selected": false
+                  "selected": false,
+                  "low": 35,
+                  "high": 70
                 },
                 {
                   "level": "standard",
                   "name": "Vehicle emergency kit",
                   "price": "$100–$200",
-                  "selected": false
+                  "selected": false,
+                  "low": 100,
+                  "high": 200
                 },
                 {
                   "level": "premium",
                   "name": "Recovery + cargo kit",
                   "price": "$700–$1,500",
-                  "selected": false
+                  "selected": false,
+                  "low": 700,
+                  "high": 1500
                 }
               ],
               "later": true
@@ -3872,19 +4497,25 @@
                   "level": "essential",
                   "name": "Tarp shelter kit",
                   "price": "$50–$100",
-                  "selected": false
+                  "selected": false,
+                  "low": 50,
+                  "high": 100
                 },
                 {
                   "level": "standard",
                   "name": "Tent + tarps",
                   "price": "$150–$450",
-                  "selected": false
+                  "selected": false,
+                  "low": 150,
+                  "high": 450
                 },
                 {
                   "level": "premium",
                   "name": "Canvas bell or cabin tent",
                   "price": "$600–$1,400",
-                  "selected": false
+                  "selected": false,
+                  "low": 600,
+                  "high": 1400
                 }
               ],
               "later": true
@@ -3904,11 +4535,13 @@
               "emailSafe": false,
               "later": true
             }
-          ]
+          ],
+          "kind": "have"
         },
         {
           "type": "paragraph",
-          "text": "Catalog last reviewed: 2026-11-01. Check prices, recalls and current reviews before you buy."
+          "text": "Catalog last reviewed: 2026-11-01. Check prices, recalls and current reviews before you buy.",
+          "kind": "know"
         }
       ]
     },
@@ -3917,6 +4550,10 @@
       "number": 19,
       "title": "Maintenance calendar",
       "summary": "Preparedness only works if it's maintained. Put these on your calendar now.",
+      "key": {
+        "value": "7",
+        "label": "maintenance tasks"
+      },
       "blocks": [
         {
           "type": "table",
@@ -3953,7 +4590,8 @@
               "Every 12 months",
               "Review this plan and regenerate it if your household changes."
             ]
-          ]
+          ],
+          "kind": "know"
         },
         {
           "type": "help",
@@ -3965,7 +4603,8 @@
               "label": "Build a kit (Ready.gov)",
               "url": "https://www.ready.gov/kit"
             }
-          ]
+          ],
+          "kind": "have"
         }
       ]
     }
@@ -3973,6 +4612,12 @@
   "disclaimer": "ReadyReport provides general preparedness guidance, not professional, medical, legal or electrical advice. Follow official instructions from local emergency management. Quantities are planning estimates. Prices and products change — check current specs, recalls and reviews before you buy.",
   "affiliateDisclosure": null,
   "overview": {
+    "budget": {
+      "label": "$1,500–5,000",
+      "cap": 5000,
+      "totalLow": 1777,
+      "totalHigh": 3503
+    },
     "stats": [
       {
         "key": "water",
@@ -4020,6 +4665,15 @@
         "phase": 1,
         "low": 160,
         "high": 280,
+        "later": false
+      },
+      {
+        "itemId": "first-aid",
+        "name": "First aid kit",
+        "qty": 1,
+        "phase": 1,
+        "low": 30,
+        "high": 80,
         "later": false
       },
       {
@@ -4083,15 +4737,6 @@
         "phase": 1,
         "low": 50,
         "high": 90,
-        "later": false
-      },
-      {
-        "itemId": "first-aid",
-        "name": "First aid kit",
-        "qty": 1,
-        "phase": 1,
-        "low": 30,
-        "high": 80,
         "later": false
       },
       {
@@ -4176,12 +4821,12 @@
         "later": false
       },
       {
-        "itemId": "coolers",
-        "name": "Multi-day cooler",
+        "itemId": "water-tablets",
+        "name": "Water treatment tablets (chlorine dioxide)",
         "qty": 1,
-        "phase": 2,
-        "low": 40,
-        "high": 90,
+        "phase": 3,
+        "low": 10,
+        "high": 20,
         "later": false
       },
       {
@@ -4212,12 +4857,21 @@
         "later": true
       },
       {
-        "itemId": "storage-kit",
-        "name": "Food storage buckets",
+        "itemId": "coolers",
+        "name": "Multi-day cooler",
         "qty": 1,
         "phase": 2,
         "low": 40,
         "high": 90,
+        "later": true
+      },
+      {
+        "itemId": "storage-kit",
+        "name": "Food storage buckets",
+        "qty": 19,
+        "phase": 2,
+        "low": 380,
+        "high": 665,
         "later": true
       },
       {
@@ -4299,6 +4953,15 @@
         "phase": 3,
         "low": 20,
         "high": 50,
+        "later": true
+      },
+      {
+        "itemId": "filter-spare",
+        "name": "Spare filter elements or cartridges",
+        "qty": 1,
+        "phase": 3,
+        "low": 20,
+        "high": 60,
         "later": true
       },
       {

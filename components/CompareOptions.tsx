@@ -34,7 +34,7 @@ export function CompareOptions({
     return (
       <li className="flex items-start justify-between gap-3 py-2">
         <div className="min-w-0 text-sm">
-          <p className="font-semibold">{LABEL[r.level]}: {r.name}</p>
+          <p className="font-semibold">{group === "food" ? r.name : `${LABEL[r.level]}: ${r.name}`}</p>
           <p className="text-muted">
             {r.price}
             {r.diff && <> · <span className="text-ink font-medium">{r.diff}</span> · new total {r.newTotal}</>}
