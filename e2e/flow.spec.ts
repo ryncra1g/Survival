@@ -320,7 +320,7 @@ test("sample plan is public", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: "See a sample plan" }).click();
   await expect(page).toHaveURL(/\/sample/);
-  await expect(page.getByText(/Store 54 gallons \(14 days\)/)).toBeVisible();
+  await expect(page.locator("details#water").getByTestId("card-key")).toContainText("54 gal");
 });
 
 test("unconfirmed emails with a plan get exactly one reminder", async ({ page, request }) => {

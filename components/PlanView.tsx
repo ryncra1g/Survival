@@ -189,7 +189,7 @@ export function PlanView({
             <div className="mt-3 grid grid-cols-2 gap-2 sm:gap-3 [grid-auto-flow:dense]" data-testid="section-cards">
             {ch.items.map((s) => (
               <details key={s.id} id={s.id} data-section open={OPEN_SECTIONS.has(s.id)} className="group card min-w-0 scroll-mt-20 open:col-span-2">
-                <summary className="list-none cursor-pointer p-3 sm:p-4 h-full flex flex-col [&::-webkit-details-marker]:hidden">
+                <summary className="list-none cursor-pointer p-3 sm:p-4 h-full group-open:h-auto flex flex-col [&::-webkit-details-marker]:hidden">
                   <span className="flex items-start justify-between gap-2">
                     <h3 id={`${s.id}-h`} className="font-bold leading-snug group-open:text-lg">{s.title}</h3>
                     <Chevron />
