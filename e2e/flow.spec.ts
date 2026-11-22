@@ -44,6 +44,9 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Get what you need. Know what to do.");
   await expect(page.getByLabel("Your email")).toHaveCount(0); // no email up front
+  await expect(page.getByTestId("chapter-cards").locator(":scope > li")).toHaveCount(4);
+  await expect(page.getByRole("link", { name: "See a sample plan" })).toHaveAttribute("href", "/sample");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   await page.getByRole("button", { name: "Build my free plan" }).click();
   await expect(page).toHaveURL(/\/q\//);
 
@@ -274,7 +277,7 @@ test("admin: dashboard, catalog, rule constants, affiliate tag → tracked Buy c
 
 test("sample plan is public", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("link", { name: "See the full sample plan" }).click();
+  await page.getByRole("link", { name: "See a sample plan" }).click();
   await expect(page).toHaveURL(/\/sample/);
   await expect(page.getByText(/Store 54 gallons \(14 days\)/)).toBeVisible();
 });

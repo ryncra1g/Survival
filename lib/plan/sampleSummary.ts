@@ -13,6 +13,8 @@ export interface SampleSummary {
   household: string;
   stats: { value: string; label: string; math: string }[];
   steps: string[];
+  /** D10: example values for the four chapter cards on the front page (engine output, never typed). */
+  chapters: Record<"do-now" | "supplies" | "power-heat" | "people-plans", string[]>;
 }
 
 export function sampleSummary(now = new Date("2026-11-18")): SampleSummary {
@@ -33,5 +35,17 @@ export function sampleSummary(now = new Date("2026-11-18")): SampleSummary {
       },
     ],
     steps: week && week.type === "checklist" ? week.items.slice(0, 3).map((i) => i.text) : [],
+    chapters: {
+      "do-now": [
+        `${week && week.type === "checklist" ? week.items.length : 0} steps this week`,
+        `${draft.sections.find((x) => x.id === "day0")?.blocks.filter((b) => b.type === "checklist").flatMap((b) => (b.type === "checklist" ? b.items : [])).length ?? 0}-step Day 0 checklist`,
+      ],
+      supplies: [`${n(cp.water.storedGal)} gal of water`, `${n(cp.food.totalKcal)} calories of food`, "$" + n(cp.cash.total) + " cash on hand"],
+      "power-heat": [`${range(p.gasolineGalPerDay[0], p.gasolineGalPerDay[1])} gal of gasoline a day`, `${n(p.hoursPerDay)} generator hours a day`],
+      "people-plans": [
+        ...(cp.evacuation ? [`${n(cp.evacuation.reserveGalPerVehicle)} gal fuel reserve per car`] : []),
+        `Steps for ${SAMPLE_HOUSEHOLD.childrenAges.length} kids and ${SAMPLE_HOUSEHOLD.pets.reduce((t, x) => t + x.count, 0)} pet`,
+      ],
+    },
   };
 }

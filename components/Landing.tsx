@@ -1,6 +1,27 @@
 import type { ReactNode } from "react";
 import { sampleSummary } from "@/lib/plan/sampleSummary";
 
+const CHAPTER_CARDS = [
+  { id: "do-now", title: "Do now", outcome: "Your first steps this week, in order, and a Day 0 checklist for when it happens." },
+  { id: "supplies", title: "Supplies", outcome: "Exactly how much water and food to keep, and what to buy first." },
+  { id: "power-heat", title: "Power & heat", outcome: "Staying warm and powered in an outage, with generator and CO safety." },
+  { id: "people-plans", title: "People & plans", outcome: "Kids, pets, medical needs, contacts and when you must leave." },
+] as const;
+
+function ChapterIcon({ id }: { id: (typeof CHAPTER_CARDS)[number]["id"] }) {
+  const d = {
+    "do-now": "M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9",
+    supplies: "M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z",
+    "power-heat": "M13 2L4 14h7l-1 8 9-12h-7l1-8z",
+    "people-plans": "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8",
+  }[id];
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d={d} />
+    </svg>
+  );
+}
+
 /** Front page, shared by the app and the standalone demo. */
 export function Landing({ cta, footer, sampleLink }: { cta: ReactNode; footer?: ReactNode; sampleLink?: ReactNode }) {
   const sample = sampleSummary();
@@ -11,29 +32,9 @@ export function Landing({ cta, footer, sampleLink }: { cta: ReactNode; footer?: 
       <p className="mt-3 sm:text-lg text-muted max-w-2xl">Take the guesswork out of getting prepared. Know what to keep on hand, what to do first and how to stay ready.</p>
       <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3">
         {cta}
-        <span className="text-sm text-muted text-center sm:text-left">Every amount is worked out for your household, with the math shown.</span>
+        {sampleLink}
       </div>
-
-      <section aria-labelledby="preview-h" className="card mt-8 p-4 sm:p-5">
-        <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-          <h2 id="preview-h" className="font-semibold text-brand">Sample plan preview</h2>
-          <p className="text-xs text-muted">{sample.household}</p>
-        </div>
-        <dl className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 tabular">
-          {sample.stats.map((s) => (
-            <div key={s.label} className="rounded-lg bg-brand-soft p-3">
-              <dt className="text-sm text-muted">{s.label}</dt>
-              <dd className="text-2xl font-bold text-ink">{s.value}</dd>
-              <dd className="text-xs text-muted">{s.math}</dd>
-            </div>
-          ))}
-        </dl>
-        <p className="mt-4 text-sm font-semibold">Start here: the first 3 steps</p>
-        <ol className="mt-1 list-decimal pl-5 space-y-1 text-sm">
-          {sample.steps.map((t) => <li key={t}>{t}</li>)}
-        </ol>
-        {sampleLink && <p className="mt-3 text-sm">{sampleLink}</p>}
-      </section>
+      <p className="mt-3 text-sm text-muted">Every amount is worked out for your household, with the math shown. Free, no sign-up.</p>
 
       <section aria-labelledby="how-h" className="mt-10">
         <h2 id="how-h" className="text-xl font-bold">How it works</h2>
@@ -52,21 +53,26 @@ export function Landing({ cta, footer, sampleLink }: { cta: ReactNode; footer?: 
         </ol>
       </section>
 
+      {/* D10 / LP-06: four chapter cards with example values from the real engine (sample household). */}
       <section aria-labelledby="whats-h" className="mt-10">
         <h2 id="whats-h" className="text-xl font-bold">What&apos;s in your plan</h2>
-        <ul className="mt-3 grid gap-x-6 gap-y-2 sm:grid-cols-2">
-          {[
-            "Water, food and fuel amounts for your household",
-            "A priority list: this week, this month, 60 and 90 days",
-            "Steps for your ZIP code's hazards",
-            "Heat and power plans, with generator and CO safety",
-            "Backup power for medical devices, and plans for kids and pets",
-            "A shopping list that fits your budget",
-            "A printable PDF and a one-page fridge checklist",
-          ].map((t) => (
-            <li key={t} className="flex gap-3"><span aria-hidden className="text-brand font-bold">✓</span><span>{t}</span></li>
+        <ul className="mt-3 grid gap-3 sm:grid-cols-2" data-testid="chapter-cards">
+          {CHAPTER_CARDS.map((c) => (
+            <li key={c.id} className="card p-4">
+              <p className="flex items-center gap-2 font-semibold text-brand">
+                <ChapterIcon id={c.id} />
+                {c.title}
+              </p>
+              <p className="mt-1">{c.outcome}</p>
+              <ul className="mt-2 flex flex-wrap gap-1.5 text-sm tabular" aria-label={`${c.title}: examples`}>
+                {sample.chapters[c.id].slice(0, 3).map((v) => (
+                  <li key={v} className="rounded-full bg-brand-soft px-2.5 py-1">{v}</li>
+                ))}
+              </ul>
+            </li>
           ))}
         </ul>
+        <p className="mt-2 text-xs text-muted">Examples from a sample household: {sample.household}.</p>
       </section>
 
       <p className="mt-10 text-sm text-muted">

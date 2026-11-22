@@ -41,7 +41,7 @@ function makePlan(a: Answers): PlanDocument {
 type View = { kind: "home" } | { kind: "build"; key: number } | { kind: "plan"; doc: PlanDocument; sample: boolean; answers: Answers };
 
 function Home({ onStart, onSample }: { onStart: () => void; onSample: () => void }) {
-  return <Landing cta={<StartButton onStart={onStart} />} sampleLink={<button type="button" className="underline font-semibold text-brand" onClick={onSample}>See the full sample plan</button>} />;
+  return <Landing cta={<StartButton onStart={onStart} />} sampleLink={<button type="button" className="btn-ghost border border-line text-sm px-4 min-h-[44px]" onClick={onSample}>See a sample plan</button>} />;
 }
 
 function App() {
