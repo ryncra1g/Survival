@@ -95,6 +95,8 @@ export const SectionSchema = z.object({
   number: z.number(),
   title: z.string(),
   summary: z.string(),
+  /** D10: the section card's key number (from the rules engine), e.g. { value: "54 gal", label: "water to store" }. */
+  key: z.object({ value: z.string(), label: z.string() }).optional(),
   blocks: z.array(BlockSchema),
 });
 export type Section = z.infer<typeof SectionSchema>;

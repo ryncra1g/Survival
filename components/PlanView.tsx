@@ -184,22 +184,26 @@ export function PlanView({
         {chapters.map((ch) => (
           <section key={ch.id} id={`ch-${ch.id}`} data-chapter={ch.id} aria-labelledby={`ch-${ch.id}-h`} className="scroll-mt-16 pt-4">
             <h2 id={`ch-${ch.id}-h`} className="text-2xl font-bold text-brand mt-4">{ch.title}</h2>
-            {ch.items.length > 1 && (
-              <p className="mt-2 flex flex-wrap gap-2 no-print" aria-label={`${ch.title}: sections`}>
-                {ch.items.map((x) => (
-                  <a key={x.id} href={`#${x.id}`} className="rounded-full border border-line bg-surface px-3 py-1.5 text-sm no-underline">{SHORT[x.id] ?? x.title}</a>
-                ))}
-              </p>
-            )}
+            {/* D10: one card per section, 2 across on phones, with its key number. Tapping a card opens it full
+                width (grid-column 1 / -1); dense flow fills the gap it leaves. Works without JavaScript. */}
+            <div className="mt-3 grid grid-cols-2 gap-2 sm:gap-3 [grid-auto-flow:dense]" data-testid="section-cards">
             {ch.items.map((s) => (
-              <details key={s.id} id={s.id} data-section open={OPEN_SECTIONS.has(s.id)} className="group card my-3 scroll-mt-20">
-                <summary className="list-none cursor-pointer p-4 sm:p-5 [&::-webkit-details-marker]:hidden">
-                  <span className="flex items-start justify-between gap-3">
-                    <h3 id={`${s.id}-h`} className="text-lg font-bold">{s.title}</h3>
+              <details key={s.id} id={s.id} data-section open={OPEN_SECTIONS.has(s.id)} className="group card min-w-0 scroll-mt-20 open:col-span-2">
+                <summary className="list-none cursor-pointer p-3 sm:p-4 h-full flex flex-col [&::-webkit-details-marker]:hidden">
+                  <span className="flex items-start justify-between gap-2">
+                    <h3 id={`${s.id}-h`} className="font-bold leading-snug group-open:text-lg">{s.title}</h3>
                     <Chevron />
                   </span>
-                  {/* Summary: plain text when collapsed (a scannable index); the tinted box once opened. */}
-                  <span className="mt-1 block text-muted group-open:mt-3 group-open:rounded group-open:bg-brand-soft group-open:p-3 group-open:text-ink">{s.summary}</span>
+                  {s.key ? (
+                    <span className="mt-auto pt-2 block tabular group-open:hidden" data-testid="card-key">
+                      <span className="block text-xl font-bold text-brand leading-tight">{s.key.value}</span>
+                      <span className="block text-xs text-muted">{s.key.label}</span>
+                    </span>
+                  ) : (
+                    <span className="mt-1 text-sm text-muted line-clamp-2 group-open:hidden">{s.summary}</span>
+                  )}
+                  {/* Opened: the full summary in the tinted box. */}
+                  <span className="hidden group-open:block mt-3 rounded bg-brand-soft p-3 text-ink">{s.summary}</span>
                 </summary>
                 <div className="px-4 sm:px-6 pb-5">
                   {(() => {
@@ -217,6 +221,7 @@ export function PlanView({
                 </div>
               </details>
             ))}
+            </div>
           </section>
         ))}
         <section id="about" className="card p-4 my-4 scroll-mt-24 text-sm text-muted">

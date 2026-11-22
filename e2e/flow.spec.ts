@@ -135,17 +135,29 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(page.getByTestId("dashboard").getByTestId("overall-progress")).toContainText(`you have 1 of ${gearTotal} gear items`);
   await expect(page.getByTestId("dashboard").getByTestId("stage-progress")).toHaveText(/^1 of \d+ done$/);
 
-  // The plan below is a short index: every section collapsed to title + summary until opened
+  // D10: the plan below is a card grid per chapter (2 across on a phone), each card with its key number
   await expect(page.locator("details[data-section][open]")).toHaveCount(0);
-  await expect(page.getByText(/Store 54 gallons \(14 days\)/)).toBeVisible();
+  await expect(page.locator("details#water").getByTestId("card-key")).toContainText("54 gal");
+  await expect(page.locator("details#water").getByTestId("card-key")).toContainText("water to store");
   await expect(page.getByRole("heading", { name: /Your area's hazards/ })).toBeVisible();
+  const cols = await page.getByTestId("section-cards").first().evaluate((el) => getComputedStyle(el).gridTemplateColumns.split(" ").length);
+  expect(cols).toBe(2);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  // D8: content kinds are labelled
+  await page.locator("details#water > summary").click();
+  await expect(page.locator("details#water [data-kind]").first()).toBeVisible();
+  const waterBox = await page.locator("details#water").boundingBox();
+  expect(waterBox!.width).toBeGreaterThan(300); // an opened card spans the full row
+  await page.locator("details#water > summary").click();
   await page.getByTestId("dashboard").getByRole("link", { name: /See every step/ }).click();
   await expect(page.locator("details#priorities")).toHaveAttribute("open", "");
   const nav = page.getByRole("navigation", { name: "Plan sections" });
   await nav.getByRole("link", { name: "Supplies" }).click();
   await expect(nav.getByRole("link", { name: "Supplies" })).toHaveAttribute("aria-current", "true");
-  await page.locator("#ch-supplies").getByRole("link", { name: "Gear", exact: true }).click();
+  await page.locator("details#gear > summary").click();
   await expect(page.locator("details#gear")).toHaveAttribute("open", "");
+  await page.goto(`${planUrl}#water`); // a link to a section opens its card
+  await expect(page.locator("details#water")).toHaveAttribute("open", "");
 
   // Ticks are saved to the plan, not just this browser (the dashboard tick above shows in the full list too)
   await page.locator("details#priorities").evaluate((d) => ((d as HTMLDetailsElement).open = true));

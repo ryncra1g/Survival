@@ -34,6 +34,43 @@ export interface SectionDraft {
   /** Plain-language facts the LLM may draw on (no numbers — numbers come via tokens). */
   facts: string[];
   blocks: Block[];
+  /** D10: the section card's key number, set by sectionKeys() from engine values only. */
+  key?: { value: string; label: string };
+}
+
+/** D10: each section's key number for its card, taken from the rules engine (or counted from the plan itself). */
+function sectionKeys(cp: ComputedPlan, S: SectionDraft[]) {
+  const steps = (id: string) => S.find((s) => s.id === id)?.blocks.reduce((t, b) => t + (b.type === "checklist" ? b.items.length : 0), 0) ?? 0;
+  const firstList = (id: string) => {
+    const b = S.find((s) => s.id === id)?.blocks.find((x) => x.type === "checklist");
+    return b && b.type === "checklist" ? b.items.length : 0;
+  };
+  const gear = [...cp.budget.picks, ...cp.budget.deferred];
+  const hazards = (["hurricane", "flood", "winter", "heat", "wildfire", "earthquake", "tornado"] as const).filter((k) => atLeast(cp.profile[k], "moderate")).length;
+  const pw = cp.power;
+  const keys: Record<string, { value: string; label: string } | null> = {
+    snapshot: { value: plural(cp.household.people, "person", "people"), label: LABELS.scenarioDays[cp.answers.scenarioDays] },
+    priorities: { value: n(firstList("priorities")), label: "steps this week" },
+    day0: { value: n(steps("day0")), label: "steps when it happens" },
+    hazards: hazards ? { value: n(hazards), label: hazards === 1 ? "hazard to prepare for" : "hazards to prepare for" } : null,
+    water: { value: `${n(cp.water.storedGal)} gal`, label: "water to store" },
+    food: { value: n(cp.food.totalKcal), label: "calories of food" },
+    power:
+      pw.generatorStatus === "recommended" || pw.generatorStatus === "owned_portable"
+        ? { value: `${range(pw.gasolineGalPerDay[0], pw.gasolineGalPerDay[1])} gal`, label: "gasoline a day" }
+        : null,
+    sanitation: { value: n(cp.sanitation.wasteBags), label: "waste bags" },
+    pets: cp.pets ? { value: `${n(cp.pets.foodLbs)} lb`, label: "pet food" } : null,
+    kids: cp.household.children ? { value: n(cp.household.children), label: cp.household.children === 1 ? "child" : "children" } : null,
+    evacuation: cp.evacuation ? { value: `${n(cp.evacuation.reserveGalPerVehicle, 1)} gal`, label: "fuel reserve per vehicle" } : null,
+    budget: { value: usdRange(gear.filter((g) => g.status !== "deferred").reduce((t, g) => t + g.low, 0), gear.filter((g) => g.status !== "deferred").reduce((t, g) => t + g.high, 0)), label: "gear in your budget" },
+    gear: { value: n(gear.length), label: "items" },
+    maintenance: { value: n(S.find((s) => s.id === "maintenance")?.blocks.reduce((t, b) => t + (b.type === "table" ? b.rows.length : 0), 0) ?? 0), label: "maintenance tasks" },
+  };
+  for (const s of S) {
+    const k = keys[s.id];
+    if (k) s.key = k;
+  }
 }
 
 export interface PlanDraft {
@@ -1064,6 +1101,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   addHelp(S, prof);
   // D8: every block gets its kind (Good to know / To do / To have).
   labelKinds(S);
+  sectionKeys(cp, S);
   const pw2 = cp.power;
   const hasFuel = pw2.generatorStatus === "recommended" || pw2.generatorStatus === "owned_portable";
   const overview: Overview = {
@@ -1093,6 +1131,7 @@ export function assembleDocument(cp: ComputedPlan, draft: PlanDraft, summaries: 
     number: i + 1,
     title: s.title,
     summary: fillTokens(summaries[s.id] ?? s.summaryTemplate, draft.tokens),
+    ...(s.key ? { key: s.key } : {}),
     blocks: s.blocks,
   }));
   return {
