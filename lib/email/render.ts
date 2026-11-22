@@ -59,8 +59,11 @@ const once = (ctx: { seen?: Set<string> }, url: string) => {
   return true;
 };
 
-function block(b: Block, ctx: { appUrl: string; planId?: string; seen?: Set<string> } = { appUrl: "" }): string {
+function block(b: Block, ctx: { appUrl: string; planId?: string; seen?: Set<string>; diyTips?: boolean } = { appUrl: "" }): string {
   switch (b.type) {
+    case "tips":
+      // D3b: only when DIY_TIPS_ENABLED is on (the caller passes the flag).
+      return ctx.diyTips ? tipsHtml(b) : "";
     case "help":
       // Official links only: Amazon links never go in email.
     {
@@ -99,13 +102,18 @@ function block(b: Block, ctx: { appUrl: string; planId?: string; seen?: Set<stri
 }
 
 /** The plan email: same structure as on screen. Gear specs are shortened to stay under Gmail's clip limit. */
-export function renderPlanEmail(doc: PlanDocument, meta: EmailMeta & { planUrl: string; pdfAttached: boolean; planId?: string }): { subject: string; html: string; text: string } {
+function tipsHtml(b: Extract<Block, { type: "tips" }>): string {
+  const tips = b.tips.map((t) => `<p style="margin:6px 0 2px;font-size:13px"><strong>${esc(t.situation)}</strong> ${t.steps.map(esc).join(" ")} <a href="${esc(t.source.url)}" style="color:${C.info}">${esc(t.source.label)}</a></p>`).join("");
+  return `<div style="border:1px solid ${C.line};padding:8px 10px;margin:10px 0"><p style="margin:0;font-weight:700">No time to buy? Use what you have</p>${tips}<p style="margin:6px 0 0;font-size:13px;color:${C.danger}"><strong>Don't do this:</strong> ${b.dontDo.map(esc).join(" ")}</p></div>`;
+}
+
+export function renderPlanEmail(doc: PlanDocument, meta: EmailMeta & { planUrl: string; pdfAttached: boolean; planId?: string; diyTips?: boolean }): { subject: string; html: string; text: string } {
   const toc = doc.sections.map((s) => `${s.number}. ${esc(s.title)}`).join(" · ");
   const sections = doc.sections
     .map((s) => {
       const blocks = s.id === "gear" ? s.blocks.map((b) => (b.type === "table" ? { ...b, columns: ["Item", "Look for", "Price"], rows: b.rows.map((r) => [r[0], r[1], r[3]]) } : b)) : s.blocks;
       return `<h2 style="margin:24px 0 4px;font-size:18px;border-top:2px solid ${C.line};padding-top:16px">${s.number}. ${esc(s.title)}</h2><p style="margin:4px 0 8px;font-size:15px;color:${C.ink};background:#fbf3ea;padding:8px 10px;border-radius:4px">${esc(s.summary)}</p>${(() => {
-        const ctx = { appUrl: meta.appUrl, planId: meta.planId, seen: new Set<string>() };
+        const ctx = { appUrl: meta.appUrl, planId: meta.planId, seen: new Set<string>(), diyTips: !!meta.diyTips };
         return blocks.map((b) => block(b, ctx)).join("");
       })()}`;
     })

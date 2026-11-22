@@ -1,5 +1,6 @@
 import { hasHouseholdFilter, hasPersonalFilter, LABELS, type Answers } from "@/lib/answers/schema";
 import { labelKinds } from "./kinds";
+import { DONT_DO, tipsFor, type TipArea } from "@/lib/tips/library";
 import { mixLabel, type ComputedPlan, type GearPick } from "@/lib/rules/engine";
 import type { RuleConstants } from "@/lib/rules/constants";
 import { atLeast } from "@/lib/zip/profile";
@@ -36,6 +37,22 @@ export interface SectionDraft {
   blocks: Block[];
   /** D10: the section card's key number, set by sectionKeys() from engine values only. */
   key?: { value: string; label: string };
+}
+
+/** D3b: a tips box at the end of water, heat, sanitation, light & power, and a compact one in Day 0. */
+function addTips(S: SectionDraft[]) {
+  const where: [string, TipArea, boolean][] = [["water", "water", false], ["heat", "heat", false], ["sanitation", "sanitation", false], ["power", "light_power", false], ["day0", "day0", true]];
+  for (const [id, area, compact] of where) {
+    const s = S.find((x) => x.id === id);
+    const tips = tipsFor(area);
+    if (!s || !tips.length) continue;
+    s.blocks.push({
+      type: "tips",
+      ...(compact ? { compact: true } : {}),
+      tips: tips.map((t) => ({ id: t.id, situation: t.situation, steps: t.steps, source: t.source })),
+      dontDo: compact ? DONT_DO : [...DONT_DO, ...tips.flatMap((t) => t.dontDo)],
+    });
+  }
 }
 
 /** D10: each section's key number for its card, taken from the rules engine (or counted from the plan itself). */
@@ -1175,6 +1192,8 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     blocks: [{ type: "table", columns: ["When", "Task"], rows: maint }],
   });
 
+  // D3b: "No time to buy? Use what you have." boxes (shown only when DIY_TIPS_ENABLED is on).
+  addTips(S);
   addHelp(S, prof);
   // D8: every block gets its kind (Good to know / To do / To have).
   labelKinds(S);

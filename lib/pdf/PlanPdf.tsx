@@ -148,7 +148,7 @@ function BlockView({ b }: { b: Block }) {
   }
 }
 
-export function PlanPdf({ doc }: { doc: PlanDocument }) {
+export function PlanPdf({ doc, diyTips = false }: { doc: PlanDocument; diyTips?: boolean }) {
   return (
     <Document title={doc.title} author={BRAND.name} subject="Emergency preparedness plan">
       <Page size="LETTER" style={s.page} wrap>
@@ -167,7 +167,7 @@ export function PlanPdf({ doc }: { doc: PlanDocument }) {
               return sec.blocks.map((b, i) => (
                 <View key={i}>
                   {labels[i] && <Text style={s.kind}>{KIND_LABEL[labels[i]].toUpperCase()}</Text>}
-                  <BlockView b={b} />
+                  {b.type === "tips" ? diyTips && <TipsPdf b={b} /> : <BlockView b={b} />}
                 </View>
               ));
             })()}
@@ -204,6 +204,21 @@ export async function addPageNumbers(pdf: Uint8Array): Promise<Buffer> {
   return Buffer.from(await out.save());
 }
 
-export async function renderPlanPdf(doc: PlanDocument): Promise<Buffer> {
-  return addPageNumbers(await renderToBuffer(<PlanPdf doc={doc} />));
+/** D3b tips box; rendered only when DIY_TIPS_ENABLED is on (the caller passes it). */
+function TipsPdf({ b }: { b: Extract<Block, { type: "tips" }> }) {
+  return (
+    <View style={s.callout}>
+      <Text style={s.subheading}>No time to buy? Use what you have</Text>
+      {b.tips.map((t) => (
+        <Text key={t.id} style={s.p}>
+          {pdfSafe(`${t.situation} ${t.steps.join(" ")} (${t.source.label}: ${t.source.url})`)}
+        </Text>
+      ))}
+      <Text style={s.p}>{pdfSafe(`Don't do this: ${b.dontDo.join(" ")}`)}</Text>
+    </View>
+  );
+}
+
+export async function renderPlanPdf(doc: PlanDocument, opts: { diyTips?: boolean } = {}): Promise<Buffer> {
+  return addPageNumbers(await renderToBuffer(<PlanPdf doc={doc} diyTips={!!opts.diyTips} />));
 }

@@ -22,10 +22,33 @@ const toneCls = { danger: "border-danger text-danger", warning: "border-warn tex
 type ChooseFn = (group: string, level: "mix" | "essential" | "standard" | "premium") => void;
 
 /** `affiliate`: some Buy links earn a commission, so the inline disclosure shows. */
-type Ctx = { products: ReturnType<typeof productIndex>; href: (itemId: string) => string; affiliate: boolean; budget?: Overview["budget"] };
+type Ctx = { products: ReturnType<typeof productIndex>; href: (itemId: string) => string; affiliate: boolean; budget?: Overview["budget"]; diyTips: boolean };
+
+/** D3b: "No time to buy? Use what you have." Only rendered when DIY_TIPS_ENABLED is on. */
+function TipsBox({ b }: { b: Extract<Block, { type: "tips" }> }) {
+  return (
+    <aside className="my-4 rounded-lg border border-line bg-surface p-4" data-testid="diy-tips">
+      <h4 className="font-semibold">No time to buy? Use what you have</h4>
+      <ul className="mt-2 space-y-2 text-sm">
+        {b.tips.map((t) => (
+          <li key={t.id}>
+            <strong>{t.situation}</strong> {t.steps.join(" ")}{" "}
+            <a href={t.source.url} className="underline" rel="noopener">{t.source.label}</a>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-3 text-sm font-semibold text-[var(--danger)]">Don&apos;t do this</p>
+      <ul className="mt-1 list-disc pl-5 text-sm">
+        {b.dontDo.map((d) => <li key={d}>{d}</li>)}
+      </ul>
+    </aside>
+  );
+}
 
 function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block; planId: string; buyHref?: (itemId: string) => string; sectionId: string; onChoose?: ChooseFn; ctx: Ctx }) {
   switch (b.type) {
+    case "tips":
+      return ctx.diyTips ? <TipsBox b={b} /> : null;
     case "help":
       return <HelpStrip b={b} products={ctx.products} href={ctx.href} />;
     case "levelchoice":
@@ -157,7 +180,10 @@ export function PlanView({
   sync = false,
   onChoose,
   afterDashboard,
+  diyTips = false,
 }: {
+  /** D3b: show "No time to buy? Use what you have" boxes (DIY_TIPS_ENABLED, passed by the server page). */
+  diyTips?: boolean;
   /** Shown right under the dashboard (e.g. email, PDF, change an answer), before the plan chapters. */
   afterDashboard?: React.ReactNode;
   doc: PlanDocument;
@@ -169,7 +195,7 @@ export function PlanView({
   onChoose?: ChooseFn;
 }) {
   const chapters = groupIntoChapters(doc.sections);
-  const ctx: Ctx = { products: productIndex(doc), href: (id) => (buyHref ? buyHref(id) : `/go/${encodeURIComponent(id)}?p=${planId}&src=web`), affiliate: !!doc.affiliateDisclosure, budget: doc.overview?.budget };
+  const ctx: Ctx = { products: productIndex(doc), href: (id) => (buyHref ? buyHref(id) : `/go/${encodeURIComponent(id)}?p=${planId}&src=web`), affiliate: !!doc.affiliateDisclosure, budget: doc.overview?.budget, diyTips };
   return (
     <ChecksProvider planId={planId} initial={checks} sync={sync}>
       <article>
@@ -209,7 +235,7 @@ export function PlanView({
                   {(() => {
                     // The dashboard's shopping list replaces the compact shopping list inside the Priority list on the web
                     // (email and PDF keep it).
-                    const blocks = s.blocks.filter((b) => !(doc.overview && s.id === "priorities" && b.type === "products" && b.compact));
+                    const blocks = s.blocks.filter((b) => !(doc.overview && s.id === "priorities" && b.type === "products" && b.compact) && !(b.type === "tips" && !diyTips));
                     const labels = kindLabelsAt(blocks);
                     return blocks.map((b, i) => (
                       <div key={i}>

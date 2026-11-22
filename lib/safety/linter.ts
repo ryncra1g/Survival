@@ -6,7 +6,7 @@ import type { PlanDocument } from "@/lib/plan/document";
  * a negation ("never", "don't", "not", ...) or an explicit outdoor qualifier.
  */
 export interface Violation {
-  rule: "indoor_combustion" | "backfeed" | "dosing" | "weapons";
+  rule: "indoor_combustion" | "backfeed" | "dosing" | "weapons" | "unsafe_diy";
   text: string;
   clause: string;
 }
@@ -19,6 +19,14 @@ const INDOOR_PLACE = /\b(indoors?|inside|in(?:to)? (?:the|your|a|an) (?:home|hou
 const BACKFEED = /\b(dryer (?:outlet|plug|receptacle)|suicide cord|double[- ]?male|male[- ]to[- ]male|back[- ]?feed\w*|plug (?:the|a|your) generator into (?:a|an|the|your) (?:wall|outlet|receptacle))\b/i;
 
 const DOSING = /\b\d+(?:\.\d+)?\s*(?:mg|mcg|µg|milligrams?|micrograms?|ml|mL|cc|tablets?|pills?|capsules?|units? of insulin|iu)\b|\b(?:take|give|administer)\s+(?:\d+|one|two|three|half)\b(?!\s*(?:minutes?|hours?|days?|gallons?|liters?))|\bdos(?:e|age|ing) (?:of|is|for)\b/i;
+
+/**
+ * D3b: improvised practices that kill people in outages, blocked anywhere in a plan unless the clause says not to:
+ * candle / terracotta-pot heaters; a gas oven or stovetop for heat; running a car in an attached garage;
+ * plugging a generator into a wall outlet (grills and camp stoves indoors are the indoor_combustion rule).
+ */
+const UNSAFE_DIY = /\b(candle|terra ?-?cotta|flower ?-?pot|clay ?-?pot)(?:[- ]pot)? heaters?\b|\bterra ?-?cotta pots?\b[^.]*\bcandles?\b|\bcandles?\b[^.]*\bterra ?-?cotta\b|\b(?:gas )?(?:oven|stove ?top|range|burners?)\b[^.]*\b(?:to|for) (?:heat|warm)\b|\b(?:heat|warm)(?:ing)? (?:the |your |a )?(?:home|house|room|apartment|kitchen)\b[^.]*\b(?:oven|stove ?top)\b|\b(?:run|running|idle|idling|warm(?:ing)? up|start(?:ing)?)\b[^.]*\b(?:car|vehicle|truck|engine)\b[^.]*\b(?:attached )?garage\b|\bplug(?:ging|ged)? (?:a |the |your )?generator (?:in)?to (?:a |an |the |your )?(?:wall|house|home)?\s*(?:outlet|socket|receptacle)s?\b/i;
+const DIY_NEGATION = /\b(never|not|no|don'?t|do not|avoid|instead of)\b/i;
 
 const WEAPONS = /\b(guns?|firearms?|rifles?|shotguns?|pistols?|handguns?|ammo|ammunition|weapons?|tactical|booby[- ]?traps?|body armor|crossbows?|pepper spray|bear spray|knife fighting|shoot(?:ing)? (?:intruders?|looters?))\b/i;
 
@@ -37,6 +45,7 @@ export function lintText(text: string): Violation[] {
     if (BACKFEED.test(clause) && !/\b(never|don'?t|do not|not)\b/i.test(clause)) out.push({ rule: "backfeed", text, clause });
     if (DOSING.test(clause)) out.push({ rule: "dosing", text, clause });
     if (WEAPONS.test(clause)) out.push({ rule: "weapons", text, clause });
+    if (UNSAFE_DIY.test(clause) && !DIY_NEGATION.test(clause)) out.push({ rule: "unsafe_diy", text, clause });
   }
   return out;
 }
@@ -77,6 +86,11 @@ export function documentStrings(doc: PlanDocument): string[] {
           break;
         case "levelchoice":
           s.push(b.caption, ...b.levels.map((l) => l.name));
+          break;
+        case "tips":
+          // Linted whether or not DIY_TIPS_ENABLED is on.
+          for (const t of b.tips) s.push(t.situation, ...t.steps, t.source.label);
+          s.push(...b.dontDo);
           break;
       }
     }

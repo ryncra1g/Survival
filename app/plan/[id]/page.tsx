@@ -61,6 +61,7 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
         planId={plan.id}
         checks={plan.checks ?? {}}
         sync
+        diyTips={flags().diyTips}
         afterDashboard={
           <div className="no-print">
             <div className="mt-5">{emailStatus}</div>

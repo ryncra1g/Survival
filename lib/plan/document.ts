@@ -65,6 +65,14 @@ export const BlockSchema = z.discriminatedUnion("type", [
     text: z.string(),
   }),
   z.object({ kind: Kind.optional(), type: z.literal("subheading"), text: z.string() }),
+  /** D3b: "No time to buy? Use what you have." Shown only when DIY_TIPS_ENABLED is on (renderers check the flag). */
+  z.object({
+    kind: Kind.optional(),
+    type: z.literal("tips"),
+    compact: z.boolean().optional(),
+    tips: z.array(z.object({ id: z.string(), situation: z.string(), steps: z.array(z.string()), source: z.object({ label: z.string(), url: z.string().url() }) })),
+    dontDo: z.array(z.string()),
+  }),
   /** A level chooser for a slot that isn't a single product row (e.g. food: bulk staples vs freeze-dried). */
   z.object({ kind: Kind.optional(), type: z.literal("levelchoice"), group: z.string(), caption: z.string(), levels: z.array(LevelOptionSchema) }),
   /** Gear with optional Buy buttons. Renderers build the tracked link from itemId (/go/<itemId>). */
