@@ -366,3 +366,23 @@ test("site menu (D9): visitor items on a phone, and every page it links to exist
   await page.goto("/sources");
   await expect(page.getByRole("heading", { name: "Sources & safety" })).toBeVisible();
 });
+
+test("D4 places page: the typed address is printed but never sent anywhere", async ({ page }) => {
+  const planId = await quickPlan(page);
+  await page.goto(`/plan/${planId}#evacuation`);
+  await expect(page.locator("details#evacuation")).toContainText("Official evacuation orders override this plan.");
+  await page.locator("details#evacuation").getByRole("link", { name: /Add your backup destination/ }).click();
+  await expect(page).toHaveURL(new RegExp(`/plan/${planId}/places$`));
+  const SENTINEL = "742 Evergreen Terrace Testville";
+  const sent: string[] = [];
+  page.on("request", (r) => sent.push(r.url() + " " + (r.postData() ?? "")));
+  await page.getByLabel("Address").fill(SENTINEL);
+  await page.getByLabel("Place").fill("Aunt test house");
+  await expect(page.getByText("This address isn't saved.")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Directions (Apple Maps)" })).toHaveAttribute("href", /maps\.apple\.com/);
+  await page.emulateMedia({ media: "print" });
+  await expect(page.getByTestId("places-print")).toContainText(SENTINEL);
+  await page.emulateMedia({ media: "screen" });
+  await page.waitForTimeout(500);
+  expect(sent.some((s) => s.includes("Evergreen") || s.includes("742%20Evergreen"))).toBe(false);
+});

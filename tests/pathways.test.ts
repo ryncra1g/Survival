@@ -170,7 +170,10 @@ describe("pairwise: what people have (or don't) steers products, skills and cons
       expect(section(r, "pets"), why).toBe(a.pets.length > 0);
       expect(section(r, "kids"), why).toBe(a.childrenAges.length > 0);
       const drive = isDrive(a.evacuation.destination) && !!a.evacuation.distanceMiles;
-      expect(section(r, "evacuation"), why).toBe(drive);
+      // D4: every plan has "When you must leave", with the override line and the backup-destination step
+      expect(section(r, "evacuation"), why).toBe(true);
+      expect(t, why).toContain("Official evacuation orders override this plan.");
+      expect(t, why).toContain("Add your backup destination");
       if (!a.pets.length) expect(offered(r, "pet-kit"), why).toBe(false);
       if (!a.childrenAges.length) expect(offered(r, "morale-kit"), why).toBe(false);
       const slot = (g: string) => r.computed.budget.slots.some((x) => x.group === g);

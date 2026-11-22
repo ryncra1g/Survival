@@ -1054,7 +1054,9 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     });
   }
 
-  // 15. Evacuation -----------------------------------------------------------------
+  // 15. When you must leave (D4) -----------------------------------------------------
+  const ORDERS_OVERRIDE: Block = { type: "callout", tone: "danger", title: "Official evacuation orders override this plan", text: "Official evacuation orders override this plan. If officials tell you to leave, go, using the routes they give." };
+  const destinationTodo: Step = { id: "evac-destination", text: "Add your backup destination: name, address and how to get there, printed for each go-bag.", link: HOWTO.evacuation };
   if (cp.evacuation) {
     const ev = cp.evacuation;
     const rawLand = ev.locationType === "raw_land";
@@ -1082,12 +1084,14 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         ];
     S.push({
       id: "evacuation",
-      title: "Evacuation / bug-out plan",
+      title: "When you must leave",
       summaryTemplate: ev.vehicles
         ? "Your fallback is {{evac.location}}, about {{evac.distance}} miles away. Leave early on clear triggers, keep each tank above {{evac.reserveGal}} gallons, and keep go-bags ready."
         : "Your fallback is {{evac.location}}, about {{evac.distance}} miles away. With no car, line up your ride now and leave earlier than drivers would.",
       facts: rawLand ? ["The raw land has no shelter or utilities, so everything has to come with them"] : [],
       blocks: [
+        ORDERS_OVERRIDE,
+        check("evac", [destinationTodo]),
         {
           type: "ifthen",
           rows: [
@@ -1117,6 +1121,33 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         { type: "subheading", text: ev.vehicles ? "Go-bag (one per person)" : "Go-bag (one per person; pack light enough to carry and walk with)" },
         check("gobag", [hasPersonalFilter(a) ? { text: "Water (1 L) and your straw or bottle filter", link: HOWTO.waterSafety } : "Water (1 L) and filter bottle", "3 days of snacks", "Change of clothes, rain layer, hat, gloves", "Headlamp + batteries", "Medications (7-day supply), glasses", "Copies of ID and medication list", "Cash in small bills", "Whistle, mask, hand sanitizer", ...(h.children ? ["Child ID card and comfort item"] : []), ...(cp.pets ? ["Pet food, leash, records"] : [])]),
         ...(rawLand ? [{ type: "callout" as const, tone: "danger" as const, title: "Tents and fumes", text: "Never use a heater, stove, grill or generator inside a tent or vehicle. Cook and run generators in the open, away from where people sleep." }] : []),
+      ],
+    });
+  } else {
+    // D4: every plan has "When you must leave", even without a place to drive to.
+    const dest = a.evacuation.destination;
+    S.push({
+      id: "evacuation",
+      title: "When you must leave",
+      summaryTemplate:
+        dest === "public_shelter"
+          ? "If you have to leave, your plan is a public shelter. Know where the nearest one is and how you'd get there, and leave when officials say so."
+          : "You haven't picked a backup destination yet. Choose one now, write it down, and leave when officials say so.",
+      facts: [],
+      blocks: [
+        ORDERS_OVERRIDE,
+        check("evac", [destinationTodo]),
+        {
+          type: "ifthen",
+          rows: [
+            { if: "Mandatory evacuation order for your zone", then: "Leave immediately." },
+            ...(h.elderlyOrMobility ? [{ if: "A voluntary evacuation is announced", then: "Leave now with anyone who has mobility or medical needs — they need extra time." }] : []),
+            { if: "Home damaged or unsafe (gas smell, structural damage, flooding)", then: "Leave now; call 911/utility from a safe place." },
+          ],
+        },
+        ...(dest === "public_shelter" ? [{ type: "paragraph" as const, text: `Shelters open when officials announce them: check your county's alerts and local news.${a.pets.length ? " Most public shelters allow only service animals, so plan where your pets would go." : ""}` }] : []),
+        { type: "subheading", text: "Go-bag (one per person; pack light enough to carry)" },
+        check("gobag", [hasPersonalFilter(a) ? { text: "Water (1 L) and your straw or bottle filter", link: HOWTO.waterSafety } : "Water (1 L) and filter bottle", "3 days of snacks", "Change of clothes, rain layer, hat, gloves", "Headlamp + batteries", "Medications (7-day supply), glasses", "Copies of ID and medication list", "Cash in small bills", "Whistle, mask, hand sanitizer", ...(h.children ? ["Child ID card and comfort item"] : []), ...(cp.pets ? ["Pet food, leash, records"] : [])]),
       ],
     });
   }
