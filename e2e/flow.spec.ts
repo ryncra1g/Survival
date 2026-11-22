@@ -157,8 +157,21 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   }
   expect((await request.get(planUrl)).status()).toBe(404); // another browser can't see it
 
+  // Share menu: PDF, fridge checklist, print, email
+  const share = page.getByTestId("share-menu");
+  await share.locator("summary").click();
+  await expect(share.getByRole("link", { name: "Download PDF" })).toHaveAttribute("href", /\/pdf$/);
+  await expect(share.getByRole("link", { name: "Fridge checklist" })).toHaveAttribute("href", /\/checklist$/);
+  await expect(share.getByRole("button", { name: "Print" })).toBeVisible();
+  // One slim save bar instead of the big email box; it says where the plan is saved.
+  await expect(page.getByTestId("save-bar")).toHaveCount(1);
+  await expect(page.getByTestId("save-bar")).toContainText("Saved on this device for 30 days. Confirm your email to keep it and use it on any device.");
+  await expect(page.locator("form", { has: page.getByRole("heading", { name: "Email me my plan" }) })).toHaveCount(1);
+  await share.getByRole("link", { name: "Email me my plan" }).click();
+
   // Optional email: typo check, then confirm flow
   const box = page.locator("form", { has: page.getByRole("heading", { name: "Email me my plan" }) }).first();
+  await expect(box).toBeVisible();
   await box.getByPlaceholder("you@example.com").fill("family@gmial.com");
   await box.getByRole("button", { name: "Email my plan" }).click();
   await expect(box.getByText("Did you mean")).toBeVisible();

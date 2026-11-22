@@ -6,7 +6,7 @@ const ChecksCtx = createContext<Ctx | null>(null);
 
 /**
  * One shared tick store per plan. Ticks are saved in this browser and, when `sync` is on,
- * to the plan itself (PUT /api/plans/<id>/checks) so they follow the person to any device.
+ * to the plan itself (PUT /api/plans/<id>/checks) so they last 30 days in this browser, and follow a confirmed account to any device.
  */
 export function ChecksProvider({ planId, initial = {}, sync = false, children }: { planId: string; initial?: Record<string, boolean>; sync?: boolean; children: React.ReactNode }) {
   const key = `rp_checks_${planId}`;

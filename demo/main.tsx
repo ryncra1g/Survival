@@ -8,7 +8,7 @@ import { Subtitle } from "@/components/Subtitle";
 import { createRoot } from "react-dom/client";
 import { Questionnaire } from "@/components/Questionnaire";
 import { PlanView } from "@/components/PlanView";
-import { EmailMyPlan } from "@/components/EmailMyPlan";
+import { SaveBar } from "@/components/SaveBar";
 import { StartButton } from "@/components/StartButton";
 import { Landing } from "@/components/Landing";
 import type { Answers } from "@/lib/answers/schema";
@@ -79,7 +79,7 @@ function App() {
             <h1 className="text-3xl font-bold">{view.doc.title}</h1>
             <Subtitle text={view.doc.subtitle} />
             <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="#about" className="underline">Sources &amp; disclaimers</a></p>
-            {!view.sample && <div className="mt-5"><EmailMyPlan planId="demo" onSubmit={() => {}} /></div>}
+            {!view.sample && <div className="mt-5"><SaveBar planId="demo" onSubmit={() => {}} /></div>}
             <PlanView
               doc={view.doc}
               planId={view.sample ? "sample" : "demo"}

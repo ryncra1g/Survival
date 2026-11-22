@@ -6,7 +6,7 @@ import { store } from "@/lib/server/store";
 
 const Body = z.object({ checks: z.record(z.string().regex(/^[a-z0-9-]{1,40}$/), z.boolean()).refine((c) => Object.keys(c).length <= 300) });
 
-/** Save checklist ticks on the plan so they follow the person to any device. */
+/** Save checklist ticks on the plan for 30 days in this browser, or on any device once the email is confirmed. */
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!sameOrigin(req)) return err("Bad origin", 403);
   const { id } = await params;
