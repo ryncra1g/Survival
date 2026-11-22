@@ -33,7 +33,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
         <div className="my-4">
           {b.caption && <h4 className="mt-5 mb-2 font-semibold">{b.caption}</h4>}
           {b.compact && <p className="text-sm text-muted -mt-1 mb-2">What to look for is in <a href="#gear" className="underline">Recommended gear</a>.</p>}
-          {ctx.affiliate && b.items.some((i) => i.buyable) && <p className="text-sm text-ink mb-2" data-testid="affiliate-disclosure"><strong>Affiliate links:</strong> {BRAND.name} may earn a commission if you buy through these Buy links, at no extra cost to you. <a href="#about" className="underline">Details</a></p>}
+          {ctx.affiliate && b.items.some((i) => i.buyable) && <p className="text-sm text-ink mb-2" data-testid="affiliate-disclosure"><strong>Affiliate links:</strong> {BRAND.name} may earn a commission if you buy through these Buy links, at no extra cost to you. <a href="/sources#affiliate" className="underline">Details</a></p>}
           <ul className="divide-y divide-line border-y border-line">
             {b.items.map((i) => (
               <li key={i.itemId} className={`${b.compact ? "py-2 items-center" : "py-3 items-start"} flex gap-3`}>
@@ -205,14 +205,10 @@ export function PlanView({
             ))}
           </section>
         ))}
-        <section id="about" className="card p-4 sm:p-6 my-4 scroll-mt-24">
-          <h2 className="text-lg font-bold">Sources &amp; disclaimers</h2>
-          <p className="mt-2 text-sm text-muted">{doc.disclaimer}</p>
-          {doc.affiliateDisclosure && <p className="mt-2 text-sm text-muted"><strong>Affiliate disclosure:</strong> {doc.affiliateDisclosure}</p>}
-          <h3 className="mt-4 font-semibold">Sources</h3>
-          <ul className="mt-2 list-disc pl-5 space-y-1 text-sm">
-            {doc.sources.map((src) => <li key={src.url}><a href={src.url} className="underline" rel="noopener">{src.name}</a></li>)}
-          </ul>
+        <section id="about" className="card p-4 my-4 scroll-mt-24 text-sm text-muted">
+          <p>{doc.disclaimer}</p>
+          {doc.affiliateDisclosure && <p className="mt-2"><strong>Affiliate disclosure:</strong> {doc.affiliateDisclosure}</p>}
+          <p className="mt-2"><a href="/sources" className="underline">Sources &amp; safety</a>: where this guidance comes from.</p>
         </section>
       </article>
     </ChecksProvider>

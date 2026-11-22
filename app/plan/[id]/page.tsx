@@ -45,7 +45,7 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
     <div className="mx-auto max-w-3xl px-4 py-6">
       <h1 className="text-3xl font-bold">{doc.title}</h1>
       <Subtitle text={doc.subtitle} />
-      <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="#about" className="underline">Sources &amp; disclaimers</a></p>
+      <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="/sources" className="underline">Sources &amp; safety</a></p>
 
       {/* Dashboard first (what to do next); then ways to keep the plan; then the plan itself. */}
       <PlanView
