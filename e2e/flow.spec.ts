@@ -85,10 +85,19 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(page.getByText("Please tick the box to agree to the Terms of Use")).toBeVisible();
   await expect(page).toHaveURL(/\/q\//);
   await page.getByLabel(/general guidance, not professional advice/).check();
+  const qid = page.url().split("/q/")[1];
   await next(page);
 
   await expect(page).toHaveURL(/\/plan\//, { timeout: 60_000 });
   const planUrl = page.url();
+  // D11: the build streams its three real stages in order, then the plan id.
+  const streamed = await page.request.post(`/api/questionnaire/${qid}/generate`, {
+    headers: { Accept: "application/x-ndjson", Origin: new URL(planUrl).origin },
+    data: { consent: { terms: true } },
+  });
+  expect(streamed.headers()["content-type"]).toContain("application/x-ndjson");
+  const lines = (await streamed.text()).trim().split("\n").map((l) => JSON.parse(l));
+  expect(lines.map((l) => l.stage ?? (l.planId ? "plan" : l.error))).toEqual(["hazards", "quantities", "steps", "plan"]);
   expect(Date.now() - started).toBeLessThan(5 * 60_000);
   expect(planUrl).not.toMatch(/11746|zip|answers/);
   // Dashboard first: this week's progress, Next up (with why + Buy), key numbers, shopping list

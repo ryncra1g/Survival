@@ -10,3 +10,4 @@ export const TEST_CONSTANTS = { ...DEFAULT_CONSTANTS, affiliate: { amazonTag: "t
 export async function buildPlan(answers: unknown = SAMPLE_HOUSEHOLD, constants = TEST_CONSTANTS) {
   return generatePlan(answers, constants, SEED_CATALOG, { useLlm: false, now: TEST_NOW });
 }
+export { SAMPLE_HOUSEHOLD } from "../fixtures/households";

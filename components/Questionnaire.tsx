@@ -7,6 +7,8 @@ import { computeFood, computeWater, household } from "@/lib/rules/engine";
 import { atLeast, lookupZip, type Level, type ZipProfile } from "@/lib/zip/profile";
 import { withoutConsentTicks, checkConsent, healthConsentMessage, needsHealthConsent } from "@/lib/legal";
 import { BRAND } from "@/lib/brand";
+import { BuildProgress } from "./BuildProgress";
+import { BUILD_STAGES, parseStreamLines, type BuildStage, type OnStage } from "@/lib/plan/stages";
 
 type Draft = Answers & { _step?: number; _screen?: string; _terms?: boolean; _health?: boolean };
 
@@ -405,7 +407,6 @@ const SCREENS: Screen[] = [
   },
 ];
 
-const LOADING_STEPS = ["Checking your area's hazards", "Calculating water and food", "Running the fuel math", "Fitting gear to your budget", "Writing your plan"];
 
 /** Numbers from the rules engine shown on the email screen, so people see what they're getting. */
 function Teaser({ a }: { a: Answers }) {
@@ -436,7 +437,7 @@ function Teaser({ a }: { a: Answers }) {
 }
 
 /** `onGenerate` replaces the server round-trip (standalone demo build): the caller builds the plan. */
-export function Questionnaire({ id, initial, onGenerate }: { id: string; initial: Record<string, unknown>; onGenerate?: (answers: Answers) => Promise<void> }) {
+export function Questionnaire({ id, initial, onGenerate }: { id: string; initial: Record<string, unknown>; onGenerate?: (answers: Answers, onStage: OnStage) => Promise<void> }) {
   const router = useRouter();
   const [a, setA] = useState<Draft>(() => ({ ...DEFAULT_ANSWERS, ...(initial as Partial<Draft>) }) as Draft);
   const visible = useMemo(() => SCREENS.filter((s) => !s.show || s.show(a)), [a]);
@@ -448,7 +449,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
   });
   const [error, setError] = useState("");
   const [generating, setGenerating] = useState(false);
-  const [loadingStep, setLoadingStep] = useState(0);
+  const [stagesDone, setStagesDone] = useState<BuildStage[]>([]);
   const heading = useRef<HTMLHeadingElement>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -496,17 +497,16 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
     const consentError = checkConsent(parsed.data, consent);
     if (consentError) return setError(consentError);
     if (saveTimer.current) clearTimeout(saveTimer.current);
+    // A rebuild from "Change an answer" keeps the inline spinner; only the first build shows the stages card (D11).
     setGenerating(true);
-    const timer = setInterval(() => setLoadingStep((s) => Math.min(s + 1, LOADING_STEPS.length - 1)), 1200);
+    setStagesDone([]);
+    const onStage: OnStage = (st) => setStagesDone((d) => (d.includes(st) ? d : [...d, st]));
     try {
       if (onGenerate) {
-        await new Promise((r) => setTimeout(r, 1500));
-        await onGenerate(parsed.data);
+        await onGenerate(parsed.data, onStage);
         return;
       }
-      const r = await fetch(`/api/questionnaire/${id}/generate`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ answers: parsed.data, consent }) });
-      const j = (await r.json()) as { planId?: string; error?: string };
-      if (!r.ok || !j.planId) throw new Error(j.error ?? "Couldn't build the plan.");
+      const j = await requestPlan(id, { answers: parsed.data, consent }, onStage);
       try {
         localStorage.removeItem(`rp_q_${id}`);
       } catch {}
@@ -514,8 +514,6 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
     } catch (e) {
       setGenerating(false);
       setError((e as Error).message);
-    } finally {
-      clearInterval(timer);
     }
   }
 
@@ -528,16 +526,12 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
     await build();
   }
 
+  if (generating && !editOne) return <BuildProgress done={stagesDone} />;
   if (generating) {
     return (
       <div className="mx-auto max-w-md px-4 py-16 text-center" role="status" aria-live="polite">
-        <div className="mx-auto size-12 rounded-full border-4 border-line border-t-accent animate-spin motion-reduce:animate-none" aria-hidden />
-        <h1 className="mt-6 text-xl font-bold">Building your plan…</h1>
-        <ul className="mt-6 space-y-2 text-left inline-block">
-          {LOADING_STEPS.map((s, i) => (
-            <li key={s} className={i <= loadingStep ? "text-ink" : "text-muted"}>{i < loadingStep ? "✓" : i === loadingStep ? "•" : "○"} {s}</li>
-          ))}
-        </ul>
+        <div className="mx-auto size-10 rounded-full border-4 border-line border-t-accent animate-spin motion-reduce:animate-none" aria-hidden />
+        <p className="mt-4 font-semibold">Updating your plan…</p>
       </div>
     );
   }
@@ -579,4 +573,42 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
       {editOne && !last && <button type="button" className="text-sm underline text-muted" onClick={next}>Review the next question instead</button>}
     </div>
   );
+}
+
+/**
+ * POST the answers and follow the build stages (D11). The server streams one JSON line per finished stage,
+ * then the plan id. If the stream is buffered or the server answers with plain JSON, every stage is marked
+ * done when the final answer arrives, which is still true.
+ */
+async function requestPlan(id: string, body: unknown, onStage: OnStage): Promise<{ planId: string }> {
+  const r = await fetch(`/api/questionnaire/${id}/generate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/x-ndjson, application/json" },
+    body: JSON.stringify(body),
+  });
+  const type = r.headers.get("content-type") ?? "";
+  if (!type.includes("ndjson") || !r.body) {
+    const j = (await r.json()) as { planId?: string; error?: string };
+    if (!r.ok || !j.planId) throw new Error(j.error ?? "Couldn't build the plan.");
+    for (const s of BUILD_STAGES) onStage(s.id);
+    return { planId: j.planId };
+  }
+  const reader = r.body.getReader();
+  const dec = new TextDecoder();
+  let buf = "";
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (value) buf += dec.decode(value, { stream: true });
+    const { lines, rest } = parseStreamLines(done ? buf + "\n" : buf);
+    buf = rest;
+    for (const line of lines) {
+      if ("stage" in line) onStage(line.stage);
+      else if ("error" in line) throw new Error(line.error);
+      else if ("planId" in line) {
+        for (const s of BUILD_STAGES) onStage(s.id);
+        return { planId: line.planId };
+      }
+    }
+    if (done) throw new Error("Couldn't build the plan. Try again.");
+  }
 }

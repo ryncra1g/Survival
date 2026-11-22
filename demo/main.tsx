@@ -21,6 +21,8 @@ import { lintDocument } from "@/lib/safety/linter";
 import { buyUrl } from "@/lib/affiliate";
 import { SAMPLE_HOUSEHOLD } from "@/lib/plan/sample";
 import { BRAND } from "@/lib/brand";
+import type { OnStage } from "@/lib/plan/stages";
+import { lookupZip } from "@/lib/zip/profile";
 
 // The demo shows Buy buttons as they'd appear with an Associates tag, but links go to a plain Amazon search.
 const DEMO_CONSTANTS = { ...DEFAULT_CONSTANTS, affiliate: { amazonTag: "demo" } };
@@ -28,6 +30,23 @@ const demoBuyHref = (itemId: string) => {
   const item = SEED_CATALOG.find((i) => i.id === itemId);
   return (item && buyUrl(item, "demo")?.replace(/&tag=demo$/, "")) || "#";
 };
+
+/** D11 in the demo: the same three stages, each reported when its work is done (one frame to paint between). */
+async function makePlanStaged(a: Answers, onStage: OnStage): Promise<PlanDocument> {
+  const frame = () => new Promise((r) => requestAnimationFrame(() => r(null)));
+  lookupZip(a.zip);
+  await onStage("hazards");
+  await frame();
+  const cp = computePlan(a, DEMO_CONSTANTS, SEED_CATALOG, new Date());
+  await onStage("quantities");
+  await frame();
+  const draft = buildDraft(cp, DEMO_CONSTANTS);
+  const doc = assembleDocument(cp, draft, Object.fromEntries(draft.sections.map((s) => [s.id, s.summaryTemplate])), "template");
+  if (lintDocument(doc).length) throw new Error("Safety check failed");
+  await onStage("steps");
+  await frame();
+  return doc;
+}
 
 function makePlan(a: Answers): PlanDocument {
   const cp = computePlan(a, DEMO_CONSTANTS, SEED_CATALOG, new Date());
@@ -68,7 +87,7 @@ function App() {
       <main id="main">
         {view.kind === "home" && <Home onStart={start} onSample={() => setView({ kind: "plan", doc: makePlan(SAMPLE_HOUSEHOLD), sample: true, answers: SAMPLE_HOUSEHOLD })} />}
         {view.kind === "build" && (
-          <Questionnaire key={view.key} id="demo" initial={{}} onGenerate={async (a) => setView({ kind: "plan", doc: makePlan(a), sample: false, answers: a })} />
+          <Questionnaire key={view.key} id="demo" initial={{}} onGenerate={async (a, onStage) => setView({ kind: "plan", doc: await makePlanStaged(a, onStage), sample: false, answers: a })} />
         )}
         {view.kind === "plan" && (
           <div className="mx-auto max-w-3xl px-4 py-6">
