@@ -137,3 +137,20 @@ describe("accounts track is off by default", () => {
     process.env.ACCOUNTS_ENABLED = "true";
   });
 });
+
+describe("D2 tiers: the 30-day cleanup", () => {
+  it("removes anonymous plans older than 30 days, never an account's plans", async () => {
+    const { fileStore } = await import("@/lib/server/store/file");
+    const u = await fileStore.createUser({ email: "c@example.com", consent_at: new Date().toISOString(), double_opt_in_at: new Date().toISOString(), unsubscribed_at: null, followups_opt_in: false });
+    const kept = await fileStore.createQuestionnaire({ user_id: u.id, session_nonce: "n1", answers: {}, complete: true, version: 2 });
+    const old = await fileStore.createQuestionnaire({ user_id: null, session_nonce: "n2", answers: {}, complete: true, version: 2 });
+    // Age both by 31 days.
+    const file = path.join(process.env.READYPLAN_DATA_DIR!, "db.json");
+    const db = JSON.parse(fs.readFileSync(file, "utf8"));
+    for (const q of db.questionnaires) if (q.id === kept.id || q.id === old.id) q.updated_at = new Date(Date.now() - 31 * 86_400_000).toISOString();
+    fs.writeFileSync(file, JSON.stringify(db));
+    await fileStore.deleteStaleAnonQuestionnaires(30);
+    expect(await fileStore.getQuestionnaire(old.id)).toBeNull();
+    expect(await fileStore.getQuestionnaire(kept.id)).not.toBeNull();
+  });
+});

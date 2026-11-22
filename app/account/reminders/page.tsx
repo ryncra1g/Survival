@@ -5,6 +5,9 @@ import type { ComputedPlan } from "@/lib/rules/engine";
 import { accountPageUser } from "@/lib/server/accountPage";
 import { store } from "@/lib/server/store";
 
+/** Read ACCOUNTS_ENABLED and the session per request (never prerendered at build time). */
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = { title: "Reminders", robots: { index: false } };
 
 /** D12 (accounts track): opt-in email reminders, per maintenance item, from the newest plan's schedule. */

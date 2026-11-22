@@ -4,6 +4,9 @@ import type { PlanDocument } from "@/lib/plan/document";
 import { accountPageUser } from "@/lib/server/accountPage";
 import { store } from "@/lib/server/store";
 
+/** Read ACCOUNTS_ENABLED and the session per request (never prerendered at build time). */
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = { title: "My plans", robots: { index: false } };
 
 /** D2 (accounts track): a confirmed account keeps every plan, permanently, on any device. */
