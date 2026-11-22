@@ -17,13 +17,13 @@ Entry types: **Owner request** (Ryan asked for it), **Assistant recommendation**
 | ID | Item | Priority | Status |
 | --- | --- | --- | --- |
 | **DB-03** | **Dashboard with tabs, account / settings menu and an inventory page to come back to** | **High** | **Open (new)**; **Decided (D2, D9, D10 (tabs Overview / Inventory / Report in Batch D))** |
-| LP-01 | Top-right profile / product menu | High | Open (folded into DB-03); **Decided (D9)** |
+| LP-01 | Top-right profile / product menu | High | Open (folded into DB-03); **Decided (D9)** **Built (Batch A, claude/launch-a-shell).** |
 | LP-02 | Remove the eyebrow line above the headline | Medium | **Done** (branch `claude/headline-copy`) |
 | LP-03 | New headline: "Get what you need. Know what to do." | High | **Done as working copy** (branch `claude/headline-copy`) |
 | LP-04 | Short supporting line | High | **Done as working copy** (branch `claude/headline-copy`) |
-| LP-05 | Sticky sample-plan tabs; visual discovery-style cards | High | Partly done: tabs are one sticky row (PR #5). Card grid open; **Decided (D10)** |
-| LP-06 | Redesign "What's in your plan" | High | Open; **Decided (D10)** |
-| LP-07 | Loading screen and animation | Medium | Open; **Decided (D11)** |
+| LP-05 | Sticky sample-plan tabs; visual discovery-style cards | High | Partly done: tabs are one sticky row (PR #5). Card grid open; **Decided (D10)** **Front page built (Batch A); plan card grid in Batch C.** |
+| LP-06 | Redesign "What's in your plan" | High | Open; **Decided (D10)** **Built (Batch A).** |
+| LP-07 | Loading screen and animation | Medium | Open; **Decided (D11)** **Built (Batch A).** |
 | DB-01 | Three-stage readiness journey | Product direction | Partly started: dashboard home (PR #5). Scope decision needed; **Decided (D1, D2 (Later: Days Ready score, Tasks tab))** |
 | DB-02 | Inventory and shopping status tied to the plan | Medium | Partly done: "I have this" ticks remove Buy buttons and cut the total (PR #5). Purchased / low / expiry open; **Decided (D2 (Batch D inventory))** |
 | AI-01 | Admin-managed readiness assistant | Later phase | Explore; **Decided (D13: not now; count Copy-for-AI clicks. Stays Later)** |
@@ -33,8 +33,8 @@ Entry types: **Owner request** (Ryan asked for it), **Assistant recommendation**
 | EV-02 | Printable map to saved destinations | Medium | Open; **Decided (D4)** |
 | PL-01 | Supplies tagged to their plan sections | High | **Done**: "What you need" strip in each section (merged with PR #2) |
 | PL-02 | Separate guidance, actions and pack items | High | Open (storage tips became actions on `claude/headline-copy`); **Decided (D8)** |
-| PL-03 | Smaller Sources & disclaimers card | Medium | Partly done: moved to the bottom earlier. Menu placement open (DB-03); **Decided (D9)** |
-| PL-04 | Share / Download / Print menu | Medium | Open (PR #5 groups them under the dashboard; a menu is still open); **Decided (D9)** |
+| PL-03 | Smaller Sources & disclaimers card | Medium | Partly done: moved to the bottom earlier. Menu placement open (DB-03); **Decided (D9)** **Built (Batch A: /sources).** |
+| PL-04 | Share / Download / Print menu | Medium | Open (PR #5 groups them under the dashboard; a menu is still open); **Decided (D9)** **Built (Batch A: Share menu).** |
 | GEAR-01 | Full catalog regardless of starting budget | Medium | Partly done: every slot can switch Essential / Standard / Premium. "See all options" and "Revisit budget" open; **Decided (D3)** |
 | MT-01 | Exportable maintenance calendar and reminders | Medium | Open; **Decided (D12)** |
 | FD-01 | Food review and ration-kit choices | High | Open; **Decided (D7)** |
