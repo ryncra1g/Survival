@@ -18,7 +18,10 @@ export interface Session {
   scope: "anon" | "draft" | "full";
   exp: number;
 }
-/** The only shape a session cookie may have: these four fields with these types, nothing else. */
+/**
+ * The shape a session cookie must have: these four fields with these types. Unknown fields are stripped, not
+ * rejected, so a release that adds a field can be rolled back (or run beside an older one) without signing people out.
+ */
 const SessionSchema = z
   .object({
     uid: z.string().max(64),
@@ -26,7 +29,7 @@ const SessionSchema = z
     scope: z.enum(["anon", "draft", "full"]),
     exp: z.number().int().positive(),
   })
-  .strict();
+  .strip();
 const NAME = "rp_session";
 const DAYS = { anon: 30, draft: 30, full: 30 };
 

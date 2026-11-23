@@ -40,11 +40,22 @@ describe("decodeSession", () => {
       JSON.stringify({ uid: "u1", nonce: "", scope: "full", exp: later() }), // empty nonce
       JSON.stringify({ uid: "u1", nonce: "n1", scope: "full", exp: String(later()) }), // exp as string
       JSON.stringify({ uid: "u1", nonce: "n1", scope: "full" }), // missing exp
-      JSON.stringify({ uid: "u1", nonce: "n1", scope: "full", exp: later(), admin: true }), // extra field
       JSON.stringify({ uid: "u1", nonce: "n1", scope: "full", exp: Date.now() - 1000 }), // expired
     ];
     for (const b of bad) expect(() => decodeSession(signed(b)), b).not.toThrow();
     for (const b of bad) expect(decodeSession(signed(b)), b).toBeNull();
+  });
+
+  it("accepts a cookie with extra fields and drops them", () => {
+    const base = { uid: "u1", nonce: "n1", scope: "full" as const, exp: later() };
+    const s = decodeSession(signed(JSON.stringify({ ...base, admin: true, v: 2, createdAt: "2026-11-23" })));
+    expect(s).toEqual(base);
+    expect(s).not.toHaveProperty("admin");
+    expect(s).not.toHaveProperty("v");
+    // Extra fields don't excuse a missing or wrong-type expected field.
+    expect(decodeSession(signed(JSON.stringify({ uid: "u1", nonce: "n1", exp: later(), admin: true })))).toBeNull();
+    expect(decodeSession(signed(JSON.stringify({ ...base, scope: "admin", admin: true })))).toBeNull();
+    expect(decodeSession(signed(JSON.stringify({ ...base, exp: "soon", extra: 1 })))).toBeNull();
   });
 
   it("treats garbage cookie strings as signed out", () => {
