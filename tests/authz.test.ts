@@ -102,6 +102,52 @@ describe("D9: plan data (inventory, checks, calendar, Copy for AI)", () => {
   });
 });
 
+describe("security review Low 6: plan ids must have the exact generated format", () => {
+  const BAD = [
+    "",
+    "not-a-plan",
+    "------------------------------------", // 36 dashes passed the old loose check
+    "00000000-0000-0000-0000-000000000000", // not version 4
+    "../../etc/passwd",
+  ];
+  it("isId accepts generated ids only", async () => {
+    const { isId } = await import("@/lib/ids");
+    const { newId } = await import("@/lib/server/crypto");
+    for (let i = 0; i < 50; i++) expect(isId(newId())).toBe(true);
+    expect(isId(ids.planA)).toBe(true);
+    for (const b of [...BAD, ids.planA.toUpperCase(), `${ids.planA}x`, ` ${ids.planA}`, `${ids.planA}\n`, null, undefined, 42]) expect(isId(b), String(b)).toBe(false);
+  });
+  it("every plan route answers 404 to a bad id, before any store lookup", async () => {
+    const { fileStore } = await import("@/lib/server/store/file");
+    const extra = {
+      pdf: await import("@/app/api/plans/[id]/pdf/route"),
+      checklist: await import("@/app/api/plans/[id]/checklist/route"),
+      choose: await import("@/app/api/plans/[id]/choose/route"),
+      edit: await import("@/app/api/plans/[id]/edit/route"),
+      claim: await import("@/app/api/plans/[id]/claim/route"),
+    } as unknown as Record<string, Record<string, Handler>>;
+    const routes: [Record<string, Handler>, string][] = [
+      [R.inventory, "GET"], [R.inventory, "PUT"], [R.checks, "PUT"], [R.aiCopy, "POST"], [R.calendar, "GET"],
+      [extra.pdf, "GET"], [extra.checklist, "GET"], [extra.choose, "POST"], [extra.edit, "POST"], [extra.claim, "POST"],
+    ];
+    const spies = [vi.spyOn(fileStore, "getPlan"), vi.spyOn(fileStore, "getQuestionnaire"), vi.spyOn(fileStore, "rateLimit")];
+    ip = "203.0.113.60";
+    as(A()); // even the owner's full session
+    try {
+      for (const bad of [...BAD, ids.planA.toUpperCase()])
+        for (const [r, m] of routes) {
+          const res = await r[m](req(m, "/x", m === "GET" ? undefined : { email: "a@example.com" }), { params: Promise.resolve({ id: bad }) });
+          expect(res.status, `${m} ${bad}`).toBe(404);
+        }
+      for (const s of spies) expect(s).not.toHaveBeenCalled();
+    } finally {
+      for (const s of spies) s.mockRestore();
+    }
+    // The real id still works.
+    expect((await call("calendar", "GET", "/x", ids.planA)).status).toBe(200);
+  });
+});
+
 describe("review 3: Copy for AI is rate-limited and counted once per plan per day", () => {
   it("records one ai_copy event per plan per day, whatever the clicks", async () => {
     const { fileStore } = await import("@/lib/server/store/file");

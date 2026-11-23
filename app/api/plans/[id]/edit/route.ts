@@ -1,5 +1,6 @@
 import { withoutConsentTicks } from "@/lib/legal";
 import { NextResponse } from "next/server";
+import { isId } from "@/lib/ids";
 import { loadPlanFor } from "@/lib/server/access";
 import { env } from "@/lib/server/env";
 import { sameOrigin } from "@/lib/server/http";
@@ -15,6 +16,7 @@ const EDIT_SCREENS = ["location", "household", "pets", "medical", "home", "heat"
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!sameOrigin(req)) return new Response("Please reload the page and try again.", { status: 403 });
   const { id } = await params;
+  if (!isId(id)) return new Response("Not found", { status: 404 });
   const session = await getSession();
   const plan = await loadPlanFor(session, id);
   if (!plan || !session) return NextResponse.redirect(new URL("/account", env.appUrl), 303);

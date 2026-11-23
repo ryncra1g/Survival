@@ -1,3 +1,4 @@
+import { isId } from "@/lib/ids";
 import { loadPlanFor } from "@/lib/server/access";
 import { err, json, sameOrigin } from "@/lib/server/http";
 import { LIMITS, clientIp, limit } from "@/lib/server/ratelimit";
@@ -12,11 +13,12 @@ import { AI_COPY_EVENT } from "@/lib/server/store/types";
  */
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!sameOrigin(req)) return err("Bad origin", 403);
+  const { id } = await params;
+  if (!isId(id)) return err("Not found", 404);
   const session = await getSession();
   const ip = await clientIp();
   if (!(await limit(`aicopy:${session?.nonce ?? "none"}`, LIMITS.aiCopyPerNonceHour, 3600)) || !(await limit(`aicopy:ip:${ip}`, LIMITS.aiCopyPerIpHour, 3600)))
     return err("Too many requests. Try again later.", 429);
-  const { id } = await params;
   const plan = await loadPlanFor(session, id);
   if (!plan) return err("Not found", 404);
   const day = new Date().toISOString().slice(0, 10);

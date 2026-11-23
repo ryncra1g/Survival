@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PlacesForm } from "@/components/PlacesForm";
+import { isId } from "@/lib/ids";
 import { loadPlanFor } from "@/lib/server/access";
 import { getSession } from "@/lib/server/session";
 
@@ -10,6 +11,7 @@ export const metadata: Metadata = { title: "Backup destination", robots: { index
 /** D4 (launch): a printable backup-destination page. The address is typed and printed here, never saved or sent. */
 export default async function Places({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  if (!isId(id)) notFound();
   const plan = await loadPlanFor(await getSession(), id);
   if (!plan) notFound();
   return (

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { PrintButton } from "@/components/PrintButton";
 import { maintenanceItems } from "@/lib/plan/maintenance";
 import type { ComputedPlan } from "@/lib/rules/engine";
+import { isId } from "@/lib/ids";
 import { loadPlanFor } from "@/lib/server/access";
 import { getSession } from "@/lib/server/session";
 
@@ -12,6 +13,7 @@ export const metadata: Metadata = { title: "Maintenance list", robots: { index: 
 /** D12: a printable maintenance list (no account needed). Same schedule as the plan and the calendar file. */
 export default async function Maintenance({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  if (!isId(id)) notFound();
   const plan = await loadPlanFor(await getSession(), id);
   if (!plan) notFound();
   const items = maintenanceItems(plan.computed_quantities as ComputedPlan);

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { buyUrl, isAmazon } from "@/lib/affiliate";
+import { isId } from "@/lib/ids";
 import { loadConstants } from "@/lib/server/config";
 import { env } from "@/lib/server/env";
 import { getSession } from "@/lib/server/session";
@@ -20,7 +21,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ itemId: 
   // Defence in depth: never send email traffic to Amazon (not allowed by the Associates agreement).
   if (src === "email" && isAmazon(dest)) {
     const p = url.searchParams.get("p");
-    return NextResponse.redirect(new URL(p && /^[0-9a-f-]{36}$/i.test(p) ? `/plan/${p}#priorities` : "/account", env.appUrl), 302);
+    return NextResponse.redirect(new URL(isId(p) ? `/plan/${p}#priorities` : "/account", env.appUrl), 302);
   }
   const session = await getSession().catch(() => null);
   await store.addEmailEvent({ user_id: session?.uid || null, type: "affiliate_click", provider_id: itemId, sent_at: new Date().toISOString() }).catch(() => {});

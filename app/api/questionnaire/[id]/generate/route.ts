@@ -1,6 +1,7 @@
 import { after } from "next/server";
 import { AnswersSchema, migrateAnswers } from "@/lib/answers/schema";
 import { checkConsent, consentRecord, type ConsentInput } from "@/lib/legal";
+import { isId } from "@/lib/ids";
 import { canAccessQuestionnaire } from "@/lib/server/access";
 import { err, json, readJson, sameOrigin } from "@/lib/server/http";
 import { buildAndSavePlan, emailPlan } from "@/lib/server/plans";
@@ -16,7 +17,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (!sameOrigin(req)) return err("Bad origin", 403);
   const session = await getSession();
   const { id } = await params;
-  const q = /^[0-9a-f-]{36}$/i.test(id) ? await store.getQuestionnaire(id) : null;
+  const q = isId(id) ? await store.getQuestionnaire(id) : null;
   if (!q || !(await canAccessQuestionnaire(session, q))) return err("Not found", 404);
   const body = await readJson<{ answers?: unknown; consent?: ConsentInput }>(req, 20_000);
   const parsed = AnswersSchema.safeParse(migrateAnswers(body?.answers ?? q.answers));

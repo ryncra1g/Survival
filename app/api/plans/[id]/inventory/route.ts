@@ -1,5 +1,6 @@
 import { InventorySchema, seedInventory } from "@/lib/accountData";
 import { flags } from "@/lib/flags";
+import { isId } from "@/lib/ids";
 import { loadPlanFor } from "@/lib/server/access";
 import { err, json, readJson, sameOrigin } from "@/lib/server/http";
 import { getSession } from "@/lib/server/session";
@@ -12,7 +13,9 @@ import { store } from "@/lib/server/store";
  */
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!flags().accounts) return err("Not found", 404);
-  const plan = await loadPlanFor(await getSession(), (await params).id);
+  const { id } = await params;
+  if (!isId(id)) return err("Not found", 404);
+  const plan = await loadPlanFor(await getSession(), id);
   if (!plan) return err("Not found", 404);
   return json({ inventory: seedInventory(plan.inventory, plan.checks) });
 }
@@ -20,7 +23,9 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!flags().accounts) return err("Not found", 404);
   if (!sameOrigin(req)) return err("Bad origin", 403);
-  const plan = await loadPlanFor(await getSession(), (await params).id);
+  const { id } = await params;
+  if (!isId(id)) return err("Not found", 404);
+  const plan = await loadPlanFor(await getSession(), id);
   if (!plan) return err("Not found", 404);
   const body = await readJson<{ inventory?: unknown }>(req, 60_000);
   const parsed = InventorySchema.safeParse(body?.inventory);

@@ -1,6 +1,7 @@
 import { consentStillValid } from "@/lib/legal";
 import { NextResponse } from "next/server";
 import { AnswersSchema, GEAR_SLOTS, GearLevel, withGearChoice } from "@/lib/answers/schema";
+import { isId } from "@/lib/ids";
 import { loadPlanFor } from "@/lib/server/access";
 import { env } from "@/lib/server/env";
 import { sameOrigin } from "@/lib/server/http";
@@ -19,6 +20,7 @@ export const maxDuration = 60;
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!sameOrigin(req)) return new Response("Please reload the page and try again.", { status: 403 });
   const { id } = await params;
+  if (!isId(id)) return new Response("Not found", { status: 404 });
   const session = await getSession();
   const plan = await loadPlanFor(session, id);
   if (!plan || !session) return NextResponse.redirect(new URL("/account", env.appUrl), 303);
