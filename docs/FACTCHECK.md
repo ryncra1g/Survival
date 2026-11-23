@@ -10,7 +10,7 @@ Every new safety-relevant sentence added in this run (water, food, heat, power, 
 |---|---|---|---|---|
 | AI-1 | `lib/plan/aiSummary.ts` | Use these amounts exactly; don't recalculate them. | (product rule: amounts come from lib/rules/engine.ts; no external source needed) | needs owner review |
 | AI-2 | `lib/plan/aiSummary.ts` | Follow the product label and CDC/EPA guidance for water treatment; never give dosages. | https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water · https://www.cdc.gov/natural-disasters/safety/power-outage-safety.html | needs owner review |
-| AI-3 | `lib/plan/aiSummary.ts` | Never suggest grills, generators or heaters indoors or in a garage. | https://www.cdc.gov/carbon-monoxide/prevention/ | needs owner review |
+| AI-3 | `lib/plan/aiSummary.ts` | Never suggest grills, generators or fuel-burning heaters indoors or in a garage. (Review 6: "heaters" became "fuel-burning heaters"; the brief's wording would also forbid electric heaters.) | https://www.cdc.gov/carbon-monoxide/prevention/ | needs owner review |
 | AI-4 | `lib/plan/aiSummary.ts` | Official evacuation orders override this plan. | https://www.ready.gov/evacuation | needs owner review |
 | AI-5 | `lib/plan/aiSummary.ts` | This plan's numbers come from [BRAND]; your assistant's advice is its own. | (product statement; brand from lib/brand.ts) | needs owner review |
 | AI-6 | `lib/plan/aiSummary.ts` | Copies a summary of your plan to paste into ChatGPT, Claude or Gemini, so it can set reminders and answer questions. Health details and addresses aren't included. | (product statement; enforced by tests/aiSummary.test.ts) | needs owner review |
