@@ -139,7 +139,7 @@ _Start with life safety this week, then water and food this month, then power an
 
 **[To do]**
 
-- [ ] Test or install CO alarms: 4 (one per level plus outside sleeping areas). [Buy: Carbon monoxide alarm, Typical $20–$40 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/))
+- [ ] Test or install CO alarms: 4 (one per level plus outside sleeping areas). [Buy: Carbon monoxide alarm, Typical $20–$40 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html))
   - _Why:_ Carbon monoxide from generators, heaters and grills is one of the most common ways people die after storms and outages, and an alarm is the cheapest life-saver in this plan.
 - [ ] Store your first 3 days of water: 12 gallons. [Buy: 7-gallon water container, Typical $20–$35 each] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
   - _Why:_ Taps can stop or become unsafe in an outage, and water is the one supply you can't go without for 3 days.
@@ -191,7 +191,7 @@ _Start with life safety this week, then water and food this month, then power an
 #### Within 60 days
 
 - [ ] Complete the full 90 days food list: 551 lb of bulk staples plus the rest of your food mix. [Buy: Food storage buckets, Typical $20–$35 each] (see Your food list)
-- [ ] Buy the generator and fuel storage; test-run it outdoors, 20+ ft from the house, under load. [Buy: Small inverter generator, Typical $550–$1,200 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/))
+- [ ] Buy the generator and fuel storage; test-run it outdoors, 20+ ft from the house, under load. [Buy: Small inverter generator, Typical $550–$1,200 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html))
 - [ ] Set up water filtration + collection for days 15–90 (293 gallons). [Buy: Gravity bag filter, Typical $90–$140 each] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
 - [ ] Assemble the sanitation kit (two-bucket toilet, bags, absorbent). [Buy: Emergency toilet kit, Typical $25–$50 each] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
 - [ ] Pre-cut and label window protection. [Buy: Window protection, Typical $150–$600 each] ([Hazard-by-hazard guides (Ready.gov)](https://www.ready.gov/be-informed))
@@ -208,7 +208,7 @@ _Start with life safety this week, then water and food this month, then power an
 - [ ] First aid: take a Red Cross First Aid/CPR class (about 3 hours, often online + one session). [Buy: First aid kit, Typical $30–$80 each] ([Find a First Aid/CPR class (American Red Cross)](https://www.redcross.org/take-a-class))
 - [ ] Shutoffs: have a handy neighbor or your utility show you the gas, water and main electrical shutoffs, and label them. ([Make a plan (Ready.gov)](https://www.ready.gov/plan))
 - [ ] Camping: spend one night "camping" at home: set up the tent, cook on the camp stove outdoors, filter a gallon of water. [Buy: Gravity bag filter, Typical $90–$140 each] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
-- [ ] Generator: practice starting it, plugging in the fridge outdoors, and refueling only after a 15-minute cool-down. [Buy: 5-gallon gas cans + stabilizer, Typical $30–$45 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/))
+- [ ] Generator: practice starting it, plugging in the fridge outdoors, and refueling only after a 15-minute cool-down. [Buy: 5-gallon gas cans + stabilizer, Typical $30–$45 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html))
 - [ ] Water: filter and disinfect one gallon start to finish. [Buy: Gravity bag filter, Typical $90–$140 each] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
 - [ ] Pets: practice getting each pet into its carrier or on a leash in under 2 minutes. [Buy: Pet go-kit, Typical $30–$100 each] ([Prepare your pets (Ready.gov)](https://www.ready.gov/pets))
 - [ ] Kids: walk to your meeting place together and make it a game. ([Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning))
@@ -226,13 +226,13 @@ _When an outage or storm is coming, run this checklist. Once it hits, use the if
 
 **[To do]**
 
-- [ ] Check CO and smoke alarms; replace batteries if unsure. [Buy: Carbon monoxide alarm, Typical $20–$40 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/))
+- [ ] Check CO and smoke alarms; replace batteries if unsure. [Buy: Carbon monoxide alarm, Typical $20–$40 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html))
 - [ ] Charge every phone, power bank and power station. [Buy: USB power bank, Typical $25–$45 each] ([Power outages (Ready.gov)](https://www.ready.gov/power-outages))
 - [ ] Fill the bathtub water bladder and spare containers. [Buy: Bathtub water bladder, Typical $25–$40 each] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
 - [ ] Set fridge to its coldest setting; fill empty freezer space with water bottles. [Buy: Fridge/freezer thermometers, Typical $8–$15 each] ([Food safety in a power outage (FoodSafety.gov)](https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage))
 - [ ] Get cash and refill prescriptions if you can. [Buy: Fire/water-resistant document pouch, Typical $20–$60 each] ([Older adults and people with disabilities (Ready.gov)](https://www.ready.gov/older-adults))
 - [ ] Fuel or charge vehicles. [Buy: 5-gallon gas cans + stabilizer, Typical $30–$45 each] ([Plan your evacuation (Ready.gov)](https://www.ready.gov/evacuation))
-- [ ] Test-start the generator outdoors; stage fuel and cords. [Buy: 5-gallon gas cans + stabilizer, Typical $30–$45 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/))
+- [ ] Test-start the generator outdoors; stage fuel and cords. [Buy: 5-gallon gas cans + stabilizer, Typical $30–$45 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html))
 - [ ] Set up your warm room before the cold arrives (see Heat & warmth). [Buy: Indoor-rated portable propane heater, Typical $100–$200 each] ([Winter weather (Ready.gov)](https://www.ready.gov/winter-weather))
 - [ ] Bring pets inside and stage their food, meds and carrier. [Buy: Pet go-kit, Typical $30–$100 each] ([Prepare your pets (Ready.gov)](https://www.ready.gov/pets))
 - [ ] Check on elderly or disabled neighbors. [Buy: FRS walkie-talkies, Typical $25–$45 each] ([Older adults and people with disabilities (Ready.gov)](https://www.ready.gov/older-adults))
@@ -477,7 +477,7 @@ _Your household needs about 7,000 calories a day — 630,000 for the full 90 day
 - Fridge/freezer thermometers · Typical $8–$15 each · [Buy]
 _Rice, beans, oats, pasta, oil and canned goods are cheapest at a grocery store or warehouse club._
 - [Food safety in a power outage (FoodSafety.gov)](https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage)
-- [Power outage food and water safety (CDC)](https://www.cdc.gov/natural-disasters/safety/power-outage-safety.html)
+- [Power outage food and water safety (CDC)](https://www.cdc.gov/natural-disasters/response/what-to-do-protect-yourself-during-a-power-outage.html)
 
 ### 9. Cooking & refrigeration
 
@@ -501,7 +501,7 @@ A gas range usually works in an outage if you light the burners with a match (ch
 
 - 1-lb propane cylinders (heater fuel) · Typical $30–$50 each · [Buy]
 - 20-lb propane cylinders · Typical $50–$70 each · [Buy]
-- [Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/)
+- [Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html)
 
 ### 10. Sanitation, hygiene & diapers
 
@@ -833,7 +833,7 @@ Your natural gas heat needs electricity for the blower, ignition or circulator p
 - Cold-rated sleeping bags · Typical $40–$90 each · [Buy]
 - Pipe insulation & faucet covers · Typical $20–$50 each · [Buy]
 - [Winter weather (Ready.gov)](https://www.ready.gov/winter-weather)
-- [Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/)
+- [Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html)
 
 ### 7. Power & fuel math
 
@@ -881,7 +881,7 @@ You don't have backup power yet. A dual-fuel inverter generator is the best valu
 - Generator inlet + interlock (electrician-installed) · Typical $500–$1,500 each · [Buy]
 - Portable solar panel · Typical $300–$650 each · [Buy]
 - [Power outages (Ready.gov)](https://www.ready.gov/power-outages)
-- [Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/)
+- [Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html)
 
 ## Chapter: People & plans
 
@@ -1072,7 +1072,7 @@ _Your fallback is your raw land, about 120 miles away. Leave early on clear trig
 - [ ] Blankets, water, snacks ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
 - [ ] Phone chargers [Buy: Basic vehicle kit, Typical $35–$70 each] ([Plan your evacuation (Ready.gov)](https://www.ready.gov/evacuation))
 - [ ] Flashlight, reflective triangles [Buy: Headlamps + LED lanterns, Typical $15–$30 each] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
-- [ ] Never store spare gasoline inside the car cabin [Buy: 5-gallon gas cans + stabilizer, Typical $30–$45 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/))
+- [ ] Never store spare gasoline inside the car cabin [Buy: 5-gallon gas cans + stabilizer, Typical $30–$45 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html))
 
 #### Go-bag (one per person)
 
@@ -1171,8 +1171,8 @@ The web plan links to /sources for the full list.
 
 - [Ready.gov — Build a Kit & Make a Plan](https://www.ready.gov/kit)
 - [FEMA — Preparedness resources](https://www.fema.gov/emergency-managers/individuals-communities)
-- [CDC — Carbon monoxide poisoning prevention](https://www.cdc.gov/carbon-monoxide/prevention/)
-- [CDC — Power outages & food/water safety](https://www.cdc.gov/natural-disasters/safety/power-outage-safety.html)
+- [CDC — Carbon monoxide poisoning prevention](https://www.cdc.gov/carbon-monoxide/about/index.html)
+- [CDC — Power outages & food/water safety](https://www.cdc.gov/natural-disasters/response/what-to-do-protect-yourself-during-a-power-outage.html)
 - [American Red Cross — Emergency preparedness](https://www.redcross.org/get-help/how-to-prepare-for-emergencies.html)
 - [EPA — Emergency disinfection of drinking water](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water)
 - [FoodSafety.gov — Food safety during power outages](https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage)

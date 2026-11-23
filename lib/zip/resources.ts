@@ -66,11 +66,11 @@ export const HOWTO = {
   hazards: { label: "Hazard-by-hazard guides (Ready.gov)", url: "https://www.ready.gov/be-informed" },
   lowCost: { label: "Low- and no-cost preparedness (Ready.gov)", url: "https://www.ready.gov/low-and-no-cost" },
   firstAidClass: { label: "Find a First Aid/CPR class (American Red Cross)", url: "https://www.redcross.org/take-a-class" },
-  co: { label: "Carbon monoxide safety (CDC)", url: "https://www.cdc.gov/carbon-monoxide/prevention/" },
+  co: { label: "Carbon monoxide safety (CDC)", url: "https://www.cdc.gov/carbon-monoxide/about/index.html" },
   cdcWater: { label: "How to make water safe in an emergency (CDC)", url: "https://www.cdc.gov/water-emergency/about/index.html" },
   waterSafety: { label: "Make water safe to drink (EPA)", url: "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water" },
   foodSafety: { label: "Food safety in a power outage (FoodSafety.gov)", url: "https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage" },
-  outageHealth: { label: "Power outage food and water safety (CDC)", url: "https://www.cdc.gov/natural-disasters/safety/power-outage-safety.html" },
+  outageHealth: { label: "Power outage food and water safety (CDC)", url: "https://www.cdc.gov/natural-disasters/response/what-to-do-protect-yourself-during-a-power-outage.html" },
   evacuation: { label: "Evacuation (Ready.gov)", url: "https://www.ready.gov/evacuation" },
   findShelter: { label: "Find an open shelter (American Red Cross)", url: "https://www.redcross.org/get-help/disaster-relief-and-recovery-services/find-an-open-shelter.html" },
 } satisfies Record<string, OfficialLink>;

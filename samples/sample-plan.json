@@ -159,7 +159,7 @@
               ],
               "link": {
                 "label": "Carbon monoxide safety (CDC)",
-                "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
+                "url": "https://www.cdc.gov/carbon-monoxide/about/index.html"
               }
             },
             {
@@ -700,7 +700,7 @@
               ],
               "link": {
                 "label": "Carbon monoxide safety (CDC)",
-                "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
+                "url": "https://www.cdc.gov/carbon-monoxide/about/index.html"
               }
             },
             {
@@ -851,7 +851,7 @@
               ],
               "link": {
                 "label": "Carbon monoxide safety (CDC)",
-                "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
+                "url": "https://www.cdc.gov/carbon-monoxide/about/index.html"
               }
             },
             {
@@ -932,7 +932,7 @@
               ],
               "link": {
                 "label": "Carbon monoxide safety (CDC)",
-                "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
+                "url": "https://www.cdc.gov/carbon-monoxide/about/index.html"
               }
             },
             {
@@ -1008,7 +1008,7 @@
               ],
               "link": {
                 "label": "Carbon monoxide safety (CDC)",
-                "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
+                "url": "https://www.cdc.gov/carbon-monoxide/about/index.html"
               }
             },
             {
@@ -1538,11 +1538,6 @@
             }
           ],
           "dontDo": [
-            "Don't use candle or terracotta-pot heaters.",
-            "Never use a grill or camp stove indoors or in a garage.",
-            "Don't use a gas oven or stovetop to heat your home.",
-            "Never run a car in an attached garage, even with the door open.",
-            "Never plug a generator into a wall outlet.",
             "Don't store drinking water in containers that held chemicals.",
             "Don't drink water that may have fuel or chemicals in it; boiling won't fix that."
           ],
@@ -1674,10 +1669,8 @@
           ],
           "dontDo": [
             "Don't use candle or terracotta-pot heaters.",
-            "Never use a grill or camp stove indoors or in a garage.",
             "Don't use a gas oven or stovetop to heat your home.",
-            "Never run a car in an attached garage, even with the door open.",
-            "Never plug a generator into a wall outlet."
+            "Never use a grill or camp stove indoors or in a garage."
           ],
           "kind": "know"
         },
@@ -1698,7 +1691,7 @@
             },
             {
               "label": "Carbon monoxide safety (CDC)",
-              "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
+              "url": "https://www.cdc.gov/carbon-monoxide/about/index.html"
             }
           ],
           "kind": "have"
@@ -1824,11 +1817,8 @@
             }
           ],
           "dontDo": [
-            "Don't use candle or terracotta-pot heaters.",
-            "Never use a grill or camp stove indoors or in a garage.",
-            "Don't use a gas oven or stovetop to heat your home.",
-            "Never run a car in an attached garage, even with the door open.",
             "Never plug a generator into a wall outlet.",
+            "Never run a car in an attached garage, even with the door open.",
             "Use flashlights, not candles: candles can start fires."
           ],
           "kind": "know"
@@ -1857,7 +1847,7 @@
             },
             {
               "label": "Carbon monoxide safety (CDC)",
-              "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
+              "url": "https://www.cdc.gov/carbon-monoxide/about/index.html"
             }
           ],
           "kind": "have"
@@ -2078,7 +2068,7 @@
         {
           "type": "bullets",
           "items": [
-            "Store bulk staples in sealed food-grade buckets or mylar, cool and dry: about 19 5-gallon buckets for 551 lb.",
+            "Store dry staples (rice, beans, oats, pasta, powdered milk) in sealed food-grade buckets or mylar, cool and dry: about 8 5-gallon buckets for 210 lb. Canned goods, oil and peanut butter stay in their own containers.",
             "Ration bars are for go-bags and the first days, not your whole supply.",
             "Adjust for any allergies or diets in your household.",
             "Include comfort foods, spices, and a manual can opener."
@@ -2177,7 +2167,7 @@
             },
             {
               "label": "Power outage food and water safety (CDC)",
-              "url": "https://www.cdc.gov/natural-disasters/safety/power-outage-safety.html"
+              "url": "https://www.cdc.gov/natural-disasters/response/what-to-do-protect-yourself-during-a-power-outage.html"
             }
           ],
           "note": "Rice, beans, oats, pasta, oil and canned goods are cheapest at a grocery store or warehouse club.",
@@ -2235,7 +2225,7 @@
           "links": [
             {
               "label": "Carbon monoxide safety (CDC)",
-              "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
+              "url": "https://www.cdc.gov/carbon-monoxide/about/index.html"
             }
           ],
           "kind": "have"
@@ -2342,11 +2332,6 @@
             }
           ],
           "dontDo": [
-            "Don't use candle or terracotta-pot heaters.",
-            "Never use a grill or camp stove indoors or in a garage.",
-            "Don't use a gas oven or stovetop to heat your home.",
-            "Never run a car in an attached garage, even with the door open.",
-            "Never plug a generator into a wall outlet.",
             "Don't dump waste where it can reach drinking water."
           ],
           "kind": "know"
@@ -3188,7 +3173,7 @@
               ],
               "link": {
                 "label": "Carbon monoxide safety (CDC)",
-                "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
+                "url": "https://www.cdc.gov/carbon-monoxide/about/index.html"
               }
             }
           ],
@@ -3621,8 +3606,8 @@
             ],
             [
               "Food storage buckets",
-              "× 19",
-              "$380–$665",
+              "× 8",
+              "$160–$280",
               "Phase 2"
             ],
             [
@@ -4198,7 +4183,7 @@
                 "ShieldPro mylar kit"
               ],
               "price": "Typical $20–$35 each",
-              "qty": "× 19",
+              "qty": "× 8",
               "buyable": true,
               "emailSafe": false,
               "later": true
@@ -4868,10 +4853,10 @@
       {
         "itemId": "storage-kit",
         "name": "Food storage buckets",
-        "qty": 19,
+        "qty": 8,
         "phase": 2,
-        "low": 380,
-        "high": 665,
+        "low": 160,
+        "high": 280,
         "later": true
       },
       {
@@ -5013,11 +4998,11 @@
     },
     {
       "name": "CDC — Carbon monoxide poisoning prevention",
-      "url": "https://www.cdc.gov/carbon-monoxide/prevention/"
+      "url": "https://www.cdc.gov/carbon-monoxide/about/index.html"
     },
     {
       "name": "CDC — Power outages & food/water safety",
-      "url": "https://www.cdc.gov/natural-disasters/safety/power-outage-safety.html"
+      "url": "https://www.cdc.gov/natural-disasters/response/what-to-do-protect-yourself-during-a-power-outage.html"
     },
     {
       "name": "American Red Cross — Emergency preparedness",

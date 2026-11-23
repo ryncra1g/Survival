@@ -106,7 +106,7 @@ _Start with life safety this week, then water and food this month, then power an
 **[To do]**
 
 - [ ] Register anyone with mobility or medical needs with your county's special-needs (access & functional needs) registry or shelter program, and arrange who will help them evacuate. ([Older adults and people with disabilities (Ready.gov)](https://www.ready.gov/older-adults))
-- [ ] Test or install CO alarms: 3 (one per level plus outside sleeping areas). [Buy: Carbon monoxide alarm, Typical $20–$40 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/))
+- [ ] Test or install CO alarms: 3 (one per level plus outside sleeping areas). [Buy: Carbon monoxide alarm, Typical $20–$40 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html))
   - _Why:_ Carbon monoxide from generators, heaters and grills is one of the most common ways people die after storms and outages, and an alarm is the cheapest life-saver in this plan.
 - [ ] Store your first 3 days of water: 3 gallons. [Buy: Gallon water jugs or refilled bottles (low-cost), Typical $1–$2 each] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
   - _Why:_ Taps can stop or become unsafe in an outage, and water is the one supply you can't go without for 3 days.
@@ -173,7 +173,7 @@ _When an outage or storm is coming, run this checklist. Once it hits, use the if
 
 **[To do]**
 
-- [ ] Check CO and smoke alarms; replace batteries if unsure. [Buy: Carbon monoxide alarm, Typical $20–$40 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/))
+- [ ] Check CO and smoke alarms; replace batteries if unsure. [Buy: Carbon monoxide alarm, Typical $20–$40 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html))
 - [ ] Charge every phone, power bank and power station. [Buy: USB power bank, Typical $25–$45 each] ([Power outages (Ready.gov)](https://www.ready.gov/power-outages))
 - [ ] Fill the bathtub water bladder and spare containers. [Buy: Bathtub water bladder, Typical $25–$40 each] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
 - [ ] Set fridge to its coldest setting; fill empty freezer space with water bottles. [Buy: Fridge/freezer thermometers, Typical $8–$15 each] ([Food safety in a power outage (FoodSafety.gov)](https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage))
@@ -394,7 +394,7 @@ _Your household needs about 2,300 calories a day — 6,900 for the full 72 hours
 - Fridge/freezer thermometers · Typical $8–$15 each · [Buy]
 _Rice, beans, oats, pasta, oil and canned goods are cheapest at a grocery store or warehouse club._
 - [Food safety in a power outage (FoodSafety.gov)](https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage)
-- [Power outage food and water safety (CDC)](https://www.cdc.gov/natural-disasters/safety/power-outage-safety.html)
+- [Power outage food and water safety (CDC)](https://www.cdc.gov/natural-disasters/response/what-to-do-protect-yourself-during-a-power-outage.html)
 
 ### 9. Cooking & refrigeration
 
@@ -416,7 +416,7 @@ A gas range usually works in an outage if you light the burners with a match (ch
 **What you need**
 
 - 1-lb propane cylinders (heater fuel) · Typical $30–$50 each · [Buy]
-- [Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/)
+- [Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html)
 
 ### 10. Sanitation, hygiene & diapers
 
@@ -659,7 +659,7 @@ _Winter is the most dangerous part of an outage in the Northern Minnesota area. 
 - Cold-rated sleeping bags · Typical $40–$90 each · [Buy]
 - Pipe insulation & faucet covers · Typical $20–$50 each · [Buy]
 - [Winter weather (Ready.gov)](https://www.ready.gov/winter-weather)
-- [Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/)
+- [Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html)
 
 ### 7. Power & fuel math
 
@@ -695,7 +695,7 @@ _Plan on about 12 generator hours a day, burning 3–4.8 gallons of gasoline. St
 **What you need**
 
 - [Power outages (Ready.gov)](https://www.ready.gov/power-outages)
-- [Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/)
+- [Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html)
 
 ## Chapter: People & plans
 
@@ -863,8 +863,8 @@ The web plan links to /sources for the full list.
 
 - [Ready.gov — Build a Kit & Make a Plan](https://www.ready.gov/kit)
 - [FEMA — Preparedness resources](https://www.fema.gov/emergency-managers/individuals-communities)
-- [CDC — Carbon monoxide poisoning prevention](https://www.cdc.gov/carbon-monoxide/prevention/)
-- [CDC — Power outages & food/water safety](https://www.cdc.gov/natural-disasters/safety/power-outage-safety.html)
+- [CDC — Carbon monoxide poisoning prevention](https://www.cdc.gov/carbon-monoxide/about/index.html)
+- [CDC — Power outages & food/water safety](https://www.cdc.gov/natural-disasters/response/what-to-do-protect-yourself-during-a-power-outage.html)
 - [American Red Cross — Emergency preparedness](https://www.redcross.org/get-help/how-to-prepare-for-emergencies.html)
 - [EPA — Emergency disinfection of drinking water](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water)
 - [FoodSafety.gov — Food safety during power outages](https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage)
