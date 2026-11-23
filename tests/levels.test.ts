@@ -3,6 +3,7 @@ import { GEAR_SLOTS, hasHouseholdFilter, isDrive, withGearChoice, type Answers }
 import { SEED_CATALOG } from "@/lib/catalog/seed";
 import { generatePlan } from "@/lib/plan/generate";
 import { DEFAULT_CONSTANTS as C } from "@/lib/rules/constants";
+import { defaultFoodMix } from "@/lib/rules/engine";
 import { documentStrings, lintDocument } from "@/lib/safety/linter";
 import { PERSONAS } from "./fixtures/personas";
 import { SAMPLE_HOUSEHOLD } from "./fixtures/households";
@@ -37,6 +38,20 @@ describe("à la carte levels: 10 households × every slot × every level", () =>
         expect(lintDocument(r.document), why).toEqual([]);
         const all = [...r.computed.budget.picks, ...r.computed.budget.deferred];
         if (!["food-diy", "food-ready", "food-mix"].includes(opt.itemId)) expect(r.computed.budget.picks.some((p) => p.item.id === opt.itemId), why).toBe(true);
+        // Food approaches aren't catalog picks, so check the choice is honoured in the food mix itself (review 7).
+        if (["food-diy", "food-ready", "food-mix"].includes(opt.itemId)) {
+          const fm = r.computed.foodMix;
+          const total = r.computed.food.totalKcal;
+          const want = opt.itemId === "food-mix" ? defaultFoodMix(a) : opt.itemId === "food-ready" ? { bulk: 0, ready: 1, kits: 0 } : { bulk: 1, ready: 0, kits: 0 };
+          expect(fm.choice, why).toBe(opt.itemId === "food-mix" ? "mix" : opt.itemId === "food-ready" ? "ready" : "bulk");
+          expect(fm.shares, why).toEqual(want);
+          expect(fm.kcal.bulk + fm.kcal.ready + fm.kcal.kits, why).toBe(total);
+          expect(fm.kcal.ready, why).toBe(Math.round(total * want.ready));
+          expect(fm.readyCost, why).toBe(Math.round((fm.kcal.ready / 1000) * C.foodMix.readyCostPer1000Kcal));
+          if (want.bulk === 0) expect(fm.bulk.buckets, why).toBe(0);
+          if (opt.itemId === "food-ready") expect(fm.readyCost, why).toBeGreaterThan(0);
+          if (opt.itemId === "food-diy") expect(fm.readyCost, why).toBe(0);
+        }
         // a standby generator replaces fuel cans, cords, the inlet and propane cylinders
         if (opt.itemId === "generator-standby") for (const id of ["gas-cans", "gen-cord", "propane-20", "inlet-interlock"]) expect(all.some((p) => p.item.id === id), `${why} ${id}`).toBe(false);
         // apartments never get fuel-burning gear at any level
