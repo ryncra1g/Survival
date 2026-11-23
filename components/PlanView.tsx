@@ -1,7 +1,7 @@
-import type { Block, PlanDocument } from "@/lib/plan/document";
+import type { Block, Overview, PlanDocument } from "@/lib/plan/document";
 import { Checklist } from "./Checklist";
 import { ChecksProvider } from "./ChecksContext";
-import { LevelChips } from "./LevelChips";
+import { CompareOptions } from "./CompareOptions";
 import { SectionNav } from "./SectionNav";
 import { BuyIfNeeded } from "./BuyIfNeeded";
 import { Dashboard, type PriorityStep } from "./Dashboard";
@@ -9,23 +9,53 @@ import { Chevron } from "./Chevron";
 import { groupIntoChapters } from "@/lib/plan/chapters";
 import { BRAND } from "@/lib/brand";
 import { HelpStrip, productIndex, resolveStep, StepExtras, type StepView } from "./StepExtras";
+import { KIND_LABEL, kindLabelsAt, kindOf, type Kind } from "@/lib/plan/kinds";
+
+/** D8: a small label where the kind of content changes: Good to know / To do / To have. */
+function KindLabel({ kind }: { kind: Kind }) {
+  const tone = kind === "do" ? "text-brand" : kind === "have" ? "text-ink bg-accent/25" : "text-muted";
+  return <p className={`mt-4 mb-1 inline-block rounded px-1.5 py-0.5 text-[0.7rem] font-semibold uppercase tracking-wide ${tone}`} data-kind={kind}>{KIND_LABEL[kind]}</p>;
+}
 
 const toneCls = { danger: "border-danger text-danger", warning: "border-warn text-warn", info: "border-info text-info" } as const;
 
-type ChooseFn = (group: string, level: "essential" | "standard" | "premium") => void;
+type ChooseFn = (group: string, level: "mix" | "essential" | "standard" | "premium") => void;
 
 /** `affiliate`: some Buy links earn a commission, so the inline disclosure shows. */
-type Ctx = { products: ReturnType<typeof productIndex>; href: (itemId: string) => string; affiliate: boolean };
+type Ctx = { products: ReturnType<typeof productIndex>; href: (itemId: string) => string; affiliate: boolean; budget?: Overview["budget"]; diyTips: boolean };
+
+/** D3b: "No time to buy? Use what you have." Only rendered when DIY_TIPS_ENABLED is on. */
+function TipsBox({ b }: { b: Extract<Block, { type: "tips" }> }) {
+  return (
+    <aside className="my-4 rounded-lg border border-line bg-surface p-4" data-testid="diy-tips">
+      <h4 className="font-semibold">No time to buy? Use what you have</h4>
+      <ul className="mt-2 space-y-2 text-sm">
+        {b.tips.map((t) => (
+          <li key={t.id}>
+            <strong>{t.situation}</strong> {t.steps.join(" ")}{" "}
+            <a href={t.source.url} className="underline" rel="noopener">{t.source.label}</a>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-3 text-sm font-semibold text-[var(--danger)]">Don&apos;t do this</p>
+      <ul className="mt-1 list-disc pl-5 text-sm">
+        {b.dontDo.map((d) => <li key={d}>{d}</li>)}
+      </ul>
+    </aside>
+  );
+}
 
 function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block; planId: string; buyHref?: (itemId: string) => string; sectionId: string; onChoose?: ChooseFn; ctx: Ctx }) {
   switch (b.type) {
+    case "tips":
+      return ctx.diyTips ? <TipsBox b={b} /> : null;
     case "help":
       return <HelpStrip b={b} products={ctx.products} href={ctx.href} />;
     case "levelchoice":
       return (
         <div className="my-4">
           <h4 className="font-semibold">{b.caption}</h4>
-          <LevelChips planId={planId} group={b.group} levels={b.levels} back={sectionId} onChoose={onChoose} />
+          <CompareOptions planId={planId} group={b.group} levels={b.levels} back={sectionId} budget={ctx.budget} onChoose={onChoose} />
         </div>
       );
     case "products":
@@ -43,7 +73,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
                   </p>
                   {!b.compact && <p className="text-sm text-muted mt-0.5">{i.spec}</p>}
                   <p className="text-sm mt-0.5">{i.price}{!b.compact && i.models.length ? ` · e.g. ${i.models.join("; ")}` : ""}</p>
-                  {!b.compact && i.levels && i.group && <LevelChips planId={planId} group={i.group} levels={i.levels} back={sectionId} onChoose={onChoose} />}
+                  {!b.compact && i.levels && i.group && <CompareOptions planId={planId} group={i.group} levels={i.levels} back={sectionId} budget={ctx.budget} models={i.models} onChoose={onChoose} />}
                 </div>
                 {i.buyable && (
                   <BuyIfNeeded itemId={i.itemId}>
@@ -150,7 +180,10 @@ export function PlanView({
   sync = false,
   onChoose,
   afterDashboard,
+  diyTips = false,
 }: {
+  /** D3b: show "No time to buy? Use what you have" boxes (DIY_TIPS_ENABLED, passed by the server page). */
+  diyTips?: boolean;
   /** Shown right under the dashboard (e.g. email, PDF, change an answer), before the plan chapters. */
   afterDashboard?: React.ReactNode;
   doc: PlanDocument;
@@ -162,14 +195,14 @@ export function PlanView({
   onChoose?: ChooseFn;
 }) {
   const chapters = groupIntoChapters(doc.sections);
-  const ctx: Ctx = { products: productIndex(doc), href: (id) => (buyHref ? buyHref(id) : `/go/${encodeURIComponent(id)}?p=${planId}&src=web`), affiliate: !!doc.affiliateDisclosure };
+  const ctx: Ctx = { products: productIndex(doc), href: (id) => (buyHref ? buyHref(id) : `/go/${encodeURIComponent(id)}?p=${planId}&src=web`), affiliate: !!doc.affiliateDisclosure, budget: doc.overview?.budget, diyTips };
   return (
     <ChecksProvider planId={planId} initial={checks} sync={sync}>
       <article>
         <Dashboard
           overview={doc.overview}
           priority={prioritySteps(doc, ctx)}
-          allStepIds={doc.sections.flatMap((s) => s.blocks.flatMap((b) => (b.type === "checklist" ? b.items.map((i) => i.id) : [])))}
+          allStepIds={doc.sections.flatMap((s) => s.blocks.flatMap((b) => (b.type === "checklist" && kindOf(b) === "do" ? b.items.map((i) => i.id) : [])))}
           buyHref={Object.fromEntries([...ctx.products.keys()].map((id) => [id, ctx.href(id)]))}
         />
         {afterDashboard}
@@ -177,32 +210,47 @@ export function PlanView({
         {chapters.map((ch) => (
           <section key={ch.id} id={`ch-${ch.id}`} data-chapter={ch.id} aria-labelledby={`ch-${ch.id}-h`} className="scroll-mt-16 pt-4">
             <h2 id={`ch-${ch.id}-h`} className="text-2xl font-bold text-brand mt-4">{ch.title}</h2>
-            {ch.items.length > 1 && (
-              <p className="mt-2 flex flex-wrap gap-2 no-print" aria-label={`${ch.title}: sections`}>
-                {ch.items.map((x) => (
-                  <a key={x.id} href={`#${x.id}`} className="rounded-full border border-line bg-surface px-3 py-1.5 text-sm no-underline">{SHORT[x.id] ?? x.title}</a>
-                ))}
-              </p>
-            )}
+            {/* D10: one card per section, 2 across on phones, with its key number. Tapping a card opens it full
+                width (grid-column 1 / -1); dense flow fills the gap it leaves. Works without JavaScript. */}
+            <div className="mt-3 grid grid-cols-2 gap-2 sm:gap-3 [grid-auto-flow:dense]" data-testid="section-cards">
             {ch.items.map((s) => (
-              <details key={s.id} id={s.id} data-section open={OPEN_SECTIONS.has(s.id)} className="group card my-3 scroll-mt-20">
-                <summary className="list-none cursor-pointer p-4 sm:p-5 [&::-webkit-details-marker]:hidden">
-                  <span className="flex items-start justify-between gap-3">
-                    <h3 id={`${s.id}-h`} className="text-lg font-bold">{s.title}</h3>
+              <details key={s.id} id={s.id} data-section open={OPEN_SECTIONS.has(s.id)} className="group card min-w-0 scroll-mt-20 open:col-span-2">
+                <summary className="list-none cursor-pointer p-3 sm:p-4 h-full group-open:h-auto flex flex-col [&::-webkit-details-marker]:hidden">
+                  <span className="flex items-start justify-between gap-2">
+                    <h3 id={`${s.id}-h`} className="font-bold leading-snug group-open:text-lg">{s.title}</h3>
                     <Chevron />
                   </span>
-                  {/* Summary: plain text when collapsed (a scannable index); the tinted box once opened. */}
-                  <span className="mt-1 block text-muted group-open:mt-3 group-open:rounded group-open:bg-brand-soft group-open:p-3 group-open:text-ink">{s.summary}</span>
+                  {s.key ? (
+                    <span className="mt-auto pt-2 block tabular group-open:hidden" data-testid="card-key">
+                      <span className="block text-xl font-bold text-brand leading-tight">{s.key.value}</span>
+                      <span className="block text-xs text-muted">{s.key.label}</span>
+                    </span>
+                  ) : (
+                    <span className="mt-1 text-sm text-muted line-clamp-2 group-open:hidden">{s.summary}</span>
+                  )}
+                  {/* Opened: the full summary in the tinted box. */}
+                  <span className="hidden group-open:block mt-3 rounded bg-brand-soft p-3 text-ink">{s.summary}</span>
                 </summary>
                 <div className="px-4 sm:px-6 pb-5">
-                  {s.blocks
+                  {s.id === "evacuation" && /^[0-9a-f-]{36}$/i.test(planId) && (
+                    <p className="mt-3 no-print"><a href={`/plan/${planId}/places`} className="btn-ghost border border-line text-sm px-3 min-h-[44px] inline-flex items-center">Add your backup destination (printable)</a></p>
+                  )}
+                  {(() => {
                     // The dashboard's shopping list replaces the compact shopping list inside the Priority list on the web
                     // (email and PDF keep it).
-                    .filter((b) => !(doc.overview && s.id === "priorities" && b.type === "products" && b.compact))
-                    .map((b, i) => <BlockView key={i} b={b} planId={planId} buyHref={buyHref} sectionId={s.id} onChoose={onChoose} ctx={ctx} />)}
+                    const blocks = s.blocks.filter((b) => !(doc.overview && s.id === "priorities" && b.type === "products" && b.compact) && !(b.type === "tips" && !diyTips));
+                    const labels = kindLabelsAt(blocks);
+                    return blocks.map((b, i) => (
+                      <div key={i}>
+                        {labels[i] && <KindLabel kind={labels[i]} />}
+                        <BlockView b={b} planId={planId} buyHref={buyHref} sectionId={s.id} onChoose={onChoose} ctx={ctx} />
+                      </div>
+                    ));
+                  })()}
                 </div>
               </details>
             ))}
+            </div>
           </section>
         ))}
         <section id="about" className="card p-4 my-4 scroll-mt-24 text-sm text-muted">

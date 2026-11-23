@@ -34,8 +34,8 @@ export function CopyForAI({ text, planId, track = true, variant = "button" }: { 
       {state === "copied" && <p role="status" className="text-sm text-ok px-3">{AI_COPIED}</p>}
       {state === "manual" && (
         <div className="px-1">
-          <label className="text-sm" htmlFor={`ai-copy-${planId}`}>Copy this text, then paste it into your AI assistant:</label>
-          <textarea id={`ai-copy-${planId}`} ref={area} readOnly value={text} rows={6} className="input mt-1 w-full text-xs font-mono" />
+          <label className="text-sm" htmlFor={`ai-copy-${variant}-${planId}`}>Copy this text, then paste it into your AI assistant:</label>
+          <textarea id={`ai-copy-${variant}-${planId}`} ref={area} readOnly value={text} rows={6} className="input mt-1 w-full text-xs font-mono" />
         </div>
       )}
     </div>

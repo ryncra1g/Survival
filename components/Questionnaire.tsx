@@ -438,7 +438,7 @@ function Teaser({ a }: { a: Answers }) {
   const n = (v: number) => v.toLocaleString("en-US");
   const stats: [string, string][] = [
     [`${n(w.storedGal)} gal`, "of water to store"],
-    [`${n(f.totalLbs)} lb`, "of staple food"],
+    [`${n(f.totalKcal)}`, "calories of food"],
     ["18+", "sections, with checklists"],
   ];
   return (

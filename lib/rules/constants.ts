@@ -103,6 +103,12 @@ export const DEFAULT_CONSTANTS = {
     /** Days of food bought in Phase 2; the rest is built up gradually in Phase 3. */
     phase2Days: 30,
   },
+  foodMix: {
+    /** D7: planning cost of ready-to-eat food (canned meals, soups, pouches), USD per 1,000 kcal. A price estimate, not a safety amount. */
+    readyCostPer1000Kcal: 3,
+    /** Pounds of dry staples (rice, beans, oats) one food-grade 5-gallon bucket holds. Sizes the containers. */
+    bucketLbs: 30,
+  },
   cash: {
     /** Suggested cash on hand per adult by scenario length (USD). */
     perAdult: { 3: 100, 14: 250, 30: 400, 90: 600 } as Record<string, number>,
@@ -217,6 +223,7 @@ export const RuleConstantsSchema = z.object({
   }),
   evacuation: z.object({ assumedMpg: z.number().positive(), fuelReserveFactor: num, evRangeBufferPct: num }),
   foodBuild: z.object({ phase2Days: z.number().positive() }),
+  foodMix: z.object({ readyCostPer1000Kcal: z.number().positive(), bucketLbs: z.number().positive() }),
   cash: z.object({ perAdult: z.record(z.string(), num) }),
   budget: z.object({
     planningAmount: z.record(z.string(), num),

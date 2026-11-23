@@ -21,7 +21,7 @@ Entry types: **Owner request** (Ryan asked for it), **Assistant recommendation**
 | LP-02 | Remove the eyebrow line above the headline | Medium | **Done** (branch `claude/headline-copy`) |
 | LP-03 | New headline: "Get what you need. Know what to do." | High | **Done as working copy** (branch `claude/headline-copy`) |
 | LP-04 | Short supporting line | High | **Done as working copy** (branch `claude/headline-copy`) |
-| LP-05 | Sticky sample-plan tabs; visual discovery-style cards | High | Partly done: tabs are one sticky row (PR #5). Card grid open; **Decided (D10)** **Front page built (Batch A); plan card grid in Batch C.** |
+| LP-05 | Sticky sample-plan tabs; visual discovery-style cards | High | Partly done: tabs are one sticky row (PR #5). Card grid open; **Decided (D10)** **Front page built (Batch A); plan card grid in Batch C.** **Plan card grid built (Batch C).** |
 | LP-06 | Redesign "What's in your plan" | High | Open; **Decided (D10)** **Built (Batch A).** |
 | LP-07 | Loading screen and animation | Medium | Open; **Decided (D11)** **Built (Batch A).** |
 | DB-01 | Three-stage readiness journey | Product direction | Partly started: dashboard home (PR #5). Scope decision needed; **Decided (D1, D2 (Later: Days Ready score, Tasks tab))** |
@@ -30,18 +30,18 @@ Entry types: **Owner request** (Ryan asked for it), **Assistant recommendation**
 | HOU-01 | Attic option? | Open question | Open; **Decided (D5: no attic now (Later, heat/cold-tolerant gear only))** **No attic (D5).** |
 | HOU-02 | Home features vs storage question overlap | Medium | Open; **Decided (D5)** **Built (Batch B).** |
 | EV-01 | Shelter-at-home preference vs backup destination | Medium | Open; **Decided (D4)** **Built (Batch B: approach + destination questions).** |
-| EV-02 | Printable map to saved destinations | Medium | Open; **Decided (D4)** **Questions built (Batch B); print page in Batch C.** |
+| EV-02 | Printable map to saved destinations | Medium | Open; **Decided (D4)** **Questions built (Batch B); print page in Batch C.** **Printable places page built (Batch C).** |
 | PL-01 | Supplies tagged to their plan sections | High | **Done**: "What you need" strip in each section (merged with PR #2) |
-| PL-02 | Separate guidance, actions and pack items | High | Open (storage tips became actions on `claude/headline-copy`); **Decided (D8)** |
+| PL-02 | Separate guidance, actions and pack items | High | Open (storage tips became actions on `claude/headline-copy`); **Decided (D8)** **Built (Batch C: content kinds).** |
 | PL-03 | Smaller Sources & disclaimers card | Medium | Partly done: moved to the bottom earlier. Menu placement open (DB-03); **Decided (D9)** **Built (Batch A: /sources).** |
 | PL-04 | Share / Download / Print menu | Medium | Open (PR #5 groups them under the dashboard; a menu is still open); **Decided (D9)** **Built (Batch A: Share menu).** |
-| GEAR-01 | Full catalog regardless of starting budget | Medium | Partly done: every slot can switch Essential / Standard / Premium. "See all options" and "Revisit budget" open; **Decided (D3)** |
-| MT-01 | Exportable maintenance calendar and reminders | Medium | Open; **Decided (D12)** |
-| FD-01 | Food review and ration-kit choices | High | Open; **Decided (D7)** |
-| FD-02 | Containers and storage when a food approach needs them | High | Open; **Decided (D7)** |
-| FD-03 | Food constraints that change recommendations | Medium | Open; **Decided (D7 (diet/allergy question Later))** |
-| WT-01 | More water-treatment choices | High | Open; **Decided (D6)** **Filter-type question built (Batch B); treatment layers in Batch C.** |
-| WT-02 | Complete water-readiness kit | Medium | Open; **Decided (D6)** |
+| GEAR-01 | Full catalog regardless of starting budget | Medium | Partly done: every slot can switch Essential / Standard / Premium. "See all options" and "Revisit budget" open; **Decided (D3)** **Built (Batch C: Compare options).** |
+| MT-01 | Exportable maintenance calendar and reminders | Medium | Open; **Decided (D12)** **Calendar + printable list built (Batch C); email reminders in Batch D.** |
+| FD-01 | Food review and ration-kit choices | High | Open; **Decided (D7)** **Built (Batch C).** |
+| FD-02 | Containers and storage when a food approach needs them | High | Open; **Decided (D7)** **Built (Batch C: buckets sized to bulk staples).** |
+| FD-03 | Food constraints that change recommendations | Medium | Open; **Decided (D7 (diet/allergy question Later))** **Allergy line added (Batch C); question Later.** |
+| WT-01 | More water-treatment choices | High | Open; **Decided (D6)** **Filter-type question built (Batch B); treatment layers in Batch C.** **Treatment layers built (Batch C).** |
+| WT-02 | Complete water-readiness kit | Medium | Open; **Decided (D6)** **Built (Batch C: water kit).** |
 | WT-03 | What counts as an existing emergency filter (LifeStraw?) | Open question | Open; **Decided (D6 (personal filter counts for the go-bag only))** **Built (Batch B: filter type).** |
 | WIZ-01 | Every question and answer traces to a product or resource | High | **Done** (branch `claude/headline-copy`); follow-ups below |
 | FG-01 | Front-page focus group (20 simulated participants) | Medium | **Done**; findings below |

@@ -1,4 +1,5 @@
 import type { PlanConsent } from "@/lib/legal";
+import { flags } from "@/lib/flags";
 import type { OnStage } from "@/lib/plan/stages";
 import "server-only";
 import { createClient } from "@supabase/supabase-js";
@@ -47,9 +48,9 @@ async function storePdf(planId: string, userId: string, pdf: Buffer): Promise<st
 export async function emailPlan(plan: PlanRow, user: UserRow): Promise<boolean> {
   if (!user.double_opt_in_at || plan.emailed_at) return false;
   const doc = plan.plan as PlanDocument;
-  const pdf = await renderPlanPdf(doc);
+  const pdf = await renderPlanPdf(doc, { diyTips: flags().diyTips });
   const pdfPath = await storePdf(plan.id, user.id, pdf);
-  const m = renderPlanEmail(doc, { ...metaFor(user.id), planUrl: `${env.appUrl}/plan/${plan.id}`, pdfAttached: true, planId: plan.id });
+  const m = renderPlanEmail(doc, { ...metaFor(user.id), planUrl: `${env.appUrl}/plan/${plan.id}`, pdfAttached: true, planId: plan.id, diyTips: flags().diyTips });
   const ok = await sendEmail({ to: user.email, userId: user.id, type: "plan", ...m, attachments: [
       { filename: `${BRAND.file}.pdf`, content: pdf },
       { filename: `${BRAND.file}-fridge-checklist.pdf`, content: await renderFridgeChecklist(doc) },

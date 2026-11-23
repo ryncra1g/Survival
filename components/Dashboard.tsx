@@ -5,6 +5,7 @@ import { gotId } from "./BuyIfNeeded";
 import { useChecks } from "./ChecksContext";
 import { Chevron } from "./Chevron";
 import { StepExtras, type StepView } from "./StepExtras";
+import { budgetStatus } from "@/lib/plan/compare";
 
 const usd = (v: number) => "$" + Math.round(v).toLocaleString("en-US");
 const usdRange = (lo: number, hi: number) => (Math.round(lo) === Math.round(hi) ? usd(lo) : `${usd(lo)}–${usd(hi)}`);
@@ -150,6 +151,7 @@ export function Dashboard({ overview, priority, allStepIds, buyHref }: { overvie
           </summary>
           <div className="px-3 pb-3">
             <p className="text-sm text-muted">Tick what you already have. It comes off your total and its Buy buttons disappear.</p>
+            {overview?.budget && budgetStatus(overview.budget) && <p className="mt-1 text-sm text-warn font-medium" data-testid="over-budget">{budgetStatus(overview.budget)}. Your budget is a target: safety items come first, and you can switch any item to a lower-cost option.</p>}
             {([1, 2, 3] as const).map((ph) => {
               const rows = gear.filter((g) => g.phase === ph);
               if (!rows.length) return null;

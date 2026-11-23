@@ -135,17 +135,29 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(page.getByTestId("dashboard").getByTestId("overall-progress")).toContainText(`you have 1 of ${gearTotal} gear items`);
   await expect(page.getByTestId("dashboard").getByTestId("stage-progress")).toHaveText(/^1 of \d+ done$/);
 
-  // The plan below is a short index: every section collapsed to title + summary until opened
+  // D10: the plan below is a card grid per chapter (2 across on a phone), each card with its key number
   await expect(page.locator("details[data-section][open]")).toHaveCount(0);
-  await expect(page.getByText(/Store 54 gallons \(14 days\)/)).toBeVisible();
+  await expect(page.locator("details#water").getByTestId("card-key")).toContainText("54 gal");
+  await expect(page.locator("details#water").getByTestId("card-key")).toContainText("water to store");
   await expect(page.getByRole("heading", { name: /Your area's hazards/ })).toBeVisible();
+  const cols = await page.getByTestId("section-cards").first().evaluate((el) => getComputedStyle(el).gridTemplateColumns.split(" ").length);
+  expect(cols).toBe(2);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  // D8: content kinds are labelled
+  await page.locator("details#water > summary").click();
+  await expect(page.locator("details#water [data-kind]").first()).toBeVisible();
+  const waterBox = await page.locator("details#water").boundingBox();
+  expect(waterBox!.width).toBeGreaterThan(300); // an opened card spans the full row
+  await page.locator("details#water > summary").click();
   await page.getByTestId("dashboard").getByRole("link", { name: /See every step/ }).click();
   await expect(page.locator("details#priorities")).toHaveAttribute("open", "");
   const nav = page.getByRole("navigation", { name: "Plan sections" });
   await nav.getByRole("link", { name: "Supplies" }).click();
   await expect(nav.getByRole("link", { name: "Supplies" })).toHaveAttribute("aria-current", "true");
-  await page.locator("#ch-supplies").getByRole("link", { name: "Gear", exact: true }).click();
+  await page.locator("details#gear > summary").click();
   await expect(page.locator("details#gear")).toHaveAttribute("open", "");
+  await page.goto(`${planUrl}#water`); // a link to a section opens its card
+  await expect(page.locator("details#water")).toHaveAttribute("open", "");
 
   // Ticks are saved to the plan, not just this browser (the dashboard tick above shows in the full list too)
   await page.locator("details#priorities").evaluate((d) => ((d as HTMLDetailsElement).open = true));
@@ -292,7 +304,8 @@ test("admin: dashboard, catalog, rule constants, affiliate tag → tracked Buy c
   await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.goto(`/plan/${planId}`);
   await page.getByTestId("share-menu").locator("summary").click();
-  await page.getByRole("button", { name: "Copy for your AI assistant" }).click();
+  await page.getByTestId("share-menu").getByRole("button", { name: "Copy for your AI assistant" }).click();
+  await expect(page.getByTestId("stay-ready").getByRole("button", { name: "Copy for your AI assistant" })).toBeVisible(); // also next to Add to my calendar
   await expect(page.getByText("Copied. Paste it into your AI assistant to get started.")).toBeVisible();
   const copied = await page.evaluate(() => navigator.clipboard.readText());
   expect(copied).toContain("Use these amounts exactly; don't recalculate them.");
@@ -308,7 +321,7 @@ test("sample plan is public", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: "See a sample plan" }).click();
   await expect(page).toHaveURL(/\/sample/);
-  await expect(page.getByText(/Store 54 gallons \(14 days\)/)).toBeVisible();
+  await expect(page.locator("details#water").getByTestId("card-key")).toContainText("54 gal");
 });
 
 test("unconfirmed emails with a plan get exactly one reminder", async ({ page, request }) => {
@@ -328,7 +341,12 @@ test("à la carte: switch a gear item's level from the plan", async ({ page }) =
   await page.goto(`/plan/${planId}#gear`);
   const gear = page.locator("details#gear");
   await expect(gear).toHaveAttribute("open", "");
-  const premiumWater = gear.getByRole("button", { name: /Switch to Premium: Stackable water bricks/ });
+  // D3: each slot shows its main pick; "Compare options" lists Lower-cost / Upgrade with the difference and new total
+  const water = gear.getByTestId("compare-options").filter({ hasText: "7-gallon" }).first();
+  await water.getByText("Compare options").click();
+  await expect(water.getByText("Upgrade", { exact: true })).toBeVisible();
+  await expect(water.getByText(/new total \$/).first()).toBeVisible();
+  const premiumWater = water.getByRole("button", { name: /Switch to Premium: Stackable water bricks/ });
   await premiumWater.click();
   await expect(page).toHaveURL(/\/plan\/[0-9a-f-]{36}#gear/);
   expect(page.url()).not.toContain(planId);
@@ -348,4 +366,36 @@ test("site menu (D9): visitor items on a phone, and every page it links to exist
   for (const p of ["/help", "/about", "/sources"]) expect((await page.request.get(p)).status()).toBe(200);
   await page.goto("/sources");
   await expect(page.getByRole("heading", { name: "Sources & safety" })).toBeVisible();
+});
+
+test("D4 places page: the typed address is printed but never sent anywhere", async ({ page }) => {
+  const planId = await quickPlan(page);
+  await page.goto(`/plan/${planId}#evacuation`);
+  await expect(page.locator("details#evacuation")).toContainText("Official evacuation orders override this plan.");
+  await page.locator("details#evacuation").getByRole("link", { name: /Add your backup destination/ }).click();
+  await expect(page).toHaveURL(new RegExp(`/plan/${planId}/places$`));
+  const SENTINEL = "742 Evergreen Terrace Testville";
+  const sent: string[] = [];
+  page.on("request", (r) => sent.push(r.url() + " " + (r.postData() ?? "")));
+  await page.getByLabel("Address").fill(SENTINEL);
+  await page.getByLabel("Place").fill("Aunt test house");
+  await expect(page.getByText("This address isn't saved.")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Directions (Apple Maps)" })).toHaveAttribute("href", /maps\.apple\.com/);
+  await page.emulateMedia({ media: "print" });
+  await expect(page.getByTestId("places-print")).toContainText(SENTINEL);
+  await page.emulateMedia({ media: "screen" });
+  await page.waitForTimeout(500);
+  expect(sent.some((s) => s.includes("Evergreen") || s.includes("742%20Evergreen"))).toBe(false);
+});
+
+test("D12: Add to my calendar downloads a .ics; the maintenance list prints", async ({ page }) => {
+  const planId = await quickPlan(page);
+  await page.goto(`/plan/${planId}`);
+  await expect(page.getByTestId("stay-ready").getByRole("link", { name: "Add to my calendar" })).toBeVisible();
+  const r = await page.request.get(`/api/plans/${planId}/calendar`);
+  expect(r.status()).toBe(200);
+  expect(r.headers()["content-type"]).toContain("text/calendar");
+  expect(await r.text()).toContain("BEGIN:VEVENT");
+  await page.goto(`/plan/${planId}/maintenance`);
+  await expect(page.getByTestId("maintenance-list")).toContainText("Test CO and smoke alarms.");
 });

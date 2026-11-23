@@ -46,7 +46,8 @@ const th = (v: string, w = "") => `<th class="c"${w ? ` width="${w}"` : ""}>${es
 export const goPath = (itemId: string, planId?: string, src = "web") => `/go/${encodeURIComponent(itemId)}?${planId ? `p=${encodeURIComponent(planId)}&` : ""}src=${src}`;
 
 const levelLine = (levels?: { level: string; price: string; selected: boolean }[]) =>
-  levels ? `<br><span style="color:${C.muted};font-size:12px">Levels: ${levels.map((l) => `${l.selected ? "<strong>" : ""}${esc(l.level[0].toUpperCase() + l.level.slice(1))} ${esc(l.price)}${l.selected ? "</strong>" : ""}`).join(" · ")}</span>` : "";
+  // Only the chosen level; Compare options (every level, the difference and new total) is on the plan page.
+  levels?.some((l) => l.selected) ? `<br><span style="color:${C.muted};font-size:12px">Level: ${esc(levels.find((l) => l.selected)!.level[0].toUpperCase() + levels.find((l) => l.selected)!.level.slice(1))} · other levels on your plan page</span>` : "";
 
 /** National how-to pages are listed once in each section's "What you need" line; steps keep only local links. */
 const GENERAL_HOWTO = new Set(Object.values(HOWTO).map((l) => l.url));
@@ -58,8 +59,11 @@ const once = (ctx: { seen?: Set<string> }, url: string) => {
   return true;
 };
 
-function block(b: Block, ctx: { appUrl: string; planId?: string; seen?: Set<string> } = { appUrl: "" }): string {
+function block(b: Block, ctx: { appUrl: string; planId?: string; seen?: Set<string>; diyTips?: boolean } = { appUrl: "" }): string {
   switch (b.type) {
+    case "tips":
+      // D3b: only when DIY_TIPS_ENABLED is on (the caller passes the flag).
+      return ctx.diyTips ? tipsHtml(b) : "";
     case "help":
       // Official links only: Amazon links never go in email.
     {
@@ -69,6 +73,8 @@ function block(b: Block, ctx: { appUrl: string; planId?: string; seen?: Set<stri
     case "levelchoice":
       return `<p style="margin:10px 0 4px;font-weight:600">${esc(b.caption)}</p><p style="margin:0 0 8px;font-size:13px">${b.levels.map((l) => `${l.selected ? "<strong>✓ " : ""}${esc(l.name)}: ${esc(l.price)}${l.selected ? "</strong>" : ""}`).join("<br>")}</p>`;
     case "products":
+      // The compact shopping list repeats Recommended gear (which has every item with its Buy link): one line instead.
+      if (b.compact) return `<p style="margin:8px 0;font-size:14px">Your shopping list, with prices, is under <strong>Recommended gear</strong> below.</p>`;
       return `${b.caption ? `<p style="margin:12px 0 4px;font-size:13px;font-weight:600;color:${C.muted}">${esc(b.caption)}</p>` : ""}<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:6px 0"><tr>${th("Item")}${th("Price")}${th("")}</tr>${b.items
         .map(
           (i) =>
@@ -84,6 +90,7 @@ function block(b: Block, ctx: { appUrl: string; planId?: string; seen?: Set<stri
     case "checklist":
       return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:6px 0">${b.items.map((i) => `<tr><td valign="top" style="padding:2px 8px 2px 0">&#9744;</td><td style="padding:2px 0">${esc(i.text)}${i.link && !GENERAL_HOWTO.has(i.link.url) && once(ctx, i.link.url) ? `<br><a href="${esc(i.link.url)}" style="color:${C.info};font-size:13px">${esc(i.link.label)}</a>` : ""}</td></tr>`).join("")}</table>`;
     case "table":
+      if (b.detail) return "";
       return `${b.caption ? `<p style="margin:12px 0 4px;font-size:13px;font-weight:600;color:${C.muted}">${esc(b.caption)}</p>` : ""}<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:6px 0"><tr>${b.columns.map((c) => th(c)).join("")}</tr>${b.rows.map((r) => `<tr>${r.map(td).join("")}</tr>`).join("")}</table>`;
     case "ifthen":
       return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:8px 0"><tr>${th("If…", "45%")}${th("Then…")}</tr>${b.rows.map((r) => `<tr>${td(r.if)}${td(r.then)}</tr>`).join("")}</table>`;
@@ -95,13 +102,18 @@ function block(b: Block, ctx: { appUrl: string; planId?: string; seen?: Set<stri
 }
 
 /** The plan email: same structure as on screen. Gear specs are shortened to stay under Gmail's clip limit. */
-export function renderPlanEmail(doc: PlanDocument, meta: EmailMeta & { planUrl: string; pdfAttached: boolean; planId?: string }): { subject: string; html: string; text: string } {
+function tipsHtml(b: Extract<Block, { type: "tips" }>): string {
+  const tips = b.tips.map((t) => `<p style="margin:6px 0 2px;font-size:13px"><strong>${esc(t.situation)}</strong> ${t.steps.map(esc).join(" ")} <a href="${esc(t.source.url)}" style="color:${C.info}">${esc(t.source.label)}</a></p>`).join("");
+  return `<div style="border:1px solid ${C.line};padding:8px 10px;margin:10px 0"><p style="margin:0;font-weight:700">No time to buy? Use what you have</p>${tips}<p style="margin:6px 0 0;font-size:13px;color:${C.danger}"><strong>Don't do this:</strong> ${b.dontDo.map(esc).join(" ")}</p></div>`;
+}
+
+export function renderPlanEmail(doc: PlanDocument, meta: EmailMeta & { planUrl: string; pdfAttached: boolean; planId?: string; diyTips?: boolean }): { subject: string; html: string; text: string } {
   const toc = doc.sections.map((s) => `${s.number}. ${esc(s.title)}`).join(" · ");
   const sections = doc.sections
     .map((s) => {
       const blocks = s.id === "gear" ? s.blocks.map((b) => (b.type === "table" ? { ...b, columns: ["Item", "Look for", "Price"], rows: b.rows.map((r) => [r[0], r[1], r[3]]) } : b)) : s.blocks;
       return `<h2 style="margin:24px 0 4px;font-size:18px;border-top:2px solid ${C.line};padding-top:16px">${s.number}. ${esc(s.title)}</h2><p style="margin:4px 0 8px;font-size:15px;color:${C.ink};background:#fbf3ea;padding:8px 10px;border-radius:4px">${esc(s.summary)}</p>${(() => {
-        const ctx = { appUrl: meta.appUrl, planId: meta.planId, seen: new Set<string>() };
+        const ctx = { appUrl: meta.appUrl, planId: meta.planId, seen: new Set<string>(), diyTips: !!meta.diyTips };
         return blocks.map((b) => block(b, ctx)).join("");
       })()}`;
     })

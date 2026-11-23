@@ -1,5 +1,8 @@
 import { hasHouseholdFilter, hasPersonalFilter, LABELS, type Answers } from "@/lib/answers/schema";
-import type { ComputedPlan, GearPick } from "@/lib/rules/engine";
+import { labelKinds } from "./kinds";
+import { maintenanceItems } from "./maintenance";
+import { DONT_DO, tipsFor, type TipArea } from "@/lib/tips/library";
+import { mixLabel, type ComputedPlan, type GearPick } from "@/lib/rules/engine";
 import type { RuleConstants } from "@/lib/rules/constants";
 import { atLeast } from "@/lib/zip/profile";
 import { addHelp } from "./help";
@@ -33,6 +36,59 @@ export interface SectionDraft {
   /** Plain-language facts the LLM may draw on (no numbers — numbers come via tokens). */
   facts: string[];
   blocks: Block[];
+  /** D10: the section card's key number, set by sectionKeys() from engine values only. */
+  key?: { value: string; label: string };
+}
+
+/** D3b: a tips box at the end of water, heat, sanitation, light & power, and a compact one in Day 0. */
+function addTips(S: SectionDraft[]) {
+  const where: [string, TipArea, boolean][] = [["water", "water", false], ["heat", "heat", false], ["sanitation", "sanitation", false], ["power", "light_power", false], ["day0", "day0", true]];
+  for (const [id, area, compact] of where) {
+    const s = S.find((x) => x.id === id);
+    const tips = tipsFor(area);
+    if (!s || !tips.length) continue;
+    s.blocks.push({
+      type: "tips",
+      ...(compact ? { compact: true } : {}),
+      tips: tips.map((t) => ({ id: t.id, situation: t.situation, steps: t.steps, source: t.source })),
+      dontDo: compact ? DONT_DO : [...DONT_DO, ...tips.flatMap((t) => t.dontDo)],
+    });
+  }
+}
+
+/** D10: each section's key number for its card, taken from the rules engine (or counted from the plan itself). */
+function sectionKeys(cp: ComputedPlan, S: SectionDraft[]) {
+  const steps = (id: string) => S.find((s) => s.id === id)?.blocks.reduce((t, b) => t + (b.type === "checklist" ? b.items.length : 0), 0) ?? 0;
+  const firstList = (id: string) => {
+    const b = S.find((s) => s.id === id)?.blocks.find((x) => x.type === "checklist");
+    return b && b.type === "checklist" ? b.items.length : 0;
+  };
+  const gear = [...cp.budget.picks, ...cp.budget.deferred];
+  const hazards = (["hurricane", "flood", "winter", "heat", "wildfire", "earthquake", "tornado"] as const).filter((k) => atLeast(cp.profile[k], "moderate")).length;
+  const pw = cp.power;
+  const keys: Record<string, { value: string; label: string } | null> = {
+    snapshot: { value: plural(cp.household.people, "person", "people"), label: LABELS.scenarioDays[cp.answers.scenarioDays] },
+    priorities: { value: n(firstList("priorities")), label: "steps this week" },
+    day0: { value: n(steps("day0")), label: "steps when it happens" },
+    hazards: hazards ? { value: n(hazards), label: hazards === 1 ? "hazard to prepare for" : "hazards to prepare for" } : null,
+    water: { value: `${n(cp.water.storedGal)} gal`, label: "water to store" },
+    food: { value: n(cp.food.totalKcal), label: "calories of food" },
+    power:
+      pw.generatorStatus === "recommended" || pw.generatorStatus === "owned_portable"
+        ? { value: `${range(pw.gasolineGalPerDay[0], pw.gasolineGalPerDay[1])} gal`, label: "gasoline a day" }
+        : null,
+    sanitation: { value: n(cp.sanitation.wasteBags), label: "waste bags" },
+    pets: cp.pets ? { value: `${n(cp.pets.foodLbs)} lb`, label: "pet food" } : null,
+    kids: cp.household.children ? { value: n(cp.household.children), label: cp.household.children === 1 ? "child" : "children" } : null,
+    evacuation: cp.evacuation ? { value: `${n(cp.evacuation.reserveGalPerVehicle, 1)} gal`, label: "fuel reserve per vehicle" } : null,
+    budget: { value: usdRange(gear.filter((g) => g.status !== "deferred").reduce((t, g) => t + g.low, 0), gear.filter((g) => g.status !== "deferred").reduce((t, g) => t + g.high, 0)), label: "gear in your budget" },
+    gear: { value: n(gear.length), label: "items" },
+    maintenance: { value: n(S.find((s) => s.id === "maintenance")?.blocks.reduce((t, b) => t + (b.type === "table" ? b.rows.length : 0), 0) ?? 0), label: "maintenance tasks" },
+  };
+  for (const s of S) {
+    const k = keys[s.id];
+    if (k) s.key = k;
+  }
 }
 
 export interface PlanDraft {
@@ -42,6 +98,9 @@ export interface PlanDraft {
   affiliateDisclosure: string | null;
   overview: Overview;
 }
+
+/** D3: the top of each stated budget range ("$X over your budget" compares with it). The stated budget is never changed. */
+const BUDGET_CAP: Record<Answers["budget"], number | null> = { under_500: 500, "500_1500": 1500, "1500_5000": 5000, "5000_plus": null };
 
 let checklistCounter = 0;
 /** A checklist step: plain text, or text plus why / what to buy / an official link. */
@@ -110,7 +169,8 @@ export function buildTokens(cp: ComputedPlan): Record<string, string> {
   t["food.dailyKcal"] = n(f.dailyKcal);
   t["food.totalKcal"] = n(f.totalKcal);
   t["food.totalLbs"] = n(f.totalLbs);
-  t["food.cost"] = usd(f.cost);
+  t["food.cost"] = usd(cp.foodMix.bulk.cost + cp.foodMix.readyCost);
+  t["food.mix"] = mixLabel(cp.foodMix.shares);
   t["power.hoursPerDay"] = n(p.hoursPerDay);
   t["power.gasPerDay"] = range(p.gasolineGalPerDay[0], p.gasolineGalPerDay[1]);
   t["power.propanePerDay"] = range(p.propaneGalPerDay[0], p.propaneGalPerDay[1]);
@@ -158,7 +218,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   const levelsFor = (group?: string) => {
     const slot = group ? cp.budget.slots.find((x) => x.group === group) : undefined;
     if (!slot || slot.options.length < 2) return undefined;
-    return slot.options.map((o) => ({ level: o.level, name: o.name, price: usdRange(o.low, o.high), selected: o.itemId === slot.chosen }));
+    return slot.options.map((o) => ({ level: o.level, name: o.name, price: usdRange(o.low, o.high), selected: o.itemId === slot.chosen, low: o.low, high: o.high }));
   };
   const productsBlock = (picks: GearPick[], later: (p: GearPick) => boolean, caption?: string, compact?: boolean): Block => ({
     type: "products",
@@ -325,7 +385,8 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   const dest = destinationStep(a);
   if (dest) month.push(dest);
 
-  if (a.scenarioDays >= 30) d60.push(`Complete the full ${LABELS.scenarioDays[a.scenarioDays]} food list: ${n(cp.food.totalLbs)} lb of staples.`);
+  if (a.scenarioDays >= 30)
+    d60.push(cp.foodMix.bulk.totalLbs ? `Complete the full ${LABELS.scenarioDays[a.scenarioDays]} food list: ${n(cp.foodMix.bulk.totalLbs)} lb of bulk staples plus the rest of your food mix.` : `Complete the full ${LABELS.scenarioDays[a.scenarioDays]} food supply: ${n(cp.food.totalKcal)} calories in all (see Food).`);
   if (pw.generatorStatus === "recommended") d60.push({ text: "Buy the generator and fuel storage; test-run it outdoors, 20+ ft from the house, under load.", buy: ["generator-dual", "generator-small", "gas-cans"] });
   if (pw.generatorStatus === "owned_portable") d60.push("Service your generator (oil, plug, fresh stabilized fuel) and test-run it under load outdoors.");
   if (w.filterDays > 0) d60.push({ text: `Set up water filtration + collection for days ${n(w.storedDays + 1)}–${n(a.scenarioDays)} (${n(w.filterGal)} gallons).`, buy: ["filter-gravity", "filter-gravity-bag", "filter-basic"] });
@@ -559,6 +620,29 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         ],
       },
       { type: "callout", tone: "info", title: "How to disinfect water", text: BLEACH_RULE },
+      // D6 / WT-01: treatment in layers, each with what it does NOT remove (CDC). No amounts: labels and CDC/EPA give them.
+      {
+        type: "table",
+        caption: "Safe water, in this order",
+        columns: ["Way", "When", "What it does not remove"],
+        rows: [
+          ["1. Stored water", "Drink it first.", "Nothing to treat if it was stored clean; replace tap-filled water every 6 months."],
+          ["2. Household filter (gravity or pump)", "The main way to make more water.", "Viruses and chemicals: disinfect after filtering."],
+          ["3. Treatment tablets", "A light backup to the filter.", "Chemicals and fuel. Iodine and chlorine tablets don't reliably kill Cryptosporidium; chlorine dioxide can, when you follow the label."],
+          ["4. Boiling", "The fallback if you have no filter or tablets.", "Chemicals, fuel and toxins."],
+          ["5. Straw or bottle filter", "In your go-bag, for one person.", "Viruses and chemicals."],
+        ],
+      },
+      { type: "callout", tone: "warning", title: "Fuel or chemicals in the water", text: "Water with fuel or toxic chemicals in it can't be made safe by boiling or disinfecting. Use stored or bottled water, and contact your health department." },
+      { type: "paragraph", text: "This plan never gives treatment amounts: follow the product label and CDC/EPA guidance." },
+      { type: "subheading", text: "Your water kit" },
+      check("water", [
+        { id: "water-kit-containers", text: `Containers for ${n(w.storedGal)} gallons, filled and sealed.`, buy: ["water-jug", "water-bricks", "water-gallons", "water-drum"], link: HOWTO.cdcWater },
+        { id: "water-kit-dispense", text: w.drums ? "A way to get water out: the drum pump or siphon, and the spigot on each jug." : "A way to get water out: the spigot on each jug, or a clean pitcher.", link: HOWTO.kit },
+        { id: "water-kit-labels", text: "Rotation labels: write the fill date on every container.", link: HOWTO.kit },
+        ...(hasHouseholdFilter(a) || w.filterDays > 0 ? [{ id: "water-kit-spares", text: "Spare filter elements or a backflush kit for your household filter.", buy: ["filter-spare"] }] : []),
+        { id: "water-kit-backup", text: "A backup method: treatment tablets, plus unscented bleach, used as the labels direct.", buy: ["water-tablets", "bleach"], link: HOWTO.waterSafety },
+      ]),
       ...(hasHouseholdFilter(a) ? [{ type: "paragraph" as const, text: "You already have a household filter: test it now, and keep spare cartridges or a backflush kit with it." }] : []),
       ...(hasPersonalFilter(a) ? [{ type: "paragraph" as const, text: "Your straw or bottle filter is for one person on the move: keep it in your go-bag." }] : []),
       { type: "bullets", items: ["Store water in food-grade containers away from sunlight and chemicals.", "Replace tap-filled water every 6 months (mark the date).", "Use a 0.1-micron filter for bacteria/protozoa, then disinfect for viruses."] },
@@ -705,39 +789,88 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   });
 
   // 7. Food -----------------------------------------------------------------------
+  // D7: the calorie total is fixed by the rules; the mix (bulk staples / ready-to-eat / kits) only changes how
+  // it's supplied. Ready-to-eat and kits are shown as calorie targets, never as can or pouch counts.
   const f = cp.food;
+  const fm = cp.foodMix;
+  const fdItem = [...cp.budget.picks, ...cp.budget.deferred].find((p) => p.item.id === "food-freeze-dried");
+  const mixRows: string[][] = [];
+  if (fm.kcal.ready) mixRows.push(["Ready-to-eat: canned meals, soups, pouches", `${Math.round(fm.shares.ready * 100)}%`, `about ${n(fm.kcal.ready)} kcal (check the labels)`, usd(fm.readyCost)]);
+  if (fm.kcal.bulk) mixRows.push(["Bulk staples you store yourself", `${Math.round(fm.shares.bulk * 100)}%`, `${n(fm.kcal.bulk)} kcal: ${n(fm.bulk.totalLbs)} lb (table below)`, usd(fm.bulk.cost)]);
+  if (fm.kcal.kits) mixRows.push(["Ration & freeze-dried kits", `${Math.round(fm.shares.kits * 100)}%`, `about ${n(fm.kcal.kits)} kcal${fdItem ? ` (${plural(fdItem.qty, "1-person, 30-day kit")})` : ""}`, fdItem ? usdRange(fdItem.low, fdItem.high) : "see gear"]);
+  const foodBlocks: Block[] = [
+    { type: "table", caption: "Daily calories", columns: ["Person", "kcal/day"], rows: [...f.perPerson.map((p) => [p.label, n(p.kcal)]), ["Total", n(f.dailyKcal)]], detail: true },
+    {
+      type: "table",
+      caption: `Your food mix: ${fm.choice === "mix" ? "recommended for your household" : "your choice"} (${n(f.totalKcal)} kcal in all)`,
+      columns: ["Approach", "Share", "Calories", "Est. cost"],
+      rows: mixRows,
+    },
+  ];
+  if (fm.kcal.bulk)
+    foodBlocks.push({
+      type: "table",
+      caption: `Bulk staples (${n(fm.kcal.bulk)} kcal)`,
+      columns: ["Staple", "Pounds", "Buy", "Est. cost"],
+      rows: [...fm.bulk.staples.map((st) => [st.name, n(st.lbs), `${n(st.units)} × ${st.unit}`, usd(st.cost)]), ["Total", n(fm.bulk.totalLbs), "", usd(fm.bulk.cost)]],
+    });
+  else
+    foodBlocks.push({
+      type: "table",
+      caption: `If you switch to bulk staples: the full list for ${n(f.totalKcal)} kcal (for reference)`,
+      columns: ["Staple", "Pounds", "Buy", "Est. cost"],
+      rows: [...f.staples.map((st) => [st.name, n(st.lbs), `${n(st.units)} × ${st.unit}`, usd(st.cost)]), ["Total", n(f.totalLbs), "", usd(f.cost)]],
+      detail: true,
+    });
+  if (cp.formula)
+    foodBlocks.push({ type: "paragraph", text: `Infant formula: plan on ${plural(cp.formula.cans, "can")} of powdered formula (planning figure). Ask your pediatrician what to use and follow the label for mixing; use stored or boiled water.` });
+  if (h.toddlersOnMilk)
+    foodBlocks.push({ type: "paragraph", text: fm.kcal.bulk ? "Toddler milk: the powdered milk above is included for this; shelf-stable UHT milk boxes are an easy add." : "Toddler milk: add shelf-stable UHT milk boxes or powdered milk to your ready-to-eat food." });
+  foodBlocks.push(
+    {
+      type: "table",
+      caption: "Eating order",
+      columns: ["When", "Eat"],
+      rows: [
+        ["First 4 hours", "Normal meals; keep the fridge closed."],
+        ["Day 1–2", "Fridge perishables that are still below 40°F, then freezer food (a full freezer holds ~48 h)."],
+        ["Day 3–14", "Pantry and canned food, ready-to-eat items."],
+        ["Day 15+", fm.kcal.bulk ? "Bulk staples: rice, beans, oats, pasta with oil, peanut butter, canned protein and produce." : "The rest of your ready-to-eat food and kits."],
+      ],
+    },
+    {
+      type: "table",
+      caption: "Compare food options",
+      detail: true,
+      columns: ["", "Bulk staples", "Ready-to-eat", "Ration & freeze-dried kits"],
+      rows: [
+        ["Cost for your whole supply", usd(cp.budget.slots.find((x) => x.group === "food")?.options.find((o) => o.itemId === "food-diy")?.low ?? fm.bulk.cost), usd(cp.budget.slots.find((x) => x.group === "food")?.options.find((o) => o.itemId === "food-ready")?.low ?? fm.readyCost), (() => { const o = cp.budget.slots.find((x) => x.group === "food")?.options.find((x) => x.level === "premium"); return o ? usdRange(o.low, o.high) : "—"; })()],
+        ["Preparation", "Cook: simmer rice, beans and oats", "Open and eat; heat if you can", "Add hot water to freeze-dried meals; ration bars are ready"],
+        ["Water and fuel", "Water and fuel to cook", "Little or none", "Hot water for freeze-dried meals"],
+        ["Space", "Buckets: compact for the calories", "Most space for the calories", "Compact"],
+        ["Shelf life", "Long when sealed; rotate into meals", "Check the dates; rotate into meals", "Longest; check the label"],
+      ],
+    },
+    {
+      type: "bullets",
+      items: [
+        ...(fm.kcal.bulk ? [`Store bulk staples in sealed food-grade buckets or mylar, cool and dry: about ${plural(fm.bulk.buckets, "5-gallon bucket")} for ${n(fm.bulk.totalLbs)} lb.`] : []),
+        "Ration bars are for go-bags and the first days, not your whole supply.",
+        ...(fm.kcal.kits ? ["Freeze-dried meals need hot water: count it in your water and cooking fuel."] : []),
+        "Adjust for any allergies or diets in your household.",
+        "Include comfort foods, spices, and a manual can opener.",
+        ...(a.pets.some((p) => p.specialDiet) ? ["Stock your pet's special diet separately (see Pets)."] : []),
+      ],
+    },
+  );
+  if (levelsFor("food")) foodBlocks.push({ type: "levelchoice", group: "food", caption: "Switch or mix your food: the calorie total stays the same", levels: levelsFor("food")! });
   S.push({
     id: "food",
     title: "Food",
-    summaryTemplate: "Your household needs about {{food.dailyKcal}} calories a day — {{food.totalKcal}} for the full {{scenario.label}}. The staples below provide it for roughly {{food.cost}}. Eat perishables first, then pantry food, then bulk staples.",
+    summaryTemplate: "Your household needs about {{food.dailyKcal}} calories a day — {{food.totalKcal}} for the full {{scenario.label}}. Your mix: {{food.mix}}. Eat perishables first, then pantry food, then bulk staples.",
     facts: ["Rotate stored food into normal meals so nothing expires"],
     blocks: [
-      { type: "table", caption: "Daily calories", columns: ["Person", "kcal/day"], rows: [...f.perPerson.map((p) => [p.label, n(p.kcal)]), ["Total", n(f.dailyKcal)]] },
-      {
-        type: "table",
-        caption: `Bulk staples for ${LABELS.scenarioDays[a.scenarioDays]} (${n(f.totalKcal)} kcal)`,
-        columns: ["Staple", "Pounds", "Buy", "Est. cost"],
-        rows: [...f.staples.map((s) => [s.name, n(s.lbs), `${n(s.units)} × ${s.unit}`, usd(s.cost)]), ["Total", n(f.totalLbs), "", usd(f.cost)]],
-      },
-      ...(cp.formula
-        ? [{ type: "paragraph" as const, text: `Infant formula: plan on ${plural(cp.formula.cans, "can")} of powdered formula (planning figure). Ask your pediatrician what to use and follow the label for mixing; use stored or boiled water.` }]
-        : []),
-      ...(h.toddlersOnMilk ? [{ type: "paragraph" as const, text: "Toddler milk: the powdered milk above is included for this; shelf-stable UHT milk boxes are an easy add." }] : []),
-      {
-        type: "table",
-        caption: "Eating order",
-        columns: ["When", "Eat"],
-        rows: [
-          ["First 4 hours", "Normal meals; keep the fridge closed."],
-          ["Day 1–2", "Fridge perishables that are still below 40°F, then freezer food (a full freezer holds ~48 h)."],
-          ["Day 3–14", "Pantry and canned food, ready-to-eat items."],
-          ["Day 15+", "Bulk staples: rice, beans, oats, pasta with oil, peanut butter, canned protein and produce."],
-        ],
-      },
-      { type: "bullets", items: ["Store staples in sealed food-grade buckets or mylar, cool and dry.", "Include comfort foods, spices, and a manual can opener.", ...(a.pets.some((p) => p.specialDiet) ? ["Stock your pet's special diet separately (see Pets)."] : [])] },
-      ...(levelsFor("food")
-        ? [{ type: "levelchoice" as const, group: "food", caption: "Food level: store it yourself, or buy ready-made", levels: levelsFor("food")! }]
-        : []),
+      ...foodBlocks,
       { type: "subheading", text: "Where to keep it" },
       check("store", storeTips),
     ],
@@ -922,7 +1055,9 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     });
   }
 
-  // 15. Evacuation -----------------------------------------------------------------
+  // 15. When you must leave (D4) -----------------------------------------------------
+  const ORDERS_OVERRIDE: Block = { type: "callout", tone: "danger", title: "Official evacuation orders override this plan", text: "Official evacuation orders override this plan. If officials tell you to leave, go, using the routes they give." };
+  const destinationTodo: Step = { id: "evac-destination", text: "Add your backup destination: name, address and how to get there, printed for each go-bag.", link: HOWTO.evacuation };
   if (cp.evacuation) {
     const ev = cp.evacuation;
     const rawLand = ev.locationType === "raw_land";
@@ -950,12 +1085,14 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         ];
     S.push({
       id: "evacuation",
-      title: "Evacuation / bug-out plan",
+      title: "When you must leave",
       summaryTemplate: ev.vehicles
         ? "Your fallback is {{evac.location}}, about {{evac.distance}} miles away. Leave early on clear triggers, keep each tank above {{evac.reserveGal}} gallons, and keep go-bags ready."
         : "Your fallback is {{evac.location}}, about {{evac.distance}} miles away. With no car, line up your ride now and leave earlier than drivers would.",
       facts: rawLand ? ["The raw land has no shelter or utilities, so everything has to come with them"] : [],
       blocks: [
+        ORDERS_OVERRIDE,
+        check("evac", [destinationTodo]),
         {
           type: "ifthen",
           rows: [
@@ -985,6 +1122,33 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         { type: "subheading", text: ev.vehicles ? "Go-bag (one per person)" : "Go-bag (one per person; pack light enough to carry and walk with)" },
         check("gobag", [hasPersonalFilter(a) ? { text: "Water (1 L) and your straw or bottle filter", link: HOWTO.waterSafety } : "Water (1 L) and filter bottle", "3 days of snacks", "Change of clothes, rain layer, hat, gloves", "Headlamp + batteries", "Medications (7-day supply), glasses", "Copies of ID and medication list", "Cash in small bills", "Whistle, mask, hand sanitizer", ...(h.children ? ["Child ID card and comfort item"] : []), ...(cp.pets ? ["Pet food, leash, records"] : [])]),
         ...(rawLand ? [{ type: "callout" as const, tone: "danger" as const, title: "Tents and fumes", text: "Never use a heater, stove, grill or generator inside a tent or vehicle. Cook and run generators in the open, away from where people sleep." }] : []),
+      ],
+    });
+  } else {
+    // D4: every plan has "When you must leave", even without a place to drive to.
+    const dest = a.evacuation.destination;
+    S.push({
+      id: "evacuation",
+      title: "When you must leave",
+      summaryTemplate:
+        dest === "public_shelter"
+          ? "If you have to leave, your plan is a public shelter. Know where the nearest one is and how you'd get there, and leave when officials say so."
+          : "You haven't picked a backup destination yet. Choose one now, write it down, and leave when officials say so.",
+      facts: [],
+      blocks: [
+        ORDERS_OVERRIDE,
+        check("evac", [destinationTodo]),
+        {
+          type: "ifthen",
+          rows: [
+            { if: "Mandatory evacuation order for your zone", then: "Leave immediately." },
+            ...(h.elderlyOrMobility ? [{ if: "A voluntary evacuation is announced", then: "Leave now with anyone who has mobility or medical needs — they need extra time." }] : []),
+            { if: "Home damaged or unsafe (gas smell, structural damage, flooding)", then: "Leave now; call 911/utility from a safe place." },
+          ],
+        },
+        ...(dest === "public_shelter" ? [{ type: "paragraph" as const, text: `Shelters open when officials announce them: check your county's alerts and local news.${a.pets.length ? " Most public shelters allow only service animals, so plan where your pets would go." : ""}` }] : []),
+        { type: "subheading", text: "Go-bag (one per person; pack light enough to carry)" },
+        check("gobag", [hasPersonalFilter(a) ? { text: "Water (1 L) and your straw or bottle filter", link: HOWTO.waterSafety } : "Water (1 L) and filter bottle", "3 days of snacks", "Change of clothes, rain layer, hat, gloves", "Headlamp + batteries", "Medications (7-day supply), glasses", "Copies of ID and medication list", "Cash in small bills", "Whistle, mask, hand sanitizer", ...(h.children ? ["Child ID card and comfort item"] : []), ...(cp.pets ? ["Pet food, leash, records"] : [])]),
       ],
     });
   }
@@ -1041,17 +1205,8 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   const affiliate = [...b.picks, ...b.deferred].some((p) => isBuyable(p) && earnsCommission(p.item, c.affiliate.amazonTag));
 
   // 18. Maintenance ------------------------------------------------------------
-  const maint: string[][] = [
-    ["Monthly", "Test CO and smoke alarms."],
-    ...(hasGen ? [["Monthly", "Run the generator under load outdoors for 20 minutes."]] : []),
-    ["Every 6 months", "Replace tap-filled stored water; check food dates and rotate into meals; refresh go-bags for the season."],
-    ["Every 12 months", "Rotate stabilized gasoline into cars; replace bleach; check first aid kit; update documents, photos and medication lists."],
-    ...(a.heatSources.includes("wood") ? [["Every fall", "Chimney inspection and sweeping."]] : []),
-    ...(winter ? [["November", "Winter check: heat plan, pipe insulation, sleeping bags, propane."]] : []),
-    ...(atLeast(prof.hurricane, "moderate") ? [["June", "Hurricane season check: window protection, evacuation zone, insurance, fuel."]] : []),
-    ...(atLeast(prof.wildfire, "moderate") ? [["Spring", "Wildfire check: clear 5 ft around the house, N95 masks, go-bags."]] : []),
-    ["Every 12 months", "Review this plan and regenerate it if your household changes."],
-  ];
+  // D12: the schedule is data (lib/plan/maintenance.ts), so the calendar file and reminders use the same lines.
+  const maint: string[][] = maintenanceItems(cp).map((m) => [m.when, m.task]);
   S.push({
     id: "maintenance",
     title: "Maintenance calendar",
@@ -1060,10 +1215,21 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     blocks: [{ type: "table", columns: ["When", "Task"], rows: maint }],
   });
 
+  // D3b: "No time to buy? Use what you have." boxes (shown only when DIY_TIPS_ENABLED is on).
+  addTips(S);
   addHelp(S, prof);
+  // D8: every block gets its kind (Good to know / To do / To have).
+  labelKinds(S);
+  sectionKeys(cp, S);
   const pw2 = cp.power;
   const hasFuel = pw2.generatorStatus === "recommended" || pw2.generatorStatus === "owned_portable";
   const overview: Overview = {
+    budget: {
+      label: LABELS.budget[a.budget],
+      cap: BUDGET_CAP[a.budget],
+      totalLow: cp.budget.picks.reduce((t, p) => t + p.low, 0),
+      totalHigh: cp.budget.picks.reduce((t, p) => t + p.high, 0),
+    },
     stats: [
       { key: "water", value: `${n(cp.water.storedGal)} gal`, label: "water to store", math: `${n(cp.water.dailyGal, 2)} gal/day × ${n(cp.water.storedDays)} days`, anchor: "water" },
       { key: "food", value: n(cp.food.totalKcal), label: "calories of food", math: `${n(cp.food.dailyKcal)}/day × ${n(a.scenarioDays)} days`, anchor: "food" },
@@ -1090,6 +1256,7 @@ export function assembleDocument(cp: ComputedPlan, draft: PlanDraft, summaries: 
     number: i + 1,
     title: s.title,
     summary: fillTokens(summaries[s.id] ?? s.summaryTemplate, draft.tokens),
+    ...(s.key ? { key: s.key } : {}),
     blocks: s.blocks,
   }));
   return {

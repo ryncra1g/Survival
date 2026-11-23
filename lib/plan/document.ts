@@ -2,18 +2,26 @@ import { z } from "zod";
 import { BRAND } from "@/lib/brand";
 
 const LevelOptionSchema = z.object({
-  level: z.enum(["essential", "standard", "premium"]),
+  /** "mix" only in the food slot: the recommended mix of food approaches (D7). */
+  level: z.enum(["mix", "essential", "standard", "premium"]),
   name: z.string(),
   price: z.string(),
   selected: z.boolean(),
+  /** D3: line totals for this level (USD), so Compare options can show the difference and the new total. */
+  low: z.number().optional(),
+  high: z.number().optional(),
 });
 export type LevelOption = z.infer<typeof LevelOptionSchema>;
 
+/** D8: Good to know / To do / To have (lib/plan/kinds.ts). Optional so plans saved before kinds still parse. */
+const Kind = z.enum(["know", "do", "have"]);
+
 /** The one plan structure rendered on screen, in the PDF and in the email. */
 export const BlockSchema = z.discriminatedUnion("type", [
-  z.object({ type: z.literal("paragraph"), text: z.string() }),
-  z.object({ type: z.literal("bullets"), items: z.array(z.string()) }),
+  z.object({ kind: Kind.optional(), type: z.literal("paragraph"), text: z.string() }),
+  z.object({ kind: Kind.optional(), type: z.literal("bullets"), items: z.array(z.string()) }),
   z.object({
+    kind: Kind.optional(),
     type: z.literal("checklist"),
     items: z.array(
       z.object({
@@ -33,29 +41,43 @@ export const BlockSchema = z.discriminatedUnion("type", [
   }),
   /** "What you need" strip at the end of a section: catalog items (Buy shown only if in this plan's gear) + official links. */
   z.object({
+    kind: Kind.optional(),
     type: z.literal("help"),
     buy: z.array(z.string()),
     links: z.array(z.object({ label: z.string(), url: z.string().url() })),
     note: z.string().optional(),
   }),
   z.object({
+    kind: Kind.optional(),
     type: z.literal("table"),
     caption: z.string().optional(),
     columns: z.array(z.string()),
     rows: z.array(z.array(z.string())),
+    /** Reference detail shown on the web and in the PDF but left out of the email (keeps it under the clipping limit). */
+    detail: z.boolean().optional(),
   }),
-  z.object({ type: z.literal("ifthen"), rows: z.array(z.object({ if: z.string(), then: z.string() })) }),
+  z.object({ kind: Kind.optional(), type: z.literal("ifthen"), rows: z.array(z.object({ if: z.string(), then: z.string() })) }),
   z.object({
+    kind: Kind.optional(),
     type: z.literal("callout"),
     tone: z.enum(["danger", "warning", "info"]),
     title: z.string(),
     text: z.string(),
   }),
-  z.object({ type: z.literal("subheading"), text: z.string() }),
+  z.object({ kind: Kind.optional(), type: z.literal("subheading"), text: z.string() }),
+  /** D3b: "No time to buy? Use what you have." Shown only when DIY_TIPS_ENABLED is on (renderers check the flag). */
+  z.object({
+    kind: Kind.optional(),
+    type: z.literal("tips"),
+    compact: z.boolean().optional(),
+    tips: z.array(z.object({ id: z.string(), situation: z.string(), steps: z.array(z.string()), source: z.object({ label: z.string(), url: z.string().url() }) })),
+    dontDo: z.array(z.string()),
+  }),
   /** A level chooser for a slot that isn't a single product row (e.g. food: bulk staples vs freeze-dried). */
-  z.object({ type: z.literal("levelchoice"), group: z.string(), caption: z.string(), levels: z.array(LevelOptionSchema) }),
+  z.object({ kind: Kind.optional(), type: z.literal("levelchoice"), group: z.string(), caption: z.string(), levels: z.array(LevelOptionSchema) }),
   /** Gear with optional Buy buttons. Renderers build the tracked link from itemId (/go/<itemId>). */
   z.object({
+    kind: Kind.optional(),
     type: z.literal("products"),
     caption: z.string().optional(),
     /** Compact rows (name, qty, price, Buy) for the shopping list; full specs live in Recommended gear. */
@@ -87,12 +109,16 @@ export const SectionSchema = z.object({
   number: z.number(),
   title: z.string(),
   summary: z.string(),
+  /** D10: the section card's key number (from the rules engine), e.g. { value: "54 gal", label: "water to store" }. */
+  key: z.object({ value: z.string(), label: z.string() }).optional(),
   blocks: z.array(BlockSchema),
 });
 export type Section = z.infer<typeof SectionSchema>;
 
 /** Dashboard data: headline numbers with their math, and the gear list with costs. Every number comes from the rules engine. */
 export const OverviewSchema = z.object({
+  /** D3: the stated budget (never changed) and this plan's gear total. `cap` is the top of the chosen range; null for "$5,000+". */
+  budget: z.object({ label: z.string(), cap: z.number().nullable(), totalLow: z.number(), totalHigh: z.number() }).optional(),
   stats: z.array(z.object({ key: z.string(), value: z.string(), label: z.string(), math: z.string(), anchor: z.string() })),
   gear: z.array(
     z.object({

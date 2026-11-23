@@ -1,6 +1,6 @@
 import type { LevelOption } from "@/lib/plan/document";
 
-const LABEL = { essential: "Essential", standard: "Standard", premium: "Premium" } as const;
+const LABEL = { mix: "Recommended mix", essential: "Essential", standard: "Standard", premium: "Premium" } as const;
 
 /**
  * À la carte level picker for one gear slot. Each level is a plain form POST to

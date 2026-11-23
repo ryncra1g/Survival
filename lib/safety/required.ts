@@ -23,4 +23,4 @@ export const INDOOR_HEATER_RULE =
   "Use only a propane heater labeled for indoor use with an oxygen depletion sensor (ODS) and tip-over shutoff, follow its manual's ventilation requirement, keep 3 feet of clearance, never leave it running while everyone sleeps, and keep a working CO alarm in the same room.";
 
 export const BLEACH_RULE =
-  "EPA emergency disinfection: if water is cloudy, filter it first. Add 8 drops of regular unscented 6% bleach (or 6 drops of 8.25%) per gallon, stir, and wait 30 minutes. It should smell slightly of chlorine — if not, repeat once and wait another 15 minutes. Boiling for 1 full minute (3 minutes above 6,500 ft) also works.";
+  "If water is cloudy, let it settle or filter it first. Then disinfect it with regular unscented bleach, using the amount and wait time on the bleach label and in EPA's emergency disinfection steps, or bring it to a rolling boil for 1 minute (3 minutes above 6,500 ft), as CDC advises. Never guess an amount.";

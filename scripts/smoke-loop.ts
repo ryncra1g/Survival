@@ -76,7 +76,7 @@ async function run(i: number): Promise<R> {
     if (!h2.includes("Stackable water bricks")) fail("premium water not shown after choose");
     if (!/✓ <!-- -->Premium|✓ Premium/.test(h2)) fail("premium not marked selected");
     if (!/checked=""[^>]*>|aria-checked/.test(h2) && !h2.includes('"week-1":true')) res.info.tickCarried = "not visible in HTML";
-    res.info.levels = (h2.match(/aria-label="Choose a level"/g) ?? []).length;
+    res.info.levels = (h2.match(/data-testid="compare-options"/g) ?? []).length;
   }
   const before = fs.existsSync(OUT) ? new Set(fs.readdirSync(OUT)) : new Set<string>();
   const email = `loop${i}@example.com`;
@@ -96,7 +96,10 @@ async function run(i: number): Promise<R> {
     const kb = fs.statSync(`${OUT}/${planMail}`).size / 1024;
     res.info.emailKB = Math.round(kb);
     if (kb > 100) fail(`email ${kb.toFixed(0)} KB (Gmail clips >102 KB)`);
-    const atts = fs.readdirSync(OUT).filter((f) => f.startsWith(planMail!.replace(".html", "")) && f.endsWith(".pdf"));
+    // Attachments are written just after the HTML: wait briefly for both (still required).
+    const attsNow = () => fs.readdirSync(OUT).filter((f) => f.startsWith(planMail!.replace(".html", "")) && f.endsWith(".pdf"));
+    for (let k = 0; k < 20 && attsNow().length < 2; k++) await sleep(250);
+    const atts = attsNow();
     if (atts.length !== 2) fail(`email has ${atts.length} attachments`);
     const m = fs.readFileSync(`${OUT}/${planMail}`, "utf8");
     if (/amazon\./i.test(m)) fail("amazon link in email");

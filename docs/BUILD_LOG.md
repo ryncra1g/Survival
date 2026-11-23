@@ -26,6 +26,15 @@ _(written at the end of the run)_
 - [B2] Storage that implies a feature (e.g. garage) also sets the feature (hasGarage), rather than rejecting the answer. This keeps old saved answers valid; the questionnaire only offers spaces the home has. "Very limited space" and "No suitable storage" can't be combined with other spaces (validation).
 - [B2] A shed someone can't use for supplies still gets a step: it's the place for gas cans and propane (same guidance as the existing shed storage step).
 - [B3] The personal-filter note says only that it belongs in the go-bag; a claim that it can't supply a household was left out (no official source).
+- [C2] Section cards show a key number where the engine has one (water, calories, steps, fuel reserve, pet food...) and a 2-line summary otherwise.
+- [C3] "$X over your budget" compares with the top of the stated range ($500 / $1,500 / $5,000; none for $5,000+), using the middle of each price range. The first aid kit is now essential (never deferred) so safety items always lead.
+- [C4] Draft food-mix rules (not live yet): no storage, no way to cook without grid power, or a 72-hour plan → all ready-to-eat; very limited space → 75% ready / 25% bulk; otherwise 50/50; $5,000+ moves a quarter of the bulk share to kits. Ready-to-eat planning cost $3 per 1,000 kcal and 30 lb per 5-gal bucket are estimates for owner review.
+- [C4] Recommended food mix follows the plan's eating order: ready-to-eat for the first 14 days, bulk staples after; all ready-to-eat with no suitable storage or no way to cook without grid power (apartment, non-gas stove, no backup power); $5,000+ moves a quarter of the bulk share to ration & freeze-dried kits. A 50/50 split was tried first but made ready-to-eat so costly the sample household could no longer afford its generator.
+- [C4] The storage buckets item is now priced per bucket ($20–35, estimate) and sized to the bulk staples; it can land under "buy next" when the budget is full (the budget is a target).
+- [C4/C5] To keep the plan email under Gmail's clipping limit: detail tables (per-person calories, Compare food options, the staples reference) and the duplicate compact shopping list stay on the web and in the PDF; the email shows each item's chosen level only.
+- [C5] The bleach callout no longer gives drop amounts (owner D6: never write dosages). It keeps CDC's boiling time (1 minute, 3 above 6,500 ft): a time, not a dosage.
+- [C6] Tips are built into every plan's data and linted always; the web, PDF and email render them only when DIY_TIPS_ENABLED is on, so turning the flag on needs no rebuild.
+- [C7] The launch places page is reachable only by the browser that can open the plan (same rule as the plan). Directions links go to Apple Maps or Google Maps only when tapped.
 
 ## Tasks
 | ID | Decision | Status | Commit | Note |
@@ -43,6 +52,16 @@ _(written at the end of the run)_
 | B2 | D5 | done | 0075087 | Home features = property only (adds shed); storage offers only spaces the home has + Closets / Other indoor / Very limited / No suitable storage |
 | B3 | D6 | done | 0075087 | Filter type household / personal / both / none; personal counts for the go-bag only |
 | B4 | — | done | (this commit) | Batch B verified: lint ✓, 429 unit ✓ (incl. pathways 69 + 80 pairwise, migrate), build ✓, 10 e2e ✓, smoke 10/10 ✓, screenshots light+dark ✓ |
+| C1 | D8 | done | 8f2a7ec | Kinds on every block (Good to know / To do / To have), labels on web + PDF, tests/kinds.test.ts |
+| C2 | D10 | done | e9fea6c + 04ac3fd | Card grid per chapter (2 across on phones) with engine key numbers; e2e 10/10 after fix |
+| C3 | D3 | done | bc59569 | Compare options (Lower-cost / Upgrade / Other choices, difference, new total, $X over budget); safety-first order; first aid essential; tests/budget.test.ts |
+| C4 | D7 | done | 1211eba + 0082a7f | Food mix (bulk / ready-to-eat / kits), calorie total fixed, buckets sized to bulk pounds, switch or mix, comparison table, notes; tests/food.test.ts |
+| C5 | D6 | done | 19a0203 | Treatment layers with what each doesn't remove (CDC), no dosages (bleach rule points to label + EPA/CDC), water kit, 2 catalog items; tests/water.test.ts |
+| C6 | D3b | done | 699df6d | Tip library + unsafe_diy linter rule; tips built into plans but shown only with DIY_TIPS_ENABLED (off); tests/tips.test.ts |
+| C7 | D4 | done | a2ed3aa | "When you must leave" in every plan + override line + backup-destination To do; /plan/<id>/places (nothing saved or sent); e2e sentinel check |
+| C8 | D12, D12b | done | fec1a2c | Maintenance as data (table text unchanged), .ics calendar, printable list, Stay ready row with Copy for AI; tests/calendar.test.ts |
+| C9 | — | done | (this commit) | Batch C verified: lint ✓, 472 unit ✓, build ✓, 12 e2e ✓, smoke 10/10 ✓ (smoke now waits for both attachments; level count reads Compare options), screenshots light+dark ✓ |
+| D1–D10 | D2, D4, D7, D8, D3b, D12 | not started | — | Accounts track (behind ACCOUNTS_ENABLED) |
 
 ## Blocked
 _(none yet)_
