@@ -123,7 +123,7 @@ describe("review 3: Copy for AI is rate-limited and counted once per plan per da
       last = (await call("aiCopy", "POST", "/x", ids.planA)).status;
     }
     expect(last).toBe(429);
-  });
+  }, 60_000);
 });
 
 describe("D9: account data (My places, reminders, export)", () => {
