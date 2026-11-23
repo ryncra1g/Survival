@@ -1,4 +1,5 @@
 import type { PlanConsent } from "@/lib/legal";
+import type { OnStage } from "@/lib/plan/stages";
 import "server-only";
 import { createClient } from "@supabase/supabase-js";
 import { generatePlan } from "@/lib/plan/generate";
@@ -12,9 +13,9 @@ import { metaFor, sendEmail } from "./mailer";
 import { store, type PlanRow, type UserRow } from "./store";
 import { BRAND } from "@/lib/brand";
 
-export async function buildAndSavePlan(userId: string | null, questionnaireId: string, answers: unknown, consent: PlanConsent | null): Promise<PlanRow> {
+export async function buildAndSavePlan(userId: string | null, questionnaireId: string, answers: unknown, consent: PlanConsent | null, onStage?: OnStage): Promise<PlanRow> {
   const [{ constants, version }, catalog] = await Promise.all([loadConstants(), store.listCatalog()]);
-  const r = await generatePlan(answers, constants, catalog);
+  const r = await generatePlan(answers, constants, catalog, { onStage });
   const plan = await store.createPlan({
     questionnaire_id: questionnaireId,
     user_id: userId,
@@ -26,6 +27,7 @@ export async function buildAndSavePlan(userId: string | null, questionnaireId: s
     consent,
   });
   await store.updateQuestionnaire(questionnaireId, { complete: true });
+  await onStage?.("steps");
   return plan;
 }
 

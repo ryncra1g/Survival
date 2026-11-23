@@ -7,6 +7,7 @@ import { buildAndSavePlan, emailPlan } from "@/lib/server/plans";
 import { clientIp, limit, LIMITS } from "@/lib/server/ratelimit";
 import { getSession } from "@/lib/server/session";
 import { store } from "@/lib/server/store";
+import type { StreamLine } from "@/lib/plan/stages";
 
 export const maxDuration = 60;
 
@@ -31,9 +32,32 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     return err("You've generated several plans today. Try again tomorrow.", 429);
 
   await store.updateQuestionnaire(id, { answers: parsed.data });
-  const plan = await buildAndSavePlan(user?.id ?? null, id, parsed.data, consentRecord(parsed.data));
   // Confirmed addresses get the plan right away, even if they confirmed on another device.
   const emailNow = !!user?.double_opt_in_at;
-  if (user && emailNow) after(() => emailPlan(plan, user).catch((e) => console.error("[mail] plan", e)));
-  return json({ planId: plan.id, emailed: emailNow });
+  const finish = (plan: Awaited<ReturnType<typeof buildAndSavePlan>>) => {
+    if (user && emailNow) after(() => emailPlan(plan, user).catch((e) => console.error("[mail] plan", e)));
+    return { planId: plan.id, emailed: emailNow };
+  };
+
+  // D11: with Accept: application/x-ndjson, stream each build stage as it actually finishes.
+  if ((req.headers.get("accept") ?? "").includes("application/x-ndjson")) {
+    const enc = new TextEncoder();
+    const stream = new ReadableStream<Uint8Array>({
+      async start(c) {
+        const send = (line: StreamLine) => c.enqueue(enc.encode(JSON.stringify(line) + "\n"));
+        try {
+          const plan = await buildAndSavePlan(user?.id ?? null, id, parsed.data, consentRecord(parsed.data), (stage) => send({ stage }));
+          send(finish(plan));
+        } catch (e) {
+          console.error("[generate]", e);
+          send({ error: "Couldn't build the plan. Try again." });
+        }
+        c.close();
+      },
+    });
+    return new Response(stream, { headers: { "Content-Type": "application/x-ndjson; charset=utf-8", "Cache-Control": "no-store", "X-Accel-Buffering": "no" } });
+  }
+
+  const plan = await buildAndSavePlan(user?.id ?? null, id, parsed.data, consentRecord(parsed.data));
+  return json(finish(plan));
 }

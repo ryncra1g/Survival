@@ -4,9 +4,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DemoLinkBanner } from "@/components/DemoLinkBanner";
 import { ChangeAnswer } from "@/components/ChangeAnswer";
-import { EmailMyPlan } from "@/components/EmailMyPlan";
+import { SaveBar } from "@/components/SaveBar";
+import { ShareMenu } from "@/components/ShareMenu";
+import { CopyForAI } from "@/components/CopyForAI";
+import { aiSummary } from "@/lib/plan/aiSummary";
+import type { ComputedPlan } from "@/lib/rules/engine";
+import { flags } from "@/lib/flags";
 import { PlanView } from "@/components/PlanView";
-import { PrintButton } from "@/components/PrintButton";
 import { ResendConfirm } from "@/components/ResendConfirm";
 import type { PlanDocument } from "@/lib/plan/document";
 import { loadPlanFor } from "@/lib/server/access";
@@ -28,7 +32,7 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
 
   // Email status: none yet → optional capture; given but unconfirmed → resend; confirmed → sent.
   const emailStatus = !user ? (
-    <EmailMyPlan planId={plan.id} siteKey={siteKey} />
+    <SaveBar planId={plan.id} siteKey={siteKey} accounts={flags().accounts} />
   ) : emailed || plan.emailed_at ? (
     <p className="card p-3 border-ok">✓ Your plan, PDF and fridge checklist are on their way to {user.email}.</p>
   ) : confirmed ? (
@@ -45,7 +49,11 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
     <div className="mx-auto max-w-3xl px-4 py-6">
       <h1 className="text-3xl font-bold">{doc.title}</h1>
       <Subtitle text={doc.subtitle} />
-      <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="#about" className="underline">Sources &amp; disclaimers</a></p>
+      <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="/sources" className="underline">Sources &amp; safety</a></p>
+      <div className="mt-3 flex flex-wrap gap-2 no-print">
+        <ShareMenu planId={plan.id} email={!user} extra={<CopyForAI variant="menu" planId={plan.id} text={aiSummary(doc, (plan.computed_quantities as ComputedPlan).answers)} />} />
+        {session?.scope === "full" && <Link href="/account" className="btn-ghost border border-line text-sm px-3 min-h-[44px]">Edit answers</Link>}
+      </div>
 
       {/* Dashboard first (what to do next); then ways to keep the plan; then the plan itself. */}
       <PlanView
@@ -55,22 +63,11 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
         sync
         afterDashboard={
           <div className="no-print">
-            <div className="mt-5" id="email">{emailStatus}</div>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <a href={`/api/plans/${plan.id}/pdf`} className="btn-ghost border border-line text-sm px-3 min-h-[44px]">Download PDF</a>
-              <a href={`/api/plans/${plan.id}/checklist`} className="btn-ghost border border-line text-sm px-3 min-h-[44px]">Fridge checklist</a>
-              <PrintButton />
-              {session?.scope === "full" && <Link href="/account" className="btn-ghost border border-line text-sm px-3 min-h-[44px]">Edit answers</Link>}
-            </div>
+            <div className="mt-5">{emailStatus}</div>
             <ChangeAnswer planId={plan.id} />
           </div>
         }
       />
-      {!user && (
-        <div className="my-6">
-          <EmailMyPlan planId={plan.id} siteKey={siteKey} idPrefix="emp2" />
-        </div>
-      )}
     </div>
   );
 }

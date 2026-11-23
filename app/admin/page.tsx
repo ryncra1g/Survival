@@ -21,6 +21,7 @@ export default async function Admin() {
     ["Plans generated", s.plansGenerated],
     ["Email capture", pct(s.plansWithEmail, s.plansGenerated), `${s.plansWithEmail} plans with an email`],
     ["Buy clicks", s.affiliateClicks, `${s.plansGenerated ? (s.affiliateClicks / s.plansGenerated).toFixed(2) : "0"} per plan`],
+    ["Copy for AI", s.aiCopies, `${s.plansGenerated ? (s.aiCopies / s.plansGenerated).toFixed(2) : "0"} per plan`],
     ["Emails sent", s.emailsSent],
     ["Email opens", s.emailOpens, pct(s.emailOpens, s.emailsSent) + " open rate"],
     ["Unsubscribed", s.unsubscribed],
@@ -30,9 +31,9 @@ export default async function Admin() {
       <h1 className="text-2xl font-bold">Admin</h1>
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         {tiles.map(([label, value, sub]) => (
-          <div key={label} className="card p-4">
+          <div key={label} className="card p-4" data-testid={`stat-${label}`}>
             <p className="text-sm text-muted">{label}</p>
-            <p className="text-2xl font-bold mt-1">{value}</p>
+            <p className="text-2xl font-bold mt-1" data-testid="stat-value">{value}</p>
             {sub && <p className="text-xs text-muted mt-1">{sub}</p>}
           </div>
         ))}

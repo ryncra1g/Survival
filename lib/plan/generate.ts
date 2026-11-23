@@ -7,6 +7,8 @@ import { lintDocument } from "@/lib/safety/linter";
 import { writeSummaries } from "@/lib/llm/writer";
 import { assembleDocument, buildDraft } from "./build";
 import type { PlanDocument } from "./document";
+import type { OnStage } from "./stages";
+import { lookupZip } from "@/lib/zip/profile";
 
 export interface GeneratedPlan {
   computed: ComputedPlan;
@@ -23,10 +25,13 @@ export async function generatePlan(
   rawAnswers: unknown,
   constants: RuleConstants,
   catalog: CatalogItem[],
-  opts: { now?: Date; useLlm?: boolean; client?: Anthropic } = {},
+  opts: { now?: Date; useLlm?: boolean; client?: Anthropic; onStage?: OnStage } = {},
 ): Promise<GeneratedPlan> {
   const answers: Answers = AnswersSchema.parse(rawAnswers);
+  lookupZip(answers.zip);
+  await opts.onStage?.("hazards");
   const computed = computePlan(answers, constants, catalog, opts.now);
+  await opts.onStage?.("quantities");
   const draft = buildDraft(computed, constants);
   const templateSummaries = Object.fromEntries(draft.sections.map((s) => [s.id, s.summaryTemplate]));
 

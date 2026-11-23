@@ -78,6 +78,8 @@ export interface Stats {
   /** Plans whose owner gave an email (optional email capture). */
   plansWithEmail: number;
   affiliateClicks: number;
+  /** D13: "Copy for your AI assistant" clicks, the signal for an in-app assistant later. */
+  aiCopies: number;
   topClicks: { itemId: string; clicks: number }[];
 }
 
@@ -122,3 +124,6 @@ export interface Store {
 
   stats(): Promise<Stats>;
 }
+
+/** D13: email_events type for a "Copy for your AI assistant" click (no new table; type is free text). */
+export const AI_COPY_EVENT = "ai_copy";

@@ -44,6 +44,9 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Get what you need. Know what to do.");
   await expect(page.getByLabel("Your email")).toHaveCount(0); // no email up front
+  await expect(page.getByTestId("chapter-cards").locator(":scope > li")).toHaveCount(4);
+  await expect(page.getByRole("link", { name: "See a sample plan" })).toHaveAttribute("href", "/sample");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   await page.getByRole("button", { name: "Build my free plan" }).click();
   await expect(page).toHaveURL(/\/q\//);
 
@@ -82,10 +85,19 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(page.getByText("Please tick the box to agree to the Terms of Use")).toBeVisible();
   await expect(page).toHaveURL(/\/q\//);
   await page.getByLabel(/general guidance, not professional advice/).check();
+  const qid = page.url().split("/q/")[1];
   await next(page);
 
   await expect(page).toHaveURL(/\/plan\//, { timeout: 60_000 });
   const planUrl = page.url();
+  // D11: the build streams its three real stages in order, then the plan id.
+  const streamed = await page.request.post(`/api/questionnaire/${qid}/generate`, {
+    headers: { Accept: "application/x-ndjson", Origin: new URL(planUrl).origin },
+    data: { consent: { terms: true } },
+  });
+  expect(streamed.headers()["content-type"]).toContain("application/x-ndjson");
+  const lines = (await streamed.text()).trim().split("\n").map((l) => JSON.parse(l));
+  expect(lines.map((l) => l.stage ?? (l.planId ? "plan" : l.error))).toEqual(["hazards", "quantities", "steps", "plan"]);
   expect(Date.now() - started).toBeLessThan(5 * 60_000);
   expect(planUrl).not.toMatch(/11746|zip|answers/);
   // Dashboard first: this week's progress, Next up (with why + Buy), key numbers, shopping list
@@ -157,8 +169,21 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   }
   expect((await request.get(planUrl)).status()).toBe(404); // another browser can't see it
 
+  // Share menu: PDF, fridge checklist, print, email
+  const share = page.getByTestId("share-menu");
+  await share.locator("summary").click();
+  await expect(share.getByRole("link", { name: "Download PDF" })).toHaveAttribute("href", /\/pdf$/);
+  await expect(share.getByRole("link", { name: "Fridge checklist" })).toHaveAttribute("href", /\/checklist$/);
+  await expect(share.getByRole("button", { name: "Print" })).toBeVisible();
+  // One slim save bar instead of the big email box; it says where the plan is saved.
+  await expect(page.getByTestId("save-bar")).toHaveCount(1);
+  await expect(page.getByTestId("save-bar")).toContainText("Saved on this device for 30 days. Confirm your email to keep it and use it on any device.");
+  await expect(page.locator("form:has(input[type=email])")).toHaveCount(1); // one email entry point
+  await share.getByRole("link", { name: "Email me my plan" }).click();
+
   // Optional email: typo check, then confirm flow
   const box = page.locator("form", { has: page.getByRole("heading", { name: "Email me my plan" }) }).first();
+  await expect(box).toBeVisible();
   await box.getByPlaceholder("you@example.com").fill("family@gmial.com");
   await box.getByRole("button", { name: "Email my plan" }).click();
   await expect(box.getByText("Did you mean")).toBeVisible();
@@ -255,13 +280,25 @@ test("admin: dashboard, catalog, rule constants, affiliate tag → tracked Buy c
   await page.goto("/admin");
   await expect(page.getByText("Carbon monoxide alarm — 1")).toBeVisible();
 
+  // D12b / D13: Copy for your AI assistant copies the summary and is counted on the admin dashboard
+  await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto(`/plan/${planId}`);
+  await page.getByTestId("share-menu").locator("summary").click();
+  await page.getByRole("button", { name: "Copy for your AI assistant" }).click();
+  await expect(page.getByText("Copied. Paste it into your AI assistant to get started.")).toBeVisible();
+  const copied = await page.evaluate(() => navigator.clipboard.readText());
+  expect(copied).toContain("Use these amounts exactly; don't recalculate them.");
+  expect(copied).not.toMatch(/\b\d{5}\b/);
+  await page.goto("/admin");
+  await expect(page.getByTestId("stat-Copy for AI").getByTestId("stat-value")).toHaveText("1");
+
   // reset so other runs start from defaults
   await page.request.post("/api/admin/rules", { data: { overrides: {} }, headers: O });
 });
 
 test("sample plan is public", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("link", { name: "See the full sample plan" }).click();
+  await page.getByRole("link", { name: "See a sample plan" }).click();
   await expect(page).toHaveURL(/\/sample/);
   await expect(page.getByText(/Store 54 gallons \(14 days\)/)).toBeVisible();
 });
@@ -289,4 +326,18 @@ test("à la carte: switch a gear item's level from the plan", async ({ page }) =
   expect(page.url()).not.toContain(planId);
   await expect(page.locator("details#gear").getByText("Stackable water bricks").first()).toBeVisible();
   await expect(page.locator("details#gear [aria-current=true]").filter({ hasText: "Premium" }).first()).toBeVisible();
+});
+
+test("site menu (D9): visitor items on a phone, and every page it links to exists", async ({ page }) => {
+  await page.goto("/");
+  const menu = page.getByTestId("site-menu");
+  await menu.locator("summary").click();
+  const nav = menu.getByRole("navigation", { name: "Site menu" });
+  for (const label of ["Sign in", "Help", "About", "Sources & safety", "Terms", "Privacy"]) await expect(nav.getByRole("link", { name: label })).toBeVisible();
+  await expect(nav.getByRole("link", { name: "My places" })).toHaveCount(0); // accounts track is off
+  await page.keyboard.press("Escape");
+  await expect(nav).toBeHidden();
+  for (const p of ["/help", "/about", "/sources"]) expect((await page.request.get(p)).status()).toBe(200);
+  await page.goto("/sources");
+  await expect(page.getByRole("heading", { name: "Sources & safety" })).toBeVisible();
 });

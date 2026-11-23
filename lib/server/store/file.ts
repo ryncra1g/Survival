@@ -6,6 +6,7 @@ import { SEED_CATALOG } from "@/lib/catalog/seed";
 import type { CatalogItem } from "@/lib/catalog/types";
 import { newId, seal, unseal, type Sealed } from "../crypto";
 import type { EmailEventRow, PlanRow, QuestionnaireRow, RuleConstantsRow, Stats, Store, TokenRow, UserRow } from "./types";
+import { AI_COPY_EVENT } from "./types";
 
 /**
  * Demo/dev store: a JSON file at .data/db.json. Same encryption as production
@@ -225,6 +226,7 @@ export const fileStore: Store = {
       emailOpens: db.email_events.filter((e) => e.type === "opened").length,
       unsubscribed: db.users.filter((u) => u.unsubscribed_at).length,
       plansWithEmail: db.plans.filter((p) => p.user_id).length,
+      aiCopies: db.email_events.filter((e) => e.type === AI_COPY_EVENT).length,
       ...clickStats(db.email_events),
     };
   },

@@ -52,7 +52,7 @@ export async function AccountActions({ searchParams }: { searchParams: Record<st
         <FollowupToggle initial={user.followups_opt_in && !user.unsubscribed_at} />
       </section>
 
-      <section className="card p-5 space-y-3">
+      <section id="data" className="card p-5 space-y-3 scroll-mt-20">
         <h2 className="text-lg font-semibold">Your data</h2>
         <p className="text-sm text-muted">Download everything we store about you, or delete it permanently.</p>
         <div className="flex flex-wrap gap-3">
