@@ -8,12 +8,14 @@ import path from "node:path";
  * against a temporary file store, with the session cookie set per request.
  */
 const jar = new Map<string, string>();
+let ip = "203.0.113.1";
 vi.mock("next/headers", () => ({
   cookies: async () => ({
     get: (n: string) => (jar.has(n) ? { value: jar.get(n)! } : undefined),
     set: (n: string, v: string) => void jar.set(n, v),
     delete: (n: string) => void jar.delete(n),
   }),
+  headers: async () => new Headers({ "x-forwarded-for": ip }),
 }));
 
 const ORIGIN = "http://test.local";
@@ -94,6 +96,33 @@ describe("D9: plan data (inventory, checks, calendar, Copy for AI)", () => {
     expect((await call("inventory", "PUT", "/x", ids.planA, { inventory: {} }, "https://evil.example")).status).toBe(403);
     expect((await call("places", "PUT", "/x", undefined, { places: [] }, "https://evil.example")).status).toBe(403);
     expect((await call("reminders", "PUT", "/x", undefined, { prefs: { enabled: true, types: {} } }, "https://evil.example")).status).toBe(403);
+  });
+});
+
+describe("review 3: Copy for AI is rate-limited and counted once per plan per day", () => {
+  it("records one ai_copy event per plan per day, whatever the clicks", async () => {
+    const { fileStore } = await import("@/lib/server/store/file");
+    const count = async () => (await fileStore.listEmailEvents(ids.a)).filter((e) => e.type === "ai_copy" && e.provider_id === ids.planA).length;
+    const before = await count();
+    as({ uid: ids.a, nonce: "copy-nonce-1", scope: "full" });
+    ip = "203.0.113.10";
+    for (let i = 0; i < 5; i++) expect((await call("aiCopy", "POST", "/x", ids.planA)).status).toBe(200);
+    expect(before).toBe(0);
+    expect(await count()).toBe(1);
+  });
+  it("answers 429 past the per-browser limit, and past the per-IP limit from many browsers", async () => {
+    const { LIMITS } = await import("@/lib/server/ratelimit");
+    as({ uid: ids.a, nonce: "copy-nonce-2", scope: "full" });
+    ip = "203.0.113.20";
+    for (let i = 0; i < LIMITS.aiCopyPerNonceHour; i++) expect((await call("aiCopy", "POST", "/x", ids.planA)).status).toBe(200);
+    expect((await call("aiCopy", "POST", "/x", ids.planA)).status).toBe(429);
+    ip = "203.0.113.30";
+    let last = 0;
+    for (let i = 0; i <= LIMITS.aiCopyPerIpHour; i++) {
+      as({ uid: ids.a, nonce: `copy-ip-${i}`, scope: "full" });
+      last = (await call("aiCopy", "POST", "/x", ids.planA)).status;
+    }
+    expect(last).toBe(429);
   });
 });
 
