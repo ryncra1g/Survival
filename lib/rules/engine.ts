@@ -1,7 +1,7 @@
 import { hasHouseholdFilter, hasPersonalFilter, isDrive, type Answers, type DriveDestination } from "@/lib/answers/schema";
 import type { CatalogItem } from "@/lib/catalog/types";
 import { atLeast, lookupZip, type ZipProfile } from "@/lib/zip/profile";
-import type { RuleConstants } from "./constants";
+import { DEFAULT_BUCKET_LBS, type RuleConstants } from "./constants";
 
 /**
  * Deterministic rules layer. Every number that appears anywhere in a plan is computed here.
@@ -205,15 +205,20 @@ export function computeFoodMix(a: Answers, c: RuleConstants, food: FoodResult): 
     : [];
   const totalLbs = staples.reduce((t, s) => t + s.lbs, 0);
   // Buckets for dry staples only, each with its own lb-per-bucket; canned goods, oil and peanut butter need none.
-  const bucketLoad = staples.reduce((t, s) => {
-    const per = c.staples.find((x) => x.key === s.key)?.bucketLbs;
-    return per ? t + s.lbs / per : t;
-  }, 0);
+  // A staples override saved before per-staple bucketLbs existed falls back to the default for that staple.
+  let dryLbs = 0;
+  let bucketLoad = 0;
+  for (const s of staples) {
+    const per = c.staples.find((x) => x.key === s.key)?.bucketLbs ?? DEFAULT_BUCKET_LBS[s.key];
+    if (!per) continue;
+    dryLbs += s.lbs;
+    bucketLoad += s.lbs / per;
+  }
   return {
     choice,
     shares,
     kcal,
-    bulk: { staples, totalLbs, cost: staples.reduce((t, s) => t + s.cost, 0), dryLbs: staples.filter((s) => c.staples.find((x) => x.key === s.key)?.bucketLbs).reduce((t, s) => t + s.lbs, 0), buckets: ceil(round(bucketLoad, 4)) },
+    bulk: { staples, totalLbs, cost: staples.reduce((t, s) => t + s.cost, 0), dryLbs, buckets: ceil(round(bucketLoad, 4)) },
     readyCost: round((kcal.ready / 1000) * c.foodMix.readyCostPer1000Kcal, 0),
   };
 }

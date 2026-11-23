@@ -70,6 +70,13 @@ describe("D7: food approaches", () => {
     expect(m.bulk.buckets).toBe(8);
   });
 
+  it("an older staples override without bucketLbs still counts buckets from the defaults", () => {
+    const old = { ...C, staples: C.staples.map(({ bucketLbs: _drop, ...rest }) => rest) };
+    const m = computeFoodMix(SAMPLE_HOUSEHOLD, old, computeFood(SAMPLE_HOUSEHOLD, old));
+    expect(m.bulk.dryLbs).toBe(210);
+    expect(m.bulk.buckets).toBe(8);
+  });
+
   it("the plan states the mix, the comparison and the notes, with no can or pouch counts", async () => {
     const r = await buildPlan({ ...SAMPLE_HOUSEHOLD, budget: "5000_plus" });
     const t = documentStrings(r.document).join("\n");
