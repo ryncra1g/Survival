@@ -1,4 +1,5 @@
 import "server-only";
+import { isId } from "@/lib/ids";
 import type { Session } from "./session";
 import { store, type PlanRow, type QuestionnaireRow } from "./store";
 
@@ -19,7 +20,7 @@ export async function canAccessQuestionnaire(s: Session | null, q: Questionnaire
 }
 
 export async function loadPlanFor(s: Session | null, planId: string): Promise<PlanRow | null> {
-  if (!s || !/^[0-9a-f-]{36}$/i.test(planId)) return null;
+  if (!s || !isId(planId)) return null;
   const p = await store.getPlan(planId);
   if (!p) return null;
   if (s.scope === "full" && p.user_id && p.user_id === s.uid) return p;

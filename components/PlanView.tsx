@@ -8,6 +8,7 @@ import { Dashboard, type PriorityStep } from "./Dashboard";
 import { Chevron } from "./Chevron";
 import { groupIntoChapters } from "@/lib/plan/chapters";
 import { BRAND } from "@/lib/brand";
+import { isId } from "@/lib/ids";
 import { HelpStrip, productIndex, resolveStep, StepExtras, type StepView } from "./StepExtras";
 import { matchMaterials } from "@/lib/tips/match";
 import { TIP_MATERIALS } from "@/lib/tips/library";
@@ -258,7 +259,7 @@ export function PlanView({
                   <span className="hidden group-open:block mt-3 rounded bg-brand-soft p-3 text-ink">{s.summary}</span>
                 </summary>
                 <div className="px-4 sm:px-6 pb-5">
-                  {s.id === "evacuation" && /^[0-9a-f-]{36}$/i.test(planId) && (
+                  {s.id === "evacuation" && isId(planId) && (
                     <p className="mt-3 no-print"><a href={`/plan/${planId}/places`} className="btn-ghost border border-line text-sm px-3 min-h-[44px] inline-flex items-center">Add your backup destination (printable)</a></p>
                   )}
                   {(() => {

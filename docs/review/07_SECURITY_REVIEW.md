@@ -71,7 +71,9 @@ The review found no injection (SQL, header/CRLF in `.ics` or Content-Disposition
 - Someone who builds a plan on a laptop and then confirms on their phone has to use a sign-in link to reopen it on the laptop.
 - The copy "Saved on this device for 30 days. Confirm your email to keep it and use it on any device." is still true before confirming.
 
-## Low: not fixed, logged in BUILD_LOG Assumptions [R9]
+## Low: logged in BUILD_LOG Assumptions [R9]
+
+**Update (follow-up branch `claude/review-lows`):** 1, 3, 5 and 6 are fixed and tested. 2 and 4 are accepted for launch; BUILD_LOG [R9] gives the reason for each.
 
 1. **Cron secret comparison** (`app/api/cron/emails/route.ts:20`): the cron secret is compared with `!==` rather than a constant-time compare. Use `hmacEqual`/`timingSafeEqual`.
 2. **Leftover stored PDFs** (`lib/server/store/supabase.ts` `deleteUserCascade`): it removes the stored PDFs of the plans the user owns now. A PDF saved under `<userId>/` for a plan that was later moved to another account would stay. Delete by the storage prefix `<userId>/` instead.

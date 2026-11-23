@@ -6,6 +6,7 @@ import { seedInventory } from "@/lib/accountData";
 import { saveBarText } from "@/lib/copy";
 import { flags } from "@/lib/flags";
 import type { PlanDocument } from "@/lib/plan/document";
+import { isId } from "@/lib/ids";
 import { loadPlanFor } from "@/lib/server/access";
 import { getSession } from "@/lib/server/session";
 
@@ -15,7 +16,9 @@ export const metadata: Metadata = { title: "Household & inventory", robots: { in
 export default async function InventoryPage({ params }: { params: Promise<{ id: string }> }) {
   if (!flags().accounts) notFound();
   const session = await getSession();
-  const plan = await loadPlanFor(session, (await params).id);
+  const { id } = await params;
+  if (!isId(id)) notFound();
+  const plan = await loadPlanFor(session, id);
   if (!plan) notFound();
   const doc = plan.plan as PlanDocument;
   const items = (doc.overview?.gear ?? []).map((g) => ({ itemId: g.itemId, name: g.name, qty: g.qty }));

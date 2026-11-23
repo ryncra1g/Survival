@@ -1,3 +1,4 @@
+import { isId } from "@/lib/ids";
 import { z } from "zod";
 import { loadPlanFor } from "@/lib/server/access";
 import { err, json, readJson, sameOrigin } from "@/lib/server/http";
@@ -10,6 +11,7 @@ const Body = z.object({ checks: z.record(z.string().regex(/^[a-z0-9-]{1,40}$/), 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!sameOrigin(req)) return err("Bad origin", 403);
   const { id } = await params;
+  if (!isId(id)) return err("Not found", 404);
   const plan = await loadPlanFor(await getSession(), id);
   if (!plan) return err("Not found", 404);
   const body = Body.safeParse(await readJson(req, 20_000));

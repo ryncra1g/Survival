@@ -3,6 +3,7 @@ import { flags } from "@/lib/flags";
 import { maintenanceItems } from "@/lib/plan/maintenance";
 import { dueReminders } from "@/lib/reminders";
 import { issueLink } from "@/lib/server/auth";
+import { cronAuthorized } from "@/lib/server/cronAuth";
 import type { ComputedPlan } from "@/lib/rules/engine";
 import { env } from "@/lib/server/env";
 import { metaFor, sendEmail } from "@/lib/server/mailer";
@@ -17,7 +18,7 @@ export const maxDuration = 300;
  * based on the plan's ZIP hazard profile. Each kind is sent at most once (per year for seasonal).
  */
 export async function GET(req: Request) {
-  if (!env.cronSecret || req.headers.get("authorization") !== `Bearer ${env.cronSecret}`) return new Response("Unauthorized", { status: 401 });
+  if (!cronAuthorized(req.headers.get("authorization"), env.cronSecret)) return new Response("Unauthorized", { status: 401 });
   const now = new Date();
   const month = now.getUTCMonth() + 1;
   const year = now.getUTCFullYear();

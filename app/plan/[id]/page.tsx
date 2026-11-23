@@ -15,6 +15,7 @@ import { flags } from "@/lib/flags";
 import { PlanView } from "@/components/PlanView";
 import { ResendConfirm } from "@/components/ResendConfirm";
 import type { PlanDocument } from "@/lib/plan/document";
+import { isId } from "@/lib/ids";
 import { loadPlanFor } from "@/lib/server/access";
 import { getSession } from "@/lib/server/session";
 import { store } from "@/lib/server/store";
@@ -23,6 +24,7 @@ export const metadata: Metadata = { title: "Your plan", robots: { index: false }
 
 export default async function PlanPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ emailed?: string }> }) {
   const { id } = await params;
+  if (!isId(id)) notFound();
   const { emailed } = await searchParams;
   const session = await getSession();
   const plan = await loadPlanFor(session, id);

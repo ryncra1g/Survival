@@ -1,3 +1,4 @@
+import { isId } from "@/lib/ids";
 import { after } from "next/server";
 import { z } from "zod";
 import { sendClaimLink, sendConfirm } from "@/lib/server/auth";
@@ -25,6 +26,7 @@ const Body = z.object({
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!sameOrigin(req)) return err("Bad origin", 403);
   const { id } = await params;
+  if (!isId(id)) return err("Not found", 404);
   const session = await getSession();
   const plan = await loadPlanFor(session, id);
   if (!plan || !session) return err("Not found", 404);

@@ -1,5 +1,6 @@
 import "server-only";
 import { cookies } from "next/headers";
+import { z } from "zod";
 import { hmac, hmacEqual, randomToken } from "./crypto";
 import { env, isProd } from "./env";
 
@@ -17,6 +18,18 @@ export interface Session {
   scope: "anon" | "draft" | "full";
   exp: number;
 }
+/**
+ * The shape a session cookie must have: these four fields with these types. Unknown fields are stripped, not
+ * rejected, so a release that adds a field can be rolled back (or run beside an older one) without signing people out.
+ */
+const SessionSchema = z
+  .object({
+    uid: z.string().max(64),
+    nonce: z.string().min(1).max(64),
+    scope: z.enum(["anon", "draft", "full"]),
+    exp: z.number().int().positive(),
+  })
+  .strip();
 const NAME = "rp_session";
 const DAYS = { anon: 30, draft: 30, full: 30 };
 
@@ -26,13 +39,16 @@ export function encodeSession(s: Session): string {
 }
 export function decodeSession(raw: string | undefined): Session | null {
   if (!raw) return null;
-  const [body, sig] = raw.split(".");
-  if (!body || !sig || !hmacEqual(sig, hmac(body))) return null;
   try {
-    const s = JSON.parse(Buffer.from(body, "base64url").toString()) as Session;
-    return s.exp > Date.now() ? s : null;
+    const parts = raw.split(".");
+    if (parts.length !== 2) return null;
+    const [body, sig] = parts;
+    if (!body || !sig || !hmacEqual(sig, hmac(body))) return null;
+    // Security review Low 5: a valid signature isn't enough; the contents must have the expected shape.
+    const s = SessionSchema.safeParse(JSON.parse(Buffer.from(body, "base64url").toString("utf8")));
+    return s.success && s.data.exp > Date.now() ? s.data : null;
   } catch {
-    return null;
+    return null; // anything malformed is signed out, never a 500
   }
 }
 
