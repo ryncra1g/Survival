@@ -1,0 +1,35 @@
+# Type-check and unit tests on every push and pull request, on every branch.
+# No secrets and no deploy steps. Both feature flags stay off.
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ACCOUNTS_ENABLED: "false"
+      DIY_TIPS_ENABLED: "false"
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v5
+      # Node 24 is the current LTS. Node 20 reached end of life in April 2026, and vitest 5 needs 22.12+ or 24.
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
