@@ -9,7 +9,8 @@ const LINKS: [string, string][] = [
   ["home", "Home"],
   ["heat", "Heat, cooking & water"],
   ["power", "Power & vehicles"],
-  ["storage", "Storage & evacuation"],
+  ["storage", "Storage"],
+  ["evacuation", "If you have to leave"],
   ["budget", "Budget"],
 ];
 

@@ -6,7 +6,7 @@ import { sameOrigin } from "@/lib/server/http";
 import { getSession } from "@/lib/server/session";
 import { store } from "@/lib/server/store";
 
-const EDIT_SCREENS = ["location", "household", "pets", "medical", "home", "heat", "power", "storage", "budget"] as const;
+const EDIT_SCREENS = ["location", "household", "pets", "medical", "home", "heat", "power", "storage", "evacuation", "budget"] as const;
 
 /**
  * "Change an answer": copy this plan's answers into a new questionnaire that opens on one screen,

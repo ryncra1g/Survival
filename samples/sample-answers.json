@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "zip": "11746",
   "scenarioDays": 90,
   "adults": 2,
@@ -27,12 +27,13 @@
   "hasBasement": true,
   "hasGarage": true,
   "hasYard": true,
+  "hasShed": false,
   "heatSources": [
     "natural_gas"
   ],
   "cooking": "gas",
   "waterSource": "municipal",
-  "hasFiltration": false,
+  "waterFilter": "none",
   "backupPower": "none",
   "vehicleFuels": [
     "gas",
@@ -42,9 +43,9 @@
     "garage",
     "basement"
   ],
+  "approach": "another_property",
   "evacuation": {
-    "mode": "fallback",
-    "locationType": "raw_land",
+    "destination": "raw_land",
     "distanceMiles": 120
   },
   "budget": "1500_5000",

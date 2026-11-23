@@ -27,10 +27,10 @@ Entry types: **Owner request** (Ryan asked for it), **Assistant recommendation**
 | DB-01 | Three-stage readiness journey | Product direction | Partly started: dashboard home (PR #5). Scope decision needed; **Decided (D1, D2 (Later: Days Ready score, Tasks tab))** |
 | DB-02 | Inventory and shopping status tied to the plan | Medium | Partly done: "I have this" ticks remove Buy buttons and cut the total (PR #5). Purchased / low / expiry open; **Decided (D2 (Batch D inventory))** |
 | AI-01 | Admin-managed readiness assistant | Later phase | Explore; **Decided (D13: not now; count Copy-for-AI clicks. Stays Later)** |
-| HOU-01 | Attic option? | Open question | Open; **Decided (D5: no attic now (Later, heat/cold-tolerant gear only))** |
-| HOU-02 | Home features vs storage question overlap | Medium | Open; **Decided (D5)** |
-| EV-01 | Shelter-at-home preference vs backup destination | Medium | Open; **Decided (D4)** |
-| EV-02 | Printable map to saved destinations | Medium | Open; **Decided (D4)** |
+| HOU-01 | Attic option? | Open question | Open; **Decided (D5: no attic now (Later, heat/cold-tolerant gear only))** **No attic (D5).** |
+| HOU-02 | Home features vs storage question overlap | Medium | Open; **Decided (D5)** **Built (Batch B).** |
+| EV-01 | Shelter-at-home preference vs backup destination | Medium | Open; **Decided (D4)** **Built (Batch B: approach + destination questions).** |
+| EV-02 | Printable map to saved destinations | Medium | Open; **Decided (D4)** **Questions built (Batch B); print page in Batch C.** |
 | PL-01 | Supplies tagged to their plan sections | High | **Done**: "What you need" strip in each section (merged with PR #2) |
 | PL-02 | Separate guidance, actions and pack items | High | Open (storage tips became actions on `claude/headline-copy`); **Decided (D8)** |
 | PL-03 | Smaller Sources & disclaimers card | Medium | Partly done: moved to the bottom earlier. Menu placement open (DB-03); **Decided (D9)** **Built (Batch A: /sources).** |
@@ -40,9 +40,9 @@ Entry types: **Owner request** (Ryan asked for it), **Assistant recommendation**
 | FD-01 | Food review and ration-kit choices | High | Open; **Decided (D7)** |
 | FD-02 | Containers and storage when a food approach needs them | High | Open; **Decided (D7)** |
 | FD-03 | Food constraints that change recommendations | Medium | Open; **Decided (D7 (diet/allergy question Later))** |
-| WT-01 | More water-treatment choices | High | Open; **Decided (D6)** |
+| WT-01 | More water-treatment choices | High | Open; **Decided (D6)** **Filter-type question built (Batch B); treatment layers in Batch C.** |
 | WT-02 | Complete water-readiness kit | Medium | Open; **Decided (D6)** |
-| WT-03 | What counts as an existing emergency filter (LifeStraw?) | Open question | Open; **Decided (D6 (personal filter counts for the go-bag only))** |
+| WT-03 | What counts as an existing emergency filter (LifeStraw?) | Open question | Open; **Decided (D6 (personal filter counts for the go-bag only))** **Built (Batch B: filter type).** |
 | WIZ-01 | Every question and answer traces to a product or resource | High | **Done** (branch `claude/headline-copy`); follow-ups below |
 | FG-01 | Front-page focus group (20 simulated participants) | Medium | **Done**; findings below |
 | GRID-01 | Say plainly that the plan assumes no grid power for the whole period | Medium | Open (proposed November 18, not yet approved) |

@@ -71,7 +71,15 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await next(page);
   await pick(page, "+ Gasoline");
   await next(page);
+  // D5: storage offers only the spaces this home has (basement + garage, no shed), plus indoor options
+  await expect(page.getByRole("heading", { name: "Storage" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /^Shed/ })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /^No suitable storage/ })).toBeVisible();
   await pick(page, "Garage");
+  await next(page);
+  // D4: preferred approach, then where they could go
+  await expect(page.getByRole("heading", { name: "If you have to leave" })).toBeVisible();
+  await pick(page, "Another property");
   await pick(page, "Raw land");
   await pick(page, "~120 mi");
   await next(page);

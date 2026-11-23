@@ -39,6 +39,10 @@
               "House, 2 floors, basement, garage, yard"
             ],
             [
+              "Storage",
+              "Garage, Basement / lower level"
+            ],
+            [
               "Heat / cooking",
               "Natural gas / Gas"
             ],
@@ -55,7 +59,11 @@
               "Gasoline, Gasoline"
             ],
             [
-              "Fallback location",
+              "In an emergency",
+              "Another property"
+            ],
+            [
+              "If you must leave",
               "Raw land, ~120 miles"
             ],
             [
@@ -619,6 +627,14 @@
               "link": {
                 "label": "Look up your flood zone (FEMA Flood Map Service Center)",
                 "url": "https://msc.fema.gov/portal/search"
+              }
+            },
+            {
+              "id": "month-approach",
+              "text": "Get your other property ready to use: keys, how to turn on utilities, and supplies kept there.",
+              "link": {
+                "label": "Evacuation (Ready.gov)",
+                "url": "https://www.ready.gov/evacuation"
               }
             }
           ]

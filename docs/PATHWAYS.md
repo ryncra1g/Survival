@@ -4,9 +4,13 @@ Every answer changes the plan. Three kinds of change: **products** (what's recom
 **skills to practice**, and **considerations** (guidance, decisions, warnings). Enforced by
 `tests/pathways.test.ts`:
 
-- **Every answer matters:** 58 single-answer changes, each must change the plan.
-- **Pairwise:** 68 generated households covering all 1,844 pairs of answers. Each must pass
+- **Every answer matters:** 69 single-answer changes, each must change the plan and trace to a product,
+  a quantity, or a step with a Buy option or official link.
+- **Pairwise:** 80 generated households covering all 2,419 pairs of answers. Each must pass
   the rules below and the safety linter.
+
+Answers are version 2 (owner brief D4, D5, D6). Saved version 1 answers are migrated on every parse
+(`migrateAnswers` in lib/answers/schema.ts; tests/migrate.test.ts).
 
 ## Rules the tests enforce
 **Don't sell what they already have**
@@ -15,10 +19,11 @@ Every answer changes the plan. Three kinds of change: **products** (what's recom
 |---|---|
 | Portable or standby generator, or solar + battery | Another generator |
 | Solar + battery | Solar panels, a second power station |
-| An emergency water filter | Water filters (they're told to test theirs and keep spare cartridges) |
+| A household filter (or both) | Water filters (they're told to test theirs and keep spare cartridges) |
+| Only a personal (straw or bottle) filter | Nothing held back: it counts for the go-bag, not the household supply, so the household filter is still offered |
 | Standby generator | A well transfer switch |
 | Apartment | Any fuel-burning gear or fuel storage (generators, gas cans, propane heater, camp stove, cords, interlock) |
-| No pets / no children / no vehicle / shelter-only / not raw land | Pet kit / kids kit / vehicle kit / go-bags / tent |
+| No pets / no children / no vehicle / no drive destination (public shelter, not sure yet) / not raw land | Pet kit / kids kit / vehicle kit / go-bags / tent |
 
 **Cover what they lack**
 
@@ -48,11 +53,17 @@ Every answer changes the plan. Three kinds of change: **products** (what's recom
 | Oil heat | Keep the tank above ¼ from Nov–Mar |
 | Propane heat | Keep the tank above ½ in winter; supplier's emergency number |
 | Wood heat | Chimney inspection, firewood; no propane-heater strategy |
-| Storage: garage / basement / shed / closets / limited | Where to keep water, food, fuel; basements in flood areas keep things off the floor; limited space starts with 2 weeks |
+| Storage: garage / basement / shed / closets / other indoor / limited | Where to keep water, food, fuel; basements in flood areas keep things off the floor; limited space starts with 2 weeks |
+| No suitable storage | Keep the first 3 days of water and a go-bag; buy the rest as soon as a storm is forecast |
+| Has a shed but can't use it for supplies | It's still the place for gas cans and propane, away from the house |
+| Preferred approach (stay home, family or friends, another property, hotel or shelter, not sure) | A step for that approach with Ready.gov evacuation guidance (Red Cross shelter finder for hotel or shelter) |
+| Destination: hotel / public shelter / not sure yet | List hotels in different directions / find your nearest shelter / choose a backup destination |
+| Destination: family or friends, second property, raw land, hotel (with a distance) | The Evacuation section with fuel math, the route drive and go-bags |
+| Personal filter | Pack it in the go-bag (links to EPA water guidance) |
 | Each hazard rated moderate+ for the ZIP | Its own prep checklist and if/then steps |
 
 ## Adding a new question or answer
-1. Add it to the schema and questionnaire.
+1. Add it to the schema and questionnaire. If it changes saved answers, bump `ANSWERS_VERSION` and migrate.
 2. Make it change the plan (product tag, skill, or consideration).
 3. Add a line to `VARIANTS` and, if it has several values, a field to `FIELDS` in `tests/pathways.test.ts`.
 4. Add any "don't sell what they have" or "cover what they lack" rule to the pairwise test.

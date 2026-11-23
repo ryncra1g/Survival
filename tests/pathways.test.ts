@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_ANSWERS, type Answers } from "@/lib/answers/schema";
+import { DEFAULT_ANSWERS, hasHouseholdFilter, hasPersonalFilter, isDrive, type Answers } from "@/lib/answers/schema";
 import { SEED_CATALOG } from "@/lib/catalog/seed";
 import { generatePlan } from "@/lib/plan/generate";
 import { DEFAULT_CONSTANTS as C } from "@/lib/rules/constants";
@@ -25,7 +25,8 @@ const BASE: Answers = {
   hasGarage: false,
   storage: ["closets"],
   vehicleFuels: ["gas"],
-  evacuation: { mode: "fallback", locationType: "friends_family", distanceMiles: 120 },
+  approach: "family_friends",
+  evacuation: { destination: "friends_family", distanceMiles: 120 },
 };
 
 // ------------------------------------------------------------------ 1. every answer matters
@@ -40,15 +41,18 @@ const VARIANTS: [string, Partial<Answers>][] = [
   ["pet medication", { pets: [{ type: "dog", count: 1, size: "small", specialDiet: false, medications: true }] }],
   ["prescriptions", { hasPrescriptions: true }], ["CPAP", { poweredDevices: ["cpap"] }], ["oxygen", { poweredDevices: ["oxygen"] }], ["nebulizer", { poweredDevices: ["nebulizer"] }],
   ["townhouse", { homeType: "townhouse" }], ["apartment", { homeType: "apartment" }], ["1 floor", { floors: 1 }], ["4 floors", { floors: 4 }],
-  ["basement", { hasBasement: true }], ["garage", { hasGarage: true }], ["yard", { hasYard: true }],
+  ["basement", { hasBasement: true }], ["garage", { hasGarage: true }], ["yard", { hasYard: true }], ["shed (not for supplies)", { hasShed: true }],
   ["oil heat", { heatSources: ["oil"] }], ["propane heat", { heatSources: ["propane"] }], ["electric heat", { heatSources: ["electric"] }], ["wood heat", { heatSources: ["wood"] }],
   ["electric stove", { cooking: "electric" }], ["induction stove", { cooking: "induction" }],
-  ["well", { waterSource: "well" }], ["has filter", { hasFiltration: true, scenarioDays: 30 }],
+  ["well", { waterSource: "well" }], ["household filter", { waterFilter: "household", scenarioDays: 30 }], ["personal filter", { waterFilter: "personal" }], ["both filters", { waterFilter: "both", scenarioDays: 30 }],
   ["portable generator", { backupPower: "portable_generator" }], ["standby generator", { backupPower: "standby_generator" }], ["solar + battery", { backupPower: "solar_battery" }],
   ["no vehicle", { vehicleFuels: [] }], ["diesel", { vehicleFuels: ["diesel"] }], ["EV", { vehicleFuels: ["ev"] }], ["hybrid", { vehicleFuels: ["hybrid"] }],
-  ["storage garage", { storage: ["garage"] }], ["storage basement", { storage: ["basement"] }], ["storage shed", { storage: ["shed"] }], ["storage limited", { storage: ["limited"] }],
-  ["shelter only", { evacuation: { mode: "shelter_only" } }], ["second property", { evacuation: { mode: "fallback", locationType: "second_property", distanceMiles: 120 } }],
-  ["raw land", { evacuation: { mode: "fallback", locationType: "raw_land", distanceMiles: 120 } }], ["far fallback", { evacuation: { mode: "fallback", locationType: "friends_family", distanceMiles: 500 } }],
+  ["storage garage", { hasGarage: true, storage: ["garage"] }], ["storage basement", { hasBasement: true, storage: ["basement"] }], ["storage shed", { hasShed: true, storage: ["shed"] }],
+  ["storage other indoor", { storage: ["other_indoor"] }], ["storage limited", { storage: ["limited"] }], ["no suitable storage", { storage: ["none"] }],
+  ["approach: stay home", { approach: "stay_home" }], ["approach: another property", { approach: "another_property" }], ["approach: hotel or shelter", { approach: "hotel_shelter" }], ["approach: not sure", { approach: "not_sure" }],
+  ["go to: second property", { evacuation: { destination: "second_property", distanceMiles: 120 } }], ["go to: raw land", { evacuation: { destination: "raw_land", distanceMiles: 120 } }],
+  ["go to: hotel", { evacuation: { destination: "hotel", distanceMiles: 120 } }], ["go to: public shelter", { evacuation: { destination: "public_shelter" } }], ["go to: not sure", { evacuation: { destination: "not_sure" } }],
+  ["far fallback", { evacuation: { destination: "friends_family", distanceMiles: 500 } }],
   ["budget <$500", { budget: "under_500" }], ["budget $1.5–5k", { budget: "1500_5000" }], ["budget $5k+", { budget: "5000_plus" }],
   ["knows first aid", { skills: ["first_aid"] }], ["knows camping", { skills: ["camping"], scenarioDays: 30 }], ["handy with tools", { skills: ["tools"] }],
   ["hurricane zone (Miami)", { zip: "33101" }], ["earthquake zone (Seattle)", { zip: "98115" }], ["wildfire + heat (Phoenix)", { zip: "85008" }], ["tornado + winter (Minnesota)", { zip: "56701" }],
@@ -94,14 +98,15 @@ const FIELDS: Field[] = [
   { key: "people", values: [{ adults: 1, childrenAges: [] }, { adults: 2, childrenAges: [0], toddlerNeeds: ["formula", "diapers"] }, { adults: 2, childrenAges: [2, 7], toddlerNeeds: ["diapers"] }, { adults: 4, childrenAges: [15], elderlyOrMobility: true }] },
   { key: "pets", values: [{ pets: [] }, { pets: [{ type: "dog", count: 2, size: "large", specialDiet: false, medications: true }] }, { pets: [{ type: "cat", count: 1, size: "small", specialDiet: true, medications: false }] }] },
   { key: "medical", values: [{ hasPrescriptions: false, poweredDevices: [] }, { hasPrescriptions: true, poweredDevices: [] }, { hasPrescriptions: true, poweredDevices: ["oxygen"] }] },
-  { key: "home", values: [{ homeType: "apartment", hasYard: false, hasGarage: false, hasBasement: false }, { homeType: "house", hasYard: true, hasGarage: true, hasBasement: true }, { homeType: "townhouse", hasYard: false, hasGarage: true, hasBasement: false }, { homeType: "house", hasYard: false, hasGarage: false, hasBasement: true }] },
+  { key: "home", values: [{ homeType: "apartment", hasYard: false, hasGarage: false, hasBasement: false, hasShed: false }, { homeType: "house", hasYard: true, hasGarage: true, hasBasement: true, hasShed: true }, { homeType: "townhouse", hasYard: false, hasGarage: true, hasBasement: false, hasShed: false }, { homeType: "house", hasYard: false, hasGarage: false, hasBasement: true, hasShed: false }] },
   { key: "heat", values: [["natural_gas"], ["oil"], ["propane"], ["electric"], ["wood"], ["natural_gas", "wood"]].map((heatSources) => ({ heatSources }) as Partial<Answers>) },
   { key: "cooking", values: (["gas", "electric", "induction"] as const).map((cooking) => ({ cooking })) },
-  { key: "water", values: [{ waterSource: "municipal", hasFiltration: false }, { waterSource: "municipal", hasFiltration: true }, { waterSource: "well", hasFiltration: false }, { waterSource: "well", hasFiltration: true }] },
+  { key: "water", values: [{ waterSource: "municipal", waterFilter: "none" }, { waterSource: "municipal", waterFilter: "household" }, { waterSource: "well", waterFilter: "personal" }, { waterSource: "well", waterFilter: "both" }] },
   { key: "power", values: (["none", "portable_generator", "standby_generator", "solar_battery"] as const).map((backupPower) => ({ backupPower })) },
   { key: "vehicles", values: [[], ["gas"], ["diesel", "ev"], ["hybrid"]].map((vehicleFuels) => ({ vehicleFuels }) as Partial<Answers>) },
-  { key: "storage", values: [["limited"], ["closets"], ["garage", "basement"], ["shed"]].map((storage) => ({ storage }) as Partial<Answers>) },
-  { key: "evac", values: [{ evacuation: { mode: "shelter_only" } }, { evacuation: { mode: "fallback", locationType: "friends_family", distanceMiles: 50 } }, { evacuation: { mode: "fallback", locationType: "second_property", distanceMiles: 250 } }, { evacuation: { mode: "fallback", locationType: "raw_land", distanceMiles: 120 } }] as Partial<Answers>[] },
+  { key: "storage", values: [["limited"], ["closets"], ["garage", "basement"], ["shed"], ["closets", "other_indoor"], ["none"]].map((storage) => ({ storage }) as Partial<Answers>) },
+  { key: "approach", values: (["stay_home", "family_friends", "another_property", "hotel_shelter", "not_sure"] as const).map((approach) => ({ approach })) },
+  { key: "evac", values: [{ evacuation: { destination: "not_sure" } }, { evacuation: { destination: "public_shelter" } }, { evacuation: { destination: "friends_family", distanceMiles: 50 } }, { evacuation: { destination: "second_property", distanceMiles: 250 } }, { evacuation: { destination: "raw_land", distanceMiles: 120 } }, { evacuation: { destination: "hotel", distanceMiles: 25 } }] as Partial<Answers>[] },
   { key: "budget", values: (["under_500", "500_1500", "1500_5000", "5000_plus"] as const).map((budget) => ({ budget })) },
   { key: "skills", values: [[], ["first_aid"], ["camping"], ["tools"], ["first_aid", "camping", "tools"]].map((skills) => ({ skills }) as Partial<Answers>) },
 ];
@@ -139,7 +144,7 @@ describe("pairwise: what people have (or don't) steers products, skills and cons
     for (const a of households) {
       const r = await plan(a);
       const t = text(r);
-      const why = JSON.stringify({ zip: a.zip, home: a.homeType, power: a.backupPower, heat: a.heatSources, water: a.waterSource, filter: a.hasFiltration, veh: a.vehicleFuels, evac: a.evacuation, skills: a.skills, budget: a.budget });
+      const why = JSON.stringify({ zip: a.zip, home: a.homeType, power: a.backupPower, heat: a.heatSources, water: a.waterSource, filter: a.waterFilter, approach: a.approach, veh: a.vehicleFuels, evac: a.evacuation, skills: a.skills, budget: a.budget });
       const gen = r.computed.budget.picks.concat(r.computed.budget.deferred).filter((p) => p.item.group === "generator");
 
       // never unsafe
@@ -147,12 +152,13 @@ describe("pairwise: what people have (or don't) steers products, skills and cons
       // don't sell what they already have
       if (a.backupPower !== "none") expect(gen.length + r.computed.budget.slots.filter((x) => x.group === "generator").length, why).toBe(0);
       if (a.backupPower === "solar_battery") expect(offered(r, "solar-panel") || r.computed.budget.slots.some((x) => x.group === "battery-house"), why).toBe(false);
-      if (a.hasFiltration) expect(r.computed.budget.slots.some((x) => x.group === "filter"), why).toBe(false);
+      if (hasHouseholdFilter(a)) expect(r.computed.budget.slots.some((x) => x.group === "filter"), why).toBe(false);
       if (a.backupPower === "standby_generator") expect(offered(r, "well-switch"), why).toBe(false);
       // but do cover what they lack
       if (a.poweredDevices.length) expect(picked(r, "med-battery"), why).toBe(true);
       if (a.waterSource === "well" && a.backupPower !== "standby_generator") expect(offered(r, "well-switch"), why).toBe(true);
-      if (!a.hasFiltration && a.scenarioDays > 14) expect(r.computed.budget.slots.some((x) => x.group === "filter" && x.chosen), why).toBe(true);
+      // a personal (straw or bottle) filter never stands in for the household filter (D6)
+      if (!hasHouseholdFilter(a) && a.scenarioDays > 14) expect(r.computed.budget.slots.some((x) => x.group === "filter" && x.chosen), why).toBe(true);
       // essentials: CO alarms and some water container always bought; power bank, radio, first aid always at least offered
       expect(picked(r, "co-alarm") && r.computed.budget.picks.some((p) => p.item.group === "water"), why).toBe(true);
       for (const id of ["power-bank", "radio", "first-aid"]) expect(offered(r, id), `${id} ${why}`).toBe(true);
@@ -163,26 +169,35 @@ describe("pairwise: what people have (or don't) steers products, skills and cons
       // sections appear only when they apply
       expect(section(r, "pets"), why).toBe(a.pets.length > 0);
       expect(section(r, "kids"), why).toBe(a.childrenAges.length > 0);
-      expect(section(r, "evacuation"), why).toBe(a.evacuation.mode === "fallback");
+      const drive = isDrive(a.evacuation.destination) && !!a.evacuation.distanceMiles;
+      expect(section(r, "evacuation"), why).toBe(drive);
       if (!a.pets.length) expect(offered(r, "pet-kit"), why).toBe(false);
       if (!a.childrenAges.length) expect(offered(r, "morale-kit"), why).toBe(false);
       const slot = (g: string) => r.computed.budget.slots.some((x) => x.group === g);
-      if (a.evacuation.mode !== "fallback") expect(slot("go-bag") || slot("shelter"), why).toBe(false);
-      if (a.evacuation.locationType !== "raw_land") expect(slot("shelter") || offered(r, "raw-land-cabin"), why).toBe(false);
+      if (!drive) expect(slot("go-bag") || slot("shelter"), why).toBe(false);
+      if (a.evacuation.destination !== "raw_land") expect(slot("shelter") || offered(r, "raw-land-cabin"), why).toBe(false);
       // vehicles
-      if (a.evacuation.mode === "fallback") expect(/Fuel per vehicle/.test(t), why).toBe(a.vehicleFuels.length > 0);
-      if (a.evacuation.mode === "fallback" && !a.vehicleFuels.length) expect(t, why).toMatch(/No car: plan your ride now/);
+      if (drive) expect(/Fuel per vehicle/.test(t), why).toBe(a.vehicleFuels.length > 0);
+      if (drive && !a.vehicleFuels.length) expect(t, why).toMatch(/No car: plan your ride now/);
       if (!a.vehicleFuels.length) expect(slot("vehicle-kit"), why).toBe(false);
       // skills: what they know changes what they're told to learn
       expect(t, why).toMatch(a.skills.includes("first_aid") ? /refresh CPR every 2 years/ : /take a Red Cross First Aid\/CPR class/);
       expect(t, why).toMatch(a.skills.includes("tools") ? /do the DIY jobs yourself/ : /show you the gas, water and main electrical shutoffs/);
-      if (a.evacuation.locationType === "raw_land" || a.scenarioDays >= 30)
+      if (a.evacuation.destination === "raw_land" || a.scenarioDays >= 30)
         expect(t, why).toMatch(a.skills.includes("camping") ? /check the gear you already own/ : /one night "camping" at home/);
       // considerations follow equipment
       if (a.heatSources.includes("wood")) expect(t, why).toMatch(/Wood stove: practice/);
       if (a.backupPower === "portable_generator") expect(t, why).toMatch(/Generator: practice starting it/);
       if (a.storage.includes("limited")) expect(t, why).toMatch(/Limited space:/);
       if (a.storage.includes("shed")) expect(t, why).toMatch(/Shed: the right place for gas cans/);
+      if (a.storage.includes("none")) expect(t, why).toMatch(/No suitable storage: keep the first 3 days of water/);
+      if (a.storage.includes("other_indoor")) expect(t, why).toMatch(/Other indoor space/);
+      // D4: every plan says what to do about the preferred approach, with an official link
+      const steps = r.document.sections.flatMap((s) => s.blocks).flatMap((bl) => (bl.type === "checklist" ? bl.items : []));
+      const approach = steps.find((i) => i.id === "month-approach");
+      expect(approach?.link?.url, why).toMatch(/^https:\/\/www\.(ready\.gov|redcross\.org)\//);
+      if (a.evacuation.destination === "public_shelter") expect(steps.find((i) => i.id === "month-destination")?.link?.url, why).toMatch(/redcross\.org/);
+      if (hasPersonalFilter(a) && drive) expect(t, why).toMatch(/your straw or bottle filter/);
     }
   }, 120_000);
 });
