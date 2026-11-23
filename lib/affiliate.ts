@@ -1,12 +1,20 @@
 import type { CatalogItem } from "@/lib/catalog/types";
 import { BRAND } from "@/lib/brand";
 
-/** Destination for an item's Buy button, or null when it has none. Amazon search links carry the Associates tag. */
+/**
+ * Destination for an item's Buy button. An item's own affiliate URL wins; otherwise an Amazon search for its
+ * example model. The search carries the Associates tag when one is set at /admin; until then it's a plain
+ * search (no commission), so every recommendation still has somewhere to buy it.
+ */
 export function buyUrl(item: Pick<CatalogItem, "affiliateUrl" | "models" | "name">, amazonTag: string): string | null {
   if (item.affiliateUrl) return item.affiliateUrl;
-  if (!amazonTag) return null;
   const query = item.models[0] && !/^any\b/i.test(item.models[0]) && !/local supplier|device-maker|^local\b|already own/i.test(item.models[0]) ? item.models[0] : item.name;
-  return `https://www.amazon.com/s?k=${encodeURIComponent(query)}&tag=${encodeURIComponent(amazonTag)}`;
+  return `https://www.amazon.com/s?k=${encodeURIComponent(query)}${amazonTag ? `&tag=${encodeURIComponent(amazonTag)}` : ""}`;
+}
+
+/** True when buying through this item's link earns a commission (its own affiliate URL, or a tagged Amazon search). */
+export function earnsCommission(item: Pick<CatalogItem, "affiliateUrl">, amazonTag: string): boolean {
+  return !!item.affiliateUrl || !!amazonTag;
 }
 
 export const AFFILIATE_DISCLOSURE =

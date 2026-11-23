@@ -13,7 +13,8 @@ const toneCls = { danger: "border-danger text-danger", warning: "border-warn tex
 
 type ChooseFn = (group: string, level: "essential" | "standard" | "premium") => void;
 
-type Ctx = { products: ReturnType<typeof productIndex>; href: (itemId: string) => string };
+/** `affiliate`: some Buy links earn a commission, so the inline disclosure shows. */
+type Ctx = { products: ReturnType<typeof productIndex>; href: (itemId: string) => string; affiliate: boolean };
 
 function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block; planId: string; buyHref?: (itemId: string) => string; sectionId: string; onChoose?: ChooseFn; ctx: Ctx }) {
   switch (b.type) {
@@ -31,7 +32,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
         <div className="my-4">
           {b.caption && <h4 className="mt-5 mb-2 font-semibold">{b.caption}</h4>}
           {b.compact && <p className="text-sm text-muted -mt-1 mb-2">What to look for is in <a href="#gear" className="underline">Recommended gear</a>.</p>}
-          {b.items.some((i) => i.buyable) && <p className="text-sm text-ink mb-2" data-testid="affiliate-disclosure"><strong>Affiliate links:</strong> {BRAND.name} may earn a commission if you buy through these Buy links, at no extra cost to you. <a href="#about" className="underline">Details</a></p>}
+          {ctx.affiliate && b.items.some((i) => i.buyable) && <p className="text-sm text-ink mb-2" data-testid="affiliate-disclosure"><strong>Affiliate links:</strong> {BRAND.name} may earn a commission if you buy through these Buy links, at no extra cost to you. <a href="#about" className="underline">Details</a></p>}
           <ul className="divide-y divide-line border-y border-line">
             {b.items.map((i) => (
               <li key={i.itemId} className={`${b.compact ? "py-2 items-center" : "py-3 items-start"} flex gap-3`}>
@@ -154,7 +155,7 @@ export function PlanView({
   onChoose?: ChooseFn;
 }) {
   const chapters = groupIntoChapters(doc.sections);
-  const ctx: Ctx = { products: productIndex(doc), href: (id) => (buyHref ? buyHref(id) : `/go/${encodeURIComponent(id)}?p=${planId}&src=web`) };
+  const ctx: Ctx = { products: productIndex(doc), href: (id) => (buyHref ? buyHref(id) : `/go/${encodeURIComponent(id)}?p=${planId}&src=web`), affiliate: !!doc.affiliateDisclosure };
   return (
     <ChecksProvider planId={planId} initial={checks} sync={sync}>
       <article>

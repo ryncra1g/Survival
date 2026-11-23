@@ -14,7 +14,7 @@ import {
 } from "@/lib/safety/required";
 import { DISCLAIMER, SOURCES, type Block, type Overview, type PlanDocument, type Section } from "./document";
 import { fillTokens, n, plural, range, usd, usdRange } from "./format";
-import { AFFILIATE_DISCLOSURE, buyUrl, emailSafeBuyUrl } from "@/lib/affiliate";
+import { AFFILIATE_DISCLOSURE, buyUrl, earnsCommission, emailSafeBuyUrl } from "@/lib/affiliate";
 
 /**
  * Turns the computed plan into the PlanDocument structure.
@@ -955,7 +955,8 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       { type: "paragraph", text: `Catalog last reviewed: ${[...b.picks, ...b.deferred].map((p) => p.item.reviewedAt).sort()[0] ?? "n/a"}. Check prices, recalls and current reviews before you buy.` },
     ],
   });
-  const affiliate = [...b.picks, ...b.deferred].some((p) => isBuyable(p));
+  // Disclose commissions only when a Buy link can actually earn one (plain Amazon searches don't).
+  const affiliate = [...b.picks, ...b.deferred].some((p) => isBuyable(p) && earnsCommission(p.item, c.affiliate.amazonTag));
 
   // 18. Maintenance ------------------------------------------------------------
   const maint: string[][] = [

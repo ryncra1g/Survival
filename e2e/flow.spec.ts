@@ -92,7 +92,9 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(page.getByText(/Store 54 gallons \(14 days\)/)).toBeVisible();
   await expect(page.getByRole("heading", { name: /Your area's hazards/ })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Phase 1 shopping list (life safety)" })).toBeVisible();
-  await expect(page.getByRole("link", { name: /^Buy / })).toHaveCount(0); // no affiliate tag set yet
+  // No affiliate tag set yet: Buy links still show (plain store search), but no commission disclosure
+  await expect(page.getByRole("link", { name: /^Buy / }).first()).toBeVisible();
+  await expect(page.getByTestId("affiliate-disclosure")).toHaveCount(0);
 
   // Dashboard: progress, headline numbers with math, gear list with "Got it" ticks that persist
   const dash = page.getByTestId("dashboard");
