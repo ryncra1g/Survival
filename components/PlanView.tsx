@@ -53,10 +53,14 @@ function TipsBox({ b, ownedNames }: { b: Extract<Block, { type: "tips" }>; owned
           </li>
         ))}
       </ul>
-      <p className="mt-3 text-sm font-semibold text-[var(--danger)]">Don&apos;t do this</p>
-      <ul className="mt-1 list-disc pl-5 text-sm">
-        {b.dontDo.map((d) => <li key={d}>{d}</li>)}
-      </ul>
+      {b.dontDo.length > 0 && (
+        <>
+          <p className="mt-3 text-sm font-semibold text-[var(--danger)]">Don&apos;t do this</p>
+          <ul className="mt-1 list-disc pl-5 text-sm">
+            {b.dontDo.map((d) => <li key={d}>{d}</li>)}
+          </ul>
+        </>
+      )}
     </aside>
   );
 }

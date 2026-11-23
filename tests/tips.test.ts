@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createElement } from "react";
-import { ALLOWED_SOURCE_HOSTS, DONT_DO, TIPS } from "@/lib/tips/library";
+import { ALLOWED_SOURCE_HOSTS, DONT_DO, TIPS, tipsFor } from "@/lib/tips/library";
 import { lintText } from "@/lib/safety/linter";
 import { renderPlanEmail } from "@/lib/email/render";
 import { PlanView } from "@/components/PlanView";
@@ -59,5 +59,23 @@ describe("D3b: hidden unless DIY_TIPS_ENABLED is on", () => {
     expect(web(true)).toContain("No time to buy?");
     expect(renderPlanEmail(doc, meta).html).not.toContain("No time to buy?");
     expect(renderPlanEmail(doc, { ...meta, diyTips: true }).html).toContain("No time to buy?");
+  });
+});
+
+describe("review 5: each box shows only its own area's 'Don't do this' lines", () => {
+  it("heat, light & power, water and sanitation get their own lines; the full list appears once, in Day 0", async () => {
+    const doc = (await buildPlan()).document;
+    const box = (id: string) => doc.sections.find((s) => s.id === id)!.blocks.find((b) => b.type === "tips") as Extract<(typeof doc.sections)[number]["blocks"][number], { type: "tips" }>;
+    const own = (area: Parameters<typeof tipsFor>[0]) => tipsFor(area).flatMap((t) => t.dontDo);
+    const [candle, grill, oven, car, outlet] = DONT_DO;
+    expect(box("day0").dontDo).toEqual(DONT_DO);
+    expect(box("heat").dontDo).toEqual([candle, oven, grill, ...own("heat")]);
+    expect(box("power").dontDo).toEqual([outlet, car, ...own("light_power")]);
+    expect(box("water").dontDo).toEqual(own("water"));
+    expect(box("sanitation").dontDo).toEqual(own("sanitation"));
+    // Each of the five appears in Day 0, and the whole list appears in no other box.
+    const boxes = doc.sections.map((s) => s.blocks.find((b) => b.type === "tips")).filter(Boolean) as ReturnType<typeof box>[];
+    expect(boxes.filter((b) => DONT_DO.every((d) => b.dontDo.includes(d)))).toHaveLength(1);
+    for (const d of [candle, grill, oven, car, outlet]) expect(box("water").dontDo).not.toContain(d);
   });
 });

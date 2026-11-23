@@ -1,7 +1,7 @@
 import { hasHouseholdFilter, hasPersonalFilter, LABELS, type Answers } from "@/lib/answers/schema";
 import { labelKinds } from "./kinds";
 import { maintenanceItems } from "./maintenance";
-import { DONT_DO, tipsFor, type TipArea } from "@/lib/tips/library";
+import { dontDoFor, tipsFor, type TipArea } from "@/lib/tips/library";
 import { mixLabel, type ComputedPlan, type GearPick } from "@/lib/rules/engine";
 import type { RuleConstants } from "@/lib/rules/constants";
 import { atLeast } from "@/lib/zip/profile";
@@ -51,7 +51,7 @@ function addTips(S: SectionDraft[]) {
       type: "tips",
       ...(compact ? { compact: true } : {}),
       tips: tips.map((t) => ({ id: t.id, situation: t.situation, steps: t.steps, source: t.source })),
-      dontDo: compact ? DONT_DO : [...DONT_DO, ...tips.flatMap((t) => t.dontDo)],
+      dontDo: dontDoFor(area),
     });
   }
 }

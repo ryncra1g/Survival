@@ -104,7 +104,7 @@ function block(b: Block, ctx: { appUrl: string; planId?: string; seen?: Set<stri
 /** The plan email: same structure as on screen. Gear specs are shortened to stay under Gmail's clip limit. */
 function tipsHtml(b: Extract<Block, { type: "tips" }>): string {
   const tips = b.tips.map((t) => `<p style="margin:6px 0 2px;font-size:13px"><strong>${esc(t.situation)}</strong> ${t.steps.map(esc).join(" ")} <a href="${esc(t.source.url)}" style="color:${C.info}">${esc(t.source.label)}</a></p>`).join("");
-  return `<div style="border:1px solid ${C.line};padding:8px 10px;margin:10px 0"><p style="margin:0;font-weight:700">No time to buy? Use what you have</p>${tips}<p style="margin:6px 0 0;font-size:13px;color:${C.danger}"><strong>Don't do this:</strong> ${b.dontDo.map(esc).join(" ")}</p></div>`;
+  return `<div style="border:1px solid ${C.line};padding:8px 10px;margin:10px 0"><p style="margin:0;font-weight:700">No time to buy? Use what you have</p>${tips}${b.dontDo.length ? `<p style="margin:6px 0 0;font-size:13px;color:${C.danger}"><strong>Don't do this:</strong> ${b.dontDo.map(esc).join(" ")}</p>` : ""}</div>`;
 }
 
 export function renderPlanEmail(doc: PlanDocument, meta: EmailMeta & { planUrl: string; pdfAttached: boolean; planId?: string; diyTips?: boolean }): { subject: string; html: string; text: string } {
