@@ -305,7 +305,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
           `Food: ${n(c.calories.adultPerDay)} kcal/adult/day; children by age band (${c.calories.childBands.map(([age, k]) => `≤${age}: ${n(k)}`).join(", ")}).`,
           `Toilet paper: ${n(c.sanitation.toiletPaperRollsPerPersonPerWeek)} roll/person/week. Diapers: ${n(c.diapers.perChildPerDay)}/day per child in diapers.`,
           // Only for households that own a generator or have one in this plan's gear (review 4).
-          ...(a.backupPower === "portable_generator" || a.backupPower === "standby_generator" || [...cp.budget.picks, ...cp.budget.deferred].some((p) => p.item.id.startsWith("generator-"))
+          ...(a.backupPower === "portable_generator" || a.backupPower === "standby_generator" || pw.generatorStatus === "owned_portable" || pw.generatorStatus === "owned_standby" || [...cp.budget.picks, ...cp.budget.deferred].some((p) => p.item.group === "generator" || p.item.id.startsWith("generator-"))
             ? [`Generator: ${n(pw.hoursPerDay)} hours/day (${pw.hoursBasis}); inverter generator burns ${range(c.generator.gasolineGalPerHour[0], c.generator.gasolineGalPerHour[1], 2)} gal gasoline/hour at ~half load.`]
             : []),
           ...(prof.approximate ? ["Your ZIP prefix wasn't in our hazard table, so national-average ratings were used. Check your county's hazard info at Ready.gov."] : []),

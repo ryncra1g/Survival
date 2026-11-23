@@ -213,10 +213,15 @@ describe("security review M1/M2: claiming a plan for an address that already has
     await verify.GET(new Request(forged));
     expect((await fileStore.getPlan(ids.planAnon))!.user_id).toBeNull();
     // B uses the real link: the plan is attached to B.
-    const link = await issueLink(ids.b, "confirm", claimNext(ids.b, ids.planAnon));
+    const link = await issueLink(ids.b, "login", claimNext(ids.b, ids.planAnon, true));
     const v = await verify.GET(new Request(link));
     expect(v.headers.get("location")).toContain(`/plan/${ids.planAnon}`);
     expect((await fileStore.getPlan(ids.planAnon))!.user_id).toBe(ids.b);
+    expect((await fileStore.getUser(ids.b))!.followups_opt_in).toBe(true); // B ticked updates and proved the address
+    // A claim whose updates tick was added to the link afterwards isn't valid.
+    const { parseClaim } = await import("@/lib/server/claim");
+    expect(parseClaim(claimNext(ids.b, ids.planAnon, false) + "&u=1", ids.b)).toBeNull();
+    expect(parseClaim(claimNext(ids.b, ids.planAnon, true), ids.b)).toEqual({ planId: ids.planAnon, updates: true });
     // M2: the browser that built it no longer opens it, now that it's in a confirmed account; B does.
     as(anon);
     expect((await call("checks", "PUT", "/x", ids.planAnon, { checks: { "week-1": true } })).status).toBe(404);

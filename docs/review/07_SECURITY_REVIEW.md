@@ -42,8 +42,8 @@ The review found no injection (SQL, header/CRLF in `.ics` or Content-Disposition
 
 **Fix.**
 - When the address already has an account and this browser isn't signed in as that account, the route now changes nothing: no plan move, no consent change, no session change.
-- Instead it emails the address a confirm/sign-in link whose `next` carries a claim signed for that user and that plan: `lib/server/claim.ts`, an HMAC over `claim:<userId>:<planId>`.
-- `/api/auth/verify` attaches the plan only after the owner of the address uses that link. It won't take a plan that already belongs to another confirmed account.
+- Instead it emails the address a link whose `next` carries a claim signed for that user, that plan and the "send me updates" tick: `lib/server/claim.ts`, an HMAC over `claim:<userId>:<planId>:<updates>`. A confirmed account gets the 1-hour sign-in email; an unconfirmed one gets the 7-day confirm email.
+- `/api/auth/verify` attaches the plan, and applies the updates tick, only after the owner of the address uses that link. It won't take a plan that already belongs to another confirmed account; in that case it sends the user to `/account`.
 - The reply is "check your inbox" (`status: "confirm"`) for new and existing addresses alike, so it no longer reveals which addresses are confirmed.
 - A browser already signed in as the account keeps the instant "sent" path.
 
@@ -99,3 +99,14 @@ The review found no injection (SQL, header/CRLF in `.ics` or Content-Disposition
 | `POST /api/questionnaire/[id]/generate` | `sameOrigin`, strict UUID check, `canAccessQuestionnaire`, `AnswersSchema`, `checkConsent` enforced on the server. |
 | Stores and migrations | Only query-builder `.eq/.is/.lt/.gt` and a parameterised `rpc`, so no SQL injection. Migrations 0004–0008 add columns only, and RLS stays on from 0001. |
 | `lib/server/crypto.ts` | AES-256-GCM with a random 12-byte IV and the auth tag checked; HMACs are keyed by the session secret. |
+
+## Follow-up from /code-review
+
+The code review of this branch flagged three gaps in the first version of the fix, all now fixed:
+- the marketing tick was dropped for existing accounts;
+- confirmed accounts got a 7-day confirm-style link;
+- a refused claim redirected to a plan the user couldn't open.
+
+It also tightened the linter:
+- an after-negation now has to be about placement;
+- hedged words like "less dangerous" no longer excuse a clause.

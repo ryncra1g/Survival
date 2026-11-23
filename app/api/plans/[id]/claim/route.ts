@@ -42,7 +42,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   // address instead; the plan is attached only when the link is used. Same reply as a new address.
   if (user && !(session.scope === "full" && session.uid === user.id)) {
     if (!(await limit(`mail:${user.id}`, LIMITS.loginPerEmailHour, 3600))) return err("We've sent a few emails to that address already. Check your inbox and spam folder.", 429);
-    const link = await sendClaimLink(user.id, email, plan.id);
+    const link = await sendClaimLink(user, plan.id, updates);
     return json({ ok: true, status: "confirm", email, ...(isDemo ? { demoLink: link } : {}) });
   }
   if (!user) user = await store.createUser({ email, consent_at: now, double_opt_in_at: null, unsubscribed_at: null, followups_opt_in: updates });
