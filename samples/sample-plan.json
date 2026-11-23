@@ -1706,10 +1706,34 @@
           "text": "Where to keep it"
         },
         {
-          "type": "bullets",
+          "type": "checklist",
           "items": [
-            "Basement: water and canned food on shelves at least a foot off the floor (your area floods); nothing you'd need in a flood down there.",
-            "Garage: water jugs and bulk staples in sealed bins, away from the car's exhaust, chemicals and direct sun; not for anything that spoils in heat."
+            {
+              "id": "store-basement",
+              "text": "Basement: water and canned food on shelves at least a foot off the floor (your area floods); nothing you'd need in a flood down there.",
+              "buy": [
+                "water-drum",
+                "storage-kit",
+                "water-jug"
+              ],
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
+            },
+            {
+              "id": "store-garage",
+              "text": "Garage: water jugs and bulk staples in sealed bins, away from the car's exhaust, chemicals and direct sun; not for anything that spoils in heat.",
+              "buy": [
+                "storage-kit",
+                "water-jug",
+                "water-drum"
+              ],
+              "link": {
+                "label": "Build a kit (Ready.gov)",
+                "url": "https://www.ready.gov/kit"
+              }
+            }
           ]
         },
         {

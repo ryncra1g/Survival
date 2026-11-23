@@ -42,7 +42,7 @@ async function quickSignup(page: Page, email: string, updates = true): Promise<s
 test("phone: no sign-up → plan → optional email → confirm → email + PDFs → edit → export → delete", async ({ page, request }) => {
   const started = Date.now();
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Your emergency plan");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Get what you need. Know what to do.");
   await expect(page.getByLabel("Your email")).toHaveCount(0); // no email up front
   await page.getByRole("button", { name: "Build my free plan" }).click();
   await expect(page).toHaveURL(/\/q\//);

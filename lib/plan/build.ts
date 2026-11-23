@@ -3,7 +3,7 @@ import type { ComputedPlan, GearPick } from "@/lib/rules/engine";
 import type { RuleConstants } from "@/lib/rules/constants";
 import { atLeast } from "@/lib/zip/profile";
 import { addHelp } from "./help";
-import { alertLink, evacZoneLink, FEMA_FLOOD_MAP, type OfficialLink } from "@/lib/zip/resources";
+import { alertLink, evacZoneLink, FEMA_FLOOD_MAP, HOWTO, type OfficialLink } from "@/lib/zip/resources";
 import {
   APARTMENT_GENERATOR_RULE,
   BLEACH_RULE,
@@ -278,6 +278,13 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   month.push({ text: `Finish stored water: ${n(w.storedGal)} gallons (${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${plural(w.jugs, "7-gal jug")}).`, buy: ["water-drum", "water-jug", "water-bricks", "water-gallons"] });
   month.push(phaseStep(1, "Buy the rest of your Phase 1 (life safety) gear"));
   month.push(`Build a 2-week pantry from the food list (about ${n(Math.ceil((cp.food.dailyKcal * 14) / 1000))} thousand calories).`);
+  if (a.homeType === "townhouse")
+    month.push({
+      id: "month-townhouse",
+      text: "Townhouse: check your HOA rules on generators, fuel and storage, and agree with your neighbors where a generator could run: 20+ feet from every door, window and vent, including theirs.",
+      buy: ["co-alarm"],
+      link: HOWTO.co,
+    });
   if (hasGen && cp.flags.furnaceNeedsPower && !apt)
     month.push("Get a licensed electrician's quote for a generator power inlet + interlock (or transfer switch) so the generator can safely run your furnace.");
   if (winter && !apt) month.push({ text: "Do the pipe-freeze prep in section 5 (insulate exposed pipes, know how to drain lines).", buy: ["pipe-insulation"] });
@@ -445,13 +452,24 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     });
 
   // Where to keep supplies, by the storage the household said it has
-  const storeTips: string[] = [];
-  if (a.storage.includes("basement")) storeTips.push(a.hasBasement && atLeast(prof.flood, "moderate") ? "Basement: water and canned food on shelves at least a foot off the floor (your area floods); nothing you'd need in a flood down there." : "Basement: cool and dark, ideal for water and staples; keep them on shelves, off bare concrete.");
-  if (a.storage.includes("garage")) storeTips.push("Garage: water jugs and bulk staples in sealed bins, away from the car's exhaust, chemicals and direct sun; not for anything that spoils in heat.");
-  if (a.storage.includes("shed")) storeTips.push("Shed: the right place for gas cans and propane cylinders (detached from the house); too hot or cold for food, water and medicine.");
-  if (a.storage.includes("closets")) storeTips.push("Closets: water bricks or 7-gallon jugs on the floor, food in labelled bins on the top shelf, go-bags by the door.");
+  // Each storage answer is a step with containers to buy (Buy shows only for gear in this plan) and a how-to.
+  // Fixed ids so adding one never shifts other checklist ids (and saved ticks).
+  const storeTips: Step[] = [];
+  if (a.storage.includes("basement"))
+    storeTips.push({ id: "store-basement", text: a.hasBasement && atLeast(prof.flood, "moderate") ? "Basement: water and canned food on shelves at least a foot off the floor (your area floods); nothing you'd need in a flood down there." : "Basement: cool and dark, ideal for water and staples; keep them on shelves, off bare concrete.", buy: ["water-drum", "storage-kit", "water-jug"], link: HOWTO.kit });
+  if (a.storage.includes("garage"))
+    storeTips.push({ id: "store-garage", text: "Garage: water jugs and bulk staples in sealed bins, away from the car's exhaust, chemicals and direct sun; not for anything that spoils in heat.", buy: ["storage-kit", "water-jug", "water-drum"], link: HOWTO.kit });
+  if (a.storage.includes("shed"))
+    storeTips.push({ id: "store-shed", text: "Shed: the right place for gas cans and propane cylinders (detached from the house); too hot or cold for food, water and medicine.", buy: ["gas-cans", "propane-20"], link: HOWTO.powerOutages });
+  if (a.storage.includes("closets"))
+    storeTips.push({ id: "store-closets", text: "Closets: water bricks or 7-gallon jugs on the floor, food in labelled bins on the top shelf, go-bags by the door.", buy: ["water-bricks", "water-jug", "storage-kit"], link: HOWTO.kit });
   if (a.storage.includes("limited"))
-    storeTips.push(`Limited space: start with ${a.scenarioDays > 14 ? "the first 2 weeks and add as space allows" : "what fits"}; use under-bed bins, stackable water bricks and the back of closets, and count the tub bladder as your flushing water.`);
+    storeTips.push({
+      id: "store-limited",
+      text: `Limited space: start with ${a.scenarioDays > 14 ? "the first 2 weeks and add as space allows" : "what fits"}; use under-bed bins, stackable water bricks and the back of closets, and count the tub bladder as your flushing water.`,
+      buy: ["water-bricks", "tub-bladder", "water-jug"],
+      link: HOWTO.lowCost,
+    });
 
   // 4. Water -----------------------------------------------------------------
   const waterRows = w.breakdown.map((b) => [b.label, `${n(b.galPerDay, 2)} gal/day`]);
@@ -505,6 +523,13 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   // 5. Heat & warmth -----------------------------------------------------------
   const heatBlocks: Block[] = [];
   const heatIf: { if: string; then: string }[] = [];
+  // Fuel-delivery heat: a step with the winter how-to, whether or not a generator is in the plan.
+  const fuelSteps: Step[] = [];
+  if (a.heatSources.includes("oil"))
+    fuelSteps.push({ id: "heat-oil", text: "Heating oil: keep the tank above a quarter full from November to March, and save your supplier's emergency delivery number; deliveries stop during storms and road closures.", link: HOWTO.winter });
+  if (a.heatSources.includes("propane"))
+    fuelSteps.push({ id: "heat-propane", text: "Propane heat: keep the tank above half full in winter and save your supplier's emergency number; a full tank is your heat for weeks.", link: HOWTO.winter });
+  if (fuelSteps.length) heatBlocks.push(check("heat", fuelSteps));
   for (const key of cp.heat) {
     if (key === "standby_runs_furnace") heatBlocks.push({ type: "paragraph", text: "Your standby generator should run the furnace automatically. Confirm with your installer that the furnace circuit is on the transfer switch, and that natural gas or fuel supply will last." });
     if (key === "generator_inlet_furnace")
@@ -512,10 +537,6 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         type: "paragraph",
         text: `Your ${a.heatSources.filter((s) => s !== "wood" && s !== "electric").map((s) => LABELS.heat[s].toLowerCase()).join("/")} heat needs electricity for the blower, ignition or circulator pump. The safest way to keep it running is ${genWord} connected through a licensed electrician's power inlet and interlock (or a transfer switch). Furnaces draw roughly 400–800 W running, so a 2,500 W+ inverter generator can handle it along with the fridge.`,
       });
-    if (key === "generator_inlet_furnace" && a.heatSources.includes("oil"))
-      heatBlocks.push({ type: "paragraph", text: "Heating oil: keep the tank above a quarter full from November to March; deliveries stop during storms and road closures." });
-    if (key === "generator_inlet_furnace" && a.heatSources.includes("propane"))
-      heatBlocks.push({ type: "paragraph", text: "Propane heat: keep the tank above half full in winter and save your supplier's emergency number; a full tank is your heat for weeks." });
     if (key === "wood_stove") heatBlocks.push({ type: "paragraph", text: "Your wood stove is your best no-power heat. Have the chimney inspected yearly, keep seasoned wood dry and off the ground, and keep a CO alarm in the room." });
     if (key === "indoor_propane_heater") heatBlocks.push({ type: "callout", tone: "warning", title: "Backup heater rules", text: INDOOR_HEATER_RULE });
     if (key === "one_warm_room")
@@ -528,6 +549,17 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
           "Eat and drink warm calories; keep kids and older adults warm first.",
         ],
       });
+    if (key === "one_warm_room" && a.heatSources.includes("electric"))
+      heatBlocks.push(
+        check("heat", [
+          {
+            id: "heat-electric",
+            text: "Electric heat stops when the power does: choose your warm room now and keep a cold-rated sleeping bag for each person in it.",
+            buy: ["sleep-system"],
+            link: HOWTO.winter,
+          },
+        ]),
+      );
     if (key === "apartment_no_combustion")
       heatBlocks.push({ type: "callout", tone: "warning", title: "Apartment heat", text: "Don't use propane heaters, camp stoves or grills in an apartment — fire codes usually ban them and there's no safe ventilation. Use sleeping bags, layering, the one-warm-room plan, and a battery power station for an electric blanket." });
     if (key === "pipe_freeze")
@@ -662,7 +694,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         ? [{ type: "levelchoice" as const, group: "food", caption: "Food level: store it yourself, or buy ready-made", levels: levelsFor("food")! }]
         : []),
       { type: "subheading", text: "Where to keep it" },
-      { type: "bullets", items: storeTips },
+      check("store", storeTips),
     ],
   });
 

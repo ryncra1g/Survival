@@ -248,8 +248,8 @@ Food level: store it yourself, or buy ready-made
 [x] Bulk staples you store yourself: $1,234
 [ ] Freeze-dried long-term food: $7,700–$12,100
 Where to keep it
-- Basement: water and canned food on shelves at least a foot off the floor (your area floods); nothing you'd need in a flood down there.
-- Garage: water jugs and bulk staples in sealed bins, away from the car's exhaust, chemicals and direct sun; not for anything that spoils in heat.
+[ ] Basement: water and canned food on shelves at least a foot off the floor (your area floods); nothing you'd need in a flood down there. (Build a kit (Ready.gov): https://www.ready.gov/kit)
+[ ] Garage: water jugs and bulk staples in sealed bins, away from the car's exhaust, chemicals and direct sun; not for anything that spoils in heat. (Build a kit (Ready.gov): https://www.ready.gov/kit)
 Rice, beans, oats, pasta, oil and canned goods are cheapest at a grocery store or warehouse club.
 Food safety in a power outage (FoodSafety.gov): https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage
 Power outage food and water safety (CDC): https://www.cdc.gov/natural-disasters/safety/power-outage-safety.html
