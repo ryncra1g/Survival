@@ -7,6 +7,7 @@ import { seal, unseal, type Sealed } from "../crypto";
 import { clickStats } from "./file";
 import type { EmailEventRow, PlanRow, QuestionnaireRow, RuleConstantsRow, Stats, Store, UserRow } from "./types";
 import { AI_COPY_EVENT } from "./types";
+import { DEFAULT_REMINDER_PREFS, type Inventory, type Place, type ReminderPrefs } from "@/lib/accountData";
 
 /**
  * Production store on Supabase Postgres, using the service-role key from the server only.
@@ -22,13 +23,16 @@ function must<T>(r: { data: T; error: { message: string } | null }): T {
 }
 
 type QDb = Omit<QuestionnaireRow, "answers"> & { answers_json: Sealed };
-type PDb = Omit<PlanRow, "computed_quantities" | "plan" | "consent"> & { computed_quantities_json: Sealed; plan_json: Sealed; consent_json?: Sealed | null };
+type PDb = Omit<PlanRow, "computed_quantities" | "plan" | "consent" | "inventory"> & { computed_quantities_json: Sealed; plan_json: Sealed; consent_json?: Sealed | null; inventory_json?: Sealed | null };
+/** Users are read without their sealed columns (places_json, migration 0007; reminder_prefs, 0008). */
+const USER_COLS = "id,email,consent_at,double_opt_in_at,unsubscribed_at,followups_opt_in,created_at";
 const qOut = ({ answers_json, ...r }: QDb): QuestionnaireRow => ({ ...r, answers: unseal(answers_json) });
-const pOut = ({ computed_quantities_json, plan_json, consent_json, ...r }: PDb): PlanRow => ({
+const pOut = ({ computed_quantities_json, plan_json, consent_json, inventory_json, ...r }: PDb): PlanRow => ({
   ...r,
   computed_quantities: unseal(computed_quantities_json),
   plan: unseal(plan_json),
   consent: consent_json ? unseal<PlanConsent>(consent_json) : null,
+  inventory: inventory_json ? unseal<Inventory>(inventory_json) : null,
 });
 
 async function count(table: string, filter?: (q: ReturnType<ReturnType<SupabaseClient["from"]>["select"]>) => unknown): Promise<number> {
@@ -41,19 +45,19 @@ async function count(table: string, filter?: (q: ReturnType<ReturnType<SupabaseC
 
 export const supabaseStore: Store = {
   async getUserByEmail(email) {
-    return must(await db().from("users").select("*").eq("email", email.toLowerCase()).maybeSingle()) as UserRow | null;
+    return must(await db().from("users").select(USER_COLS).eq("email", email.toLowerCase()).maybeSingle()) as UserRow | null;
   },
   async getUser(id) {
-    return must(await db().from("users").select("*").eq("id", id).maybeSingle()) as UserRow | null;
+    return must(await db().from("users").select(USER_COLS).eq("id", id).maybeSingle()) as UserRow | null;
   },
   async createUser(u) {
-    return must(await db().from("users").insert({ ...u, email: u.email.toLowerCase() }).select().single()) as UserRow;
+    return must(await db().from("users").insert({ ...u, email: u.email.toLowerCase() }).select(USER_COLS).single()) as UserRow;
   },
   async updateUser(id, patch) {
     must(await db().from("users").update(patch).eq("id", id));
   },
   async listUsers() {
-    return must(await db().from("users").select("*")) as UserRow[];
+    return must(await db().from("users").select(USER_COLS)) as UserRow[];
   },
   async deleteUserCascade(id) {
     // FK ON DELETE CASCADE removes questionnaires, plans, tokens and email events; storage objects removed here.
@@ -92,8 +96,24 @@ export const supabaseStore: Store = {
     const r = must(await db().from("plans").select("*").eq("id", id).maybeSingle()) as PDb | null;
     return r ? pOut(r) : null;
   },
-  async updatePlan(id, patch) {
-    must(await db().from("plans").update(patch).eq("id", id));
+  async updatePlan(id, { inventory, ...patch }) {
+    const row: Record<string, unknown> = { ...patch };
+    if (inventory !== undefined) row.inventory_json = inventory ? seal(inventory) : null;
+    must(await db().from("plans").update(row).eq("id", id));
+  },
+  async getPlaces(userId) {
+    const r = must(await db().from("users").select("places_json").eq("id", userId).maybeSingle()) as { places_json: Sealed | null } | null;
+    return r?.places_json ? unseal<Place[]>(r.places_json) : [];
+  },
+  async setPlaces(userId, places) {
+    must(await db().from("users").update({ places_json: places.length ? seal(places) : null }).eq("id", userId));
+  },
+  async getReminderPrefs(userId) {
+    const r = must(await db().from("users").select("reminder_prefs").eq("id", userId).maybeSingle()) as { reminder_prefs: ReminderPrefs | null } | null;
+    return r?.reminder_prefs ?? DEFAULT_REMINDER_PREFS;
+  },
+  async setReminderPrefs(userId, prefs) {
+    must(await db().from("users").update({ reminder_prefs: prefs }).eq("id", userId));
   },
   async listPlans(userId) {
     return (must(await db().from("plans").select("*").eq("user_id", userId).order("created_at", { ascending: false })) as PDb[]).map(pOut);

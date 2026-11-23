@@ -6,6 +6,8 @@ import { DemoLinkBanner } from "@/components/DemoLinkBanner";
 import { ChangeAnswer } from "@/components/ChangeAnswer";
 import { SaveBar } from "@/components/SaveBar";
 import { ShareMenu } from "@/components/ShareMenu";
+import { CompareOptions } from "@/components/CompareOptions";
+import { owned, seedInventory } from "@/lib/accountData";
 import { CopyForAI } from "@/components/CopyForAI";
 import { aiSummary } from "@/lib/plan/aiSummary";
 import type { ComputedPlan } from "@/lib/rules/engine";
@@ -46,8 +48,23 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
     </div>
   );
 
+  // Accounts track (ACCOUNTS_ENABLED): the inventory feeds the shopping list, links "To have" items and tips.
+  const accounts = flags().accounts;
+  const inventory = accounts ? seedInventory(plan.inventory, plan.checks) : null;
+  const ownedIds = inventory ? Object.keys(inventory).filter((id) => owned(inventory, id)) : [];
+  const checks = { ...(plan.checks ?? {}), ...Object.fromEntries(ownedIds.map((id) => [`got-${id}`, true])) };
+  const ownedNames = accounts ? (doc.overview?.gear ?? []).filter((g) => ownedIds.includes(g.itemId)).map((g) => g.name) : undefined;
+  const foodLevels = doc.sections.find((s) => s.id === "food")?.blocks.find((b) => b.type === "levelchoice");
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
+      {accounts && (
+        <nav aria-label="Your plan" className="no-print mb-4 grid grid-cols-3 gap-1 rounded-xl border border-line bg-surface p-1" data-testid="plan-tabs">
+          <a href={`/plan/${plan.id}`} aria-current="page" className="rounded-lg bg-brand px-2 py-2 text-center text-sm font-semibold text-brand-ink">Overview</a>
+          <a href={`/plan/${plan.id}/inventory`} className="rounded-lg px-2 py-2 text-center text-sm font-semibold">Inventory</a>
+          <a href={`/plan/${plan.id}#ch-do-now`} className="rounded-lg px-2 py-2 text-center text-sm font-semibold">Report</a>
+        </nav>
+      )}
       <h1 className="text-3xl font-bold">{doc.title}</h1>
       <Subtitle text={doc.subtitle} />
       <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="/sources" className="underline">Sources &amp; safety</a></p>
@@ -60,12 +77,21 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
       <PlanView
         doc={doc}
         planId={plan.id}
-        checks={plan.checks ?? {}}
+        checks={checks}
         sync
         diyTips={flags().diyTips}
+        inventoryBase={accounts ? `/plan/${plan.id}/inventory` : undefined}
+        ownedNames={ownedNames}
         afterDashboard={
           <div className="no-print">
             <div className="mt-5">{emailStatus}</div>
+            {/* D7 (accounts track): switch or mix food from the Overview; the calorie total stays the same. */}
+            {accounts && foodLevels && foodLevels.type === "levelchoice" && (
+              <section className="mt-4 card p-4" data-testid="food-mix-card">
+                <h2 className="font-bold">Your food</h2>
+                <CompareOptions planId={plan.id} group="food" levels={foodLevels.levels} back="food" budget={doc.overview?.budget} />
+              </section>
+            )}
             {/* D12 / D12b: stay ready without an account. */}
             <section className="mt-4 card p-4" aria-labelledby="stay-h" data-testid="stay-ready">
               <h2 id="stay-h" className="font-bold">Stay ready</h2>

@@ -112,7 +112,7 @@ Copy `.env.example` to `.env.local`.
 
 ## Deployment (Vercel + Supabase + Resend)
 
-1. **Supabase.** Create a project, then run the three files in [`supabase/migrations/`](supabase/migrations/) in order in the SQL editor (or `supabase db push`). The migration creates the tables, the `rate_limit_hit` function, RLS with no policies, and a private `plans` storage bucket.
+1. **Supabase.** Create a project, then run every file in [`supabase/migrations/`](supabase/migrations/) in order (0001–0008) in the SQL editor (or `supabase db push`). 0004–0005 add checklist ticks and consent records; 0006–0008 are for the accounts track (`ACCOUNTS_ENABLED`): inventory, My places and reminder preferences. The owner applies migrations; nothing in this repo applies them. The migration creates the tables, the `rate_limit_hit` function, RLS with no policies, and a private `plans` storage bucket.
 2. **Seed the catalog.** Run `SUPABASE_URL=… SUPABASE_SERVICE_ROLE_KEY=… npm run seed`.
 3. **Resend.** Verify your sending domain (SPF/DKIM/DMARC), create an API key, and add a webhook to `https://YOUR_APP/api/webhooks/resend` for `email.opened`, `email.bounced` and `email.complained`.
 4. **Turnstile.** Create a widget for your domain.

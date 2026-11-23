@@ -1,4 +1,7 @@
-import { renderConfirmReminder, renderFollowupEmail, type FollowupKind } from "@/lib/email/render";
+import { renderConfirmReminder, renderFollowupEmail, renderReminderEmail, type FollowupKind } from "@/lib/email/render";
+import { flags } from "@/lib/flags";
+import { maintenanceItems } from "@/lib/plan/maintenance";
+import { dueReminders } from "@/lib/reminders";
 import { issueLink } from "@/lib/server/auth";
 import type { ComputedPlan } from "@/lib/rules/engine";
 import { env } from "@/lib/server/env";
@@ -30,9 +33,21 @@ export async function GET(req: Request) {
       }
       continue;
     }
-    if (user.unsubscribed_at || !user.followups_opt_in) continue;
+    if (user.unsubscribed_at) continue;
     const plan = (await store.listPlans(user.id))[0];
     if (!plan) continue;
+    // D12 (accounts track): opt-in maintenance reminders, a separate switch from marketing follow-ups.
+    // At most one email per user per day, so a reminder takes the day's slot.
+    if (flags().accounts) {
+      const due = dueReminders(maintenanceItems(plan.computed_quantities as ComputedPlan), await store.getReminderPrefs(user.id), new Date(plan.created_at), now);
+      const type = `reminder_${now.toISOString().slice(0, 10)}`;
+      if (due.length && !(await store.hasEmailEvent(user.id, `sent:${type}`))) {
+        const m = renderReminderEmail(due, `${env.appUrl}/plan/${plan.id}`, metaFor(user.id));
+        if (await sendEmail({ to: user.email, userId: user.id, type, ...m })) sent.reminder = (sent.reminder ?? 0) + 1;
+        continue;
+      }
+    }
+    if (!user.followups_opt_in) continue;
     const ageDays = (now.getTime() - new Date(plan.created_at).getTime()) / 86_400_000;
     const profile = (plan.computed_quantities as ComputedPlan).profile;
     const due: [FollowupKind, string][] = [];

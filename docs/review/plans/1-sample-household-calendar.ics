@@ -1,0 +1,80 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//ReadyReport maintenance//Maintenance//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:ReadyReport maintenance
+BEGIN:VEVENT
+UID:review-sample@readyreport-alarms
+DTSTAMP:20261122T120000Z
+DTSTART;VALUE=DATE:20261122
+RRULE:FREQ=MONTHLY
+SUMMARY:Test CO and smoke alarms.
+DESCRIPTION:Monthly: Test CO and smoke alarms.
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:review-sample@readyreport-generator
+DTSTAMP:20261122T120000Z
+DTSTART;VALUE=DATE:20261122
+RRULE:FREQ=MONTHLY
+SUMMARY:Run the generator under load outdoors for 20 minutes.
+DESCRIPTION:Monthly: Run the generator under load outdoors for 20 minutes.
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:review-sample@readyreport-rotate
+DTSTAMP:20261122T120000Z
+DTSTART;VALUE=DATE:20261122
+RRULE:FREQ=MONTHLY;INTERVAL=6
+SUMMARY:Replace tap-filled stored water\; check food dates and rotate into 
+ meals\; refresh go-bags for the season.
+DESCRIPTION:Every 6 months: Replace tap-filled stored water\; check food da
+ tes and rotate into meals\; refresh go-bags for the season.
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:review-sample@readyreport-yearly
+DTSTAMP:20261122T120000Z
+DTSTART;VALUE=DATE:20261122
+RRULE:FREQ=YEARLY
+SUMMARY:Rotate stabilized gasoline into cars\; replace bleach\; check first
+  aid kit\; update documents\, photos and medication lists.
+DESCRIPTION:Every 12 months: Rotate stabilized gasoline into cars\; replace
+  bleach\; check first aid kit\; update documents\, photos and medication l
+ ists.
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:review-sample@readyreport-winter
+DTSTAMP:20261122T120000Z
+DTSTART;VALUE=DATE:20271101
+RRULE:FREQ=YEARLY;BYMONTH=11;BYMONTHDAY=1
+SUMMARY:Winter check: heat plan\, pipe insulation\, sleeping bags\, propane
+ .
+DESCRIPTION:November: Winter check: heat plan\, pipe insulation\, sleeping 
+ bags\, propane.
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:review-sample@readyreport-hurricane
+DTSTAMP:20261122T120000Z
+DTSTART;VALUE=DATE:20270601
+RRULE:FREQ=YEARLY;BYMONTH=6;BYMONTHDAY=1
+SUMMARY:Hurricane season check: window protection\, evacuation zone\, insur
+ ance\, fuel.
+DESCRIPTION:June: Hurricane season check: window protection\, evacuation zo
+ ne\, insurance\, fuel.
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:review-sample@readyreport-review
+DTSTAMP:20261122T120000Z
+DTSTART;VALUE=DATE:20261122
+RRULE:FREQ=YEARLY
+SUMMARY:Review this plan and regenerate it if your household changes.
+DESCRIPTION:Every 12 months: Review this plan and regenerate it if your hou
+ sehold changes.
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR

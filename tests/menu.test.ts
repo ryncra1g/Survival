@@ -30,3 +30,9 @@ describe("site menu (D9)", () => {
     }
   });
 });
+
+describe("accounts-track menu pages (D1–D4, D12)", () => {
+  it("every accounts-track link points to a page that exists", () => {
+    for (const a of ACCOUNT_ITEMS) expect(existsSync(`app/${a.href.replace(/^\//, "")}/page.tsx`), a.href).toBe(true);
+  });
+});

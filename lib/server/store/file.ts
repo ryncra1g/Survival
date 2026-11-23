@@ -7,15 +7,18 @@ import type { CatalogItem } from "@/lib/catalog/types";
 import { newId, seal, unseal, type Sealed } from "../crypto";
 import type { EmailEventRow, PlanRow, QuestionnaireRow, RuleConstantsRow, Stats, Store, TokenRow, UserRow } from "./types";
 import { AI_COPY_EVENT } from "./types";
+import { DEFAULT_REMINDER_PREFS, type Inventory, type Place, type ReminderPrefs } from "@/lib/accountData";
 
 /**
  * Demo/dev store: a JSON file at .data/db.json. Same encryption as production
  * (answers and plans are sealed). Not for production — single process, no locking.
  */
 type StoredQ = Omit<QuestionnaireRow, "answers"> & { answers_json: Sealed };
-type StoredP = Omit<PlanRow, "computed_quantities" | "plan" | "consent"> & { computed_quantities_json: Sealed; plan_json: Sealed; consent_json?: Sealed | null };
+type StoredP = Omit<PlanRow, "computed_quantities" | "plan" | "consent" | "inventory"> & { computed_quantities_json: Sealed; plan_json: Sealed; consent_json?: Sealed | null; inventory_json?: Sealed | null };
+/** Same columns as migrations 0007 (places_json, encrypted) and 0008 (reminder_prefs). */
+type StoredU = UserRow & { places_json?: Sealed | null; reminder_prefs?: ReminderPrefs | null };
 interface DB {
-  users: UserRow[];
+  users: StoredU[];
   questionnaires: StoredQ[];
   plans: StoredP[];
   tokens: TokenRow[];
@@ -61,16 +64,28 @@ const qOut = (q: StoredQ): QuestionnaireRow => {
   return { ...rest, answers: unseal(answers_json) };
 };
 const pOut = (p: StoredP): PlanRow => {
-  const { computed_quantities_json, plan_json, consent_json, ...rest } = p;
-  return { ...rest, computed_quantities: unseal(computed_quantities_json), plan: unseal(plan_json), consent: consent_json ? unseal<PlanConsent>(consent_json) : null };
+  const { computed_quantities_json, plan_json, consent_json, inventory_json, ...rest } = p;
+  return {
+    ...rest,
+    computed_quantities: unseal(computed_quantities_json),
+    plan: unseal(plan_json),
+    consent: consent_json ? unseal<PlanConsent>(consent_json) : null,
+    inventory: inventory_json ? unseal<Inventory>(inventory_json) : null,
+  };
+};
+/** Users leave the store without their sealed columns (places and prefs have their own methods). */
+const uOut = (u: StoredU | undefined): UserRow | null => {
+  if (!u) return null;
+  const { places_json: _p, reminder_prefs: _r, ...rest } = u;
+  return rest;
 };
 
 export const fileStore: Store = {
   async getUserByEmail(email) {
-    return load().users.find((u) => u.email === email.toLowerCase()) ?? null;
+    return uOut(load().users.find((u) => u.email === email.toLowerCase()));
   },
   async getUser(id) {
-    return load().users.find((u) => u.id === id) ?? null;
+    return uOut(load().users.find((u) => u.id === id));
   },
   async createUser(u) {
     return tx((db) => {
@@ -86,7 +101,7 @@ export const fileStore: Store = {
     });
   },
   async listUsers() {
-    return load().users;
+    return load().users.map((u) => uOut(u)!);
   },
   async deleteUserCascade(id) {
     tx((db) => {
@@ -148,7 +163,29 @@ export const fileStore: Store = {
   async updatePlan(id, patch) {
     tx((db) => {
       const p = db.plans.find((x) => x.id === id);
-      if (p) Object.assign(p, patch);
+      if (!p) return;
+      const { inventory, ...rest } = patch;
+      Object.assign(p, rest);
+      if (inventory !== undefined) p.inventory_json = inventory ? seal(inventory) : null;
+    });
+  },
+  async getPlaces(userId) {
+    const u = load().users.find((x) => x.id === userId);
+    return u?.places_json ? unseal<Place[]>(u.places_json) : [];
+  },
+  async setPlaces(userId, places) {
+    tx((db) => {
+      const u = db.users.find((x) => x.id === userId);
+      if (u) u.places_json = places.length ? seal(places) : null;
+    });
+  },
+  async getReminderPrefs(userId) {
+    return load().users.find((x) => x.id === userId)?.reminder_prefs ?? DEFAULT_REMINDER_PREFS;
+  },
+  async setReminderPrefs(userId, prefs) {
+    tx((db) => {
+      const u = db.users.find((x) => x.id === userId);
+      if (u) u.reminder_prefs = prefs;
     });
   },
   async listPlans(userId) {

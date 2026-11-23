@@ -96,3 +96,6 @@ export const TIPS: Tip[] = [
 ];
 
 export const tipsFor = (area: TipArea) => TIPS.filter((t) => t.area === area);
+
+/** Materials per tip id, for matching against the inventory (accounts track). */
+export const TIP_MATERIALS: Record<string, string[]> = Object.fromEntries(TIPS.map((t) => [t.id, t.materials]));
