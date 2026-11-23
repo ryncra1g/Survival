@@ -28,7 +28,7 @@ describe("emails", () => {
       const r = await generatePlan(a, C, SEED_CATALOG, { useLlm: false, now: new Date("2026-11-18") });
       const e = renderPlanEmail(r.document, { ...meta, planUrl: "https://app.example/plan/x", pdfAttached: true });
       expect(Buffer.byteLength(e.html)).toBeLessThan(100_000);
-      for (const s of r.document.sections) expect(e.html).toContain(s.title.replace(/&/g, "&amp;"));
+      for (const s of r.document.sections) expect(e.html).toContain(s.title.replace(/&/g, "&amp;").replace(/'/g, "&#39;"));
       expect(e.html).toContain("Sources");
       expect(e.html).toContain("not professional");
     }
@@ -48,5 +48,23 @@ describe("emails", () => {
       expect(e.html).toContain(meta.unsubscribeUrl.replace(/&/g, "&amp;"));
       expect(e.text.length).toBeGreaterThan(20);
     }
+  });
+});
+
+describe("email escaping (security review Low 3)", () => {
+  const NAME = `O'Neil <b>&</b> "Kit"`;
+  it("esc escapes ' < > & and \"", async () => {
+    const { esc } = await import("@/lib/email/render");
+    expect(esc(NAME)).toBe("O&#39;Neil &lt;b&gt;&amp;&lt;/b&gt; &quot;Kit&quot;");
+    expect(esc("&amp;")).toBe("&amp;amp;"); // & first, so nothing is double-decoded
+  });
+  it("a name with ' < > & \" is escaped everywhere it appears in a rendered email", async () => {
+    const r = await generatePlan(SAMPLE_HOUSEHOLD, C, SEED_CATALOG, { useLlm: false, now: new Date("2026-11-18") });
+    const doc = { ...r.document, title: `${NAME} plan`, sections: r.document.sections.map((s, i) => (i === 0 ? { ...s, title: NAME, summary: NAME } : s)) };
+    const e = renderPlanEmail(doc, { ...meta, mailingAddress: NAME, planUrl: "https://app.example/plan/x", pdfAttached: false });
+    expect(e.html).not.toContain(NAME);
+    expect(e.html).not.toContain("<b>&</b>");
+    expect(e.html).not.toContain(`O'Neil`);
+    expect(e.html).toContain("O&#39;Neil &lt;b&gt;&amp;&lt;/b&gt; &quot;Kit&quot;");
   });
 });

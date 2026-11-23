@@ -7,7 +7,8 @@ import { BRAND } from "@/lib/brand";
  * light background forced, under Gmail's ~102 KB clipping limit. Every email has the
  * CAN-SPAM footer (physical address + one-click unsubscribe) via `footer()`.
  */
-const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+/** HTML-escape text and attribute values: & < > " and ' (security review Low 3; safe in single-quoted attributes too). */
+export const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 const FONT = "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
 const C = { ink: "#1c2430", muted: "#5b6573", line: "#dfe3e8", brand: "#b3471d", bg: "#f4f1ec", card: "#ffffff", danger: "#a1261b", warn: "#8a5a00", info: "#1f4f7a" };
 
