@@ -1,3 +1,5 @@
+import { Chevron } from "./Chevron";
+
 /** Row of "change one answer" links on the plan page. Plain form posts. */
 const LINKS: [string, string][] = [
   ["location", "Location & length"],
@@ -13,8 +15,11 @@ const LINKS: [string, string][] = [
 
 export function ChangeAnswer({ planId }: { planId: string }) {
   return (
-    <details className="card mt-4 no-print">
-      <summary className="cursor-pointer p-4 font-semibold">Something not right? Change an answer</summary>
+    <details className="group card mt-3 no-print">
+      <summary className="flex min-h-[48px] cursor-pointer list-none items-center justify-between gap-3 p-4 font-semibold [&::-webkit-details-marker]:hidden">
+        Something not right? Change an answer
+        <Chevron />
+      </summary>
       <div className="px-4 pb-4 flex flex-wrap gap-2">
         {LINKS.map(([screen, label]) => (
           <form key={screen} action={`/api/plans/${planId}/edit`} method="post">

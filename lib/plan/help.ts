@@ -33,8 +33,8 @@ const STEP_RULES: Rule[] = [
   [/pipe-freeze/i, () => ({ buy: ["pipe-insulation"], link: HOWTO.winter })],
   [/go-bag for each person/i, () => ({ buy: GO_BAG, see: s("Go-bag list", "evacuation") })],
   [/weeks of pet food/i, () => ({ buy: ["pet-kit"], link: HOWTO.pets })],
-  [/Buy Phase (\d)/, () => ({ see: s("Shopping list with Buy buttons", "gear") })],
-  [/^Phase \d items/, () => ({ see: s("Shopping list with Buy buttons", "gear") })],
+  // "shopping" is the dashboard's shopping list (ticks + Buy); the plan page opens it from the link.
+  [/Phase [123]\b.*(gear|upgrades)/, () => ({ see: s("Open your shopping list", "shopping") })],
   [/pantry|food list|lb of staples/i, () => ({ buy: ["storage-kit", "food-freeze-dried"], see: s("Your food list", "food") })],
   [/electrician'?s quote|power inlet/i, () => ({ buy: ["inlet-interlock"], link: HOWTO.powerOutages })],
   [/Service your generator|Test-start the generator|Generator: practice/i, () => ({ buy: ["gas-cans", "gen-cord"], link: HOWTO.co })],

@@ -88,44 +88,55 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   const planUrl = page.url();
   expect(Date.now() - started).toBeLessThan(5 * 60_000);
   expect(planUrl).not.toMatch(/11746|zip|answers/);
-  await expect(page.getByRole("heading", { name: "Start here: your first 3 steps" })).toBeVisible();
-  await expect(page.getByText(/Store 54 gallons \(14 days\)/)).toBeVisible();
-  await expect(page.getByRole("heading", { name: /Your area's hazards/ })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Phase 1 shopping list (life safety)" })).toBeVisible();
-  // No affiliate tag set yet: Buy links still show (plain store search), but no commission disclosure
-  await expect(page.getByRole("link", { name: /^Buy / }).first()).toBeVisible();
-  await expect(page.getByTestId("affiliate-disclosure")).toHaveCount(0);
-
-  // Dashboard: progress, headline numbers with math, gear list with "Got it" ticks that persist
+  // Dashboard first: this week's progress, Next up (with why + Buy), key numbers, shopping list
   const dash = page.getByTestId("dashboard");
-  await expect(dash.getByRole("heading", { name: "Your plan at a glance" })).toBeVisible();
+  await expect(dash.getByTestId("stage-progress")).toHaveText(/^0 of \d+ done$/);
+  await expect(dash.getByRole("heading", { name: "Next up" })).toBeVisible();
+  await expect(dash.getByText(/^Test or install CO alarms/)).toBeVisible();
   await expect(dash.getByText("water to store")).toBeVisible();
   await expect(dash.getByText(/gal\/day × \d+ days/)).toBeVisible();
-  await dash.getByText("Your gear list").click();
-  const gearTotal = await dash.getByRole("checkbox").count();
+  // No affiliate tag set yet: Buy links still show (plain store search), but no commission disclosure
+  await expect(dash.getByRole("link", { name: /^Buy carbon monoxide alarm/ })).toBeVisible();
+  await expect(page.getByTestId("affiliate-disclosure")).toHaveCount(0);
+
+  // Ticking a Next-up step shows Undo, counts toward this week, and the next step moves up
+  await dash.getByRole("checkbox", { name: /^Done: Test or install CO alarms/ }).check();
+  await expect(dash.getByRole("button", { name: "Undo" })).toBeVisible();
+  await expect(dash.getByTestId("stage-progress")).toHaveText(/^1 of \d+ done$/);
+
+  // Shopping list: "I have this" ticks persist and remove that item's Buy buttons
+  await dash.getByText("Shopping list").click();
+  const gearTotal = await dash.locator("#shopping").getByRole("checkbox").count();
   await dash.getByRole("checkbox", { name: "I have: Carbon monoxide alarm" }).check();
-  await expect(dash.getByText(new RegExp(`^1 of ${gearTotal}$`))).toBeVisible();
+  await expect(dash.getByTestId("overall-progress")).toContainText(`you have 1 of ${gearTotal} gear items`);
+  await expect(page.getByRole("link", { name: /^Buy carbon monoxide alarm/ })).toHaveCount(0);
   await page.waitForTimeout(800);
   await page.reload();
-  await expect(page.getByTestId("dashboard").getByText(new RegExp(`^1 of ${gearTotal}$`))).toBeVisible();
+  await expect(page.getByTestId("dashboard").getByTestId("overall-progress")).toContainText(`you have 1 of ${gearTotal} gear items`);
+  await expect(page.getByTestId("dashboard").getByTestId("stage-progress")).toHaveText(/^1 of \d+ done$/);
 
-  // Shorter plan: action sections open, reference sections collapsed to title + summary
+  // The plan below is a short index: every section collapsed to title + summary until opened
+  await expect(page.locator("details[data-section][open]")).toHaveCount(0);
+  await expect(page.getByText(/Store 54 gallons \(14 days\)/)).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Your area's hazards/ })).toBeVisible();
+  await page.getByTestId("dashboard").getByRole("link", { name: /See every step/ }).click();
   await expect(page.locator("details#priorities")).toHaveAttribute("open", "");
-  await expect(page.locator("details#gear")).not.toHaveAttribute("open", "");
   const nav = page.getByRole("navigation", { name: "Plan sections" });
   await nav.getByRole("link", { name: "Supplies" }).click();
   await expect(nav.getByRole("link", { name: "Supplies" })).toHaveAttribute("aria-current", "true");
-  await nav.getByRole("link", { name: "Gear" }).click();
+  await page.locator("#ch-supplies").getByRole("link", { name: "Gear", exact: true }).click();
   await expect(page.locator("details#gear")).toHaveAttribute("open", "");
 
-  // Ticks are saved to the plan, not just this browser
-  const firstTick = page.locator("details#priorities input[type=checkbox]").first();
-  await firstTick.check();
-  await expect(page.locator("details#priorities").getByText(/^1 of \d+ done/).first()).toBeVisible();
+  // Ticks are saved to the plan, not just this browser (the dashboard tick above shows in the full list too)
+  await page.locator("details#priorities").evaluate((d) => ((d as HTMLDetailsElement).open = true));
+  await expect(page.locator("details#priorities input[type=checkbox]").first()).toBeChecked();
+  await page.locator("details#priorities input[type=checkbox]").nth(1).check();
+  await expect(page.locator("details#priorities").getByText(/^2 of \d+ done/).first()).toBeVisible();
   await page.waitForTimeout(800);
   await page.evaluate(() => localStorage.clear());
   await page.reload();
-  await expect(page.locator("details#priorities input[type=checkbox]").first()).toBeChecked();
+  await page.locator("details#priorities").evaluate((d) => ((d as HTMLDetailsElement).open = true));
+  await expect(page.locator("details#priorities input[type=checkbox]").nth(1)).toBeChecked();
 
   // Change one answer without redoing the questionnaire
   await page.getByText("Something not right? Change an answer").click();
@@ -234,7 +245,7 @@ test("admin: dashboard, catalog, rule constants, affiliate tag → tracked Buy c
   const planId = await quickPlan(page);
   await page.goto(`/plan/${planId}`);
   await expect(page.getByText(/Affiliate disclosure/).first()).toBeVisible();
-  const buy = page.getByRole("link", { name: /^Buy Carbon monoxide alarm/ }).first();
+  const buy = page.getByTestId("dashboard").getByRole("link", { name: /^Buy carbon monoxide alarm/ });
   await expect(buy).toHaveAttribute("rel", /sponsored/);
   const href = await buy.getAttribute("href");
   const r = await page.request.get(href!, { maxRedirects: 0 });
