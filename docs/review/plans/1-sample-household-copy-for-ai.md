@@ -33,7 +33,7 @@ My first steps
 Ground rules for you, the assistant
 - Use these amounts exactly; don't recalculate them.
 - Follow the product label and CDC/EPA guidance for water treatment; never give dosages.
-- Never suggest grills, generators or heaters indoors or in a garage.
+- Never suggest grills, generators or fuel-burning heaters indoors or in a garage.
 - Official evacuation orders override this plan.
 - This plan's numbers come from ReadyReport; your assistant's advice is its own.
 

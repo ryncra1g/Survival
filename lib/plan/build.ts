@@ -1,7 +1,7 @@
 import { hasHouseholdFilter, hasPersonalFilter, LABELS, type Answers } from "@/lib/answers/schema";
 import { labelKinds } from "./kinds";
 import { maintenanceItems } from "./maintenance";
-import { DONT_DO, tipsFor, type TipArea } from "@/lib/tips/library";
+import { dontDoFor, tipsFor, type TipArea } from "@/lib/tips/library";
 import { mixLabel, type ComputedPlan, type GearPick } from "@/lib/rules/engine";
 import type { RuleConstants } from "@/lib/rules/constants";
 import { atLeast } from "@/lib/zip/profile";
@@ -51,7 +51,7 @@ function addTips(S: SectionDraft[]) {
       type: "tips",
       ...(compact ? { compact: true } : {}),
       tips: tips.map((t) => ({ id: t.id, situation: t.situation, steps: t.steps, source: t.source })),
-      dontDo: compact ? DONT_DO : [...DONT_DO, ...tips.flatMap((t) => t.dontDo)],
+      dontDo: dontDoFor(area),
     });
   }
 }
@@ -304,7 +304,10 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
           `Water: ${n(c.water.adultGalPerDay, 2)} gal/adult/day, ${n(c.water.childGalPerDay, 2)} gal/child/day, plus pets by size. Store up to ${n(c.water.storedDaysCap)} days; filter/collect beyond that.`,
           `Food: ${n(c.calories.adultPerDay)} kcal/adult/day; children by age band (${c.calories.childBands.map(([age, k]) => `≤${age}: ${n(k)}`).join(", ")}).`,
           `Toilet paper: ${n(c.sanitation.toiletPaperRollsPerPersonPerWeek)} roll/person/week. Diapers: ${n(c.diapers.perChildPerDay)}/day per child in diapers.`,
-          `Generator: ${n(pw.hoursPerDay)} hours/day (${pw.hoursBasis}); inverter generator burns ${range(c.generator.gasolineGalPerHour[0], c.generator.gasolineGalPerHour[1], 2)} gal gasoline/hour at ~half load.`,
+          // Only for households that own a generator or have one in this plan's gear (review 4).
+          ...(a.backupPower === "portable_generator" || a.backupPower === "standby_generator" || pw.generatorStatus === "owned_portable" || pw.generatorStatus === "owned_standby" || [...cp.budget.picks, ...cp.budget.deferred].some((p) => p.item.group === "generator" || p.item.id.startsWith("generator-"))
+            ? [`Generator: ${n(pw.hoursPerDay)} hours/day (${pw.hoursBasis}); inverter generator burns ${range(c.generator.gasolineGalPerHour[0], c.generator.gasolineGalPerHour[1], 2)} gal gasoline/hour at ~half load.`]
+            : []),
           ...(prof.approximate ? ["Your ZIP prefix wasn't in our hazard table, so national-average ratings were used. Check your county's hazard info at Ready.gov."] : []),
         ],
       },
@@ -854,7 +857,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     {
       type: "bullets",
       items: [
-        ...(fm.kcal.bulk ? [`Store bulk staples in sealed food-grade buckets or mylar, cool and dry: about ${plural(fm.bulk.buckets, "5-gallon bucket")} for ${n(fm.bulk.totalLbs)} lb.`] : []),
+        ...(fm.kcal.bulk ? [`Store dry staples (rice, beans, oats, pasta, powdered milk) in sealed food-grade buckets or mylar, cool and dry: about ${plural(fm.bulk.buckets, "5-gallon bucket")} for ${n(fm.bulk.dryLbs)} lb. Canned goods, oil and peanut butter stay in their own containers.`] : []),
         "Ration bars are for go-bags and the first days, not your whole supply.",
         ...(fm.kcal.kits ? ["Freeze-dried meals need hot water: count it in your water and cooking fuel."] : []),
         "Adjust for any allergies or diets in your household.",

@@ -155,8 +155,21 @@ describe("linter", () => {
     "The adult dosage is 500 mg.",
     "Keep a firearm for security.",
     "Stock ammunition and a tactical vest.",
+    // Review finding 1: a negation that doesn't govern the hazard doesn't make it safe.
+    "Don't hesitate to run a charcoal grill indoors for warmth.",
+    "You can heat the kitchen with the gas oven, not the stove.",
+    "Run the car in the attached garage to charge phones, not for long.",
+    "Plug the generator into a wall outlet with a double-male cord, it's not hard.",
+    "Don't worry about running the generator in the garage.",
+    "It's not ideal, but you can use the grill in the kitchen.",
+    // Code review: an after-negation about something else, a hedged danger word, or "went".
+    "Generators shouldn't be left in the rain, keep yours in the garage.",
+    "Most generators can't run in rain, so keep one in the garage.",
+    "The generator went inside the garage.",
+    "Back-feeding through a dryer outlet is less dangerous than people say.",
+    "Running a grill indoors is only dangerous without a CO alarm.",
   ];
-  const safe = [CO_RULE, TRANSFER_RULE, MED_RULE, APARTMENT_GENERATOR_RULE, "Set the generator outdoors 20+ ft from the house.", "Add 8 drops of bleach per gallon and wait 30 minutes.", "Cook on a camp stove outdoors, away from windows."];
+  const safe = [CO_RULE, TRANSFER_RULE, MED_RULE, APARTMENT_GENERATOR_RULE, "Set the generator outdoors 20+ ft from the house.", "Add 8 drops of bleach per gallon and wait 30 minutes.", "Cook on a camp stove outdoors, away from windows.", "Never run a generator in the garage.", "Generators are never safe indoors.", "Don't use a grill or camp stove inside.", "Never plug a generator into a wall outlet.", "Back-feeding through a dryer outlet is deadly."];
   for (const s of unsafe) it(`flags: ${s}`, () => expect(lintText(s).length).toBeGreaterThan(0));
   for (const s of safe) it(`allows: ${s.slice(0, 50)}…`, () => expect(lintText(s)).toEqual([]));
 });
@@ -168,6 +181,12 @@ describe("LLM output validation", () => {
   it("rejects spelled-out numbers", () => expect(validateSummary("Store fifty gallons.", allowed)).toMatch(/spelled/));
   it("rejects unknown tokens", () => expect(validateSummary("Store {{water.bogus}} gallons.", allowed)).toMatch(/unknown token/));
   it("rejects unsafe advice", () => expect(validateSummary("Run the generator in the garage.", allowed)).toMatch(/safety/));
+  it("strict mode: rejects any hazard mention in a summary, even a safe one", () => {
+    for (const t of ["Never run a generator indoors.", "Keep the grill outdoors.", "Don't use the oven for heat.", "Never back-feed the panel."]) expect(validateSummary(t, allowed), t).toMatch(/strict mode/);
+    // Harmless words that aren't hazards are still fine.
+    for (const t of ["Charge phones from a solar panel or a USB outlet.", "An electric space heater can warm a room while the power is on."]) expect(validateSummary(t, allowed), t).toBeNull();
+    expect(validateSummary("Store {{water.storedGal}} gallons near {{region}}.", allowed)).toBeNull();
+  });
 
   it("a malicious model is fully contained: bad summaries fall back to templates", async () => {
     let calls = 0;

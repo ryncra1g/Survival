@@ -344,7 +344,8 @@
       ],
       "totalLbs": 551,
       "cost": 1081,
-      "buckets": 19
+      "dryLbs": 210,
+      "buckets": 8
     },
     "readyCost": 294
   },
@@ -1296,10 +1297,10 @@
           "affiliateUrl": null,
           "active": true
         },
-        "qty": 19,
-        "low": 380,
-        "high": 665,
-        "mid": 523,
+        "qty": 8,
+        "low": 160,
+        "high": 280,
+        "mid": 220,
         "phase": 2,
         "status": "deferred",
         "reason": "Doesn't fit the remaining budget — buy next"

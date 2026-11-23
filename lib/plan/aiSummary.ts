@@ -14,7 +14,7 @@ import type { Block, PlanDocument } from "./document";
 export const AI_GROUND_RULES = [
   "Use these amounts exactly; don't recalculate them.",
   "Follow the product label and CDC/EPA guidance for water treatment; never give dosages.",
-  "Never suggest grills, generators or heaters indoors or in a garage.",
+  "Never suggest grills, generators or fuel-burning heaters indoors or in a garage.",
   "Official evacuation orders override this plan.",
   `This plan's numbers come from ${BRAND.name}; your assistant's advice is its own.`,
 ];

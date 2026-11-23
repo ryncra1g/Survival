@@ -4,7 +4,7 @@ import { z } from "zod";
 import type { ComputedPlan } from "@/lib/rules/engine";
 import type { PlanDraft } from "@/lib/plan/build";
 import { tokensIn } from "@/lib/plan/format";
-import { lintText } from "@/lib/safety/linter";
+import { lintText, mentionsHazard } from "@/lib/safety/linter";
 import { BRAND } from "@/lib/brand";
 
 /**
@@ -58,6 +58,8 @@ export function validateSummary(summary: string, allowedTokens: Set<string>): st
   if (/[{}]/.test(stripped)) return "malformed token";
   const v = lintText(stripped.replace(/\s+/g, " "));
   if (v.length) return `safety: ${v[0].rule}`;
+  // Strict mode: summaries never need hazard words at all, negated or not; the template is used instead.
+  if (mentionsHazard(stripped)) return "safety: mentions a combustion, back-feed or DIY hazard (strict mode)";
   return null;
 }
 

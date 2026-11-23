@@ -40,7 +40,7 @@ Tornado | low
 Start with life safety this week, then water and food this month, then power and comfort. Check items off as you go.
 
 This week
-[ ] Test or install CO alarms: 4 (one per level plus outside sleeping areas). (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/prevention/)
+[ ] Test or install CO alarms: 4 (one per level plus outside sleeping areas). (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/about/index.html)
 [ ] Store your first 3 days of water: 12 gallons. (Make water safe to drink (EPA): https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water)
 [ ] Look up your hurricane evacuation zone and the route out, and decide where you'd go. (Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM): https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map)
 [ ] Turn on Wireless Emergency Alerts and sign up for your county's alert system. (Sign up for NY-Alert (New York State): https://alert.ny.gov/sign-up-ny-alert)
@@ -78,7 +78,7 @@ This month
 [ ] Get your other property ready to use: keys, how to turn on utilities, and supplies kept there. (Evacuation (Ready.gov): https://www.ready.gov/evacuation)
 Within 60 days
 [ ] Complete the full 90 days food list: 551 lb of bulk staples plus the rest of your food mix.
-[ ] Buy the generator and fuel storage; test-run it outdoors, 20+ ft from the house, under load. (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/prevention/)
+[ ] Buy the generator and fuel storage; test-run it outdoors, 20+ ft from the house, under load. (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/about/index.html)
 [ ] Set up water filtration + collection for days 15–90 (293 gallons). (Make water safe to drink (EPA): https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water)
 [ ] Assemble the sanitation kit (two-bucket toilet, bags, absorbent). (Build a kit (Ready.gov): https://www.ready.gov/kit)
 [ ] Pre-cut and label window protection. (Hazard-by-hazard guides (Ready.gov): https://www.ready.gov/be-informed)
@@ -91,7 +91,7 @@ Skills to practice
 [ ] First aid: take a Red Cross First Aid/CPR class (about 3 hours, often online + one session). (Find a First Aid/CPR class (American Red Cross): https://www.redcross.org/take-a-class)
 [ ] Shutoffs: have a handy neighbor or your utility show you the gas, water and main electrical shutoffs, and label them. (Make a plan (Ready.gov): https://www.ready.gov/plan)
 [ ] Camping: spend one night "camping" at home: set up the tent, cook on the camp stove outdoors, filter a gallon of water. (Build a kit (Ready.gov): https://www.ready.gov/kit)
-[ ] Generator: practice starting it, plugging in the fridge outdoors, and refueling only after a 15-minute cool-down. (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/prevention/)
+[ ] Generator: practice starting it, plugging in the fridge outdoors, and refueling only after a 15-minute cool-down. (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/about/index.html)
 [ ] Water: filter and disinfect one gallon start to finish. (Make water safe to drink (EPA): https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water)
 [ ] Pets: practice getting each pet into its carrier or on a leash in under 2 minutes. (Prepare your pets (Ready.gov): https://www.ready.gov/pets)
 [ ] Kids: walk to your meeting place together and make it a game. (Planning with kids (Ready.gov): https://www.ready.gov/kids/family-emergency-planning)
@@ -101,13 +101,13 @@ Low- and no-cost preparedness (Ready.gov): https://www.ready.gov/low-and-no-cost
 3. DAY 0 CHECKLIST & DECISION TRIGGERS
 When an outage or storm is coming, run this checklist. Once it hits, use the if/then table so decisions are made in advance, not under stress.
 
-[ ] Check CO and smoke alarms; replace batteries if unsure. (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/prevention/)
+[ ] Check CO and smoke alarms; replace batteries if unsure. (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/about/index.html)
 [ ] Charge every phone, power bank and power station. (Power outages (Ready.gov): https://www.ready.gov/power-outages)
 [ ] Fill the bathtub water bladder and spare containers. (Make water safe to drink (EPA): https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water)
 [ ] Set fridge to its coldest setting; fill empty freezer space with water bottles. (Food safety in a power outage (FoodSafety.gov): https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage)
 [ ] Get cash and refill prescriptions if you can. (Older adults and people with disabilities (Ready.gov): https://www.ready.gov/older-adults)
 [ ] Fuel or charge vehicles. (Plan your evacuation (Ready.gov): https://www.ready.gov/evacuation)
-[ ] Test-start the generator outdoors; stage fuel and cords. (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/prevention/)
+[ ] Test-start the generator outdoors; stage fuel and cords. (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/about/index.html)
 [ ] Set up your warm room before the cold arrives (see Heat & warmth). (Winter weather (Ready.gov): https://www.ready.gov/winter-weather)
 [ ] Bring pets inside and stage their food, meds and carrier. (Prepare your pets (Ready.gov): https://www.ready.gov/pets)
 [ ] Check on elderly or disabled neighbors. (Older adults and people with disabilities (Ready.gov): https://www.ready.gov/older-adults)
@@ -205,7 +205,7 @@ IF Warm room still too cold -> Use the indoor-rated propane heater in that room 
 IF House below 45°F and dropping -> Relocate to a warming center, friends/family, or your fallback location.
 !! Carbon monoxide: Never run a generator, grill, camp stove, charcoal or any fuel-burning device not rated for indoor use inside your home, garage, basement, crawlspace, tent or on a balcony — not even with doors or windows open. Keep generators outdoors at least 20 feet from doors, windows and vents, with the exhaust pointed away from buildings. Put battery-powered or battery-backup CO alarms on every level and outside sleeping areas. If a CO alarm sounds or anyone feels dizzy, headachy or nauseous, get everyone outside to fresh air right away and call 911.
 Winter weather (Ready.gov): https://www.ready.gov/winter-weather
-Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/prevention/
+Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/about/index.html
 
 7. POWER & FUEL MATH
 Plan on about 12 generator hours a day, burning 3–4.8 gallons of gasoline. Stored fuel of 30 gallons lasts about 6.3–10 days.
@@ -230,7 +230,7 @@ IF Utility lines down near home -> Stay 35+ ft away and call the utility.
 !! Connecting a generator to your house: Never back-feed your house through a dryer outlet or any double-male ("suicide") cord — it can electrocute you, your neighbors and utility line workers, and start fires. Power house circuits only through a power inlet with an interlock or a transfer switch installed by a licensed electrician. Until then, plug appliances directly into the generator with outdoor-rated extension cords.
 !! Carbon monoxide: Never run a generator, grill, camp stove, charcoal or any fuel-burning device not rated for indoor use inside your home, garage, basement, crawlspace, tent or on a balcony — not even with doors or windows open. Keep generators outdoors at least 20 feet from doors, windows and vents, with the exhaust pointed away from buildings. Put battery-powered or battery-backup CO alarms on every level and outside sleeping areas. If a CO alarm sounds or anyone feels dizzy, headachy or nauseous, get everyone outside to fresh air right away and call 911.
 Power outages (Ready.gov): https://www.ready.gov/power-outages
-Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/prevention/
+Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/about/index.html
 
 8. FOOD
 Your household needs about 7,000 calories a day — 630,000 for the full 90 days. Your mix: 84% bulk staples, 16% ready-to-eat. Eat perishables first, then pantry food, then bulk staples.
@@ -271,7 +271,7 @@ Preparation | Cook: simmer rice, beans and oats | Open and eat; heat if you can 
 Water and fuel | Water and fuel to cook | Little or none | Hot water for freeze-dried meals
 Space | Buckets: compact for the calories | Most space for the calories | Compact
 Shelf life | Long when sealed; rotate into meals | Check the dates; rotate into meals | Longest; check the label
-- Store bulk staples in sealed food-grade buckets or mylar, cool and dry: about 19 5-gallon buckets for 551 lb.
+- Store dry staples (rice, beans, oats, pasta, powdered milk) in sealed food-grade buckets or mylar, cool and dry: about 8 5-gallon buckets for 210 lb. Canned goods, oil and peanut butter stay in their own containers.
 - Ration bars are for go-bags and the first days, not your whole supply.
 - Adjust for any allergies or diets in your household.
 - Include comfort foods, spices, and a manual can opener.
@@ -285,7 +285,7 @@ Where to keep it
 [ ] Garage: water jugs and bulk staples in sealed bins, away from the car's exhaust, chemicals and direct sun; not for anything that spoils in heat. (Build a kit (Ready.gov): https://www.ready.gov/kit)
 Rice, beans, oats, pasta, oil and canned goods are cheapest at a grocery store or warehouse club.
 Food safety in a power outage (FoodSafety.gov): https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage
-Power outage food and water safety (CDC): https://www.cdc.gov/natural-disasters/safety/power-outage-safety.html
+Power outage food and water safety (CDC): https://www.cdc.gov/natural-disasters/response/what-to-do-protect-yourself-during-a-power-outage.html
 
 9. COOKING & REFRIGERATION
 Plan how you'll cook without power and when to throw out fridge food. The four-hour rule keeps everyone from getting sick.
@@ -296,7 +296,7 @@ IF Freezer food still has ice crystals or is at 40°F or below -> Safe to refree
 IF Running a generator -> Run fridge/freezer 1–2 hours at a time; keep doors shut between runs.
 IF Cooler use -> Keep it in the shade and packed with ice; check with a thermometer.
 !! Cook outdoors only: Grills, camp stoves and charcoal give off carbon monoxide. Use them outdoors only — never inside, in a garage or on an enclosed porch.
-Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/prevention/
+Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/about/index.html
 
 10. SANITATION, HYGIENE & DIAPERS
 Store 52 rolls of toilet paper and 540 diapers (6 a day). If toilets can't flush, switch to a two-bucket toilet.
@@ -421,7 +421,7 @@ Vehicle kit
 [ ] Blankets, water, snacks (Build a kit (Ready.gov): https://www.ready.gov/kit)
 [ ] Phone chargers (Plan your evacuation (Ready.gov): https://www.ready.gov/evacuation)
 [ ] Flashlight, reflective triangles (Build a kit (Ready.gov): https://www.ready.gov/kit)
-[ ] Never store spare gasoline inside the car cabin (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/prevention/)
+[ ] Never store spare gasoline inside the car cabin (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/about/index.html)
 Go-bag (one per person)
 [ ] Water (1 L) and filter bottle (Make water safe to drink (EPA): https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water)
 [ ] 3 days of snacks (Build a kit (Ready.gov): https://www.ready.gov/kit)
@@ -480,7 +480,7 @@ Generator inlet + interlock (electrician-installed) |  | $500–$1,500 | Phase 2
 Flood kit |  | $50–$150 | Phase 2
 20-lb propane cylinders | × 2 | $100–$140 | Phase 2
 Multi-day cooler |  | $40–$90 | Phase 2
-Food storage buckets | × 19 | $380–$665 | Phase 2
+Food storage buckets | × 8 | $160–$280 | Phase 2
 Emergency toilet kit |  | $25–$50 | Phase 2
 Window protection |  | $150–$600 | Phase 2
 Battery backup sump pump |  | $250–$500 | Phase 2
@@ -526,7 +526,7 @@ Buy to the spec, not the brand. The example models are just a starting point for
 - Flood kit  (Typical $50–$150 each): Waterproof bins for documents/valuables on an upper shelf, sandbags or water-activated flood barriers for door thresholds
 - 20-lb propane cylinders × 2 (Typical $50–$70 each): Filled 20-lb cylinders with OPD valves; store outdoors upright
 - Multi-day cooler  (Typical $40–$90 each): Rotomolded or 5-day-rated cooler, 45–70 qt
-- Food storage buckets × 19 (Typical $20–$35 each): One food-grade 5-gal bucket with a gamma seal lid, mylar bag and oxygen absorbers for rice, beans or oats; enough buckets for your bulk staples
+- Food storage buckets × 8 (Typical $20–$35 each): One food-grade 5-gal bucket with a gamma seal lid, mylar bag and oxygen absorbers for rice, beans or oats; enough buckets for your bulk staples
 - Emergency toilet kit  (Typical $25–$50 each): 5-gal bucket toilet seat + heavy-duty liners + absorbent (cat litter or sawdust); two-bucket setup
 - Window protection  (Typical $150–$600 each): Pre-cut 5/8" exterior plywood with clips, or code-approved storm panels
 - Battery backup sump pump  (Typical $250–$500 each): Battery backup sump pump with alarm and deep-cycle battery
@@ -559,8 +559,8 @@ Build a kit (Ready.gov): https://www.ready.gov/kit
 Sources:
 - Ready.gov — Build a Kit & Make a Plan: https://www.ready.gov/kit
 - FEMA — Preparedness resources: https://www.fema.gov/emergency-managers/individuals-communities
-- CDC — Carbon monoxide poisoning prevention: https://www.cdc.gov/carbon-monoxide/prevention/
-- CDC — Power outages & food/water safety: https://www.cdc.gov/natural-disasters/safety/power-outage-safety.html
+- CDC — Carbon monoxide poisoning prevention: https://www.cdc.gov/carbon-monoxide/about/index.html
+- CDC — Power outages & food/water safety: https://www.cdc.gov/natural-disasters/response/what-to-do-protect-yourself-during-a-power-outage.html
 - American Red Cross — Emergency preparedness: https://www.redcross.org/get-help/how-to-prepare-for-emergencies.html
 - EPA — Emergency disinfection of drinking water: https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water
 - FoodSafety.gov — Food safety during power outages: https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage

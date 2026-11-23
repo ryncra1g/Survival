@@ -214,7 +214,7 @@ function TipsPdf({ b }: { b: Extract<Block, { type: "tips" }> }) {
           {pdfSafe(`${t.situation} ${t.steps.join(" ")} (${t.source.label}: ${t.source.url})`)}
         </Text>
       ))}
-      <Text style={s.p}>{pdfSafe(`Don't do this: ${b.dontDo.join(" ")}`)}</Text>
+      {b.dontDo.length > 0 && <Text style={s.p}>{pdfSafe(`Don't do this: ${b.dontDo.join(" ")}`)}</Text>}
     </View>
   );
 }

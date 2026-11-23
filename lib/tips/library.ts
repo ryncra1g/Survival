@@ -2,7 +2,8 @@
  * D3b: "No time to buy? Use what you have." One library of short, sourced tips.
  *
  * Rules (owner brief): official sources only (Ready.gov, CDC, EPA, Red Cross); no amounts from memory
- * (link to the official instructions instead); every box carries the "Don't do this" list; shown only
+ * (link to the official instructions instead); every box carries the "Don't do this" lines for its area
+ * (the full list once, in Day 0); shown only
  * when DIY_TIPS_ENABLED is on, after the owner approves docs/FACTCHECK.md. The library is always linted.
  */
 export type TipArea = "water" | "heat" | "sanitation" | "light_power" | "day0";
@@ -14,19 +15,28 @@ export interface Tip {
   materials: string[];
   steps: string[];
   source: { label: string; url: string };
-  /** Extra "don't" lines for this tip (the common list is added to every box). */
+  /** Extra "don't" lines for this tip, shown in its area's box after DONT_DO_BY_AREA. */
   dontDo: string[];
   lastReviewed: string;
 }
 
-/** The owner's list, shown in every box. Each line is phrased as a "don't", so the linter allows it. */
-export const DONT_DO = [
-  "Don't use candle or terracotta-pot heaters.",
-  "Never use a grill or camp stove indoors or in a garage.",
-  "Don't use a gas oven or stovetop to heat your home.",
-  "Never run a car in an attached garage, even with the door open.",
-  "Never plug a generator into a wall outlet.",
-];
+const NO_CANDLE_HEATERS = "Don't use candle or terracotta-pot heaters.";
+const NO_GRILLS_INDOORS = "Never use a grill or camp stove indoors or in a garage.";
+const NO_OVEN_HEAT = "Don't use a gas oven or stovetop to heat your home.";
+const NO_CAR_IN_GARAGE = "Never run a car in an attached garage, even with the door open.";
+const NO_BACKFEED = "Never plug a generator into a wall outlet.";
+
+/** The owner's full list. Shown once, in the Day 0 box. Each line is phrased as a "don't", so the linter allows it. */
+export const DONT_DO = [NO_CANDLE_HEATERS, NO_GRILLS_INDOORS, NO_OVEN_HEAT, NO_CAR_IN_GARAGE, NO_BACKFEED];
+
+/** Review 5: each section's box shows only the lines that belong to its area (plus its tips' own lines). */
+export const DONT_DO_BY_AREA: Record<TipArea, string[]> = {
+  day0: DONT_DO,
+  heat: [NO_CANDLE_HEATERS, NO_OVEN_HEAT, NO_GRILLS_INDOORS],
+  light_power: [NO_BACKFEED, NO_CAR_IN_GARAGE],
+  water: [],
+  sanitation: [],
+};
 
 export const ALLOWED_SOURCE_HOSTS = ["www.ready.gov", "www.cdc.gov", "www.epa.gov", "www.redcross.org", "www.fema.gov", "www.foodsafety.gov"];
 
@@ -96,6 +106,8 @@ export const TIPS: Tip[] = [
 ];
 
 export const tipsFor = (area: TipArea) => TIPS.filter((t) => t.area === area);
+/** The "Don't do this" lines for one area's box: the area's own lines, then its tips' lines (Day 0: the full list only). */
+export const dontDoFor = (area: TipArea): string[] => (area === "day0" ? DONT_DO : [...new Set([...DONT_DO_BY_AREA[area], ...tipsFor(area).flatMap((t) => t.dontDo)])]);
 
 /** Materials per tip id, for matching against the inventory (accounts track). */
 export const TIP_MATERIALS: Record<string, string[]> = Object.fromEntries(TIPS.map((t) => [t.id, t.materials]));

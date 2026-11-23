@@ -153,8 +153,8 @@ export type PlanDocument = z.infer<typeof PlanDocumentSchema>;
 export const SOURCES = [
   { name: "Ready.gov — Build a Kit & Make a Plan", url: "https://www.ready.gov/kit" },
   { name: "FEMA — Preparedness resources", url: "https://www.fema.gov/emergency-managers/individuals-communities" },
-  { name: "CDC — Carbon monoxide poisoning prevention", url: "https://www.cdc.gov/carbon-monoxide/prevention/" },
-  { name: "CDC — Power outages & food/water safety", url: "https://www.cdc.gov/natural-disasters/safety/power-outage-safety.html" },
+  { name: "CDC — Carbon monoxide poisoning prevention", url: "https://www.cdc.gov/carbon-monoxide/about/index.html" },
+  { name: "CDC — Power outages & food/water safety", url: "https://www.cdc.gov/natural-disasters/response/what-to-do-protect-yourself-during-a-power-outage.html" },
   { name: "American Red Cross — Emergency preparedness", url: "https://www.redcross.org/get-help/how-to-prepare-for-emergencies.html" },
   { name: "EPA — Emergency disinfection of drinking water", url: "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water" },
   { name: "FoodSafety.gov — Food safety during power outages", url: "https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage" },

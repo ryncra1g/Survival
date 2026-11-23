@@ -1,5 +1,6 @@
 import "server-only";
 import { renderConfirmEmail, renderLoginEmail } from "@/lib/email/render";
+import { claimNext } from "./claim";
 import { randomToken, sha256 } from "./crypto";
 import { env, isDemo } from "./env";
 import { metaFor, sendEmail } from "./mailer";
@@ -28,3 +29,16 @@ export async function sendLogin(userId: string, email: string) {
   await sendEmail({ to: email, userId, type: "login", ...m });
   return link;
 }
+
+/**
+ * Security review M1: a link for an existing account that, once used, attaches this plan to it (and applies the
+ * "send me updates" tick). A confirmed account gets the 1-hour sign-in email; an unconfirmed one the confirm email.
+ */
+export async function sendClaimLink(user: { id: string; email: string; double_opt_in_at: string | null }, planId: string, updates: boolean) {
+  const confirmed = !!user.double_opt_in_at;
+  const link = await issueLink(user.id, confirmed ? "login" : "confirm", claimNext(user.id, planId, updates));
+  const m = confirmed ? renderLoginEmail(link, metaFor(user.id)) : renderConfirmEmail(link, metaFor(user.id));
+  await sendEmail({ to: user.email, userId: user.id, type: confirmed ? "login" : "confirm", ...m });
+  return link;
+}
+

@@ -107,7 +107,7 @@ _General guidance, not professional advice._
 | 2 | Flood kit | 1 | $50–$150 | yes |
 | 2 | 20-lb propane cylinders | 2 | $100–$140 | yes |
 | 2 | Multi-day cooler | 1 | $40–$90 | yes |
-| 2 | Food storage buckets | 19 | $380–$665 | yes |
+| 2 | Food storage buckets | 8 | $160–$280 | yes |
 | 2 | Emergency toilet kit | 1 | $25–$50 | yes |
 | 2 | Window protection | 1 | $150–$600 | yes |
 | 2 | Battery backup sump pump | 1 | $250–$500 | yes |
@@ -139,19 +139,19 @@ _Start with life safety this week, then water and food this month, then power an
 
 **[To do]**
 
-- [ ] Test or install CO alarms: 4 (one per level plus outside sleeping areas). [Buy: co-alarm] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/))
+- [ ] Test or install CO alarms: 4 (one per level plus outside sleeping areas). [Buy: Carbon monoxide alarm, Typical $20–$40 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html))
   - _Why:_ Carbon monoxide from generators, heaters and grills is one of the most common ways people die after storms and outages, and an alarm is the cheapest life-saver in this plan.
-- [ ] Store your first 3 days of water: 12 gallons. [Buy: water-jug] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
+- [ ] Store your first 3 days of water: 12 gallons. [Buy: 7-gallon water container, Typical $20–$35 each] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
   - _Why:_ Taps can stop or become unsafe in an outage, and water is the one supply you can't go without for 3 days.
 - [ ] Look up your hurricane evacuation zone and the route out, and decide where you'd go. ([Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM)](https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map))
   - _Why:_ Evacuation orders are given by zone. Knowing yours now means you leave early, before roads fill.
-- [ ] Turn on Wireless Emergency Alerts and sign up for your county's alert system. [Buy: radio] ([Sign up for NY-Alert (New York State)](https://alert.ny.gov/sign-up-ny-alert))
+- [ ] Turn on Wireless Emergency Alerts and sign up for your county's alert system. [Buy: NOAA weather radio, Typical $50–$80 each] ([Sign up for NY-Alert (New York State)](https://alert.ny.gov/sign-up-ny-alert))
   - _Why:_ Official warnings reach your phone even when TV and internet are out.
-- [ ] Write your household communications plan (see Communications) and pick an out-of-area contact. [Buy: frs-radios] ([Make a plan (Ready.gov)](https://www.ready.gov/plan))
-- [ ] Set aside $1,200 in small bills. [Buy: docs-pouch] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
-- [ ] Find and label your main water shutoff, gas shutoff and electrical panel. [Buy: quake-kit] ([Make a plan (Ready.gov)](https://www.ready.gov/plan))
+- [ ] Write your household communications plan (see Communications) and pick an out-of-area contact. [Buy: FRS walkie-talkies, Typical $25–$45 each] ([Make a plan (Ready.gov)](https://www.ready.gov/plan))
+- [ ] Set aside $1,200 in small bills. [Buy: Fire/water-resistant document pouch, Typical $20–$60 each] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
+- [ ] Find and label your main water shutoff, gas shutoff and electrical panel. ([Make a plan (Ready.gov)](https://www.ready.gov/plan))
 - [ ] Buy 2 weeks of diapers (84) and wipes. ([Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning))
-- [ ] Keep every gas/diesel vehicle above half a tank from now on. [Buy: gas-cans] ([Plan your evacuation (Ready.gov)](https://www.ready.gov/evacuation))
+- [ ] Keep every gas/diesel vehicle above half a tank from now on. [Buy: 5-gallon gas cans + stabilizer, Typical $30–$45 each] ([Plan your evacuation (Ready.gov)](https://www.ready.gov/evacuation))
 
 **[To have]**
 
@@ -178,44 +178,47 @@ _Start with life safety this week, then water and food this month, then power an
 
 **[To do]**
 
-- [ ] Finish stored water: 54 gallons (8 7-gal jugs). [Buy: water-drum] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
+- [ ] Finish stored water: 54 gallons (8 7-gal jugs). [Buy: 7-gallon water container, Typical $20–$35 each] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
 - [ ] Buy the rest of your Phase 1 (life safety) gear: 16 items, about $977–$1,893. (see Open your shopping list)
-- [ ] Build a 2-week pantry from the food list (about 98 thousand calories). [Buy: storage-kit] (see Your food list)
-- [ ] Get a licensed electrician's quote for a generator power inlet + interlock (or transfer switch) so the generator can safely run your furnace. [Buy: inlet-interlock] ([Power outages (Ready.gov)](https://www.ready.gov/power-outages))
-- [ ] Do the pipe-freeze prep in section 5 (insulate exposed pipes, know how to drain lines). [Buy: pipe-insulation] ([Winter weather (Ready.gov)](https://www.ready.gov/winter-weather))
-- [ ] Stock 2 weeks of pet food; ask your vet how to keep extra medication on hand if your pet takes any. [Buy: pet-kit] ([Prepare your pets (Ready.gov)](https://www.ready.gov/pets))
-- [ ] Pack a go-bag for each person (see the Evacuation section). [Buy: go-bag] (see Go-bag list)
+- [ ] Build a 2-week pantry from the food list (about 98 thousand calories). [Buy: Food storage buckets, Typical $20–$35 each] (see Your food list)
+- [ ] Get a licensed electrician's quote for a generator power inlet + interlock (or transfer switch) so the generator can safely run your furnace. [Buy: Generator inlet + interlock (electrician-installed), Typical $500–$1,500 each] ([Power outages (Ready.gov)](https://www.ready.gov/power-outages))
+- [ ] Do the pipe-freeze prep in section 5 (insulate exposed pipes, know how to drain lines). [Buy: Pipe insulation & faucet covers, Typical $20–$50 each] ([Winter weather (Ready.gov)](https://www.ready.gov/winter-weather))
+- [ ] Stock 2 weeks of pet food; ask your vet how to keep extra medication on hand if your pet takes any. [Buy: Pet go-kit, Typical $30–$100 each] ([Prepare your pets (Ready.gov)](https://www.ready.gov/pets))
+- [ ] Pack a go-bag for each person (see the Evacuation section). (see Go-bag list)
 - [ ] Check your flood zone and evacuation zone; review insurance (flood insurance has a 30-day wait). ([Look up your flood zone (FEMA Flood Map Service Center)](https://msc.fema.gov/portal/search))
 - [ ] Get your other property ready to use: keys, how to turn on utilities, and supplies kept there. ([Evacuation (Ready.gov)](https://www.ready.gov/evacuation))
 
 #### Within 60 days
 
-- [ ] Complete the full 90 days food list: 551 lb of bulk staples plus the rest of your food mix. [Buy: storage-kit] (see Your food list)
-- [ ] Buy the generator and fuel storage; test-run it outdoors, 20+ ft from the house, under load. [Buy: generator-dual] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/))
-- [ ] Set up water filtration + collection for days 15–90 (293 gallons). [Buy: filter-gravity] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
-- [ ] Assemble the sanitation kit (two-bucket toilet, bags, absorbent). [Buy: toilet-kit] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
-- [ ] Pre-cut and label window protection. [Buy: window-protection] ([Hazard-by-hazard guides (Ready.gov)](https://www.ready.gov/be-informed))
+- [ ] Complete the full 90 days food list: 551 lb of bulk staples plus the rest of your food mix. [Buy: Food storage buckets, Typical $20–$35 each] (see Your food list)
+- [ ] Buy the generator and fuel storage; test-run it outdoors, 20+ ft from the house, under load. [Buy: Small inverter generator, Typical $550–$1,200 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html))
+- [ ] Set up water filtration + collection for days 15–90 (293 gallons). [Buy: Gravity bag filter, Typical $90–$140 each] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
+- [ ] Assemble the sanitation kit (two-bucket toilet, bags, absorbent). [Buy: Emergency toilet kit, Typical $25–$50 each] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
+- [ ] Pre-cut and label window protection. [Buy: Window protection, Typical $150–$600 each] ([Hazard-by-hazard guides (Ready.gov)](https://www.ready.gov/be-informed))
 
 #### Within 90 days
 
 - [ ] Buy your Phase 3 upgrades: 1 item, about $10–$20. (see Open your shopping list)
-- [ ] Run a 'lights-out weekend': live off your plan for 24–48 hours and fix what breaks. [Buy: lights] ([Power outages (Ready.gov)](https://www.ready.gov/power-outages))
-- [ ] Drive the route to your raw land and back; note fuel stops and alternates. [Buy: vehicle-kit] ([Plan your evacuation (Ready.gov)](https://www.ready.gov/evacuation))
+- [ ] Run a 'lights-out weekend': live off your plan for 24–48 hours and fix what breaks. [Buy: Headlamps + LED lanterns, Typical $15–$30 each] ([Power outages (Ready.gov)](https://www.ready.gov/power-outages))
+- [ ] Drive the route to your raw land and back; note fuel stops and alternates. [Buy: Basic vehicle kit, Typical $35–$70 each] ([Plan your evacuation (Ready.gov)](https://www.ready.gov/evacuation))
 - [ ] Put the maintenance calendar on your phone. (see Maintenance calendar)
 
 #### Skills to practice
 
-- [ ] First aid: take a Red Cross First Aid/CPR class (about 3 hours, often online + one session). [Buy: first-aid] ([Find a First Aid/CPR class (American Red Cross)](https://www.redcross.org/take-a-class))
-- [ ] Shutoffs: have a handy neighbor or your utility show you the gas, water and main electrical shutoffs, and label them. [Buy: quake-kit] ([Make a plan (Ready.gov)](https://www.ready.gov/plan))
-- [ ] Camping: spend one night "camping" at home: set up the tent, cook on the camp stove outdoors, filter a gallon of water. [Buy: tent] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
-- [ ] Generator: practice starting it, plugging in the fridge outdoors, and refueling only after a 15-minute cool-down. [Buy: gas-cans] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/))
-- [ ] Water: filter and disinfect one gallon start to finish. [Buy: filter-gravity] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
-- [ ] Pets: practice getting each pet into its carrier or on a leash in under 2 minutes. [Buy: pet-kit] ([Prepare your pets (Ready.gov)](https://www.ready.gov/pets))
-- [ ] Kids: walk to your meeting place together and make it a game. [Buy: morale-kit] ([Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning))
+- [ ] First aid: take a Red Cross First Aid/CPR class (about 3 hours, often online + one session). [Buy: First aid kit, Typical $30–$80 each] ([Find a First Aid/CPR class (American Red Cross)](https://www.redcross.org/take-a-class))
+- [ ] Shutoffs: have a handy neighbor or your utility show you the gas, water and main electrical shutoffs, and label them. ([Make a plan (Ready.gov)](https://www.ready.gov/plan))
+- [ ] Camping: spend one night "camping" at home: set up the tent, cook on the camp stove outdoors, filter a gallon of water. [Buy: Gravity bag filter, Typical $90–$140 each] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
+- [ ] Generator: practice starting it, plugging in the fridge outdoors, and refueling only after a 15-minute cool-down. [Buy: 5-gallon gas cans + stabilizer, Typical $30–$45 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html))
+- [ ] Water: filter and disinfect one gallon start to finish. [Buy: Gravity bag filter, Typical $90–$140 each] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
+- [ ] Pets: practice getting each pet into its carrier or on a leash in under 2 minutes. [Buy: Pet go-kit, Typical $30–$100 each] ([Prepare your pets (Ready.gov)](https://www.ready.gov/pets))
+- [ ] Kids: walk to your meeting place together and make it a game. ([Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning))
 
 **[To have]**
 
-**What you need:**  · [Make a plan (Ready.gov)](https://www.ready.gov/plan) · [Low- and no-cost preparedness (Ready.gov)](https://www.ready.gov/low-and-no-cost)
+**What you need**
+
+- [Make a plan (Ready.gov)](https://www.ready.gov/plan)
+- [Low- and no-cost preparedness (Ready.gov)](https://www.ready.gov/low-and-no-cost)
 
 ### 3. Day 0 checklist & decision triggers
 
@@ -223,16 +226,16 @@ _When an outage or storm is coming, run this checklist. Once it hits, use the if
 
 **[To do]**
 
-- [ ] Check CO and smoke alarms; replace batteries if unsure. [Buy: co-alarm] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/))
-- [ ] Charge every phone, power bank and power station. [Buy: power-bank] ([Power outages (Ready.gov)](https://www.ready.gov/power-outages))
-- [ ] Fill the bathtub water bladder and spare containers. [Buy: tub-bladder] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
-- [ ] Set fridge to its coldest setting; fill empty freezer space with water bottles. [Buy: thermometers] ([Food safety in a power outage (FoodSafety.gov)](https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage))
-- [ ] Get cash and refill prescriptions if you can. [Buy: docs-pouch] ([Older adults and people with disabilities (Ready.gov)](https://www.ready.gov/older-adults))
-- [ ] Fuel or charge vehicles. [Buy: gas-cans] ([Plan your evacuation (Ready.gov)](https://www.ready.gov/evacuation))
-- [ ] Test-start the generator outdoors; stage fuel and cords. [Buy: gas-cans] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/))
-- [ ] Set up your warm room before the cold arrives (see Heat & warmth). [Buy: buddy-heater] ([Winter weather (Ready.gov)](https://www.ready.gov/winter-weather))
-- [ ] Bring pets inside and stage their food, meds and carrier. [Buy: pet-kit] ([Prepare your pets (Ready.gov)](https://www.ready.gov/pets))
-- [ ] Check on elderly or disabled neighbors. [Buy: frs-radios] ([Older adults and people with disabilities (Ready.gov)](https://www.ready.gov/older-adults))
+- [ ] Check CO and smoke alarms; replace batteries if unsure. [Buy: Carbon monoxide alarm, Typical $20–$40 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html))
+- [ ] Charge every phone, power bank and power station. [Buy: USB power bank, Typical $25–$45 each] ([Power outages (Ready.gov)](https://www.ready.gov/power-outages))
+- [ ] Fill the bathtub water bladder and spare containers. [Buy: Bathtub water bladder, Typical $25–$40 each] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
+- [ ] Set fridge to its coldest setting; fill empty freezer space with water bottles. [Buy: Fridge/freezer thermometers, Typical $8–$15 each] ([Food safety in a power outage (FoodSafety.gov)](https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage))
+- [ ] Get cash and refill prescriptions if you can. [Buy: Fire/water-resistant document pouch, Typical $20–$60 each] ([Older adults and people with disabilities (Ready.gov)](https://www.ready.gov/older-adults))
+- [ ] Fuel or charge vehicles. [Buy: 5-gallon gas cans + stabilizer, Typical $30–$45 each] ([Plan your evacuation (Ready.gov)](https://www.ready.gov/evacuation))
+- [ ] Test-start the generator outdoors; stage fuel and cords. [Buy: 5-gallon gas cans + stabilizer, Typical $30–$45 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html))
+- [ ] Set up your warm room before the cold arrives (see Heat & warmth). [Buy: Indoor-rated portable propane heater, Typical $100–$200 each] ([Winter weather (Ready.gov)](https://www.ready.gov/winter-weather))
+- [ ] Bring pets inside and stage their food, meds and carrier. [Buy: Pet go-kit, Typical $30–$100 each] ([Prepare your pets (Ready.gov)](https://www.ready.gov/pets))
+- [ ] Check on elderly or disabled neighbors. [Buy: FRS walkie-talkies, Typical $25–$45 each] ([Older adults and people with disabilities (Ready.gov)](https://www.ready.gov/older-adults))
 
 **[Good to know]**
 
@@ -248,7 +251,15 @@ _When an outage or storm is coming, run this checklist. Once it hits, use the if
 
 **[To have]**
 
-**What you need:** Buy: tub-bladder, power-bank, radio, lights, batteries · [Power outages (Ready.gov)](https://www.ready.gov/power-outages) · [Sign up for NY-Alert (New York State)](https://alert.ny.gov/sign-up-ny-alert)
+**What you need**
+
+- Bathtub water bladder · Typical $25–$40 each · [Buy]
+- USB power bank · Typical $25–$45 each · [Buy]
+- NOAA weather radio · Typical $50–$80 each · [Buy]
+- Headlamps + LED lanterns · Typical $15–$30 each · [Buy]
+- AA/AAA battery stock · Typical $20–$40 each · [Buy]
+- [Power outages (Ready.gov)](https://www.ready.gov/power-outages)
+- [Sign up for NY-Alert (New York State)](https://alert.ny.gov/sign-up-ny-alert)
 
 ### 4. Your area's hazards
 
@@ -258,9 +269,9 @@ _These are the hazards rated moderate or higher for the Long Island area, with t
 
 **[To do]**
 
-- [ ] Look up your evacuation zone (county emergency site). [Buy: radio] ([Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM)](https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map))
-- [ ] Photograph your home and belongings for insurance. [Buy: docs-pouch] ([Make a plan (Ready.gov)](https://www.ready.gov/plan))
-- [ ] Know where to shut off power, gas and water. [Buy: quake-kit] ([Make a plan (Ready.gov)](https://www.ready.gov/plan))
+- [ ] Look up your evacuation zone (county emergency site). [Buy: NOAA weather radio, Typical $50–$80 each] ([Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM)](https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map))
+- [ ] Photograph your home and belongings for insurance. [Buy: Fire/water-resistant document pouch, Typical $20–$60 each] ([Make a plan (Ready.gov)](https://www.ready.gov/plan))
+- [ ] Know where to shut off power, gas and water. ([Make a plan (Ready.gov)](https://www.ready.gov/plan))
 
 **[Good to know]**
 
@@ -272,9 +283,9 @@ _These are the hazards rated moderate or higher for the Long Island area, with t
 
 **[To do]**
 
-- [ ] Check whether you're in a flood zone at FEMA's Flood Map Service Center. [Buy: flood-kit] ([Look up your flood zone (FEMA Flood Map Service Center)](https://msc.fema.gov/portal/search))
-- [ ] Flood damage usually isn't covered by homeowners insurance; flood policies have a 30-day wait. [Buy: flood-kit] ([Look up your flood zone (FEMA Flood Map Service Center)](https://msc.fema.gov/portal/search))
-- [ ] Keep documents and valuables in waterproof bins up high. [Buy: docs-pouch] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
+- [ ] Check whether you're in a flood zone at FEMA's Flood Map Service Center. [Buy: Flood kit, Typical $50–$150 each] ([Look up your flood zone (FEMA Flood Map Service Center)](https://msc.fema.gov/portal/search))
+- [ ] Flood damage usually isn't covered by homeowners insurance; flood policies have a 30-day wait. [Buy: Flood kit, Typical $50–$150 each] ([Look up your flood zone (FEMA Flood Map Service Center)](https://msc.fema.gov/portal/search))
+- [ ] Keep documents and valuables in waterproof bins up high. [Buy: Fire/water-resistant document pouch, Typical $20–$60 each] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
 
 **[Good to know]**
 
@@ -284,7 +295,12 @@ _These are the hazards rated moderate or higher for the Long Island area, with t
 
 **[To have]**
 
-**What you need:** Buy: radio · [Hazard-by-hazard guides (Ready.gov)](https://www.ready.gov/be-informed) · [Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM)](https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map) · [Look up your flood zone (FEMA Flood Map Service Center)](https://msc.fema.gov/portal/search)
+**What you need**
+
+- NOAA weather radio · Typical $50–$80 each · [Buy]
+- [Hazard-by-hazard guides (Ready.gov)](https://www.ready.gov/be-informed)
+- [Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM)](https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map)
+- [Look up your flood zone (FEMA Flood Map Service Center)](https://msc.fema.gov/portal/search)
 
 ## Chapter: Supplies
 
@@ -349,11 +365,11 @@ This plan never gives treatment amounts: follow the product label and CDC/EPA gu
 
 **[To do]**
 
-- [ ] Containers for 54 gallons, filled and sealed. [Buy: water-jug] ([How to make water safe in an emergency (CDC)](https://www.cdc.gov/water-emergency/about/index.html))
+- [ ] Containers for 54 gallons, filled and sealed. [Buy: 7-gallon water container, Typical $20–$35 each] ([How to make water safe in an emergency (CDC)](https://www.cdc.gov/water-emergency/about/index.html))
 - [ ] A way to get water out: the spigot on each jug, or a clean pitcher. ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
 - [ ] Rotation labels: write the fill date on every container. ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
-- [ ] Spare filter elements or a backflush kit for your household filter. [Buy: filter-spare]
-- [ ] A backup method: treatment tablets, plus unscented bleach, used as the labels direct. [Buy: water-tablets] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
+- [ ] Spare filter elements or a backflush kit for your household filter. [Buy: Spare filter elements or cartridges, Typical $20–$60 each]
+- [ ] A backup method: treatment tablets, plus unscented bleach, used as the labels direct. [Buy: Water treatment tablets (chlorine dioxide), Typical $10–$20 each] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
 
 **[Good to know]**
 
@@ -363,7 +379,13 @@ This plan never gives treatment amounts: follow the product label and CDC/EPA gu
 
 **[To have]**
 
-**What you need:** Buy: water-jug, water-bricks, water-gallons, water-drum, tub-bladder, bleach, filter-gravity, filter-gravity-bag, filter-basic · [Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water)
+**What you need**
+
+- 7-gallon water container · Typical $20–$35 each · [Buy]
+- Bathtub water bladder · Typical $25–$40 each · [Buy]
+- Unscented household bleach · Typical $4–$8 each · [Buy]
+- Gravity bag filter · Typical $90–$140 each · [Buy]
+- [Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water)
 
 ### 8. Food
 
@@ -422,7 +444,7 @@ _Your household needs about 7,000 calories a day — 630,000 for the full 90 day
 | Space | Buckets: compact for the calories | Most space for the calories | Compact |
 | Shelf life | Long when sealed; rotate into meals | Check the dates; rotate into meals | Longest; check the label |
 
-- Store bulk staples in sealed food-grade buckets or mylar, cool and dry: about 19 5-gallon buckets for 551 lb.
+- Store dry staples (rice, beans, oats, pasta, powdered milk) in sealed food-grade buckets or mylar, cool and dry: about 8 5-gallon buckets for 210 lb. Canned goods, oil and peanut butter stay in their own containers.
 - Ration bars are for go-bags and the first days, not your whole supply.
 - Adjust for any allergies or diets in your household.
 - Include comfort foods, spices, and a manual can opener.
@@ -443,13 +465,19 @@ _Your household needs about 7,000 calories a day — 630,000 for the full 90 day
 
 **[To do]**
 
-- [ ] Basement: water and canned food on shelves at least a foot off the floor (your area floods); nothing you'd need in a flood down there. [Buy: water-drum] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
-- [ ] Garage: water jugs and bulk staples in sealed bins, away from the car's exhaust, chemicals and direct sun; not for anything that spoils in heat. [Buy: storage-kit] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
+- [ ] Basement: water and canned food on shelves at least a foot off the floor (your area floods); nothing you'd need in a flood down there. [Buy: Food storage buckets, Typical $20–$35 each] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
+- [ ] Garage: water jugs and bulk staples in sealed bins, away from the car's exhaust, chemicals and direct sun; not for anything that spoils in heat. [Buy: Food storage buckets, Typical $20–$35 each] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
 
 **[To have]**
 
-**What you need:** Buy: storage-kit, food-freeze-dried, coolers, thermometers · [Food safety in a power outage (FoodSafety.gov)](https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage) · [Power outage food and water safety (CDC)](https://www.cdc.gov/natural-disasters/safety/power-outage-safety.html)
+**What you need**
+
+- Food storage buckets · Typical $20–$35 each · [Buy]
+- Multi-day cooler · Typical $40–$90 each · [Buy]
+- Fridge/freezer thermometers · Typical $8–$15 each · [Buy]
 _Rice, beans, oats, pasta, oil and canned goods are cheapest at a grocery store or warehouse club._
+- [Food safety in a power outage (FoodSafety.gov)](https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage)
+- [Power outage food and water safety (CDC)](https://www.cdc.gov/natural-disasters/response/what-to-do-protect-yourself-during-a-power-outage.html)
 
 ### 9. Cooking & refrigeration
 
@@ -469,7 +497,11 @@ A gas range usually works in an outage if you light the burners with a match (ch
 
 **[To have]**
 
-**What you need:** Buy: camp-stove, propane-1lb, propane-20 · [Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/)
+**What you need**
+
+- 1-lb propane cylinders (heater fuel) · Typical $30–$50 each · [Buy]
+- 20-lb propane cylinders · Typical $50–$70 each · [Buy]
+- [Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html)
 
 ### 10. Sanitation, hygiene & diapers
 
@@ -499,8 +531,12 @@ Kids grow fast in a long scenario: half the diapers are in the next size up.
 
 **[To have]**
 
-**What you need:** Buy: toilet-kit, bleach · [Build a kit (Ready.gov)](https://www.ready.gov/kit)
+**What you need**
+
+- Emergency toilet kit · Typical $25–$50 each · [Buy]
+- Unscented household bleach · Typical $4–$8 each · [Buy]
 _Toilet paper, trash bags, soap and wipes: any grocery or warehouse store._
+- [Build a kit (Ready.gov)](https://www.ready.gov/kit)
 
 ### 11. First aid & medications
 
@@ -508,12 +544,12 @@ _Keep a stocked first aid kit and a written list of everyone's medications and a
 
 **[To do]**
 
-- [ ] First aid kit (bandages, gauze, tape, elastic wrap, gloves, shears, tweezers, thermometer). [Buy: first-aid] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
-- [ ] Written list of each person's medications, doses as prescribed, allergies and doctors (keep with documents). [Buy: docs-pouch] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
-- [ ] Over-the-counter basics you already use (pain/fever reducer, allergy, stomach) — check expiration dates. [Buy: first-aid] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
-- [ ] Extra glasses/contacts, hearing aid batteries. [Buy: batteries] ([Older adults and people with disabilities (Ready.gov)](https://www.ready.gov/older-adults))
-- [ ] Children's versions of any OTC medicines you use, with the dosing tool that came in the box. [Buy: first-aid] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
-- [ ] Take a Red Cross First Aid/CPR class. [Buy: first-aid] ([Find a First Aid/CPR class (American Red Cross)](https://www.redcross.org/take-a-class))
+- [ ] First aid kit (bandages, gauze, tape, elastic wrap, gloves, shears, tweezers, thermometer). [Buy: First aid kit, Typical $30–$80 each] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
+- [ ] Written list of each person's medications, doses as prescribed, allergies and doctors (keep with documents). [Buy: Fire/water-resistant document pouch, Typical $20–$60 each] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
+- [ ] Over-the-counter basics you already use (pain/fever reducer, allergy, stomach) — check expiration dates. [Buy: First aid kit, Typical $30–$80 each] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
+- [ ] Extra glasses/contacts, hearing aid batteries. [Buy: AA/AAA battery stock, Typical $20–$40 each] ([Older adults and people with disabilities (Ready.gov)](https://www.ready.gov/older-adults))
+- [ ] Children's versions of any OTC medicines you use, with the dosing tool that came in the box. [Buy: First aid kit, Typical $30–$80 each] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
+- [ ] Take a Red Cross First Aid/CPR class. [Buy: First aid kit, Typical $30–$80 each] ([Find a First Aid/CPR class (American Red Cross)](https://www.redcross.org/take-a-class))
 
 **[Good to know]**
 
@@ -522,7 +558,11 @@ _Keep a stocked first aid kit and a written list of everyone's medications and a
 
 **[To have]**
 
-**What you need:** Buy: first-aid · [Find a First Aid/CPR class (American Red Cross)](https://www.redcross.org/take-a-class) · [Older adults and people with disabilities (Ready.gov)](https://www.ready.gov/older-adults)
+**What you need**
+
+- First aid kit · Typical $30–$80 each · [Buy]
+- [Find a First Aid/CPR class (American Red Cross)](https://www.redcross.org/take-a-class)
+- [Older adults and people with disabilities (Ready.gov)](https://www.ready.gov/older-adults)
 
 ### 18. Recommended gear
 
@@ -611,7 +651,7 @@ _Buy to the spec, not the brand. The example models are just a starting point fo
 - **Multi-day cooler** (Food) · qty  · Typical $40–$90 each · later · [Buy]
   - Spec: Rotomolded or 5-day-rated cooler, 45–70 qt
   - Example models: Coleman Xtreme 70 qt; Igloo MaxCold
-- **Food storage buckets** (Food) · qty × 19 · Typical $20–$35 each · later · [Buy]
+- **Food storage buckets** (Food) · qty × 8 · Typical $20–$35 each · later · [Buy]
   - Spec: One food-grade 5-gal bucket with a gamma seal lid, mylar bag and oxygen absorbers for rice, beans or oats; enough buckets for your bulk staples
   - Example models: Gamma Seal lid kit; ShieldPro mylar kit
 - **Emergency toilet kit** (Sanitation) · qty  · Typical $25–$50 each · later · [Buy]
@@ -716,7 +756,7 @@ _Within your $1,500–5,000 range we planned around $3,250. Phase 1 buys life sa
 | Flood kit |  | $50–$150 | Phase 2 |
 | 20-lb propane cylinders | × 2 | $100–$140 | Phase 2 |
 | Multi-day cooler |  | $40–$90 | Phase 2 |
-| Food storage buckets | × 19 | $380–$665 | Phase 2 |
+| Food storage buckets | × 8 | $160–$280 | Phase 2 |
 | Emergency toilet kit |  | $25–$50 | Phase 2 |
 | Window protection |  | $150–$600 | Phase 2 |
 | Battery backup sump pump |  | $250–$500 | Phase 2 |
@@ -740,7 +780,9 @@ _Within your $1,500–5,000 range we planned around $3,250. Phase 1 buys life sa
 
 **[To have]**
 
-**What you need:**  · [Low- and no-cost preparedness (Ready.gov)](https://www.ready.gov/low-and-no-cost)
+**What you need**
+
+- [Low- and no-cost preparedness (Ready.gov)](https://www.ready.gov/low-and-no-cost)
 
 ## Chapter: Power & heat
 
@@ -784,7 +826,14 @@ Your natural gas heat needs electricity for the blower, ignition or circulator p
 
 **[To have]**
 
-**What you need:** Buy: buddy-heater, propane-1lb, sleep-system, pipe-insulation, firewood, fans-cooling · [Winter weather (Ready.gov)](https://www.ready.gov/winter-weather) · [Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/)
+**What you need**
+
+- Indoor-rated portable propane heater · Typical $100–$200 each · [Buy]
+- 1-lb propane cylinders (heater fuel) · Typical $30–$50 each · [Buy]
+- Cold-rated sleeping bags · Typical $40–$90 each · [Buy]
+- Pipe insulation & faucet covers · Typical $20–$50 each · [Buy]
+- [Winter weather (Ready.gov)](https://www.ready.gov/winter-weather)
+- [Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html)
 
 ### 7. Power & fuel math
 
@@ -823,7 +872,16 @@ You don't have backup power yet. A dual-fuel inverter generator is the best valu
 
 **[To have]**
 
-**What you need:** Buy: generator-dual, generator-small, power-station-large, power-station, power-station-small, generator-standby, gen-cord, gas-cans, propane-20, inlet-interlock, solar-panel, well-switch, med-battery · [Power outages (Ready.gov)](https://www.ready.gov/power-outages) · [Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/)
+**What you need**
+
+- Small inverter generator · Typical $550–$1,200 each · [Buy]
+- Generator cord + outdoor extension cords · Typical $60–$120 each · [Buy]
+- 5-gallon gas cans + stabilizer · Typical $30–$45 each · [Buy]
+- 20-lb propane cylinders · Typical $50–$70 each · [Buy]
+- Generator inlet + interlock (electrician-installed) · Typical $500–$1,500 each · [Buy]
+- Portable solar panel · Typical $300–$650 each · [Buy]
+- [Power outages (Ready.gov)](https://www.ready.gov/power-outages)
+- [Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html)
 
 ## Chapter: People & plans
 
@@ -861,7 +919,14 @@ _Agree on how your household will reach each other, keep $1,200 in small bills, 
 
 **[To have]**
 
-**What you need:** Buy: radio, frs-radios, gmrs, sat-messenger, power-bank, docs-pouch · [Sign up for NY-Alert (New York State)](https://alert.ny.gov/sign-up-ny-alert) · [Make a plan (Ready.gov)](https://www.ready.gov/plan)
+**What you need**
+
+- NOAA weather radio · Typical $50–$80 each · [Buy]
+- FRS walkie-talkies · Typical $25–$45 each · [Buy]
+- USB power bank · Typical $25–$45 each · [Buy]
+- Fire/water-resistant document pouch · Typical $20–$60 each · [Buy]
+- [Sign up for NY-Alert (New York State)](https://alert.ny.gov/sign-up-ny-alert)
+- [Make a plan (Ready.gov)](https://www.ready.gov/plan)
 
 ### 13. Security & neighbors
 
@@ -877,7 +942,11 @@ _Keep a low profile and build a small neighbor pod. Neighbors who look out for e
 
 **[To have]**
 
-**What you need:** Buy: lights, frs-radios · [Make a plan (Ready.gov)](https://www.ready.gov/plan)
+**What you need**
+
+- Headlamps + LED lanterns · Typical $15–$30 each · [Buy]
+- FRS walkie-talkies · Typical $25–$45 each · [Buy]
+- [Make a plan (Ready.gov)](https://www.ready.gov/plan)
 
 ### 14. Kids & morale
 
@@ -885,17 +954,19 @@ _Kids cope better when they have a routine and a job. Keep things predictable an
 
 **[To do]**
 
-- [ ] Keep meal, nap and bedtime routines as close to normal as you can. [Buy: morale-kit] ([Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning))
-- [ ] Give each child a 'job' (flashlight checker, water helper) so they feel useful. [Buy: lights] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
-- [ ] Comfort kit: favorite stuffed animal/blanket, books, cards, coloring, glow sticks. [Buy: morale-kit] ([Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning))
-- [ ] Put an ID card in each child's go-bag/pocket: name, parent phone numbers, out-of-area contact. [Buy: morale-kit] ([Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning))
-- [ ] Practice the plan as a game: 'lights-out dinner', a family meeting-place walk. [Buy: morale-kit] ([Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning))
-- [ ] Talk simply and honestly; limit news exposure; ask how they're feeling. [Buy: morale-kit] ([Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning))
-- [ ] Toddlers: baby gates and covers near any heater or stove; extra outfits and sleep sacks for cold nights. [Buy: sleep-system] ([Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning))
+- [ ] Keep meal, nap and bedtime routines as close to normal as you can. ([Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning))
+- [ ] Give each child a 'job' (flashlight checker, water helper) so they feel useful. [Buy: Headlamps + LED lanterns, Typical $15–$30 each] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
+- [ ] Comfort kit: favorite stuffed animal/blanket, books, cards, coloring, glow sticks. ([Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning))
+- [ ] Put an ID card in each child's go-bag/pocket: name, parent phone numbers, out-of-area contact. ([Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning))
+- [ ] Practice the plan as a game: 'lights-out dinner', a family meeting-place walk. ([Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning))
+- [ ] Talk simply and honestly; limit news exposure; ask how they're feeling. ([Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning))
+- [ ] Toddlers: baby gates and covers near any heater or stove; extra outfits and sleep sacks for cold nights. [Buy: Cold-rated sleeping bags, Typical $40–$90 each] ([Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning))
 
 **[To have]**
 
-**What you need:** Buy: morale-kit · [Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning)
+**What you need**
+
+- [Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning)
 
 ### 15. Pets
 
@@ -909,10 +980,10 @@ _Store 54 pounds of pet food and add 0.35 gallons of water a day for your pets. 
 
 **[To do]**
 
-- [ ] Vaccination records and a recent photo of each pet (in the documents pouch). [Buy: pet-kit] ([Prepare your pets (Ready.gov)](https://www.ready.gov/pets))
-- [ ] Leash, harness, crate/carrier, collapsible bowls, waste bags or litter. [Buy: pet-kit] ([Prepare your pets (Ready.gov)](https://www.ready.gov/pets))
-- [ ] Microchip details up to date. [Buy: pet-kit] ([Prepare your pets (Ready.gov)](https://www.ready.gov/pets))
-- [ ] Know which shelters and hotels on your route accept pets. [Buy: pet-kit] ([Prepare your pets (Ready.gov)](https://www.ready.gov/pets))
+- [ ] Vaccination records and a recent photo of each pet (in the documents pouch). [Buy: Pet go-kit, Typical $30–$100 each] ([Prepare your pets (Ready.gov)](https://www.ready.gov/pets))
+- [ ] Leash, harness, crate/carrier, collapsible bowls, waste bags or litter. [Buy: Pet go-kit, Typical $30–$100 each] ([Prepare your pets (Ready.gov)](https://www.ready.gov/pets))
+- [ ] Microchip details up to date. [Buy: Pet go-kit, Typical $30–$100 each] ([Prepare your pets (Ready.gov)](https://www.ready.gov/pets))
+- [ ] Know which shelters and hotels on your route accept pets. [Buy: Pet go-kit, Typical $30–$100 each] ([Prepare your pets (Ready.gov)](https://www.ready.gov/pets))
 
 **[Good to know]**
 
@@ -921,7 +992,10 @@ _Store 54 pounds of pet food and add 0.35 gallons of water a day for your pets. 
 
 **[To have]**
 
-**What you need:** Buy: pet-kit · [Prepare your pets (Ready.gov)](https://www.ready.gov/pets)
+**What you need**
+
+- Pet go-kit · Typical $30–$100 each · [Buy]
+- [Prepare your pets (Ready.gov)](https://www.ready.gov/pets)
 
 ### 16. When you must leave
 
@@ -993,25 +1067,25 @@ _Your fallback is your raw land, about 120 miles away. Leave early on clear trig
 
 **[To do]**
 
-- [ ] Jump starter, tire inflator, tow strap [Buy: vehicle-kit] ([Plan your evacuation (Ready.gov)](https://www.ready.gov/evacuation))
-- [ ] Paper road map with 2 routes marked [Buy: vehicle-kit] ([Plan your evacuation (Ready.gov)](https://www.ready.gov/evacuation))
-- [ ] Blankets, water, snacks [Buy: food-freeze-dried] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
-- [ ] Phone chargers [Buy: vehicle-kit] ([Plan your evacuation (Ready.gov)](https://www.ready.gov/evacuation))
-- [ ] Flashlight, reflective triangles [Buy: lights] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
-- [ ] Never store spare gasoline inside the car cabin [Buy: gas-cans] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/prevention/))
+- [ ] Jump starter, tire inflator, tow strap [Buy: Basic vehicle kit, Typical $35–$70 each] ([Plan your evacuation (Ready.gov)](https://www.ready.gov/evacuation))
+- [ ] Paper road map with 2 routes marked [Buy: Basic vehicle kit, Typical $35–$70 each] ([Plan your evacuation (Ready.gov)](https://www.ready.gov/evacuation))
+- [ ] Blankets, water, snacks ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
+- [ ] Phone chargers [Buy: Basic vehicle kit, Typical $35–$70 each] ([Plan your evacuation (Ready.gov)](https://www.ready.gov/evacuation))
+- [ ] Flashlight, reflective triangles [Buy: Headlamps + LED lanterns, Typical $15–$30 each] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
+- [ ] Never store spare gasoline inside the car cabin [Buy: 5-gallon gas cans + stabilizer, Typical $30–$45 each] ([Carbon monoxide safety (CDC)](https://www.cdc.gov/carbon-monoxide/about/index.html))
 
 #### Go-bag (one per person)
 
-- [ ] Water (1 L) and filter bottle [Buy: water-jug] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
-- [ ] 3 days of snacks [Buy: food-freeze-dried] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
-- [ ] Change of clothes, rain layer, hat, gloves [Buy: go-bag] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
-- [ ] Headlamp + batteries [Buy: lights] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
-- [ ] Medications (7-day supply), glasses [Buy: docs-pouch] ([Older adults and people with disabilities (Ready.gov)](https://www.ready.gov/older-adults))
-- [ ] Copies of ID and medication list [Buy: docs-pouch] ([Older adults and people with disabilities (Ready.gov)](https://www.ready.gov/older-adults))
-- [ ] Cash in small bills [Buy: docs-pouch] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
-- [ ] Whistle, mask, hand sanitizer [Buy: go-bag] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
-- [ ] Child ID card and comfort item [Buy: morale-kit] ([Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning))
-- [ ] Pet food, leash, records [Buy: pet-kit] ([Prepare your pets (Ready.gov)](https://www.ready.gov/pets))
+- [ ] Water (1 L) and filter bottle [Buy: 7-gallon water container, Typical $20–$35 each] ([Make water safe to drink (EPA)](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water))
+- [ ] 3 days of snacks ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
+- [ ] Change of clothes, rain layer, hat, gloves ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
+- [ ] Headlamp + batteries [Buy: Headlamps + LED lanterns, Typical $15–$30 each] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
+- [ ] Medications (7-day supply), glasses [Buy: Fire/water-resistant document pouch, Typical $20–$60 each] ([Older adults and people with disabilities (Ready.gov)](https://www.ready.gov/older-adults))
+- [ ] Copies of ID and medication list [Buy: Fire/water-resistant document pouch, Typical $20–$60 each] ([Older adults and people with disabilities (Ready.gov)](https://www.ready.gov/older-adults))
+- [ ] Cash in small bills [Buy: Fire/water-resistant document pouch, Typical $20–$60 each] ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
+- [ ] Whistle, mask, hand sanitizer ([Build a kit (Ready.gov)](https://www.ready.gov/kit))
+- [ ] Child ID card and comfort item ([Planning with kids (Ready.gov)](https://www.ready.gov/kids/family-emergency-planning))
+- [ ] Pet food, leash, records [Buy: Pet go-kit, Typical $30–$100 each] ([Prepare your pets (Ready.gov)](https://www.ready.gov/pets))
 
 **[Good to know]**
 
@@ -1020,7 +1094,13 @@ _Your fallback is your raw land, about 120 miles away. Leave early on clear trig
 
 **[To have]**
 
-**What you need:** Buy: go-bag, go-bag-kit, go-bag-basic, vehicle-kit, vehicle-kit-premium, vehicle-kit-basic, docs-pouch, tent, tarp-shelter, canvas-tent · [Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM)](https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map) · [Plan your evacuation (Ready.gov)](https://www.ready.gov/evacuation)
+**What you need**
+
+- Basic vehicle kit · Typical $35–$70 each · [Buy]
+- Fire/water-resistant document pouch · Typical $20–$60 each · [Buy]
+- Tarp shelter kit · Typical $50–$100 each · [Buy]
+- [Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM)](https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map)
+- [Plan your evacuation (Ready.gov)](https://www.ready.gov/evacuation)
 
 ### 19. Maintenance calendar
 
@@ -1040,7 +1120,10 @@ _Preparedness only works if it's maintained. Put these on your calendar now._
 
 **[To have]**
 
-**What you need:** Buy: batteries · [Build a kit (Ready.gov)](https://www.ready.gov/kit)
+**What you need**
+
+- AA/AAA battery stock · Typical $20–$40 each · [Buy]
+- [Build a kit (Ready.gov)](https://www.ready.gov/kit)
 
 ### 1. Household snapshot & planning assumptions
 
@@ -1088,8 +1171,8 @@ The web plan links to /sources for the full list.
 
 - [Ready.gov — Build a Kit & Make a Plan](https://www.ready.gov/kit)
 - [FEMA — Preparedness resources](https://www.fema.gov/emergency-managers/individuals-communities)
-- [CDC — Carbon monoxide poisoning prevention](https://www.cdc.gov/carbon-monoxide/prevention/)
-- [CDC — Power outages & food/water safety](https://www.cdc.gov/natural-disasters/safety/power-outage-safety.html)
+- [CDC — Carbon monoxide poisoning prevention](https://www.cdc.gov/carbon-monoxide/about/index.html)
+- [CDC — Power outages & food/water safety](https://www.cdc.gov/natural-disasters/response/what-to-do-protect-yourself-during-a-power-outage.html)
 - [American Red Cross — Emergency preparedness](https://www.redcross.org/get-help/how-to-prepare-for-emergencies.html)
 - [EPA — Emergency disinfection of drinking water](https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water)
 - [FoodSafety.gov — Food safety during power outages](https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage)

@@ -15,6 +15,9 @@ export const LIMITS = {
   generatePerUserDay: 8,
   generatePerIpHour: 20,
   saveAnswersPerIpMinute: 120,
+  // "Copy for your AI assistant" clicks: generous, they only stop scripted floods.
+  aiCopyPerNonceHour: 30,
+  aiCopyPerIpHour: 120,
 };
 
 export async function limit(key: string, max: number, windowSec: number): Promise<boolean> {

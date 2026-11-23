@@ -47,6 +47,8 @@ describe("Copy for your AI assistant (D12b)", () => {
     const r = await buildPlan();
     const t = aiSummary(r.document, r.computed.answers);
     for (const g of AI_GROUND_RULES) expect(t).toContain(g);
+    expect(t).toContain("Never suggest grills, generators or fuel-burning heaters indoors or in a garage.");
+    expect(t).not.toContain("generators or heaters indoors"); // review 6: electric heaters are fine indoors
     expect(t).toContain(`This plan's numbers come from ${BRAND.name}; your assistant's advice is its own.`);
     expect(t).toContain("Set reminders for the dates in the maintenance schedule.");
     expect(t).toContain("Help me with my first 3 steps.");
