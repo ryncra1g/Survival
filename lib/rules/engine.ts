@@ -162,7 +162,7 @@ export interface FoodMixResult {
   /** Calories from each approach. Always sums to the household's total (never changed by the choice). */
   kcal: Record<FoodApproach, number>;
   /** Bulk staples for their share, and food-grade buckets sized to those pounds (none without bulk). */
-  bulk: { staples: FoodResult["staples"]; totalLbs: number; cost: number; buckets: number };
+  bulk: { staples: FoodResult["staples"]; totalLbs: number; cost: number; dryLbs: number; buckets: number };
   readyCost: number;
 }
 
@@ -204,11 +204,16 @@ export function computeFoodMix(a: Answers, c: RuleConstants, food: FoodResult): 
       })
     : [];
   const totalLbs = staples.reduce((t, s) => t + s.lbs, 0);
+  // Buckets for dry staples only, each with its own lb-per-bucket; canned goods, oil and peanut butter need none.
+  const bucketLoad = staples.reduce((t, s) => {
+    const per = c.staples.find((x) => x.key === s.key)?.bucketLbs;
+    return per ? t + s.lbs / per : t;
+  }, 0);
   return {
     choice,
     shares,
     kcal,
-    bulk: { staples, totalLbs, cost: staples.reduce((t, s) => t + s.cost, 0), buckets: totalLbs ? ceil(totalLbs / c.foodMix.bucketLbs) : 0 },
+    bulk: { staples, totalLbs, cost: staples.reduce((t, s) => t + s.cost, 0), dryLbs: staples.filter((s) => c.staples.find((x) => x.key === s.key)?.bucketLbs).reduce((t, s) => t + s.lbs, 0), buckets: ceil(round(bucketLoad, 4)) },
     readyCost: round((kcal.ready / 1000) * c.foodMix.readyCostPer1000Kcal, 0),
   };
 }

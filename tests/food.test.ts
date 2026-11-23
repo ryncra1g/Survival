@@ -42,7 +42,10 @@ describe("D7: food approaches", () => {
     const bulk = computeFoodMix(withGearChoice(SAMPLE_HOUSEHOLD, "food", "essential"), C, food);
     expect(bulk.bulk.totalLbs).toBe(food.totalLbs);
     expect(bulk.bulk.cost).toBe(food.cost);
-    expect(bulk.bulk.buckets).toBe(Math.ceil(food.totalLbs / C.foodMix.bucketLbs));
+    // Buckets count dry staples only, each at its own lb per bucket (canned goods, oil and peanut butter excluded).
+    const dry = food.staples.filter((s) => ["rice", "beans", "oats", "pasta", "milk_powder"].includes(s.key));
+    expect(bulk.bulk.dryLbs).toBe(dry.reduce((t, s) => t + s.lbs, 0));
+    expect(bulk.bulk.buckets).toBe(Math.ceil(dry.reduce((t, s) => t + s.lbs / C.staples.find((x) => x.key === s.key)!.bucketLbs!, 0)));
     const ready = computeFoodMix(withGearChoice(SAMPLE_HOUSEHOLD, "food", "standard"), C, food);
     expect(ready.bulk.buckets).toBe(0);
     expect(ready.readyCost).toBe(Math.round((food.totalKcal / 1000) * C.foodMix.readyCostPer1000Kcal));
@@ -50,6 +53,21 @@ describe("D7: food approaches", () => {
     const b = plan("essential").budget; // bought now, or listed as "buy next" when the budget is full
     expect([...b.picks, ...b.deferred].find((p) => p.item.id === "storage-kit")?.qty).toBe(bulk.bulk.buckets);
     expect([...plan("standard").budget.picks, ...plan("standard").budget.deferred].some((p) => p.item.id === "storage-kit")).toBe(false);
+  });
+
+  it("sample household (recommended mix): 8 buckets, hand-computed", () => {
+    // 630,000 kcal; ready-to-eat covers 14 of 90 days, so bulk = 630,000 × 76/90 = 532,000 kcal.
+    // rice   532,000 × 0.26 / 1650 = 83.8 → 84 lb ÷ 33 = 2.545
+    // beans  532,000 × 0.13 / 1550 = 44.6 → 45 lb ÷ 30 = 1.5
+    // oats   532,000 × 0.10 / 1700 = 31.3 → 32 lb ÷ 20 = 1.6
+    // pasta  532,000 × 0.10 / 1680 = 31.7 → 32 lb ÷ 20 = 1.6
+    // milk   532,000 × 0.05 / 1650 = 16.1 → 17 lb ÷ 25 = 0.68
+    // total 7.925 → 8 buckets for 210 lb of dry staples (peanut butter, oil and cans excluded)
+    const m = computeFoodMix(SAMPLE_HOUSEHOLD, C, computeFood(SAMPLE_HOUSEHOLD, C));
+    expect(m.choice).toBe("mix");
+    expect(m.bulk.staples.filter((s) => ["rice", "beans", "oats", "pasta", "milk_powder"].includes(s.key)).map((s) => s.lbs)).toEqual([84, 45, 32, 32, 17]);
+    expect(m.bulk.dryLbs).toBe(210);
+    expect(m.bulk.buckets).toBe(8);
   });
 
   it("the plan states the mix, the comparison and the notes, with no can or pouch counts", async () => {

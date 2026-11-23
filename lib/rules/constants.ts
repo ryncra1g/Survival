@@ -37,17 +37,19 @@ export const DEFAULT_CONSTANTS = {
   /**
    * Bulk staple mix. `share` is the fraction of total calories (must sum to 1).
    * kcalPerUnit / unitLbs describe the purchase unit. costPerUnit is a rough USD estimate.
+   * bucketLbs: pounds of that dry staple one food-grade 5-gallon bucket holds (estimates; docs/FACTCHECK.md).
+   * Only dry staples have it; canned goods, oil and peanut butter stay in their own containers and need no bucket.
    */
   staples: [
-    { key: "rice", name: "White rice", share: 0.26, kcalPerLb: 1650, unit: "20-lb bag", unitLbs: 20, costPerUnit: 18 },
-    { key: "beans", name: "Dry beans/lentils", share: 0.13, kcalPerLb: 1550, unit: "10-lb bag", unitLbs: 10, costPerUnit: 16 },
-    { key: "oats", name: "Rolled oats", share: 0.1, kcalPerLb: 1700, unit: "42-oz canister", unitLbs: 2.625, costPerUnit: 5 },
-    { key: "pasta", name: "Pasta", share: 0.1, kcalPerLb: 1680, unit: "1-lb box", unitLbs: 1, costPerUnit: 1.5 },
+    { key: "rice", name: "White rice", share: 0.26, kcalPerLb: 1650, unit: "20-lb bag", unitLbs: 20, costPerUnit: 18, bucketLbs: 33 },
+    { key: "beans", name: "Dry beans/lentils", share: 0.13, kcalPerLb: 1550, unit: "10-lb bag", unitLbs: 10, costPerUnit: 16, bucketLbs: 30 },
+    { key: "oats", name: "Rolled oats", share: 0.1, kcalPerLb: 1700, unit: "42-oz canister", unitLbs: 2.625, costPerUnit: 5, bucketLbs: 20 },
+    { key: "pasta", name: "Pasta", share: 0.1, kcalPerLb: 1680, unit: "1-lb box", unitLbs: 1, costPerUnit: 1.5, bucketLbs: 20 },
     { key: "peanut_butter", name: "Peanut butter", share: 0.08, kcalPerLb: 2650, unit: "40-oz jar", unitLbs: 2.5, costPerUnit: 7 },
     { key: "oil", name: "Cooking oil", share: 0.08, kcalPerLb: 4000, unit: "1-gal jug", unitLbs: 7.6, costPerUnit: 14 },
     { key: "canned_protein", name: "Canned protein (chicken, tuna, beans)", share: 0.1, kcalPerLb: 750, unit: "12.5-oz can", unitLbs: 0.78, costPerUnit: 3 },
     { key: "canned_produce", name: "Canned fruit & vegetables", share: 0.1, kcalPerLb: 220, unit: "15-oz can", unitLbs: 0.94, costPerUnit: 1.3 },
-    { key: "milk_powder", name: "Powdered milk", share: 0.05, kcalPerLb: 1650, unit: "4-lb bag", unitLbs: 4, costPerUnit: 22 },
+    { key: "milk_powder", name: "Powdered milk", share: 0.05, kcalPerLb: 1650, unit: "4-lb bag", unitLbs: 4, costPerUnit: 22, bucketLbs: 25 },
   ],
   diapers: {
     perChildPerDay: 6,
@@ -106,8 +108,6 @@ export const DEFAULT_CONSTANTS = {
   foodMix: {
     /** D7: planning cost of ready-to-eat food (canned meals, soups, pouches), USD per 1,000 kcal. A price estimate, not a safety amount. */
     readyCostPer1000Kcal: 3,
-    /** Pounds of dry staples (rice, beans, oats) one food-grade 5-gallon bucket holds. Sizes the containers. */
-    bucketLbs: 30,
   },
   cash: {
     /** Suggested cash on hand per adult by scenario length (USD). */
@@ -187,6 +187,7 @@ export const RuleConstantsSchema = z.object({
         unit: z.string(),
         unitLbs: z.number().positive(),
         costPerUnit: num,
+        bucketLbs: z.number().positive().optional(),
       }),
     )
     .min(1)
@@ -223,7 +224,7 @@ export const RuleConstantsSchema = z.object({
   }),
   evacuation: z.object({ assumedMpg: z.number().positive(), fuelReserveFactor: num, evRangeBufferPct: num }),
   foodBuild: z.object({ phase2Days: z.number().positive() }),
-  foodMix: z.object({ readyCostPer1000Kcal: z.number().positive(), bucketLbs: z.number().positive() }),
+  foodMix: z.object({ readyCostPer1000Kcal: z.number().positive() }),
   cash: z.object({ perAdult: z.record(z.string(), num) }),
   budget: z.object({
     planningAmount: z.record(z.string(), num),

@@ -854,7 +854,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     {
       type: "bullets",
       items: [
-        ...(fm.kcal.bulk ? [`Store bulk staples in sealed food-grade buckets or mylar, cool and dry: about ${plural(fm.bulk.buckets, "5-gallon bucket")} for ${n(fm.bulk.totalLbs)} lb.`] : []),
+        ...(fm.kcal.bulk ? [`Store dry staples (rice, beans, oats, pasta, powdered milk) in sealed food-grade buckets or mylar, cool and dry: about ${plural(fm.bulk.buckets, "5-gallon bucket")} for ${n(fm.bulk.dryLbs)} lb. Canned goods, oil and peanut butter stay in their own containers.`] : []),
         "Ration bars are for go-bags and the first days, not your whole supply.",
         ...(fm.kcal.kits ? ["Freeze-dried meals need hot water: count it in your water and cooking fuel."] : []),
         "Adjust for any allergies or diets in your household.",
