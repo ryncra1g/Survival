@@ -162,6 +162,12 @@ describe("linter", () => {
     "Plug the generator into a wall outlet with a double-male cord, it's not hard.",
     "Don't worry about running the generator in the garage.",
     "It's not ideal, but you can use the grill in the kitchen.",
+    // Code review: an after-negation about something else, a hedged danger word, or "went".
+    "Generators shouldn't be left in the rain, keep yours in the garage.",
+    "Most generators can't run in rain, so keep one in the garage.",
+    "The generator went inside the garage.",
+    "Back-feeding through a dryer outlet is less dangerous than people say.",
+    "Running a grill indoors is only dangerous without a CO alarm.",
   ];
   const safe = [CO_RULE, TRANSFER_RULE, MED_RULE, APARTMENT_GENERATOR_RULE, "Set the generator outdoors 20+ ft from the house.", "Add 8 drops of bleach per gallon and wait 30 minutes.", "Cook on a camp stove outdoors, away from windows.", "Never run a generator in the garage.", "Generators are never safe indoors.", "Don't use a grill or camp stove inside.", "Never plug a generator into a wall outlet.", "Back-feeding through a dryer outlet is deadly."];
   for (const s of unsafe) it(`flags: ${s}`, () => expect(lintText(s).length).toBeGreaterThan(0));
@@ -177,6 +183,8 @@ describe("LLM output validation", () => {
   it("rejects unsafe advice", () => expect(validateSummary("Run the generator in the garage.", allowed)).toMatch(/safety/));
   it("strict mode: rejects any hazard mention in a summary, even a safe one", () => {
     for (const t of ["Never run a generator indoors.", "Keep the grill outdoors.", "Don't use the oven for heat.", "Never back-feed the panel."]) expect(validateSummary(t, allowed), t).toMatch(/strict mode/);
+    // Harmless words that aren't hazards are still fine.
+    for (const t of ["Charge phones from a solar panel or a USB outlet.", "An electric space heater can warm a room while the power is on."]) expect(validateSummary(t, allowed), t).toBeNull();
     expect(validateSummary("Store {{water.storedGal}} gallons near {{region}}.", allowed)).toBeNull();
   });
 

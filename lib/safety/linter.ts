@@ -27,13 +27,22 @@ const GOVERNS_BEFORE = new RegExp(
   String.raw`\b(?:${NEG})\s+(?:ever\s+)?(?:(?:(?:${VERB})\s+(?:(?:it|them|to)\s+)?(?:(?:${VERB})\s+)?(?:(?:${DET})\s+)?|(?:${DET})\s+)${FILL})?$`,
   "i",
 );
-/** A negation right after the hazard: "generators are never safe indoors", "grills don't belong inside", "must not be used". */
+const INDOOR_WORDS = String.raw`indoors?|inside|in(?:to)? (?:the|your|a|an) (?:home|house|garage|basement|room|kitchen|apartment|tent)|garage|basement`;
+/**
+ * A negation right after the hazard that is about the hazard's placement or safety: "generators are never safe
+ * indoors", "grills don't belong inside", "must not be used indoors", "back-feeding is never safe." The negated
+ * verb must reach an indoor place or the end of the clause within three words, so "generators shouldn't be left
+ * in the rain, keep yours in the garage" is not governed. Contractions need the apostrophe ("went" isn't one).
+ */
 const GOVERNS_AFTER = new RegExp(
-  String.raw`^\s+(?:(?:must|should|can|do|does|are|is|will|may)\s+)?(?:never|not|\w+n'?t)\s+(?:ever\s+)?(?:be\s+)?(?:${VERB}|safe|ok|okay|allowed|belong|go|indoors|inside|used|operated|brought|plugged|connected|left|kept)\b`,
+  String.raw`^\s+(?:(?:must|should|can|do|does|are|is|will|may)\s+)?(?:never|not|cannot|\w+n['’]t)\s+(?:ever\s+)?(?:be\s+)?(?:${VERB}|safe|ok|okay|allowed|permitted|belong|go|used|operated|brought|plugged|connected|left|kept)\b(?:\s+[\w'-]+){0,3}?\s*(?:\b(?:${INDOOR_WORDS})\b|[.!?]?\s*$)`,
   "i",
 );
-/** The clause calls the practice dangerous (and doesn't say it isn't). */
-const DANGER = /(?<!\b(?:not|never|isn'?t|aren'?t)\s+(?:\w+\s+)?)\b(unsafe|dangerous|deadly|lethal|kills?|banned|prohibit\w*|poisons?)\b/i;
+/** The clause calls the practice dangerous: not negated, hedged ("less dangerous", "only dangerous") or conditional ("dangerous unless…"). */
+const DANGER_WORD = String.raw`unsafe|dangerous|deadly|lethal|kills?|banned|prohibit\w*|poisons?`;
+const DANGER = new RegExp(String.raw`(?<!\b(?:not|never|isn['’]?t|aren['’]?t|less|only|hardly|rarely|barely|somewhat|slightly|that|very|too|so)\s+(?:\w+\s+)?)\b(?:${DANGER_WORD})\b`, "i");
+const DANGER_HEDGED = new RegExp(String.raw`\b(?:${DANGER_WORD})\b[^.]*\b(?:unless|without|if|except|than|when|until)\b`, "i");
+const isDanger = (clause: string) => DANGER.test(clause) && !DANGER_HEDGED.test(clause);
 
 /** True when a negation directly governs the first match of `re` in the clause. */
 function governed(clause: string, re: RegExp): boolean {
@@ -69,7 +78,7 @@ export function clauses(text: string): string[] {
 export function lintText(text: string): Violation[] {
   const out: Violation[] = [];
   for (const clause of clauses(text)) {
-    const danger = DANGER.test(clause);
+    const danger = isDanger(clause);
     if (COMBUSTION.test(clause) && INDOOR_PLACE.test(clause) && !OUTDOOR.test(clause) && !danger && !governed(clause, COMBUSTION) && !governed(clause, INDOOR_PLACE))
       out.push({ rule: "indoor_combustion", text, clause });
     if (BACKFEED.test(clause) && !danger && !governed(clause, BACKFEED)) out.push({ rule: "backfeed", text, clause });
@@ -84,7 +93,7 @@ export function lintText(text: string): Violation[] {
  * Strict mode for LLM output: a summary never needs to mention fuel-burning equipment, back-feeding or the
  * improvised practices at all, negated or not, so any mention is rejected and the template is used instead.
  */
-const HAZARD_WORDS = /\b(candles?|ovens?|stove ?tops?|stoves?|burners?|heaters?|fuel-burning|exhaust|idl(?:e|ing)|carbon monoxide|outlets?|extension cords?|panel)\b/i;
+const HAZARD_WORDS = /\b(candles?|ovens?|stove ?tops?|stoves?|burners?|(?:propane|kerosene|gas|fuel-burning|buddy) heaters?|fuel-burning|exhaust|idl(?:e|ing)|carbon monoxide|wall (?:outlet|socket)s?)\b/i;
 export function mentionsHazard(text: string): boolean {
   return COMBUSTION.test(text) || BACKFEED.test(text) || UNSAFE_DIY.test(text) || HAZARD_WORDS.test(text);
 }
