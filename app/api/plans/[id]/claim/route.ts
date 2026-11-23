@@ -1,6 +1,6 @@
 import { after } from "next/server";
 import { z } from "zod";
-import { sendConfirm } from "@/lib/server/auth";
+import { sendClaimLink, sendConfirm } from "@/lib/server/auth";
 import { isDemo } from "@/lib/server/env";
 import { err, json, readJson, sameOrigin } from "@/lib/server/http";
 import { loadPlanFor } from "@/lib/server/access";
@@ -37,8 +37,16 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const { email, updates } = body.data;
   const now = new Date().toISOString();
   let user = await store.getUserByEmail(email);
+  // Security review M1: an address that already has an account. Unless this browser is signed in as that
+  // account, change nothing (no plan move, no consent change, no session change) and send a link to the
+  // address instead; the plan is attached only when the link is used. Same reply as a new address.
+  if (user && !(session.scope === "full" && session.uid === user.id)) {
+    if (!(await limit(`mail:${user.id}`, LIMITS.loginPerEmailHour, 3600))) return err("We've sent a few emails to that address already. Check your inbox and spam folder.", 429);
+    const link = await sendClaimLink(user.id, email, plan.id);
+    return json({ ok: true, status: "confirm", email, ...(isDemo ? { demoLink: link } : {}) });
+  }
   if (!user) user = await store.createUser({ email, consent_at: now, double_opt_in_at: null, unsubscribed_at: null, followups_opt_in: updates });
-  else if (updates && !user.followups_opt_in) await store.updateUser(user.id, { followups_opt_in: true, unsubscribed_at: null, consent_at: now });
+  else if (updates && !user.followups_opt_in) await store.updateUser(user.id, { followups_opt_in: true, unsubscribed_at: null, consent_at: now }); // signed in as this account
 
   await store.updateQuestionnaire(plan.questionnaire_id, { user_id: user.id });
   await store.updatePlan(plan.id, { user_id: user.id });

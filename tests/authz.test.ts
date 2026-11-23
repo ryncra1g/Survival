@@ -18,6 +18,9 @@ vi.mock("next/headers", () => ({
   headers: async () => new Headers({ "x-forwarded-for": ip }),
 }));
 
+// Next's after() needs a request scope; the tests don't need the background email.
+vi.mock("next/server", async (orig) => ({ ...(await orig<typeof import("next/server")>()), after: () => {} }));
+
 const ORIGIN = "http://test.local";
 process.env.READYPLAN_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "rp-authz-"));
 process.env.APP_URL = ORIGIN;
@@ -181,5 +184,44 @@ describe("D2 tiers: the 30-day cleanup", () => {
     await fileStore.deleteStaleAnonQuestionnaires(30);
     expect(await fileStore.getQuestionnaire(old.id)).toBeNull();
     expect(await fileStore.getQuestionnaire(kept.id)).not.toBeNull();
+  });
+});
+
+describe("security review M1/M2: claiming a plan for an address that already has an account", () => {
+  it("changes nothing until the address owner uses the link; then only that account can open the plan", async () => {
+    const { fileStore } = await import("@/lib/server/store/file");
+    const claim = await import("@/app/api/plans/[id]/claim/route");
+    const verify = await import("@/app/api/auth/verify/route");
+    const { issueLink } = await import("@/lib/server/auth");
+    const { claimNext } = await import("@/lib/server/claim");
+    ip = "203.0.113.99"; // a fresh IP: the rate-limit test above used its own up
+    await fileStore.updateUser(ids.b, { followups_opt_in: false, unsubscribed_at: "2026-11-01T00:00:00.000Z" });
+    // An anonymous browser (the attacker's) claims its plan for B's address, asking for marketing.
+    const anon = { uid: "", nonce: ids.nonceAnon, scope: "anon" as const };
+    as(anon);
+    const cookieBefore = jar.get("rp_session");
+    const r = await claim.POST(req("POST", "/x", { email: "b@example.com", updates: true }), { params: Promise.resolve({ id: ids.planAnon }) });
+    expect(r.status).toBe(200);
+    expect((await r.json()).status).toBe("confirm"); // same reply as a new address; no "sent"
+    expect((await fileStore.getPlan(ids.planAnon))!.user_id).toBeNull(); // not attached
+    const after = (await fileStore.getUser(ids.b))!;
+    expect(after.followups_opt_in).toBe(false); // consent not forged
+    expect(after.unsubscribed_at).toBe("2026-11-01T00:00:00.000Z"); // unsubscribe not reversed
+    expect(jar.get("rp_session")).toBe(cookieBefore); // no session tied to B
+    // A forged claim in the link (signed for another user) is ignored.
+    const forged = await issueLink(ids.b, "confirm", claimNext(ids.a, ids.planAnon));
+    await verify.GET(new Request(forged));
+    expect((await fileStore.getPlan(ids.planAnon))!.user_id).toBeNull();
+    // B uses the real link: the plan is attached to B.
+    const link = await issueLink(ids.b, "confirm", claimNext(ids.b, ids.planAnon));
+    const v = await verify.GET(new Request(link));
+    expect(v.headers.get("location")).toContain(`/plan/${ids.planAnon}`);
+    expect((await fileStore.getPlan(ids.planAnon))!.user_id).toBe(ids.b);
+    // M2: the browser that built it no longer opens it, now that it's in a confirmed account; B does.
+    as(anon);
+    expect((await call("checks", "PUT", "/x", ids.planAnon, { checks: { "week-1": true } })).status).toBe(404);
+    expect((await call("aiCopy", "POST", "/x", ids.planAnon)).status).toBe(404);
+    as(B());
+    expect((await call("calendar", "GET", "/x", ids.planAnon)).status).toBe(200);
   });
 });

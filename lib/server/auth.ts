@@ -1,5 +1,6 @@
 import "server-only";
 import { renderConfirmEmail, renderLoginEmail } from "@/lib/email/render";
+import { claimNext } from "./claim";
 import { randomToken, sha256 } from "./crypto";
 import { env, isDemo } from "./env";
 import { metaFor, sendEmail } from "./mailer";
@@ -26,5 +27,13 @@ export async function sendLogin(userId: string, email: string) {
   const link = await issueLink(userId, "login");
   const m = renderLoginEmail(link, metaFor(userId));
   await sendEmail({ to: email, userId, type: "login", ...m });
+  return link;
+}
+
+/** Security review M1: a confirm/sign-in link for an existing account that, once used, attaches this plan to it. */
+export async function sendClaimLink(userId: string, email: string, planId: string) {
+  const link = await issueLink(userId, "confirm", claimNext(userId, planId));
+  const m = renderConfirmEmail(link, metaFor(userId));
+  await sendEmail({ to: email, userId, type: "confirm", ...m });
   return link;
 }
