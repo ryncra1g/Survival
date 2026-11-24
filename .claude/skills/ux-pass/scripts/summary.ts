@@ -43,7 +43,7 @@ for (const r of lh) L.push(r.error ? `| ${r.name} | error: ${r.error} |||||||| `
 L.push("", "## Personas", "");
 for (const p of personas) {
   if (p.error) { L.push(`### ${p.id}: ERROR ${p.error}`, ""); continue; }
-  L.push(`### ${p.id}: ${p.who}`, "", `Taps ${p.total.taps}, keystrokes ${p.total.keys}, screens ${p.total.screens}. Plan: ${p.plan.reached ? `${p.plan.words} words, ${p.plan.sections} sections, ${p.plan.pageHeightScreens} phone screens tall with every section open (${p.plan.collapsedWords} words visible before opening any), PDF ${p.plan.pdfPages} pages; ${p.plan.wholePlan}` : `NOT REACHED: ${p.plan.error}`}`);
+  L.push(`### ${p.id}: ${p.who}`, "", `Taps ${p.total.taps}, keystrokes ${p.total.keys}, screens ${p.total.screens}. Plan: ${p.plan.reached ? `${p.plan.words} words, ${p.plan.sections} sections, ${p.plan.pageHeightScreens} phone screens tall with every section open (${p.plan.collapsedWords} words visible before opening any), PDF ${p.plan.pdfPages} pages; ${p.plan.wholePlan ?? `This week ${p.plan.stageCount}`}; step counts on screen: ${p.plan.stepCounts ?? "?"}` : `NOT REACHED: ${p.plan.error}`}`);
   if (p.plan.overBudget) L.push(`Over budget: ${p.plan.overBudget}`);
   if (p.plan.firstSteps) L.push("First 3 steps:", ...p.plan.firstSteps.map((s: string, i: number) => `${i + 1}. ${s}`));
   L.push("", "| Screen | Taps | Scrolled to answer | Main button visible | Errors |", "|---|---|---|---|---|");
