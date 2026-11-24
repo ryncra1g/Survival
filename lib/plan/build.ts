@@ -70,6 +70,13 @@ export const planTotals = (cp: { budget: { picks: { low: number; high: number }[
   totalHigh: cp.budget.picks.reduce((t, p) => t + p.high, 0),
 });
 
+/** UX-19: "Your oxygen concentrator and CPAP/BiPAP need", with names lower-cased (acronyms kept) and the verb agreeing. */
+export function deviceSentence(devices: Answers["poweredDevices"]): string {
+  const names = devices.map((d) => lowerFirst(LABELS.device[d]));
+  const list = names.length <= 1 ? names.join("") : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+  return `Your ${list} ${names.length > 1 ? "need" : "needs"}`;
+}
+
 /** UX-12: for households with mobility needs, wherever stored water is mentioned. */
 export const KEEP_WATER_CLOSE = "Keep water where you won't need to lift it far.";
 /** UX-3: the one everyday fuel rule (Ready.gov: keep at least a half tank). Never a per-tank gallon target. */
@@ -837,7 +844,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       type: "callout",
       tone: "warning",
       title: "Powered medical devices come first",
-      text: `Your ${a.poweredDevices.map((d) => LABELS.device[d]).join(", ")} needs battery backup that covers at least 2 nights. Ask the device provider which batteries are approved, ask your utility about its medical-needs registry, and know which nearby hospital or shelter has power.`,
+      text: `${deviceSentence(a.poweredDevices)} battery backup that covers at least 2 nights. Ask the device provider which batteries are approved, ask your utility about its medical-needs registry, and know which nearby hospital or shelter has power.`,
     });
   powerBlocks.push({
     type: "ifthen",
