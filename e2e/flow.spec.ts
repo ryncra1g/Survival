@@ -437,3 +437,30 @@ test("UX-4 medical screen: Next with the health box unticked focuses it, with th
   await next(page);
   await expect(page.getByRole("heading", { name: "Tell us about your home" })).toBeVisible();
 });
+
+test("UX-9: every control on the plan page is at least 44px tall (or has a 44px padded hit area)", async ({ page }) => {
+  const planId = await quickPlan(page);
+  await page.goto(`/plan/${planId}`);
+  // Open everything a person can open, so hidden controls are measured too.
+  await page.getByRole("button", { name: "Expand all" }).click();
+  await page.locator("details[data-stage]").evaluateAll((ds) => ds.forEach((d) => ((d as HTMLDetailsElement).open = true)));
+  await page.getByTestId("dashboard").locator("details").evaluateAll((ds) => ds.forEach((d) => ((d as HTMLDetailsElement).open = true)));
+  await page.getByTestId("compare-options").locator("details").evaluateAll((ds) => ds.forEach((d) => ((d as HTMLDetailsElement).open = true)));
+  await page.getByTestId("share-menu").locator("summary").first().click();
+  await page.waitForTimeout(300);
+  const small = await page.evaluate(() => {
+    const out: string[] = [];
+    const els = document.querySelectorAll("a[href], button, summary, input:not([type=hidden]), select, textarea, [role=button]");
+    for (const e of els) {
+      const vis = (e as HTMLElement & { checkVisibility?: (o: object) => boolean }).checkVisibility?.({ visibilityProperty: true, opacityProperty: true }) ?? true;
+      const r0 = e.getBoundingClientRect();
+      if (!vis || r0.width <= 1 || r0.height <= 1) continue; // the sr-only skip link until focused
+      // A checkbox inside a label: the label is what you tap.
+      const target = e.matches("input[type=checkbox],input[type=radio]") ? (e.closest("label") ?? e) : e;
+      const r = target.getBoundingClientRect();
+      if (r.height < 44) out.push(`${e.tagName.toLowerCase()} "${((e as HTMLElement).innerText || e.getAttribute("aria-label") || "").trim().slice(0, 50)}" ${Math.round(r.height)}px`);
+    }
+    return [...new Set(out)];
+  });
+  expect(small).toEqual([]);
+});

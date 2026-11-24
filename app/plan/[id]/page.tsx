@@ -69,7 +69,7 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
       )}
       <h1 className="text-3xl font-bold">{doc.title}</h1>
       <Subtitle text={doc.subtitle} />
-      <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="/sources" className="underline">Sources &amp; safety</a></p>
+      <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="/sources" className="tap-inline underline">Sources &amp; safety</a></p>
       <div className="mt-3 flex flex-wrap gap-2 no-print">
         <ShareMenu planId={plan.id} email={!user} extra={<><a href={`/api/plans/${plan.id}/calendar`} className="flex w-full min-h-11 items-center rounded-md px-3 text-sm hover:bg-line/40">Add to my calendar</a><CopyForAI variant="menu" planId={plan.id} text={aiText} /></>} />
         {session?.scope === "full" && <Link href="/account" className="btn-ghost border border-line text-sm px-3 min-h-[44px]">Edit answers</Link>}

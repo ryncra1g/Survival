@@ -81,7 +81,7 @@ export function EmailMyPlan({ planId, siteKey = "", onSubmit, idPrefix = "emp" }
         <label htmlFor={`${idPrefix}-website`}>Website</label>
         <input id={`${idPrefix}-website`} tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
       </div>
-      <label className="flex gap-3 items-start cursor-pointer text-sm">
+      <label className="flex min-h-[44px] gap-3 items-start py-2 cursor-pointer text-sm">
         <input id={`${idPrefix}-updates`} type="checkbox" className="mt-0.5 size-5 shrink-0 accent-[var(--brand)]" checked={updates} onChange={(e) => setUpdates(e.target.checked)} />
         <span>Also send me seasonal reminders (winter, hurricane season) and occasional preparedness updates. <span className="text-muted">Unsubscribe any time.</span></span>
       </label>

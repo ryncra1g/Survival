@@ -72,7 +72,7 @@ export function Dashboard({ overview, priority, allStepIds, buyHref }: { overvie
           {done ? (
             <p className="mt-1 text-sm" role="status">
               Done.{" "}
-              <button type="button" className="underline text-brand min-h-[32px]" onClick={() => { toggle(step.id); setJustDone((j) => j.filter((x) => x !== step.id)); }}>
+              <button type="button" className="underline text-brand min-h-[44px] px-1" onClick={() => { toggle(step.id); setJustDone((j) => j.filter((x) => x !== step.id)); }}>
                 Undo
               </button>
             </p>

@@ -235,7 +235,7 @@ const SCREENS: Screen[] = [
             <div key={i} className="card p-4 space-y-3">
               <div className="flex justify-between items-center">
                 <p className="font-semibold">Pet group {i + 1}</p>
-                <button type="button" className="text-sm underline text-brand" onClick={() => set({ pets: a.pets.filter((_, j) => j !== i) })}>Remove</button>
+                <button type="button" className="text-sm underline text-brand min-h-[44px] px-2" onClick={() => set({ pets: a.pets.filter((_, j) => j !== i) })}>Remove</button>
               </div>
               <Group label="Type">
                 <div className="grid grid-cols-3 gap-2">
@@ -658,7 +658,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
           {screen.id !== "medical" && needsHealthConsent(a) && <HealthConsent a={a} set={set} error={consentErr?.field === "healthConsent" ? consentErr.msg : undefined} />}
           <ConsentBox id="termsConsent" checked={!!a._terms} onChange={(_terms) => set({ _terms })} error={consentErr?.field === "termsConsent" ? consentErr.msg : undefined}>
             I understand this plan is general guidance, not professional advice, and I agree to the{" "}
-            <a href="/terms" target="_blank" rel="noopener" className="underline">Terms of Use</a>.
+            <a href="/terms" target="_blank" rel="noopener" className="tap-inline underline">Terms of Use</a>.
           </ConsentBox>
         </div>
       )}

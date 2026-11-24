@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 btn">Skip to content</a>
         <header className="border-b border-line bg-surface">
           <div className="mx-auto max-w-3xl px-4 h-14 flex items-center justify-between">
-            <Link href="/" className="font-bold text-lg text-brand">{BRAND.name}</Link>
+            <Link href="/" className="tap font-bold text-lg text-brand">{BRAND.name}</Link>
             <SiteMenu />
           </div>
         </header>
@@ -41,11 +41,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="mx-auto max-w-3xl px-4 py-6 space-y-2">
             <p>General preparedness guidance, not professional advice. Follow official instructions in an emergency. Prices and products change.</p>
             <p className="flex flex-wrap gap-x-4 gap-y-1">
-              <Link href="/privacy" className="underline">Privacy</Link>
-              <Link href="/terms" className="underline">Terms</Link>
-              <Link href="/sources" className="underline">Sources &amp; safety</Link>
-              <Link href="/account#data" className="underline">Export or delete my data</Link>
-              <a href="https://www.ready.gov" className="underline" rel="noopener">Ready.gov</a>
+              <Link href="/privacy" className="tap underline">Privacy</Link>
+              <Link href="/terms" className="tap underline">Terms</Link>
+              <Link href="/sources" className="tap underline">Sources &amp; safety</Link>
+              <Link href="/account#data" className="tap underline">Export or delete my data</Link>
+              <a href="https://www.ready.gov" className="tap underline" rel="noopener">Ready.gov</a>
             </p>
           </div>
         </footer>

@@ -85,6 +85,9 @@ table, .tabular { font-variant-numeric: tabular-nums; }
   .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 48px; padding: 0 1.25rem; border-radius: .6rem; font-weight: 600; background: var(--accent); color: var(--accent-ink); }
   .btn:disabled { opacity: .55; }
   .btn-ghost { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 1rem; border-radius: .6rem; font-weight: 600; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+  /* UX-9: 44px hit areas. .tap for a standalone link; .tap-inline for a link inside a sentence (padded hit area, same line spacing). */
+  .tap { display: inline-flex; align-items: center; min-height: 44px; }
+  .tap-inline { display: inline-block; padding-block: 14px; margin-block: -14px; }
   .card { background: var(--surface); border: 1px solid var(--line); border-radius: .9rem; }
   .input { width: 100%; min-height: 48px; padding: 0 .9rem; border-radius: .6rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-size: 1rem; }
 }

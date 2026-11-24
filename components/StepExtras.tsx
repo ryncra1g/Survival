@@ -33,18 +33,18 @@ export function StepExtras({ step }: { step: StepView }) {
         <span className="mt-2 flex flex-wrap items-center gap-2">
           {step.buy && (
             <BuyIfNeeded itemId={step.buy.itemId}>
-            <a href={step.buy.href} target="_blank" rel="sponsored nofollow noopener" className="inline-block rounded-lg border border-line bg-surface px-3 py-2 text-sm font-semibold text-brand no-underline leading-snug" aria-label={`Buy ${lowerFirst(step.buy.name)}, ${shortPrice(step.buy.price)} (opens a store)`}>
+            <a href={step.buy.href} target="_blank" rel="sponsored nofollow noopener" className="inline-block min-h-[44px] rounded-lg border border-line bg-surface px-3 py-2.5 text-sm font-semibold text-brand no-underline leading-snug" aria-label={`Buy ${lowerFirst(step.buy.name)}, ${shortPrice(step.buy.price)} (opens a store)`}>
               Buy {lowerFirst(step.buy.name)} <span className="font-normal text-muted whitespace-nowrap">· {shortPrice(step.buy.price)}</span>
             </a>
             </BuyIfNeeded>
           )}
           {step.see && (
-            <a href={`#${step.see.anchor}`} className="text-sm underline text-brand">
+            <a href={`#${step.see.anchor}`} className="tap text-sm underline text-brand">
               {step.see.label} →
             </a>
           )}
           {step.link && (
-            <a href={step.link.url} target="_blank" rel="noopener" className="text-sm underline text-brand">
+            <a href={step.link.url} target="_blank" rel="noopener" className="tap text-sm underline text-brand">
               {step.link.label} ↗
             </a>
           )}
@@ -69,7 +69,7 @@ export function HelpStrip({ b, products, href }: { b: Extract<Block, { type: "he
                 <span className="font-medium">{i.name}</span> <span className="text-sm text-muted whitespace-nowrap">{i.price}</span>
               </span>
               <BuyIfNeeded itemId={i.itemId}>
-                <a href={href(i.itemId)} target="_blank" rel="sponsored nofollow noopener" className="btn-ghost shrink-0 text-brand min-h-[40px] border border-line bg-surface" aria-label={`Buy ${i.name} (opens a store, affiliate link)`}>
+                <a href={href(i.itemId)} target="_blank" rel="sponsored nofollow noopener" className="btn-ghost shrink-0 text-brand min-h-[44px] border border-line bg-surface" aria-label={`Buy ${i.name} (opens a store, affiliate link)`}>
                   Buy
                 </a>
               </BuyIfNeeded>
@@ -81,7 +81,7 @@ export function HelpStrip({ b, products, href }: { b: Extract<Block, { type: "he
       {b.links.length > 0 && (
         <ul className="mt-2 space-y-1 text-sm">
           {b.links.map((l) => (
-            <li key={l.url}><a href={l.url} target="_blank" rel="noopener" className="underline text-brand">{l.label} ↗</a></li>
+            <li key={l.url}><a href={l.url} target="_blank" rel="noopener" className="tap underline text-brand">{l.label} ↗</a></li>
           ))}
         </ul>
       )}

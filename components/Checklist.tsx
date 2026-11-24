@@ -16,7 +16,7 @@ export function Checklist({ items }: { planId?: string; items: StepView[] }) {
       <ul className="space-y-1">
         {items.map((it) => (
           <li key={it.id}>
-            <label className="flex gap-3 items-start py-1 cursor-pointer">
+            <label className="flex min-h-[44px] gap-3 items-start py-2 cursor-pointer">
               <input type="checkbox" className="mt-1 size-5 shrink-0 accent-[var(--brand)]" checked={!!checks[it.id]} onChange={() => toggle(it.id)} />
               <span className={checks[it.id] ? "line-through text-muted" : ""}>{it.text}</span>
             </label>

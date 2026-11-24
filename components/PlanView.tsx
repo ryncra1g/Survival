@@ -47,7 +47,7 @@ function TipsBox({ b, ownedNames }: { b: Extract<Block, { type: "tips" }>; owned
         {b.tips.map((t) => (
           <li key={t.id}>
             <strong>{t.situation}</strong> {t.steps.join(" ")}{" "}
-            <a href={t.source.url} className="underline" rel="noopener">{t.source.label}</a>
+            <a href={t.source.url} className="tap-inline underline" rel="noopener">{t.source.label}</a>
             {ownedNames && (() => {
               const m = matchMaterials(TIP_MATERIALS[t.id] ?? [], ownedNames);
               return m.length ? <span className="block text-ok" data-testid="tip-have">You have: {m.join(", ")}</span> : null;
@@ -84,7 +84,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
       return (
         <div className="my-4">
           {b.caption && <h4 className="mt-5 mb-2 font-semibold">{b.caption}</h4>}
-          {b.compact && <p className="text-sm text-muted -mt-1 mb-2">What to look for is in <a href="#gear" className="underline">Recommended gear</a>.</p>}
+          {b.compact && <p className="text-sm text-muted -mt-1 mb-2">What to look for is in <a href="#gear" className="tap-inline underline">Recommended gear</a>.</p>}
           {ctx.affiliate && b.items.some((i) => i.buyable) && <p className="text-sm text-ink mb-2" data-testid="affiliate-disclosure"><strong>Affiliate links:</strong> {BRAND.name} may earn a commission if you buy through these Buy links, at no extra cost to you. <a href="/sources#affiliate" className="underline">Details</a></p>}
           <ul className="divide-y divide-line border-y border-line">
             {b.items.map((i) => (
@@ -100,7 +100,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
                 </div>
                 {i.buyable && (
                   <BuyIfNeeded itemId={i.itemId}>
-                  <a href={buyHref ? buyHref(i.itemId) : `/go/${encodeURIComponent(i.itemId)}?p=${planId}&src=web`} target="_blank" rel="sponsored nofollow noopener" className="btn-ghost shrink-0 text-brand min-h-[40px]" aria-label={`Buy ${i.name} (opens a store, affiliate link)`}>
+                  <a href={buyHref ? buyHref(i.itemId) : `/go/${encodeURIComponent(i.itemId)}?p=${planId}&src=web`} target="_blank" rel="sponsored nofollow noopener" className="btn-ghost shrink-0 text-brand min-h-[44px]" aria-label={`Buy ${i.name} (opens a store, affiliate link)`}>
                     Buy
                   </a>
                   </BuyIfNeeded>
@@ -298,7 +298,7 @@ export function PlanView({
         <section id="about" className="card p-4 my-4 scroll-mt-24 text-sm text-muted">
           <p>{doc.disclaimer}</p>
           {doc.affiliateDisclosure && <p className="mt-2"><strong>Affiliate disclosure:</strong> {doc.affiliateDisclosure}</p>}
-          <p className="mt-2"><a href="/sources" className="underline">Sources &amp; safety</a>: where this guidance comes from.</p>
+          <p className="mt-2"><a href="/sources" className="tap underline">Sources &amp; safety</a>: where this guidance comes from.</p>
         </section>
       </article>
     </ChecksProvider>
