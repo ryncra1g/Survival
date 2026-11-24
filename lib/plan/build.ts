@@ -31,6 +31,8 @@ import { AFFILIATE_DISCLOSURE, buyUrl, earnsCommission, emailSafeBuyUrl } from "
 
 
 
+/** UX-12: for households with mobility needs, wherever stored water is mentioned. */
+export const KEEP_WATER_CLOSE = "Keep water where you won't need to lift it far.";
 /** UX-3: the one everyday fuel rule (Ready.gov: keep at least a half tank). Never a per-tank gallon target. */
 export const HALF_FULL = "Keep every vehicle at least half full.";
 export const fillUpLine = (gal: string) => `Your trip needs about ${gal} gallons: fill up completely as soon as a storm or evacuation warning is issued.`;
@@ -375,7 +377,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   if (a.vehicleFuels.some((v) => v !== "ev")) week.push(HALF_FULL);
   if (a.vehicleFuels.includes("ev")) week.push("Keep EVs charged to at least 80% when severe weather is forecast.");
 
-  month.push({ text: `Finish stored water: ${n(w.storedGal)} gallons (${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${plural(w.jugs, "7-gal jug")}).`, buy: ["water-drum", "water-jug", "water-bricks", "water-gallons"] });
+  month.push({ text: w.liftable ? `Finish stored water: ${n(w.storedGal)} gallons in 1-gallon jugs or cases (about 9 lb each). ${KEEP_WATER_CLOSE}` : `Finish stored water: ${n(w.storedGal)} gallons (${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${plural(w.jugs, "7-gal jug")}).`, buy: ["water-drum", "water-jug", "water-bricks", "water-gallons"] });
   month.push(phaseStep(1, "Buy the rest of your Phase 1 (life safety) gear"));
   month.push(`Build a 2-week pantry from the food list (about ${n(Math.ceil((cp.food.dailyKcal * 14) / 1000))} thousand calories).`);
   if (a.homeType === "townhouse")
@@ -586,9 +588,9 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   if (a.storage.includes("shed"))
     storeTips.push({ id: "store-shed", text: "Shed: the right place for gas cans and propane cylinders (detached from the house); too hot or cold for food, water and medicine.", buy: ["gas-cans", "propane-20"], link: HOWTO.powerOutages });
   if (a.storage.includes("closets"))
-    storeTips.push({ id: "store-closets", text: "Closets: water bricks or 7-gallon jugs on the floor, food in labelled bins on the top shelf, go-bags by the door.", buy: ["water-bricks", "water-jug", "storage-kit"], link: HOWTO.kit });
+    storeTips.push({ id: "store-closets", text: w.liftable ? `Closets: 1-gallon jugs on the floor or a low shelf, food in labelled bins at waist height, go-bags by the door. ${KEEP_WATER_CLOSE}` : "Closets: water bricks or 7-gallon jugs on the floor, food in labelled bins on the top shelf, go-bags by the door.", buy: ["water-bricks", "water-jug", "storage-kit"], link: HOWTO.kit });
   if (a.storage.includes("other_indoor"))
-    storeTips.push({ id: "store-other-indoor", text: "Other indoor space (a spare room, under the stairs or beds): water bricks and labelled bins, away from heaters and direct sun.", buy: ["water-bricks", "storage-kit", "water-jug"], link: HOWTO.kit });
+    storeTips.push({ id: "store-other-indoor", text: w.liftable ? "Other indoor space (a spare room, under the stairs or beds): 1-gallon jugs and labelled bins at waist height, away from heaters and direct sun." : "Other indoor space (a spare room, under the stairs or beds): water bricks and labelled bins, away from heaters and direct sun.", buy: ["water-bricks", "storage-kit", "water-jug"], link: HOWTO.kit });
   if (a.hasShed && !a.storage.includes("shed"))
     storeTips.push({ id: "store-shed-fuel", text: "Shed: even if it isn't right for supplies, it's the place for gas cans and propane cylinders, away from the house.", buy: ["gas-cans", "propane-20"], link: HOWTO.powerOutages });
   if (a.storage.includes("none"))
@@ -629,7 +631,9 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
           ["Stored target", `${n(w.storedGal)} gal (${n(w.storedDays)} days)`],
           [
             "Containers",
-            cp.budget.picks.some((p) => p.item.id === "water-gallons")
+            w.liftable
+              ? `${n(w.storedGal)} 1-gallon jugs or cases (about 9 lb each when full)`
+              : cp.budget.picks.some((p) => p.item.id === "water-gallons")
               ? `${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${n(w.storedGal - w.drums * 55)} gallon jugs or refilled 2-liter bottles (low-cost); upgrade to ${plural(w.jugs, "7-gal jug")} later`
               : `${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${plural(w.jugs, "7-gal jug")}`,
           ],
@@ -637,6 +641,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
           ["Bathtub bladder (storm warning)", apt ? "Optional" : "~100 gal for flushing/washing"],
         ],
       },
+      ...(w.liftable ? [{ type: "paragraph" as const, text: `Containers you can lift: 1-gallon jugs or cases, about 9 lb each when full. Larger jugs are too heavy to lift safely. ${KEEP_WATER_CLOSE}` }] : []),
       ...(a.waterSource === "well"
         ? [{ type: "callout" as const, tone: "warning" as const, title: "Well water needs power", text: "Your well pump stops when the power does. Powering the pump (generator or battery sized for its starting watts, through an electrician-installed transfer switch) is a top priority. Keep stored water regardless." }]
         : []),
@@ -668,7 +673,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       { type: "subheading", text: "Your water kit" },
       check("water", [
         { id: "water-kit-containers", text: `Containers for ${n(w.storedGal)} gallons, filled and sealed.`, buy: ["water-jug", "water-bricks", "water-gallons", "water-drum"], link: HOWTO.cdcWater },
-        { id: "water-kit-dispense", text: w.drums ? "A way to get water out: the drum pump or siphon, and the spigot on each jug." : "A way to get water out: the spigot on each jug, or a clean pitcher.", link: HOWTO.kit },
+        { id: "water-kit-dispense", text: w.liftable ? "A way to pour: 1-gallon jugs pour by hand; keep a clean pitcher nearby." : w.drums ? "A way to get water out: the drum pump or siphon, and the spigot on each jug." : "A way to get water out: the spigot on each jug, or a clean pitcher.", link: HOWTO.kit },
         { id: "water-kit-labels", text: "Rotation labels: write the fill date on every container.", link: HOWTO.kit },
         ...(hasHouseholdFilter(a) || w.filterDays > 0 ? [{ id: "water-kit-spares", text: "Spare filter elements or a backflush kit for your household filter.", buy: ["filter-spare"] }] : []),
         { id: "water-kit-backup", text: "A backup method: treatment tablets, plus unscented bleach, used as the labels direct.", buy: ["water-tablets", "bleach"], link: HOWTO.waterSafety },

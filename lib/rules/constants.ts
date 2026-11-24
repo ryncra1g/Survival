@@ -20,6 +20,11 @@ export const DEFAULT_CONSTANTS = {
     storedDaysCap: 14,
     jugGallons: 7,
     drumGallons: 55,
+    /** UX-12: water weighs about 8.34 lb a gallon. Households with mobility needs get containers of at most mobilityMaxLb when full. */
+    lbPerGallon: 8.34,
+    mobilityMaxLb: 25,
+    /** The container size they get instead: 1-gallon jugs or cases (about 9 lb full). */
+    liftableGallons: 1,
     /** Use 55-gal drums once stored water exceeds this and there is garage/basement space. */
     drumThresholdGal: 60,
     /** EPA emergency disinfection: drops of 6% unscented bleach per gallon of clear water. */
@@ -176,6 +181,9 @@ export const RuleConstantsSchema = z.object({
     otherPetGalPerDay: num,
     storedDaysCap: num,
     jugGallons: num,
+    lbPerGallon: z.number().positive(),
+    mobilityMaxLb: z.number().positive(),
+    liftableGallons: z.number().positive(),
     drumGallons: num,
     drumThresholdGal: num,
     bleachDropsPerGal6pct: num,

@@ -163,7 +163,9 @@ describe("pairwise: what people have (or don't) steers products, skills and cons
       expect(picked(r, "co-alarm") && r.computed.budget.picks.some((p) => p.item.group === "water"), why).toBe(true);
       for (const id of ["power-bank", "radio", "first-aid"]) expect(offered(r, id), `${id} ${why}`).toBe(true);
       // generous budgets get the sturdy jugs, not the low-cost fallback
-      if (a.budget === "5000_plus") expect(picked(r, "water-gallons"), why).toBe(false);
+      // (UX-12: unless someone has limited mobility; then every household gets containers they can lift)
+      if (a.budget === "5000_plus" && !a.elderlyOrMobility) expect(picked(r, "water-gallons"), why).toBe(false);
+      if (a.elderlyOrMobility) for (const heavy of ["water-jug", "water-bricks", "water-drum"]) expect(offered(r, heavy), why).toBe(false);
       // apartments: no fuel-burning gear or fuel storage
       if (a.homeType === "apartment") for (const id of COMBUSTION_ITEMS) expect(offered(r, id), `${id} ${why}`).toBe(false);
       // sections appear only when they apply

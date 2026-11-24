@@ -57,6 +57,8 @@ export interface WaterResult {
   filterGal: number;
   jugs: number;
   drums: number;
+  /** UX-12: someone has limited mobility, so water goes in containers they can lift (no 7-gal jugs, bricks or drums). */
+  liftable: boolean;
   threeDayGal: number;
   bleachDropsPerGal6pct: number;
   bleachDropsPerGal8pct: number;
@@ -81,7 +83,10 @@ export function computeWater(a: Answers, c: RuleConstants): WaterResult {
   const largeStorage = a.storage.some((s) => s === "garage" || s === "basement" || s === "shed");
   let drums = 0;
   let jugs: number;
-  if (storedGal > c.water.drumThresholdGal && largeStorage && a.homeType !== "apartment") {
+  const liftable = a.elderlyOrMobility;
+  if (liftable) {
+    jugs = ceil(storedGal / c.water.liftableGallons);
+  } else if (storedGal > c.water.drumThresholdGal && largeStorage && a.homeType !== "apartment") {
     drums = Math.floor((storedGal * 0.75) / c.water.drumGallons) || 1;
     jugs = Math.max(2, ceil((storedGal - drums * c.water.drumGallons) / c.water.jugGallons));
   } else {
@@ -99,6 +104,7 @@ export function computeWater(a: Answers, c: RuleConstants): WaterResult {
     filterGal,
     jugs,
     drums,
+    liftable,
     threeDayGal: ceil(round(dailyGal * Math.min(3, a.scenarioDays), 4)),
     bleachDropsPerGal6pct: c.water.bleachDropsPerGal6pct,
     bleachDropsPerGal8pct: c.water.bleachDropsPerGal8pct,
