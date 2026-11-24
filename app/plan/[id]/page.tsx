@@ -62,9 +62,9 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
     <div className="mx-auto max-w-3xl px-4 py-6">
       {accounts && (
         <nav aria-label="Your plan" className="no-print mb-4 grid grid-cols-3 gap-1 rounded-xl border border-line bg-surface p-1" data-testid="plan-tabs">
-          <a href={`/plan/${plan.id}`} aria-current="page" className="rounded-lg bg-brand px-2 py-2 text-center text-sm font-semibold text-brand-ink">Overview</a>
-          <a href={`/plan/${plan.id}/inventory`} className="rounded-lg px-2 py-2 text-center text-sm font-semibold">Inventory</a>
-          <a href={`/plan/${plan.id}#ch-do-now`} className="rounded-lg px-2 py-2 text-center text-sm font-semibold">Report</a>
+          <a href={`/plan/${plan.id}`} aria-current="page" className="flex min-h-[44px] items-center justify-center rounded-lg bg-brand px-2 py-2 text-center text-sm font-semibold text-brand-ink">Overview</a>
+          <a href={`/plan/${plan.id}/inventory`} className="flex min-h-[44px] items-center justify-center rounded-lg px-2 py-2 text-center text-sm font-semibold">Inventory</a>
+          <a href={`/plan/${plan.id}#ch-do-now`} className="flex min-h-[44px] items-center justify-center rounded-lg px-2 py-2 text-center text-sm font-semibold">Report</a>
         </nav>
       )}
       <h1 className="text-3xl font-bold">{doc.title}</h1>
