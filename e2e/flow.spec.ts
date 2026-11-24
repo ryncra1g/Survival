@@ -125,7 +125,7 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(dash.getByTestId("stage-progress")).toHaveText(/^0 of \d+ done$/);
   // UX-6: one step count on screen (this stage's To do items); no whole-plan or "steps left" count
   const dashText = await dash.innerText();
-  expect(dashText.match(/\d+ of \d+ (done|steps)|\(\d+ left\)/g)).toEqual([expect.stringMatching(/^0 of \d+ done$/)]);
+  expect(dashText.match(/\b\d+ of \d+ (done|steps)\b|\(\d+ left\)/g)).toEqual([expect.stringMatching(/^0 of \d+ done$/)]);
   expect(dashText).not.toContain("Whole plan");
   await expect(dash.getByRole("heading", { name: "Next up" })).toBeVisible();
   await expect(dash.getByText(/^Test or install CO alarms/)).toBeVisible();

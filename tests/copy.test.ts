@@ -56,7 +56,7 @@ describe("copy never promises a shareable link or cross-device saving without an
  * UX-2: amounts are planning estimates (Sources, plan footer), so no user-facing text calls them exact.
  * The Copy for AI ground rule "Use these amounts exactly" is an instruction to the assistant (owner brief A6), not a claim.
  */
-const EXACT_PROMISE = /exact(ly)?\s+(amounts?|water|food|fuel|how much|food list|quantities)/i;
+const EXACT_PROMISE = /\bexact(ly)?\s+(amounts?|water|food|fuel|how much|food list|quantities)\b/i;
 describe("copy never calls the amounts exact (UX-2)", () => {
   const all = ROOTS.flatMap(files);
   it("no source string says exact amount(s)", () => {
