@@ -73,8 +73,14 @@ async function run(i: number): Promise<R> {
   else {
     r = await req("choosePage", `/plan/${newPid}`);
     const h2 = await r.text();
-    if (!h2.includes("Stackable water bricks")) fail("premium water not shown after choose");
-    if (!/✓ <!-- -->Premium|✓ Premium/.test(h2)) fail("premium not marked selected");
+    if (p.a.elderlyOrMobility) {
+      // UX-12: households with mobility needs only get water containers they can lift, whatever level is asked for.
+      if (h2.includes("Stackable water bricks") || h2.includes("7-gallon water container")) fail("heavy water containers offered to a mobility household");
+      if (!h2.includes("Keep water where you won&#x27;t need to lift it far") && !h2.includes("Keep water where you won't need to lift it far")) fail("no keep-water-close line");
+    } else {
+      if (!h2.includes("Stackable water bricks")) fail("premium water not shown after choose");
+      if (!/✓ <!-- -->Premium|✓ Premium/.test(h2)) fail("premium not marked selected");
+    }
     if (!/checked=""[^>]*>|aria-checked/.test(h2) && !h2.includes('"week-1":true')) res.info.tickCarried = "not visible in HTML";
     res.info.levels = (h2.match(/data-testid="compare-options"/g) ?? []).length;
   }
