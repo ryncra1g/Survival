@@ -111,6 +111,10 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   // Dashboard first: this week's progress, Next up (with why + Buy), key numbers, shopping list
   const dash = page.getByTestId("dashboard");
   await expect(dash.getByTestId("stage-progress")).toHaveText(/^0 of \d+ done$/);
+  // UX-6: one step count on screen (this stage's To do items); no whole-plan or "steps left" count
+  const dashText = await dash.innerText();
+  expect(dashText.match(/\d+ of \d+ (done|steps)|\(\d+ left\)/g)).toEqual([expect.stringMatching(/^0 of \d+ done$/)]);
+  expect(dashText).not.toContain("Whole plan");
   await expect(dash.getByRole("heading", { name: "Next up" })).toBeVisible();
   await expect(dash.getByText(/^Test or install CO alarms/)).toBeVisible();
   await expect(dash.getByText("water to store")).toBeVisible();
@@ -149,7 +153,7 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   const waterBox = await page.locator("details#water").boundingBox();
   expect(waterBox!.width).toBeGreaterThan(300); // an opened card spans the full row
   await page.locator("details#water > summary").click();
-  await page.getByTestId("dashboard").getByRole("link", { name: /See every step/ }).click();
+  await page.getByTestId("dashboard").getByRole("link", { name: /full priority list/ }).click();
   await expect(page.locator("details#priorities")).toHaveAttribute("open", "");
   const nav = page.getByRole("navigation", { name: "Plan sections" });
   await nav.getByRole("link", { name: "Supplies" }).click();
