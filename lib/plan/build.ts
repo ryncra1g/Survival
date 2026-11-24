@@ -1,3 +1,4 @@
+import type { ZipProfile } from "@/lib/zip/profile";
 import { hasHouseholdFilter, hasPersonalFilter, LABELS, type Answers } from "@/lib/answers/schema";
 import { STAGE, WEEK_MAX } from "./priority";
 import { labelKinds } from "./kinds";
@@ -30,6 +31,37 @@ import { AFFILIATE_DISCLOSURE, buyUrl, earnsCommission, emailSafeBuyUrl } from "
  */
 
 
+
+/**
+ * UX-13: one step that names every hazard rated high for the ZIP and its most important action, so it fits in
+ * the first 3 steps even with two or three high hazards. Order: the fastest-moving dangers first.
+ */
+const HIGH_HAZARD_ACTION: { key: "wildfire" | "hurricane" | "flood" | "tornado" | "earthquake" | "heat" | "winter"; name: string; action: (solo: boolean) => string }[] = [
+  { key: "wildfire", name: "wildfire", action: (solo) => `know your evacuation zone and route, and pack ${solo ? "your go-bag" : "a go-bag for each person"}` },
+  { key: "hurricane", name: "hurricanes", action: () => "look up your hurricane evacuation zone and the route out" },
+  { key: "flood", name: "flooding", action: () => "check your flood zone and the way to higher ground" },
+  { key: "tornado", name: "tornadoes", action: () => "pick your tornado shelter spot" },
+  { key: "earthquake", name: "earthquakes", action: () => "strap the water heater and heavy furniture to the wall" },
+  { key: "heat", name: "extreme heat", action: () => "decide where you'll stay cool if the power fails" },
+  { key: "winter", name: "winter storms", action: () => "choose a warm room and a safe way to heat it if the power fails" },
+];
+export const HAZARD_STEP_ID = "week-hazard";
+export function highHazardStep(prof: ZipProfile, solo: boolean): Step | null {
+  const high = HIGH_HAZARD_ACTION.filter((x) => prof[x.key] === "high");
+  if (!high.length) return null;
+  const names = high.map((x) => x.name);
+  const list = names.length === 1 ? names[0] : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+  const actions = high.map((x) => x.action(solo)).join("; ");
+  const first = high[0].key;
+  const link = first === "hurricane" ? evacZoneLink(prof) ?? HOWTO.evacuation : first === "wildfire" ? HOWTO.wildfires : first === "flood" ? HOWTO.floods : first === "tornado" ? HOWTO.severeWeather : first === "heat" ? HOWTO.heat : first === "winter" ? HOWTO.winter : HOWTO.hazards;
+  return {
+    id: HAZARD_STEP_ID,
+    text: `Your area's biggest risk${names.length > 1 ? "s are" : " is"} ${list}. This week, ${actions}.`,
+    why: "These are rated high for your ZIP. Doing this now means you can act fast when a warning comes.",
+    ...(high.some((x) => x.key === "wildfire") ? { buy: ["go-bag", "go-bag-kit", "go-bag-basic"] } : {}),
+    link,
+  };
+}
 
 /** UX-12: for households with mobility needs, wherever stored water is mentioned. */
 export const KEEP_WATER_CLOSE = "Keep water where you won't need to lift it far.";
@@ -338,6 +370,10 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     week.push({ text: "TOP PRIORITY: Call your medical-device supplier about battery backup, and register with your electric utility's medical-needs / life-support registry.", buy: ["med-battery"] });
   if (cp.flags.wellPumpPriority)
     week.push({ text: "TOP PRIORITY: Your well pump needs power. Find out its voltage and starting watts (label or well contractor) so you can size a generator or battery and transfer switch.", buy: ["well-switch"] });
+  // UX-13: every hazard rated high for this ZIP has its key action in the first 3 steps, as one combined step
+  // right after any TOP PRIORITY step (there are at most two of those).
+  const hazardStep = highHazardStep(prof, h.people === 1);
+  if (hazardStep) week.push(hazardStep);
   if (h.elderlyOrMobility)
     week.push("Register anyone with mobility or medical needs with your county's special-needs (access & functional needs) registry or shelter program, and arrange who will help them evacuate.");
   week.push({
@@ -350,8 +386,9 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     why: "Taps can stop or become unsafe in an outage, and water is the one supply you can't go without for 3 days.",
     buy: ["water-jug", "water-bricks", "water-gallons", "water-drum"],
   });
+  // A moderate hurricane risk still gets the zone lookup; a high one has it in the combined step above.
   const zone = evacZoneLink(prof);
-  if (zone)
+  if (zone && prof.hurricane !== "high")
     week.push({
       id: "week-zone",
       text: "Look up your hurricane evacuation zone and the route out, and decide where you'd go.",
@@ -391,7 +428,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     month.push("Get a licensed electrician's quote for a generator power inlet + interlock (or transfer switch) so the generator can safely run your furnace.");
   if (winter && !apt) month.push({ text: "Do the pipe-freeze prep in section 5 (insulate exposed pipes, know how to drain lines).", buy: ["pipe-insulation"] });
   if (cp.pets) month.push({ text: "Stock 2 weeks of pet food; ask your vet how to keep extra medication on hand if your pet takes any.", buy: ["pet-kit"] });
-  if (cp.evacuation) month.push({ text: solo ? "Pack your go-bag (see the Evacuation section)." : "Pack a go-bag for each person (see the Evacuation section).", buy: ["go-bag", "go-bag-kit", "go-bag-basic"] });
+  if (cp.evacuation) month.push({ text: prof.wildfire === "high" ? "Check your go-bag against the go-bag list (see the Evacuation section)." : solo ? "Pack your go-bag (see the Evacuation section)." : "Pack a go-bag for each person (see the Evacuation section).", buy: ["go-bag", "go-bag-kit", "go-bag-basic"] });
   if (atLeast(prof.hurricane, "moderate")) month.push({ text: "Check your flood zone and evacuation zone; review insurance (flood insurance has a 30-day wait).", link: FEMA_FLOOD_MAP });
   // D4: the preferred approach and where they could go. Fixed ids, so other checklist ids don't shift.
   month.push(approachStep(a));

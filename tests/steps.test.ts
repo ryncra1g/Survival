@@ -22,10 +22,12 @@ const week = (doc: PlanDocument) => (doc.sections.find((s) => s.id === "prioriti
 const href = (id: string) => `/go/${id}`;
 
 describe("each step says why, what to buy and where to go", () => {
-  it("Long Island: first steps are CO alarms (Buy), water (Buy) and the evacuation zone (Suffolk map); alerts link to NY-Alert", async () => {
+  it("Long Island: first steps are the evacuation zone (Suffolk map; hurricanes and flooding are high, UX-13), CO alarms (Buy) and water (Buy); alerts link to NY-Alert", async () => {
     const doc = await plan(SAMPLE_HOUSEHOLD);
     const products = productIndex(doc);
-    const [co, water, zone] = week(doc).slice(0, 3).map((i) => resolveStep(i, products, href));
+    const [zone, co, water] = week(doc).slice(0, 3).map((i) => resolveStep(i, products, href));
+    expect(zone.text).toMatch(/hurricanes and flooding/);
+    expect(zone.text).toMatch(/flood zone/);
     expect(co.text).toMatch(/CO alarms/);
     expect(co.why).toBeTruthy();
     expect(co.buy?.itemId).toBe("co-alarm");
@@ -63,7 +65,8 @@ describe("each step says why, what to buy and where to go", () => {
   it("no evacuation-zone step where hurricanes aren't a real risk", async () => {
     for (const p of PERSONAS) {
       const doc = await plan(p.a);
-      const hasZone = week(doc).some((i) => i.id === "week-zone");
+      // A moderate risk gets its own zone step; a high one has it inside the combined hazard step (UX-13).
+      const hasZone = week(doc).some((i) => i.id === "week-zone" || (i.id === "week-hazard" && /hurricane evacuation zone/.test(i.text)));
       const hurricaneRisk = atLeast(lookupZip(p.a.zip).hurricane, "moderate");
       expect(hasZone, p.name).toBe(hurricaneRisk);
     }
