@@ -130,6 +130,11 @@ interface Screen {
   render: (p: ScreenProps) => React.ReactNode;
 }
 
+/** UX-15: what each backup-power answer covers. A small portable power station isn't home backup. */
+const BACKUP_HINT: Partial<Record<Answers["backupPower"], string>> = {
+  none: "A portable power station counts as none",
+  solar_battery: "Home battery, or solar with batteries",
+};
 /** UX-5: the two evacuation questions use clearly different words (the plan text keeps LABELS). */
 const APPROACH_UI: Record<Answers["approach"], string> = {
   stay_home: "Stay home when it's safe",
@@ -302,7 +307,7 @@ const SCREENS: Screen[] = [
             ))}
           </div>
         </Group>
-        <Group label="Floors (not counting a basement)">
+        <Group label="Floors (not counting a basement)" hint="Floors in your home. In an apartment, count the floors of your unit, not the building.">
           <Stepper label="floors" value={a.floors} min={1} max={5} onChange={(floors) => set({ floors })} />
         </Group>
         <Group label="Your home has… (select all)" hint="Just the property. You'll pick where you can store supplies later.">
@@ -361,7 +366,7 @@ const SCREENS: Screen[] = [
         <Group label="Backup power today">
           <Grid>
             {(["none", "portable_generator", "standby_generator", "solar_battery"] as const).map((b) => (
-              <Choice key={b} selected={a.backupPower === b} onClick={() => set({ backupPower: b })}>{LABELS.backupPower[b]}</Choice>
+              <Choice key={b} selected={a.backupPower === b} onClick={() => set({ backupPower: b })} sub={BACKUP_HINT[b]}>{LABELS.backupPower[b]}</Choice>
             ))}
           </Grid>
         </Group>
