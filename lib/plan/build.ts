@@ -210,6 +210,8 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   checklistCounter = 0;
   const a = cp.answers;
   const h = cp.household;
+  /** UX-8: one adult and no children. Wording that assumes other people (everyone, each person, kids, "us") changes. */
+  const solo = h.people === 1;
   const prof = cp.profile;
   const w = cp.water;
   const pw = cp.power;
@@ -387,7 +389,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     month.push("Get a licensed electrician's quote for a generator power inlet + interlock (or transfer switch) so the generator can safely run your furnace.");
   if (winter && !apt) month.push({ text: "Do the pipe-freeze prep in section 5 (insulate exposed pipes, know how to drain lines).", buy: ["pipe-insulation"] });
   if (cp.pets) month.push({ text: "Stock 2 weeks of pet food; ask your vet how to keep extra medication on hand if your pet takes any.", buy: ["pet-kit"] });
-  if (cp.evacuation) month.push({ text: "Pack a go-bag for each person (see the Evacuation section).", buy: ["go-bag", "go-bag-kit", "go-bag-basic"] });
+  if (cp.evacuation) month.push({ text: solo ? "Pack your go-bag (see the Evacuation section)." : "Pack a go-bag for each person (see the Evacuation section).", buy: ["go-bag", "go-bag-kit", "go-bag-basic"] });
   if (atLeast(prof.hurricane, "moderate")) month.push({ text: "Check your flood zone and evacuation zone; review insurance (flood insurance has a 30-day wait).", link: FEMA_FLOOD_MAP });
   // D4: the preferred approach and where they could go. Fixed ids, so other checklist ids don't shift.
   month.push(approachStep(a));
@@ -502,7 +504,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     { if: "A boil-water notice is issued or tap water looks/smells wrong", then: "Use stored water; disinfect any other water (see Water)." },
     ...(winter
       ? [
-          { if: `Indoor temperature drops below ${n(c.heat.warmRoomAtF)}°F`, then: "Move everyone into the warm room; close off the rest of the house." },
+          { if: `Indoor temperature drops below ${n(c.heat.warmRoomAtF)}°F`, then: solo ? "Move into the warm room; close off the rest of the house." : "Move everyone into the warm room; close off the rest of the house." },
           { if: `Indoor temperature drops below ${n(c.heat.evacuateAtF)}°F with no safe heat source`, then: cp.evacuation ? "Go to your fallback location or a warming center." : "Go to a warming center, shelter, or friends/family with power." },
           { if: "Outdoor temperature forecast below 20°F during an outage", then: "Start the pipe-freeze protocol (see Heat & warmth)." },
         ]
@@ -553,12 +555,12 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       { if: "Air quality index goes over 150", then: "Stay inside with windows closed and the HEPA purifier running; wear N95s outdoors." },
       { if: "An evacuation warning ('get set') is issued", then: "Load go-bags, pets and documents; park facing out." },
       { if: "An evacuation order ('go') is issued", then: "Leave immediately by the route officials give." },
-    ], ["Clear dead plants and debris within 5 feet of the house.", "Sign up for county evacuation alerts and know your evacuation zone.", "Keep N95 masks for each person."]);
+    ], ["Clear dead plants and debris within 5 feet of the house.", "Sign up for county evacuation alerts and know your evacuation zone.", solo ? "Keep N95 masks on hand." : "Keep N95 masks for each person."]);
   if (atLeast(prof.tornado, "moderate"))
     hzRows(`Tornado (${prof.tornado} risk)`, [
       { if: "A tornado watch is issued", then: "Keep shoes on, phones charged, and the weather radio on." },
-      { if: "A tornado warning is issued", then: "Go to the basement or a small interior room on the lowest floor; cover heads with helmets, pillows or a mattress." },
-    ], ["Pick your shelter spot and practice getting there in under a minute.", "Keep bike helmets for the kids in the shelter spot."]);
+      { if: "A tornado warning is issued", then: solo ? "Go to the basement or a small interior room on the lowest floor; cover your head with a helmet, pillows or a mattress." : "Go to the basement or a small interior room on the lowest floor; cover heads with helmets, pillows or a mattress." },
+    ], ["Pick your shelter spot and practice getting there in under a minute.", h.children ? "Keep bike helmets for the kids in the shelter spot." : "Keep a helmet (a bike helmet works) in the shelter spot."]);
   if (atLeast(prof.heat, "high"))
     hzRows(`Extreme heat (${prof.heat} risk)`, [
       { if: "Power fails during a heat wave", then: "Go to a cooling center, library or mall early in the day; a portable generator can't run central AC." },
@@ -700,10 +702,11 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       heatBlocks.push({
         type: "bullets",
         items: [
-          "One warm room: pick a small interior room with few windows (not the basement if it floods). Everyone sleeps there.",
+          solo ? "One warm room: pick a small interior room with few windows (not the basement if it floods), and sleep there." : "One warm room: pick a small interior room with few windows (not the basement if it floods). Everyone sleeps there.",
           "Close doors to unused rooms; hang blankets over windows and doorways; put rugs/towels at door gaps.",
           "Layer up: base layer, fleece, hat, socks; cold-rated sleeping bags at night.",
-          "Eat and drink warm calories; keep kids and older adults warm first.",
+          // UX-8: name only the people this household has.
+          h.children && h.elderlyOrMobility ? "Eat and drink warm calories; keep kids and older adults warm first." : h.children ? "Eat and drink warm calories; keep kids warm first." : h.elderlyOrMobility ? "Eat and drink warm calories; keep older adults warm first." : "Eat and drink warm calories.",
         ],
       });
     if (key === "one_warm_room" && a.heatSources.includes("electric"))
@@ -711,7 +714,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         check("heat", [
           {
             id: "heat-electric",
-            text: "Electric heat stops when the power does: choose your warm room now and keep a cold-rated sleeping bag for each person in it.",
+            text: `Electric heat stops when the power does: choose your warm room now and keep a cold-rated sleeping bag ${solo ? "in it" : "for each person in it"}.`,
             buy: ["sleep-system"],
             link: HOWTO.winter,
           },
@@ -1107,7 +1110,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         ]
       : [
           ["Bedding", "Sleeping bags or air mattresses", "Don't count on spare beds"],
-          ["Food & water", "3 days for everyone, plus snacks", "Don't arrive as a burden"],
+          ["Food & water", solo ? "3 days of food and water, plus snacks" : "3 days for everyone, plus snacks", "Don't arrive as a burden"],
           ["Meds & documents", "All medications, document pouch", ""],
           ["Power", "Power banks, chargers", ""],
         ];
@@ -1145,7 +1148,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
                 : []),
             ]
           : [
-              { type: "callout" as const, tone: "warning" as const, title: "No car: plan your ride now", text: "Ask a family member, friend or neighbor now to take you, and agree on the trigger that means \"come get us\". Save the number for your county's evacuation-assistance or special-needs transport line, and know the nearest public pickup point. Leave on the first warning, not the order: rides and roads disappear fast." },
+              { type: "callout" as const, tone: "warning" as const, title: "No car: plan your ride now", text: `Ask a family member, friend or neighbor now to take you, and agree on the trigger that means "come get ${solo ? "me" : "us"}". Save the number for your county's evacuation-assistance or special-needs transport line, and know the nearest public pickup point. Leave on the first warning, not the order: rides and roads disappear fast.` },
             ]),
         { type: "table", caption: rawLand ? "Raw-land gear (nothing is there — bring it all)" : "What to bring", columns: ["Category", "Gear", "Note"], rows: gearRows },
         productsBlock(

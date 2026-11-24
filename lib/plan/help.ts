@@ -31,7 +31,7 @@ const STEP_RULES: Rule[] = [
   [/sanitation kit/i, () => ({ buy: ["toilet-kit"], link: HOWTO.kit })],
   [/window protection/i, () => ({ buy: ["window-protection"], link: HOWTO.hazards })],
   [/pipe-freeze/i, () => ({ buy: ["pipe-insulation"], link: HOWTO.winter })],
-  [/go-bag for each person/i, () => ({ buy: GO_BAG, see: s("Go-bag list", "evacuation") })],
+  [/go-bag for each person|Pack your go-bag/i, () => ({ buy: GO_BAG, see: s("Go-bag list", "evacuation") })],
   [/weeks of pet food/i, () => ({ buy: ["pet-kit"], link: HOWTO.pets })],
   // "shopping" is the dashboard's shopping list (ticks + Buy); the plan page opens it from the link.
   [/Phase [123]\b.*(gear|upgrades)/, () => ({ see: s("Open your shopping list", "shopping") })],
