@@ -3348,7 +3348,7 @@
       "title": "Budget by phase",
       "summary": "Within your $1,500–5,000 range we planned around $3,250. Phase 1 buys life safety first; the whole list comes to about $3,404.",
       "key": {
-        "value": "$1,777–$3,503",
+        "value": "$3,457–$5,183",
         "label": "whole gear list"
       },
       "blocks": [
@@ -4592,8 +4592,8 @@
     "budget": {
       "label": "$1,500–5,000",
       "cap": 5000,
-      "totalLow": 1777,
-      "totalHigh": 3503
+      "totalLow": 3457,
+      "totalHigh": 5183
     },
     "stats": [
       {
