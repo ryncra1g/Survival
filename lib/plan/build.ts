@@ -1196,7 +1196,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         productsBlock(
           [...cp.budget.picks, ...cp.budget.deferred].filter((p) => p.item.category === "Evacuation" || p.item.group === "two-way"),
           (p) => p.status === "deferred",
-          "Bug-out kit: pick a level for each (Essential, Standard or Premium)",
+          "Go-bag: pick a level for each (Essential, Standard or Premium)",
         ),
         ...(ev.vehicles ? [{ type: "subheading" as const, text: "Vehicle kit" }] : []),
         ...(ev.vehicles ? [check("veh", ["Jump starter, tire inflator, tow strap", "Paper road map with 2 routes marked", "Blankets, water, snacks", "Phone chargers", "Flashlight, reflective triangles", ...(a.vehicleFuels.some((v) => v !== "ev") ? ["Never store spare gasoline inside the car cabin"] : [])])] : []),

@@ -72,3 +72,29 @@ describe("copy never calls the amounts exact (UX-2)", () => {
     expect(JSON.stringify(r.document)).not.toMatch(EXACT_PROMISE);
   });
 });
+
+/** UX-10: one name per thing. "Save my plan" for saving by email; "go-bag" for the bag you grab when you leave. */
+const BANNED_ALTERNATES: [RegExp, string][] = [
+  [/\bbug[- ]?out\b/i, "go-bag"],
+  [/\bgrab[- ]and[- ]go bag\b/i, "go-bag"],
+  [/\bEmail (me )?my plan\b/, "Save my plan"],
+  [/\bConfirm email\b/, "Save my plan"],
+  [/\bbasic or premium\b/i, "Essential / Standard / Premium"],
+];
+describe("one name per thing (UX-10)", () => {
+  const all = ROOTS.flatMap(files);
+  it("no source string uses a banned alternate", () => {
+    const hits = all.flatMap((f) =>
+      uncommented(readFileSync(f, "utf8")).flatMap((l) => BANNED_ALTERNATES.filter(([re]) => re.test(l)).map(([, use]) => `${f}: use "${use}": ${l.trim().slice(0, 120)}`)),
+    );
+    expect(hits).toEqual([]);
+  });
+  it("the save bar, its form and the Share menu all say Save my plan", () => {
+    for (const f of ["components/SaveBar.tsx", "components/EmailMyPlan.tsx", "components/ShareMenu.tsx"]) expect(readFileSync(f, "utf8"), f).toContain("Save my plan");
+  });
+  it("built plans say go-bag, never bug-out", async () => {
+    const text = JSON.stringify((await buildPlan()).document);
+    expect(text).toMatch(/go-bag/i);
+    for (const [re] of BANNED_ALTERNATES) expect(text).not.toMatch(re);
+  });
+});

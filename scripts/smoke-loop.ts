@@ -49,7 +49,7 @@ async function run(i: number): Promise<R> {
   const html = await r.text();
   if (r.status !== 200) fail(`plan page ${r.status}`);
   if (!html.includes('data-testid="dashboard"') || !html.includes(">Next up<")) fail("no dashboard / Next up");
-  if (!html.includes("Email me my plan")) fail("no email box");
+  if (!html.includes("Save my plan")) fail("no email box");
   res.info.planHtmlKB = Math.round(html.length / 1024);
   res.info.sections = (html.match(/<details[^>]*data-section/g) ?? []).length;
   res.info.hazards = html.includes("Your area&#x27;s hazards") || html.includes("Your area's hazards");

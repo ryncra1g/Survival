@@ -22,7 +22,7 @@ export default function Help() {
       </section>
       <section className="space-y-2">
         <h2 className="text-lg font-semibold">Do I need to buy everything?</h2>
-        <p>No. Tick &quot;I have this&quot; for anything you already own, and the plan stops suggesting it. Safety items come first.</p>
+        <p>No. In your shopping list, tick what you already have, and the plan stops suggesting it. Safety items come first.</p>
       </section>
       <section className="space-y-2">
         <h2 className="text-lg font-semibold">Do I need an email for the PDF or printing?</h2>

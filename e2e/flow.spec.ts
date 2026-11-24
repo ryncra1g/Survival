@@ -215,19 +215,19 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(page.getByTestId("save-bar")).toHaveCount(1);
   await expect(page.getByTestId("save-bar")).toContainText("Saved on this device for 30 days. Confirm your email to keep it and use it on any device.");
   await expect(page.locator("form:has(input[type=email])")).toHaveCount(1); // one email entry point
-  await share.getByRole("link", { name: "Email me my plan" }).click();
+  await share.getByRole("link", { name: "Save my plan" }).click();
 
   // Optional email: typo check, then confirm flow
-  const box = page.locator("form", { has: page.getByRole("heading", { name: "Email me my plan" }) }).first();
+  const box = page.locator("form", { has: page.getByRole("heading", { name: "Save my plan" }) }).first();
   await expect(box).toBeVisible();
   await box.getByPlaceholder("you@example.com").fill("family@gmial.com");
-  await box.getByRole("button", { name: "Email my plan" }).click();
+  await box.getByRole("button", { name: "Save my plan" }).click();
   await expect(box.getByText("Did you mean")).toBeVisible();
   await box.getByRole("button", { name: "family@gmail.com" }).click();
   await box.getByPlaceholder("you@example.com").fill("family@example.com");
   await expect(box.getByRole("checkbox")).not.toBeChecked(); // marketing is opt-in
   await box.getByRole("checkbox").check();
-  await box.getByRole("button", { name: "Email my plan" }).click();
+  await box.getByRole("button", { name: "Save my plan" }).click();
   await expect(page.getByText(/Almost there: check your inbox/)).toBeVisible();
   const link = await page.getByRole("link", { name: "open the confirmation link" }).getAttribute("href");
 

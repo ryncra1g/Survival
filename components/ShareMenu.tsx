@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 
 /**
  * D9 / PL-04: Share / Download / Print menu in the plan header.
- * Email me my plan · Download PDF · Fridge checklist · Print · Copy for your AI assistant (+ calendar when given).
+ * Save my plan · Download PDF · Fridge checklist · Print · Copy for your AI assistant (+ calendar when given).
  * None of these need an email.
  */
 export function ShareMenu({ planId, email = true, extra }: { planId: string; email?: boolean; extra?: React.ReactNode }) {
@@ -34,7 +34,7 @@ export function ShareMenu({ planId, email = true, extra }: { planId: string; ema
         Share, download or print
       </summary>
       <div role="group" aria-label="Share, download or print" className="absolute left-0 top-full mt-1 z-40 w-72 card p-1 shadow-lg">
-        {email && <a href="#email" className={item} onClick={() => ref.current && (ref.current.open = false)}>Email me my plan</a>}
+        {email && <a href="#email" className={item} onClick={() => ref.current && (ref.current.open = false)}>Save my plan</a>}
         <a href={`/api/plans/${planId}/pdf`} className={item}>Download PDF</a>
         <a href={`/api/plans/${planId}/checklist`} className={item}>Fridge checklist</a>
         <button type="button" className={item} onClick={() => window.print()}>Print</button>
