@@ -1,5 +1,5 @@
 import type { LevelOption, Overview } from "./document";
-import { usd } from "./format";
+import { usd, usdRange } from "./format";
 
 /**
  * D3 / GEAR-01: "Compare options" for one gear slot. The budget is a flexible target, not a cap:
@@ -14,11 +14,18 @@ export type CompareRow = {
   price: string;
   /** Difference from the current pick, e.g. "+$120" or "−$40". */
   diff: string;
-  /** The plan's gear total with this option instead, e.g. "$2,410". */
+  /** UX-11: the whole gear list with this option instead, as a range like the budget section's, e.g. "$457–$1,336". */
   newTotal: string;
   /** "$310 over your budget", or null when within it (or the budget has no top). */
   over: string | null;
 };
+
+/**
+ * UX-11: the one plan total. The Budget by phase card, the budget section and Compare options all show the whole
+ * gear list (every pick, price × quantity) as a low–high range under this label.
+ */
+export const GEAR_TOTAL_LABEL = "whole gear list";
+export const gearTotal = (budget: Pick<NonNullable<Overview["budget"]>, "totalLow" | "totalHigh">) => usdRange(budget.totalLow, budget.totalHigh);
 
 export const LEVEL_LABEL: Record<LevelOption["level"], string> = { mix: "Recommended mix", essential: "Essential", standard: "Standard", premium: "Premium" };
 const ORDER: Record<LevelOption["level"], number> = { mix: -1, essential: 0, standard: 1, premium: 2 };
@@ -36,7 +43,10 @@ export function compareOptions(
     const d = Math.round(mid(l.low, l.high) - mid(current.low, current.high));
     const total = Math.round(totalMid + d);
     const over = budget.cap !== null && total > budget.cap ? `${usd(total - budget.cap)} over your budget` : null;
-    return { level: l.level, name: l.name, price: l.price, diff: `${d >= 0 ? "+" : "−"}${usd(Math.abs(d))}`, newTotal: usd(total), over };
+    // The same total as the budget section, with this option's prices swapped in.
+    const lo = budget.totalLow - (current.low ?? 0) + (l.low ?? 0);
+    const hi = budget.totalHigh - (current.high ?? 0) + (l.high ?? 0);
+    return { level: l.level, name: l.name, price: l.price, diff: `${d >= 0 ? "+" : "−"}${usd(Math.abs(d))}`, newTotal: gearTotal({ totalLow: lo, totalHigh: hi }), over };
   };
   const others = levels.filter((l) => !l.selected && l.low !== undefined);
   if (levels.some((l) => l.level === "mix")) return { ...empty, alternatives: others.map(row) };

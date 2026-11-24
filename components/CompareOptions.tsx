@@ -1,5 +1,5 @@
 import type { LevelOption, Overview } from "@/lib/plan/document";
-import { compareOptions, LEVEL_LABEL as LABEL, type CompareRow } from "@/lib/plan/compare";
+import { compareOptions, LEVEL_LABEL as LABEL, type CompareRow, GEAR_TOTAL_LABEL, gearTotal } from "@/lib/plan/compare";
 
 /**
  * D3 / GEAR-01: one main pick per slot, plus "Compare options": Lower-cost, Upgrade and Other choices,
@@ -37,7 +37,7 @@ export function CompareOptions({
           <p className="font-semibold">{group === "food" ? r.name : `${LABEL[r.level]}: ${r.name}`}</p>
           <p className="text-muted">
             {r.price}
-            {r.diff && <> · <span className="text-ink font-medium">{r.diff}</span> · new total {r.newTotal}</>}
+            {r.diff && <> · <span className="text-ink font-medium">{r.diff}</span> · {GEAR_TOTAL_LABEL}: {r.newTotal}</>}
           </p>
           {r.over && <p className="text-warn font-medium">{r.over}</p>}
         </div>
@@ -65,6 +65,7 @@ export function CompareOptions({
       <details className="mt-1 group/cmp">
         <summary className="cursor-pointer text-sm font-semibold text-brand min-h-[44px] inline-flex items-center">Compare options</summary>
         <div className="mt-1 rounded-lg border border-line p-3">
+          {budget && <p className="mb-2 text-sm text-muted" data-testid="compare-current-total">Your {GEAR_TOTAL_LABEL} now: <span className="text-ink font-medium">{gearTotal(budget)}</span> (as in Budget by phase)</p>}
           {lower.length > 0 && (
             <>
               <p className="text-xs font-semibold uppercase tracking-wide text-muted">Lower-cost</p>

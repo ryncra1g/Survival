@@ -19,6 +19,7 @@ import {
 } from "@/lib/safety/required";
 import { DISCLAIMER, SOURCES, type Block, type Overview, type PlanDocument, type Section } from "./document";
 import { fillTokens, lowerFirst, n, plural, range, usd, usdRange } from "./format";
+import { GEAR_TOTAL_LABEL, gearTotal } from "./compare";
 import { AFFILIATE_DISCLOSURE, buyUrl, earnsCommission, emailSafeBuyUrl } from "@/lib/affiliate";
 
 /**
@@ -62,6 +63,12 @@ export function highHazardStep(prof: ZipProfile, solo: boolean): Step | null {
     link,
   };
 }
+
+/** UX-11: the one plan total (every pick, price × quantity), used by the budget card, the overview and Compare options. */
+export const planTotals = (cp: { budget: { picks: { low: number; high: number }[] } }) => ({
+  totalLow: cp.budget.picks.reduce((t, p) => t + p.low, 0),
+  totalHigh: cp.budget.picks.reduce((t, p) => t + p.high, 0),
+});
 
 /** UX-12: for households with mobility needs, wherever stored water is mentioned. */
 export const KEEP_WATER_CLOSE = "Keep water where you won't need to lift it far.";
@@ -121,7 +128,7 @@ function sectionKeys(cp: ComputedPlan, S: SectionDraft[]) {
     pets: cp.pets ? { value: `${n(cp.pets.foodLbs)} lb`, label: "pet food" } : null,
     kids: cp.household.children ? { value: n(cp.household.children), label: cp.household.children === 1 ? "child" : "children" } : null,
     evacuation: cp.evacuation ? { value: `${n(cp.evacuation.reserveGalPerVehicle, 1)} gal`, label: "fuel for the trip" } : null,
-    budget: { value: usdRange(gear.filter((g) => g.status !== "deferred").reduce((t, g) => t + g.low, 0), gear.filter((g) => g.status !== "deferred").reduce((t, g) => t + g.high, 0)), label: "gear in your budget" },
+    budget: { value: gearTotal(planTotals(cp)), label: GEAR_TOTAL_LABEL },
     gear: { value: n(gear.length), label: "items" },
     maintenance: { value: n(S.find((s) => s.id === "maintenance")?.blocks.reduce((t, b) => t + (b.type === "table" ? b.rows.length : 0), 0) ?? 0), label: "maintenance tasks" },
   };
@@ -1308,8 +1315,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     budget: {
       label: LABELS.budget[a.budget],
       cap: BUDGET_CAP[a.budget],
-      totalLow: cp.budget.picks.reduce((t, p) => t + p.low, 0),
-      totalHigh: cp.budget.picks.reduce((t, p) => t + p.high, 0),
+      ...planTotals(cp),
     },
     stats: [
       { key: "water", value: `${n(cp.water.storedGal)} gal`, label: "water to store", math: `${n(cp.water.dailyGal, 2)} gal/day × ${n(cp.water.storedDays)} days`, anchor: "water" },
