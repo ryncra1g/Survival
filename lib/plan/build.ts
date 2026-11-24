@@ -28,6 +28,10 @@ import { AFFILIATE_DISCLOSURE, buyUrl, earnsCommission, emailSafeBuyUrl } from "
  * always produced here.
  */
 
+
+/** UX-3: the one everyday fuel rule (Ready.gov: keep at least a half tank). Never a per-tank gallon target. */
+export const HALF_FULL = "Keep every vehicle at least half full.";
+export const fillUpLine = (gal: string) => `Your trip needs about ${gal} gallons: fill up completely as soon as a storm or evacuation warning is issued.`;
 export interface SectionDraft {
   id: string;
   title: string;
@@ -80,7 +84,7 @@ function sectionKeys(cp: ComputedPlan, S: SectionDraft[]) {
     sanitation: { value: n(cp.sanitation.wasteBags), label: "waste bags" },
     pets: cp.pets ? { value: `${n(cp.pets.foodLbs)} lb`, label: "pet food" } : null,
     kids: cp.household.children ? { value: n(cp.household.children), label: cp.household.children === 1 ? "child" : "children" } : null,
-    evacuation: cp.evacuation ? { value: `${n(cp.evacuation.reserveGalPerVehicle, 1)} gal`, label: "fuel reserve per vehicle" } : null,
+    evacuation: cp.evacuation ? { value: `${n(cp.evacuation.reserveGalPerVehicle, 1)} gal`, label: "fuel for the trip" } : null,
     budget: { value: usdRange(gear.filter((g) => g.status !== "deferred").reduce((t, g) => t + g.low, 0), gear.filter((g) => g.status !== "deferred").reduce((t, g) => t + g.high, 0)), label: "gear in your budget" },
     gear: { value: n(gear.length), label: "items" },
     maintenance: { value: n(S.find((s) => s.id === "maintenance")?.blocks.reduce((t, b) => t + (b.type === "table" ? b.rows.length : 0), 0) ?? 0), label: "maintenance tasks" },
@@ -364,7 +368,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   if (!apt) week.push("Find and label your main water shutoff, gas shutoff and electrical panel.");
   if (a.hasPrescriptions) week.push("Ask your pharmacist or doctor how to keep an extra supply of daily prescriptions on hand.");
   if (cp.diapers) week.push(`Buy 2 weeks of diapers (${n(cp.diapers.perDay * 14)}) and wipes.`);
-  if (a.vehicleFuels.some((v) => v !== "ev")) week.push("Keep every gas/diesel vehicle above half a tank from now on.");
+  if (a.vehicleFuels.some((v) => v !== "ev")) week.push(HALF_FULL);
   if (a.vehicleFuels.includes("ev")) week.push("Keep EVs charged to at least 80% when severe weather is forecast.");
 
   month.push({ text: `Finish stored water: ${n(w.storedGal)} gallons (${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${plural(w.jugs, "7-gal jug")}).`, buy: ["water-drum", "water-jug", "water-bricks", "water-gallons"] });
@@ -1066,7 +1070,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     const rawLand = ev.locationType === "raw_land";
     const evRows: string[][] = [
       ["Fuel per vehicle (one way)", `${n(ev.oneWayGalPerVehicle, 1)} gal at ${n(c.evacuation.assumedMpg)} mpg`],
-      ["Keep in each tank, minimum", `${n(ev.reserveGalPerVehicle, 1)} gal (one-way + 50% for detours/traffic)`],
+      ["Fuel for the trip", `about ${n(ev.reserveGalPerVehicle, 1)} gal (one-way + 50% for detours/traffic)`],
     ];
     if (ev.hasEv) evRows.push(["EV range needed", `${n(ev.evMinRangeMiles)} miles (distance + ${n(c.evacuation.evRangeBufferPct)}% for cold/traffic)`]);
     const gearRows: string[][] = rawLand
@@ -1090,7 +1094,9 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       id: "evacuation",
       title: "When you must leave",
       summaryTemplate: ev.vehicles
-        ? "Your fallback is {{evac.location}}, about {{evac.distance}} miles away. Leave early on clear triggers, keep each tank above {{evac.reserveGal}} gallons, and keep go-bags ready."
+        ? ev.tripNeedsFullTank
+          ? "Your fallback is {{evac.location}}, about {{evac.distance}} miles away. Leave early on clear triggers and keep go-bags ready. Your trip needs about {{evac.reserveGal}} gallons: fill up completely as soon as a storm or evacuation warning is issued."
+          : "Your fallback is {{evac.location}}, about {{evac.distance}} miles away. Leave early on clear triggers and keep go-bags ready."
         : "Your fallback is {{evac.location}}, about {{evac.distance}} miles away. With no car, line up your ride now and leave earlier than drivers would.",
       facts: rawLand ? ["The raw land has no shelter or utilities, so everything has to come with them"] : [],
       blocks: [
@@ -1110,7 +1116,13 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
           ],
         },
         ...(ev.vehicles
-          ? [{ type: "table" as const, caption: "Fuel & range", columns: ["Item", "Amount"], rows: evRows }]
+          ? [
+              { type: "table" as const, caption: "Fuel & range", columns: ["Item", "Amount"], rows: evRows },
+              // UX-3: one fuel rule. Half full always; a full tank only when the trip needs more than half.
+              ...(a.vehicleFuels.some((v) => v !== "ev")
+                ? [{ type: "paragraph" as const, text: ev.tripNeedsFullTank ? `${HALF_FULL} ${fillUpLine(n(ev.reserveGalPerVehicle, 1))}` : HALF_FULL }]
+                : []),
+            ]
           : [
               { type: "callout" as const, tone: "warning" as const, title: "No car: plan your ride now", text: "Ask a family member, friend or neighbor now to take you, and agree on the trigger that means \"come get us\". Save the number for your county's evacuation-assistance or special-needs transport line, and know the nearest public pickup point. Leave on the first warning, not the order: rides and roads disappear fast." },
             ]),

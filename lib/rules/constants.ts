@@ -102,6 +102,8 @@ export const DEFAULT_CONSTANTS = {
   evacuation: {
     assumedMpg: 25,
     fuelReserveFactor: 1.5,
+    /** UX-3: a typical passenger-car tank (most hold 12–16 gal). "Half full" = half of this; a trip needing more gets "fill up completely". Planning assumption, in FACTCHECK. */
+    assumedTankGal: 14,
     evRangeBufferPct: 30,
   },
   foodBuild: {
@@ -225,7 +227,7 @@ export const RuleConstantsSchema = z.object({
     gasolineShelfLifeMonthsStabilized: num,
     fuelTableAmountsGal: z.array(z.number().positive()).min(1),
   }),
-  evacuation: z.object({ assumedMpg: z.number().positive(), fuelReserveFactor: num, evRangeBufferPct: num }),
+  evacuation: z.object({ assumedMpg: z.number().positive(), fuelReserveFactor: num, evRangeBufferPct: num, assumedTankGal: z.number().positive() }),
   foodBuild: z.object({ phase2Days: z.number().positive() }),
   foodMix: z.object({ readyCostPer1000Kcal: z.number().positive() }),
   cash: z.object({ perAdult: z.record(z.string(), num) }),

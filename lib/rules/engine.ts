@@ -424,7 +424,10 @@ export interface EvacResult {
   locationType: DriveDestination;
   distanceMiles: number;
   oneWayGalPerVehicle: number;
+  /** Fuel the trip needs per vehicle, with margin for detours and traffic (one-way × reserve factor). */
   reserveGalPerVehicle: number;
+  /** UX-3: the trip needs more than a half-full tank, so the plan says to fill up completely when a warning is issued. */
+  tripNeedsFullTank: boolean;
   hasEv: boolean;
   evMinRangeMiles: number;
   vehicles: number;
@@ -434,11 +437,13 @@ export function computeEvac(a: Answers, c: RuleConstants): EvacResult | null {
   if (!isDrive(dest) || !a.evacuation.distanceMiles) return null;
   const d = a.evacuation.distanceMiles;
   const oneWay = round(d / c.evacuation.assumedMpg, 1);
+  const reserve = round(oneWay * c.evacuation.fuelReserveFactor, 1);
   return {
     locationType: dest,
     distanceMiles: d,
     oneWayGalPerVehicle: oneWay,
-    reserveGalPerVehicle: round(oneWay * c.evacuation.fuelReserveFactor, 1),
+    reserveGalPerVehicle: reserve,
+    tripNeedsFullTank: reserve > c.evacuation.assumedTankGal / 2,
     hasEv: a.vehicleFuels.includes("ev"),
     evMinRangeMiles: ceil(d * (1 + c.evacuation.evRangeBufferPct / 100)),
     vehicles: a.vehicleFuels.length,

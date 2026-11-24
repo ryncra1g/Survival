@@ -1,0 +1,54 @@
+import { describe, expect, it } from "vitest";
+import { DEFAULT_ANSWERS } from "@/lib/answers/schema";
+import { computeEvac } from "@/lib/rules/engine";
+import { DEFAULT_CONSTANTS as C } from "@/lib/rules/constants";
+import { HALF_FULL } from "@/lib/plan/build";
+import { renderPlanEmail } from "@/lib/email/render";
+import { ALL_HOUSEHOLDS } from "./fixtures/uxPersonas";
+import { buildPlan } from "./helpers/build";
+
+/** UX-3: one fuel rule. "Keep every vehicle at least half full", plus "fill up completely" only when the trip needs more. */
+const PER_TANK_TARGET = /\b(each|every|per) tank\b[^.]{0,30}\d|\btank (above|minimum|at least) \d|\bKeep in each tank\b|\bfuel reserve per (car|vehicle)\b/i;
+const OLD_RULE = /half a tank/i;
+const FUEL_IN_CABIN = /\b(carry|keep|store|bring|put)\b[^.]{0,40}\b(gas|gasoline|fuel|gas cans?)\b[^.]{0,40}\b(in|inside)\s+(the|your)\s+(car|vehicle|cabin|trunk)\b/i;
+
+const trip = (miles: number) => computeEvac({ ...DEFAULT_ANSWERS, evacuation: { destination: "friends_family", distanceMiles: miles } }, C)!;
+
+describe("fuel rule (UX-3)", () => {
+  it("hand-computed: 25 mpg, +50% margin, a 14-gal tank (half = 7 gal)", () => {
+    expect(trip(50).reserveGalPerVehicle).toBe(3); // 50/25 = 2 × 1.5
+    expect(trip(50).tripNeedsFullTank).toBe(false);
+    expect(trip(120).reserveGalPerVehicle).toBe(7.2); // 4.8 × 1.5 > 7
+    expect(trip(120).tripNeedsFullTank).toBe(true);
+    expect(trip(250).reserveGalPerVehicle).toBe(15); // 10 × 1.5
+    expect(trip(250).tripNeedsFullTank).toBe(true);
+  });
+
+  it("the cabin check catches a suggestion and lets the safety line through", () => {
+    expect("Keep a spare gas can in the trunk.").toMatch(FUEL_IN_CABIN);
+    expect("Never store spare gasoline inside the car cabin").toMatch(FUEL_IN_CABIN);
+    expect(/\b(never|don't|do not|not)\b/i.test("Never store spare gasoline inside the car cabin")).toBe(true);
+    expect("Keep every vehicle at least half full.").not.toMatch(PER_TANK_TARGET);
+    expect("keep each tank above 15 gallons").toMatch(PER_TANK_TARGET);
+  });
+
+  for (const h of ALL_HOUSEHOLDS) {
+    it(`${h.id}: one rule, no per-tank gallon target, no fuel in the cabin`, async () => {
+      const r = await buildPlan(h.a);
+      const doc = JSON.stringify(r.document);
+      const email = renderPlanEmail(r.document, { appUrl: "x", unsubscribeUrl: "x", mailingAddress: "x", planUrl: "x", pdfAttached: true }).text;
+      for (const t of [doc, email]) {
+        expect(t).not.toMatch(PER_TANK_TARGET);
+        expect(t).not.toMatch(OLD_RULE);
+        // "Never store spare gasoline inside the car cabin" is the safety line itself; only positive suggestions fail.
+        const suggests = t.split(/(?<=[.!?"])\s*|\\n/).filter((x) => FUEL_IN_CABIN.test(x) && !/\b(never|don't|do not|not)\b/i.test(x));
+        expect(suggests).toEqual([]);
+      }
+      const burnsFuel = h.a.vehicleFuels.some((v) => v !== "ev");
+      expect(doc.includes(HALF_FULL)).toBe(burnsFuel);
+      const ev = r.computed.evacuation;
+      const fill = /fill up completely as soon as a storm or evacuation warning is issued/.test(doc);
+      expect(fill).toBe(!!ev && burnsFuel && ev.tripNeedsFullTank);
+    });
+  }
+});

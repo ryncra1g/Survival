@@ -48,7 +48,7 @@ const STEP_RULES: Rule[] = [
   [/diapers/i, () => ({ link: HOWTO.kids })],
   [/shutoff|shut off/i, () => ({ buy: ["quake-kit"], link: HOWTO.plan })],
   [/small bills|Cash in small bills|Get cash/i, () => ({ buy: ["docs-pouch"], link: HOWTO.kit })],
-  [/EVs charged|half a tank|Fuel or charge vehicles/i, () => ({ buy: ["gas-cans", "vehicle-kit", "vehicle-kit-basic"], link: READY_EVACUATION })],
+  [/EVs charged|half full|Fuel or charge vehicles/i, () => ({ buy: ["vehicle-kit", "vehicle-kit-basic"], link: READY_EVACUATION })],
   [/Never store spare gasoline/i, () => ({ buy: ["gas-cans"], link: HOWTO.co })],
   // Day 0
   [/Charge every phone/i, () => ({ buy: ["power-bank", "power-station-small", "power-station"], link: HOWTO.powerOutages })],

@@ -19,6 +19,6 @@ describe("front-page chapter cards (D10)", () => {
     expect(s.chapters.supplies).toContain(`${n(cp.water.storedGal)} gal of water`);
     expect(s.chapters.supplies).toContain(`${n(cp.food.totalKcal)} calories of food`);
     expect(s.chapters.supplies).toContain("$" + n(cp.cash.total) + " cash on hand");
-    expect(s.chapters["people-plans"][0]).toBe(`${n(cp.evacuation!.reserveGalPerVehicle)} gal fuel reserve per car`);
+    expect(s.chapters["people-plans"][0]).toBe(`${n(cp.evacuation!.reserveGalPerVehicle)} gal of fuel for the trip`);
   });
 });

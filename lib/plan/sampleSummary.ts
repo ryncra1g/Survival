@@ -43,7 +43,7 @@ export function sampleSummary(now = new Date("2026-11-18")): SampleSummary {
       supplies: [`${n(cp.water.storedGal)} gal of water`, `${n(cp.food.totalKcal)} calories of food`, "$" + n(cp.cash.total) + " cash on hand"],
       "power-heat": [`${range(p.gasolineGalPerDay[0], p.gasolineGalPerDay[1])} gal of gasoline a day`, `${n(p.hoursPerDay)} generator hours a day`],
       "people-plans": [
-        ...(cp.evacuation ? [`${n(cp.evacuation.reserveGalPerVehicle)} gal fuel reserve per car`] : []),
+        ...(cp.evacuation ? [`${n(cp.evacuation.reserveGalPerVehicle)} gal of fuel for the trip`] : []),
         `Steps for ${SAMPLE_HOUSEHOLD.childrenAges.length} kids and ${SAMPLE_HOUSEHOLD.pets.reduce((t, x) => t + x.count, 0)} pet`,
       ],
     },
