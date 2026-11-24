@@ -40,7 +40,7 @@ export function Landing({ cta, footer, sampleLink }: { cta: ReactNode; footer?: 
         <h2 id="how-h" className="text-xl font-bold">How it works</h2>
         <ol className="mt-3 grid gap-3 sm:grid-cols-3">
           {[
-            ["Answer about 10 quick questions", "Your ZIP, who lives with you, your home, heat, water and budget. No sign-up."],
+            ["About 10 quick screens", "Your ZIP, who lives with you, your home, heat, water and budget. No sign-up."],
             ["Get your plan right away", "Amounts worked out for your household, with the math shown, plus a week-by-week checklist and steps for your area's hazards."],
             ["Buy only what you're missing", "A shopping list in priority order that skips what you already have and fits your budget, from Essential to Premium."],
           ].map(([t, d], i) => (

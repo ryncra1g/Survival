@@ -98,3 +98,11 @@ describe("one name per thing (UX-10)", () => {
     for (const [re] of BANNED_ALTERNATES) expect(text).not.toMatch(re);
   });
 });
+
+describe("one screen count (UX-20)", () => {
+  it("the front page and the start page both say About 10 quick screens", () => {
+    for (const f of ["components/Landing.tsx", "app/start/page.tsx"]) expect(readFileSync(f, "utf8"), f).toContain("About 10 quick screens");
+    const all = ROOTS.flatMap(files).flatMap((f) => uncommented(readFileSync(f, "utf8")).filter((l) => /\b\d+ quick (questions|screens)\b/i.test(l) && !/About 10 quick screens/.test(l)).map((l) => `${f}: ${l.trim()}`));
+    expect(all).toEqual([]);
+  });
+});
