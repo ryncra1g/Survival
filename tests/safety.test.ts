@@ -66,13 +66,13 @@ describe("adversarial households", () => {
   it("powered medical device is the top priority and gets a battery even on the smallest budget", async () => {
     const r = await gen(at({ poweredDevices: ["oxygen"], budget: "under_500" }));
     const week = r.document.sections.find((s) => s.id === "priorities")!.blocks[1];
-    expect(week.type === "checklist" && week.items[0].text).toMatch(/^TOP PRIORITY: .*medical-needs/);
+    expect(week.type === "checklist" && week.items[0].text).toMatch(/^Most important: .*medical-needs/);
     expect(picked(r, "med-battery")).toBe(true);
   });
 
   it("well water flags the pump as top priority", async () => {
     const r = await gen(at({ waterSource: "well" }));
-    expect(text(r.document)).toMatch(/TOP PRIORITY: Your well pump needs power/);
+    expect(text(r.document)).toMatch(/Most important: Your well pump needs power/);
     expect(sectionText(r.document, "water")).toMatch(/Well water needs power/);
   });
 

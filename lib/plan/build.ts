@@ -374,11 +374,11 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     return `${lead}: ${plural(items.length, "item")}, about ${usdRange(items.reduce((t, g) => t + g.low, 0), items.reduce((t, g) => t + g.high, 0))}.`;
   };
   if (cp.flags.medicalDevicePriority)
-    week.push({ text: "TOP PRIORITY: Call your medical-device supplier about battery backup, and register with your electric utility's medical-needs / life-support registry.", buy: ["med-battery"] });
+    week.push({ text: "Most important: Call your medical-device supplier about battery backup, and register with your electric utility's medical-needs / life-support registry.", buy: ["med-battery"] });
   if (cp.flags.wellPumpPriority)
-    week.push({ text: "TOP PRIORITY: Your well pump needs power. Find out its voltage and starting watts (label or well contractor) so you can size a generator or battery and transfer switch.", buy: ["well-switch"] });
+    week.push({ text: "Most important: Your well pump needs power. Find out its voltage and starting watts (label or well contractor) so you can size a generator or battery and transfer switch.", buy: ["well-switch"] });
   // UX-13: every hazard rated high for this ZIP has its key action in the first 3 steps, as one combined step
-  // right after any TOP PRIORITY step (there are at most two of those).
+  // right after any "Most important" step (there are at most two of those).
   const hazardStep = highHazardStep(prof, h.people === 1);
   if (hazardStep) week.push(hazardStep);
   if (h.elderlyOrMobility)
