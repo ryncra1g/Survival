@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { areaName } from "@/lib/zip/states";
 import { AnswersSchema, APPROACH_PLACE, DEFAULT_ANSWERS, destinationForApproach, isDrive, LABELS, migrateAnswers, storageOptions, type Answers, type PetGroupT } from "@/lib/answers/schema";
 import { DEFAULT_CONSTANTS } from "@/lib/rules/constants";
 import { computeFood, computeWater, household } from "@/lib/rules/engine";
@@ -76,7 +77,7 @@ function ZipArea({ zip }: { zip: string }) {
   return (
     <div id="zip-area" aria-live="polite" className="mt-3 rounded-lg bg-brand-soft p-3 text-sm">
       <p>
-        <span className="font-semibold text-brand">Your area:</span> {z.approximate ? "we'll use national averages for this ZIP" : `${z.region}, ${z.state}`}
+        <span className="font-semibold text-brand">Your area:</span> {z.approximate ? "we'll use national averages for this ZIP" : areaName(z.region, z.state)}
       </p>
       {!z.approximate && (
         <p className="mt-1 text-muted">{hazards.length ? `Your plan will cover: ${hazards.join(", ")}.` : "No hazards rated moderate or higher; your plan covers outages and storms."}</p>
