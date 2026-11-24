@@ -379,7 +379,8 @@ test("D4 places page: the typed address is printed but never sent anywhere", asy
   page.on("request", (r) => sent.push(r.url() + " " + (r.postData() ?? "")));
   await page.getByLabel("Address").fill(SENTINEL);
   await page.getByLabel("Place").fill("Aunt test house");
-  await expect(page.getByText("This address isn't saved.")).toBeVisible();
+  await expect(page.getByText("This isn't saved. Print this page or write it down.")).toBeVisible();
+  await expect(page.getByTestId("places-form")).not.toContainText("Confirm your email");
   await expect(page.getByRole("link", { name: "Directions (Apple Maps)" })).toHaveAttribute("href", /maps\.apple\.com/);
   await page.emulateMedia({ media: "print" });
   await expect(page.getByTestId("places-print")).toContainText(SENTINEL);
