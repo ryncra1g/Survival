@@ -150,7 +150,7 @@ function BlockView({ b }: { b: Block }) {
 
 /**
  * UX-7: the PDF follows the web order: the Priority list ("This week" first) on page 1, then the rest of the plan.
- * Sections are numbered in print order.
+ * Sections keep the plan's own numbers, because the text refers to them ("section 5").
  */
 export function pdfSections(doc: PlanDocument): PlanDocument["sections"] {
   const first = doc.sections.filter((s) => s.id === "priorities");
@@ -165,10 +165,10 @@ export function PlanPdf({ doc, diyTips = false }: { doc: PlanDocument; diyTips?:
         <Text style={s.h1}>{pdfSafe(doc.title)}</Text>
         <Text style={s.sub}>{pdfSafe(doc.subtitle)} · Generated {doc.generatedAt.slice(0, 10)}</Text>
         <Text style={{ fontSize: 8, color: muted, marginBottom: 6 }}>General guidance, not professional advice. Full disclaimer and sources at the end.</Text>
-        {pdfSections(doc).map((sec, idx) => (
+        {pdfSections(doc).map((sec) => (
           <View key={sec.id}>
             <Text style={s.h2} minPresenceAhead={60}>
-              {idx + 1}. {pdfSafe(sec.title)}
+              {sec.number}. {pdfSafe(sec.title)}
             </Text>
             <Text style={s.summary}>{pdfSafe(sec.summary)}</Text>
             {(() => {

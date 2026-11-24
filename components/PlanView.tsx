@@ -230,7 +230,6 @@ export function PlanView({
         <Dashboard
           overview={doc.overview}
           priority={prioritySteps(doc, ctx)}
-          allStepIds={doc.sections.flatMap((s) => s.blocks.flatMap((b) => (b.type === "checklist" && kindOf(b) === "do" ? b.items.map((i) => i.id) : [])))}
           buyHref={Object.fromEntries([...ctx.products.keys()].map((id) => [id, ctx.href(id)]))}
         />
         {afterDashboard}

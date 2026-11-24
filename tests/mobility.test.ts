@@ -43,3 +43,18 @@ describe("water containers for households with mobility needs (UX-12)", () => {
     expect(documentStrings(r.document).join("\n")).not.toContain(KEEP_WATER_CLOSE);
   });
 });
+
+describe("UX-12 numbers come from the constants (code review)", () => {
+  it("the constants schema rejects a liftable container heavier than the limit", async () => {
+    const { RuleConstantsSchema } = await import("@/lib/rules/constants");
+    expect(RuleConstantsSchema.safeParse(C).success).toBe(true);
+    expect(RuleConstantsSchema.safeParse({ ...C, water: { ...C.water, liftableGallons: 7 } }).success).toBe(false);
+  });
+  it("the plan text follows liftableGallons", async () => {
+    const two = { ...C, water: { ...C.water, liftableGallons: 2 } };
+    const r = await buildPlan(ALL_HOUSEHOLDS.find((h) => h.id === "elderly-mobility")!.a, { ...two, affiliate: { amazonTag: "test-20" } } as never);
+    const t = documentStrings(r.document).join("\n");
+    expect(t).toContain("2-gallon jugs or cases (about 17 lb");
+    expect(t).not.toContain("1-gallon jugs or cases");
+  });
+});

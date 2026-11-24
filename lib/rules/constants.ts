@@ -188,7 +188,7 @@ export const RuleConstantsSchema = z.object({
     drumThresholdGal: num,
     bleachDropsPerGal6pct: num,
     bleachDropsPerGal8pct: num,
-  }),
+  }).refine((w) => w.liftableGallons * w.lbPerGallon <= w.mobilityMaxLb, "UX-12: a liftable container must weigh at most mobilityMaxLb when full"),
   calories: z.object({ adultPerDay: num, childBands: z.array(z.tuple([num, num])).min(1) }),
   staples: z
     .array(

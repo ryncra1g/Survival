@@ -27,7 +27,7 @@ function Bar({ value, label }: { value: number; label: string }) {
  * "Next up" is the first unticked priority steps, so it moves forward as you tick them (here or in the plan).
  * Ticks sync like the checklists (ChecksProvider).
  */
-export function Dashboard({ overview, priority, allStepIds, buyHref }: { overview?: Overview; priority: PriorityStep[]; allStepIds: string[]; buyHref: Record<string, string> }) {
+export function Dashboard({ overview, priority, buyHref }: { overview?: Overview; priority: PriorityStep[]; buyHref: Record<string, string> }) {
   const { checks, toggle } = useChecks();
   // A step ticked here stays a few seconds, struck through, with Undo, so a mis-tap is easy to reverse.
   const [justDone, setJustDone] = useState<string[]>([]);
@@ -44,7 +44,6 @@ export function Dashboard({ overview, priority, allStepIds, buyHref }: { overvie
   const next = priority.filter((p) => justDone.includes(p.step.id) || open.slice(0, 3).includes(p));
   // UX-7: the rest of the current stage (at most 7 more for "This week"), one tap away.
   const more = inStage.filter((p) => !next.includes(p) && !checks[p.step.id]);
-  void allStepIds; // one step count on screen (UX-6): the current stage's, To do items only
 
   const renderStep = ({ step, stage: s }: PriorityStep) => {
     const done = !!checks[step.id];

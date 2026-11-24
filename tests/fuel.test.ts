@@ -52,3 +52,11 @@ describe("fuel rule (UX-3)", () => {
     });
   }
 });
+
+describe("fuel rule edge cases (code review)", () => {
+  it("an EV-only household is never told to fill a tank", async () => {
+    const a = { ...DEFAULT_ANSWERS, zip: "11746", vehicleFuels: ["ev" as const], evacuation: { destination: "friends_family" as const, distanceMiles: 250 } };
+    const doc = JSON.stringify((await buildPlan(a)).document);
+    expect(doc).not.toMatch(/fill up completely|half full/);
+  });
+});

@@ -43,3 +43,11 @@ describe("high hazards come first (UX-13)", () => {
     expect(JSON.stringify(r.document)).not.toContain('"week-hazard"');
   });
 });
+
+describe("hazard step link (code review)", () => {
+  it("a high hurricane risk keeps the county zone map as the link", async () => {
+    const r = await buildPlan(ALL_HOUSEHOLDS.find((h) => h.id === "sample")!.a);
+    const step = firstThree(r.document).find((i) => i.id === "week-hazard")!;
+    expect(step.link?.url).toMatch(/suffolkcountyny\.gov/);
+  });
+});
