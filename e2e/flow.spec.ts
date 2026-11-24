@@ -464,3 +464,16 @@ test("UX-9: every control on the plan page is at least 44px tall (or has a 44px 
   });
   expect(small).toEqual([]);
 });
+
+test("UX-21: header and footer links are at least 44px tall on every kind of page", async ({ page }) => {
+  for (const path of ["/", "/help", "/sources", "/start"]) {
+    await page.goto(path);
+    const small = await page.evaluate(() =>
+      [...document.querySelectorAll("header a[href], footer a[href], header summary")]
+        .filter((e) => e.getBoundingClientRect().height > 1)
+        .filter((e) => e.getBoundingClientRect().height < 44)
+        .map((e) => `${(e as HTMLElement).innerText.trim()} ${Math.round(e.getBoundingClientRect().height)}px`),
+    );
+    expect(small, path).toEqual([]);
+  }
+});
