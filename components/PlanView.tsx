@@ -13,6 +13,7 @@ import { HelpStrip, productIndex, resolveStep, StepExtras, type StepView } from 
 import { matchMaterials } from "@/lib/tips/match";
 import { TIP_MATERIALS } from "@/lib/tips/library";
 import { KIND_LABEL, kindLabelsAt, kindOf, type Kind } from "@/lib/plan/kinds";
+import { COLLAPSED_STAGES, STAGES } from "@/lib/plan/priority";
 
 /** D8: a small label where the kind of content changes: Good to know / To do / To have. */
 function KindLabel({ kind }: { kind: Kind }) {
@@ -266,13 +267,27 @@ export function PlanView({
                     // The dashboard's shopping list replaces the compact shopping list inside the Priority list on the web
                     // (email and PDF keep it).
                     const blocks = s.blocks.filter((b) => !(doc.overview && s.id === "priorities" && b.type === "products" && b.compact) && !(b.type === "tips" && !diyTips));
-                    const labels = kindLabelsAt(blocks);
-                    return blocks.map((b, i) => (
-                      <div key={i}>
-                        {labels[i] && <KindLabel kind={labels[i]} />}
-                        <BlockView b={b} planId={planId} buyHref={buyHref} sectionId={s.id} onChoose={onChoose} ctx={ctx} />
-                      </div>
-                    ));
+                    const render = (list: Block[]) => {
+                      const labels = kindLabelsAt(list);
+                      return list.map((b, i) => (
+                        <div key={i}>
+                          {labels[i] && <KindLabel kind={labels[i]} />}
+                          <BlockView b={b} planId={planId} buyHref={buyHref} sectionId={s.id} onChoose={onChoose} ctx={ctx} />
+                        </div>
+                      ));
+                    };
+                    if (s.id !== "priorities") return render(blocks);
+                    // UX-7: "This week" stays open; "This month" and "Later" are collapsed, one tap away.
+                    return stageSegments(blocks).map((seg, i) =>
+                      seg.stage ? (
+                        <details key={i} className="mt-3 rounded-lg border border-line" data-stage={seg.stage}>
+                          <summary className="min-h-[44px] cursor-pointer px-3 py-2.5 font-semibold">{seg.stage}</summary>
+                          <div className="px-3 pb-3">{render(seg.blocks)}</div>
+                        </details>
+                      ) : (
+                        <div key={i}>{render(seg.blocks)}</div>
+                      ),
+                    );
                   })()}
                 </div>
               </details>
@@ -290,8 +305,22 @@ export function PlanView({
   );
 }
 
-/** Stages of the Priority list, in order; "Skills to practice" isn't a to-do stage. */
-const STAGES = ["This week", "This month", "Within 60 days", "Within 90 days"];
+/**
+ * Splits the Priority list into the open part ("This week") and the collapsed stages (UX-7). A collapsed stage runs
+ * from its heading to the next stage heading; "Later" also holds "Skills to practice". The heading itself becomes the
+ * <summary>, so it isn't repeated inside.
+ */
+export function stageSegments(blocks: Block[]): { stage: string | null; blocks: Block[] }[] {
+  const out: { stage: string | null; blocks: Block[] }[] = [{ stage: null, blocks: [] }];
+  for (const b of blocks) {
+    if (b.type === "subheading" && COLLAPSED_STAGES.includes(b.text)) {
+      out.push({ stage: b.text, blocks: [] });
+      continue;
+    }
+    out[out.length - 1].blocks.push(b);
+  }
+  return out.filter((seg) => seg.stage || seg.blocks.length);
+}
 
 /** Every Priority-list step with its stage, in plan order, for the dashboard's "Next up". */
 function prioritySteps(doc: PlanDocument, ctx: Ctx): PriorityStep[] {

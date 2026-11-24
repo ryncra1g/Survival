@@ -1,4 +1,5 @@
 import { hasHouseholdFilter, hasPersonalFilter, LABELS, type Answers } from "@/lib/answers/schema";
+import { STAGE, WEEK_MAX } from "./priority";
 import { labelKinds } from "./kinds";
 import { maintenanceItems } from "./maintenance";
 import { dontDoFor, tipsFor, type TipArea } from "@/lib/tips/library";
@@ -27,6 +28,7 @@ import { AFFILIATE_DISCLOSURE, buyUrl, earnsCommission, emailSafeBuyUrl } from "
  * uses the same tokens (see lib/llm/writer.ts). Tables, checklists and if/then rows are
  * always produced here.
  */
+
 
 
 /** UX-3: the one everyday fuel rule (Ready.gov: keep at least a half tank). Never a per-tank gallon target. */
@@ -403,12 +405,14 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
 
   d90.push(gearPhaseItems(cp, 3).length ? phaseStep(3, "Buy your Phase 3 upgrades") : "Buy Phase 3 upgrades: comfort and communications.");
   d90.push("Run a 'lights-out weekend': live off your plan for 24–48 hours and fix what breaks.");
-  if (cp.evacuation)
-    d90.push(
-      cp.evacuation.vehicles
-        ? `Drive the route to your ${LABELS.fallback[cp.evacuation.locationType].toLowerCase()} and back; note fuel stops and alternates.`
-        : `Confirm your ride to your ${LABELS.fallback[cp.evacuation.locationType].toLowerCase()} and a backup ride; save your county's evacuation-assistance number.`,
-    );
+  const routeText = cp.evacuation
+    ? cp.evacuation.vehicles
+      ? `Drive the route to your ${LABELS.fallback[cp.evacuation.locationType].toLowerCase()} and back; note fuel stops and alternates.`
+      : `Confirm your ride to your ${LABELS.fallback[cp.evacuation.locationType].toLowerCase()} and a backup ride; save your county's evacuation-assistance number.`
+    : null;
+  if (routeText) d90.push(routeText);
+  // UX-7: 72-hour to 14-day plans have no 60/90-day stage, so the route step lives in "When you must leave" instead.
+  const routeStep: Step | null = routeText && a.scenarioDays < 30 ? { id: "evac-route", text: routeText, link: HOWTO.evacuation } : null;
   d90.push("Put the maintenance calendar on your phone.");
 
 
@@ -437,30 +441,47 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   S.push({
     id: "priorities",
     title: "Priority list",
-    summaryTemplate: "Start with life safety this week, then water and food this month, then power and comfort. Check items off as you go.",
+    summaryTemplate: "Start with this week's steps: life safety first. This month and Later hold the rest. Check items off as you go.",
     facts: [
       ...(cp.flags.medicalDevicePriority ? ["Battery backup for a powered medical device is the top priority"] : []),
       ...(cp.flags.wellPumpPriority ? ["Powering the well pump is the top priority"] : []),
     ],
-    blocks: [
-      { type: "subheading", text: "This week" },
-      check("week", week),
+    blocks: priorityBlocks(),
+  });
+
+  /**
+   * UX-7 (owner decision): the plan opens on "This week": at most WEEK_MAX steps, in the priority order above.
+   * The rest go to "This month" (overflow first) and "Later". 72-hour to 14-day plans have no 60/90-day work.
+   * Every list still goes through check() in the same order, so step ids (and saved ticks) don't move.
+   */
+  function priorityBlocks(): Block[] {
+    const weekAll = check("week", week);
+    const monthList = check("month", month);
+    const d60List = check("d60", d60);
+    const d90List = check("d90", d90);
+    const skillList = check("skill", practice);
+    if (weekAll.type !== "checklist" || monthList.type !== "checklist" || d60List.type !== "checklist" || d90List.type !== "checklist") return [];
+    const weekList: Block = { ...weekAll, items: weekAll.items.slice(0, WEEK_MAX) };
+    const monthAll: Block = { ...monthList, items: [...weekAll.items.slice(WEEK_MAX), ...monthList.items] };
+    const longPlan = a.scenarioDays >= 30;
+    const later: Block[] = longPlan ? [{ ...d60List, items: [...d60List.items, ...d90List.items] }] : [];
+    return [
+      { type: "subheading", text: STAGE.week },
+      weekList,
       productsBlock(
         cp.budget.picks.filter((p) => p.phase === 1),
         () => false,
         "Phase 1 shopping list (life safety)",
         true,
       ),
-      { type: "subheading", text: "This month" },
-      check("month", month),
-      { type: "subheading", text: "Within 60 days" },
-      check("d60", d60),
-      { type: "subheading", text: "Within 90 days" },
-      check("d90", d90),
+      { type: "subheading", text: STAGE.month },
+      monthAll,
+      { type: "subheading", text: STAGE.later },
+      ...later,
       { type: "subheading", text: "Skills to practice" },
-      check("skill", practice),
-    ],
-  });
+      skillList,
+    ];
+  }
 
   // 3. Day 0 ---------------------------------------------------------------
   const day0 = [
@@ -1101,7 +1122,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       facts: rawLand ? ["The raw land has no shelter or utilities, so everything has to come with them"] : [],
       blocks: [
         ORDERS_OVERRIDE,
-        check("evac", [destinationTodo]),
+        check("evac", routeStep ? [destinationTodo, routeStep] : [destinationTodo]),
         {
           type: "ifthen",
           rows: [
@@ -1152,7 +1173,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       facts: [],
       blocks: [
         ORDERS_OVERRIDE,
-        check("evac", [destinationTodo]),
+        check("evac", routeStep ? [destinationTodo, routeStep] : [destinationTodo]),
         {
           type: "ifthen",
           rows: [
