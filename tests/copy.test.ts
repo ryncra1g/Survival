@@ -51,3 +51,24 @@ describe("copy never promises a shareable link or cross-device saving without an
     expect(text).not.toMatch(ANY_DEVICE);
   });
 });
+
+/**
+ * UX-2: amounts are planning estimates (Sources, plan footer), so no user-facing text calls them exact.
+ * The Copy for AI ground rule "Use these amounts exactly" is an instruction to the assistant (owner brief A6), not a claim.
+ */
+const EXACT_PROMISE = /exact(ly)?\s+(amounts?|water|food|fuel|how much|food list|quantities)/i;
+describe("copy never calls the amounts exact (UX-2)", () => {
+  const all = ROOTS.flatMap(files);
+  it("no source string says exact amount(s)", () => {
+    const hits = all.flatMap((f) => uncommented(readFileSync(f, "utf8")).filter((l) => EXACT_PROMISE.test(l)).map((l) => `${f}: ${l.trim()}`));
+    expect(hits).toEqual([]);
+  });
+  it("the front page uses the agreed line, and the estimates wording stays", () => {
+    expect(readFileSync("components/Landing.tsx", "utf8")).toContain("Amounts worked out for your household, with the math shown");
+    expect(readFileSync("lib/plan/document.ts", "utf8")).toMatch(/Quantities are planning estimates/);
+  });
+  it("built plans and emails don't say exact amounts either", async () => {
+    const r = await buildPlan();
+    expect(JSON.stringify(r.document)).not.toMatch(EXACT_PROMISE);
+  });
+});

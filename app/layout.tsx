@@ -6,13 +6,13 @@ import { SiteMenu } from "@/components/SiteMenu";
 
 export const metadata: Metadata = {
   title: { default: `${BRAND.name} — your emergency plan`, template: `%s · ${BRAND.name}` },
-  description: "Get what you need. Know what to do. A free emergency plan built for your household: exact water, food and fuel amounts, what to buy first and how to stay ready.",
+  description: "Get what you need. Know what to do. A free emergency plan built for your household: water, food and fuel amounts worked out for you, what to buy first and how to stay ready.",
   metadataBase: new URL(process.env.APP_URL || "http://localhost:3000"),
   openGraph: {
     type: "website",
     siteName: BRAND.name,
     title: `Get what you need. Know what to do. · ${BRAND.name}`,
-    description: "Exact water, food and fuel amounts for your household, a week-by-week checklist and steps for your area's hazards. Free, no sign-up.",
+    description: "Amounts worked out for your household, with the math shown: water, food and fuel, a week-by-week checklist and steps for your area's hazards. Free, no sign-up.",
   },
   twitter: { card: "summary_large_image" },
 };

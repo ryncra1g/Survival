@@ -197,7 +197,7 @@ export function renderFollowupEmail(kind: FollowupKind, planUrl: string, meta: E
   const copy: Record<FollowupKind, { subject: string; h: string; p: string[] }> = {
     day1: { subject: "3 things to do today", h: "Your 3 steps for today", p: ["Most of your plan can wait. These three can't: test your CO alarms, store your first 3 days of water, and pick an out-of-area contact everyone can text.", "Each takes under 20 minutes."] },
     day3: { subject: "Did you finish your 'This week' list?", h: "Quick check-in", p: ["Three days ago you made your plan. How's the 'This week' list going?", "If you only do one thing today: test your CO alarms and fill your first 3 days of water."] },
-    day30: { subject: "Time for Phase 2: power and food", h: "Phase 2 reminder", p: ["It's been a month. If Phase 1 (CO alarms, water, heat) is done, Phase 2 is power and food.", "Your plan has the exact food list and fuel math for your household."] },
+    day30: { subject: "Time for Phase 2: power and food", h: "Phase 2 reminder", p: ["It's been a month. If Phase 1 (CO alarms, water, heat) is done, Phase 2 is power and food.", "Your plan has the food list and fuel math worked out for your household."] },
     winter: { subject: `Your ${BRAND.name} winter check`, h: "Winter check", p: ["Cold weather is coming. Test CO alarms, check your heat plan and warm room, insulate exposed pipes, and refresh propane and sleeping bags.", "Never run a generator or grill indoors or in a garage."] },
     hurricane: { subject: "Hurricane season starts now", h: "Hurricane season check", p: ["Hurricane season runs June 1 – November 30. Check your evacuation zone, window protection, insurance and fuel, and keep go-bags ready."] },
   };

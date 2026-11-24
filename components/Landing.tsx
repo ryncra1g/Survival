@@ -3,7 +3,7 @@ import { sampleSummary } from "@/lib/plan/sampleSummary";
 
 const CHAPTER_CARDS = [
   { id: "do-now", title: "Do now", outcome: "Your first steps this week, in order, and a Day 0 checklist for when it happens." },
-  { id: "supplies", title: "Supplies", outcome: "Exactly how much water and food to keep, and what to buy first." },
+  { id: "supplies", title: "Supplies", outcome: "How much water and food to keep, worked out for your household, and what to buy first." },
   { id: "power-heat", title: "Power & heat", outcome: "Staying warm and powered in an outage, with generator and CO safety." },
   { id: "people-plans", title: "People & plans", outcome: "Kids, pets, medical needs, contacts and when you must leave." },
 ] as const;
@@ -41,7 +41,7 @@ export function Landing({ cta, footer, sampleLink }: { cta: ReactNode; footer?: 
         <ol className="mt-3 grid gap-3 sm:grid-cols-3">
           {[
             ["Answer about 10 quick questions", "Your ZIP, who lives with you, your home, heat, water and budget. No sign-up."],
-            ["Get your plan right away", "Exact amounts, a week-by-week checklist and steps for your area's hazards."],
+            ["Get your plan right away", "Amounts worked out for your household, with the math shown, plus a week-by-week checklist and steps for your area's hazards."],
             ["Buy only what you're missing", "A shopping list in priority order that skips what you already have and fits your budget, basic or premium."],
           ].map(([t, d], i) => (
             <li key={t} className="card p-4">
