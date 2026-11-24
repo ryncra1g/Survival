@@ -135,6 +135,7 @@
     "filterGal": 293,
     "jugs": 8,
     "drums": 0,
+    "liftable": false,
     "threeDayGal": 12,
     "bleachDropsPerGal6pct": 8,
     "bleachDropsPerGal8pct": 6
@@ -443,6 +444,7 @@
     "distanceMiles": 120,
     "oneWayGalPerVehicle": 4.8,
     "reserveGalPerVehicle": 7.2,
+    "tripNeedsFullTank": true,
     "hasEv": false,
     "evMinRangeMiles": 156,
     "vehicles": 2
@@ -557,7 +559,9 @@
           "phase": 1,
           "priority": 2,
           "qty": "water_jugs",
-          "tags": [],
+          "tags": [
+            "!mobility"
+          ],
           "group": "water",
           "level": "standard",
           "affiliateUrl": null,

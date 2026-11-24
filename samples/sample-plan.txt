@@ -37,18 +37,18 @@ Tornado | low
 - Generator: 12 hours/day (furnace/boiler blower + ignition in cold weather, plus fridge and charging); inverter generator burns 0.25–0.4 gal gasoline/hour at ~half load.
 
 2. PRIORITY LIST
-Start with life safety this week, then water and food this month, then power and comfort. Check items off as you go.
+Start with this week's steps: life safety first. This month and Later hold the rest. Check items off as you go.
 
 This week
+[ ] Your area's biggest risks are hurricanes and flooding. This week, look up your hurricane evacuation zone and the route out; check your flood zone and the way to higher ground. (Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM): https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map)
 [ ] Test or install CO alarms: 4 (one per level plus outside sleeping areas). (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/about/index.html)
 [ ] Store your first 3 days of water: 12 gallons. (Make water safe to drink (EPA): https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water)
-[ ] Look up your hurricane evacuation zone and the route out, and decide where you'd go. (Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM): https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map)
 [ ] Turn on Wireless Emergency Alerts and sign up for your county's alert system. (Sign up for NY-Alert (New York State): https://alert.ny.gov/sign-up-ny-alert)
 [ ] Write your household communications plan (see Communications) and pick an out-of-area contact. (Make a plan (Ready.gov): https://www.ready.gov/plan)
 [ ] Set aside $1,200 in small bills. (Build a kit (Ready.gov): https://www.ready.gov/kit)
 [ ] Find and label your main water shutoff, gas shutoff and electrical panel. (Make a plan (Ready.gov): https://www.ready.gov/plan)
 [ ] Buy 2 weeks of diapers (84) and wipes. (Planning with kids (Ready.gov): https://www.ready.gov/kids/family-emergency-planning)
-[ ] Keep every gas/diesel vehicle above half a tank from now on. (Plan your evacuation (Ready.gov): https://www.ready.gov/evacuation)
+[ ] Keep every vehicle at least half full. (Plan your evacuation (Ready.gov): https://www.ready.gov/evacuation)
 Phase 1 shopping list (life safety)
 - Carbon monoxide alarm × 4 (Typical $20–$40 each): UL 2034 listed, battery or plug-in with battery backup, digital readout; one per floor and outside each sleeping area
 - 7-gallon water container × 8 (Typical $20–$35 each): Food-grade HDPE (#2), BPA-free, with spigot; stack no more than 2 high
@@ -76,13 +76,12 @@ This month
 [ ] Pack a go-bag for each person (see the Evacuation section).
 [ ] Check your flood zone and evacuation zone; review insurance (flood insurance has a 30-day wait). (Look up your flood zone (FEMA Flood Map Service Center): https://msc.fema.gov/portal/search)
 [ ] Get your other property ready to use: keys, how to turn on utilities, and supplies kept there. (Evacuation (Ready.gov): https://www.ready.gov/evacuation)
-Within 60 days
+Later
 [ ] Complete the full 90 days food list: 551 lb of bulk staples plus the rest of your food mix.
 [ ] Buy the generator and fuel storage; test-run it outdoors, 20+ ft from the house, under load. (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/about/index.html)
 [ ] Set up water filtration + collection for days 15–90 (293 gallons). (Make water safe to drink (EPA): https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water)
 [ ] Assemble the sanitation kit (two-bucket toilet, bags, absorbent). (Build a kit (Ready.gov): https://www.ready.gov/kit)
 [ ] Pre-cut and label window protection. (Hazard-by-hazard guides (Ready.gov): https://www.ready.gov/be-informed)
-Within 90 days
 [ ] Buy your Phase 3 upgrades: 1 item, about $10–$20.
 [ ] Run a 'lights-out weekend': live off your plan for 24–48 hours and fix what breaks. (Power outages (Ready.gov): https://www.ready.gov/power-outages)
 [ ] Drive the route to your raw land and back; note fuel stops and alternates. (Plan your evacuation (Ready.gov): https://www.ready.gov/evacuation)
@@ -163,7 +162,7 @@ IF Tap water is still running and no advisory -> Use tap water first; save store
 IF Boil-water notice -> Boil or disinfect tap water, or use stored water.
 IF No tap water -> Use stored water at 3.85 gal/day; use bathtub water for flushing.
 IF Stored water runs low -> Collect rain or surface water, filter it, then disinfect it.
-!! How to disinfect water: If water is cloudy, let it settle or filter it first. Then disinfect it with regular unscented bleach, using the amount and wait time on the bleach label and in EPA's emergency disinfection steps, or bring it to a rolling boil for 1 minute (3 minutes above 6,500 ft), as CDC advises. Never guess an amount.
+!! How to disinfect water: If water is cloudy, let it settle or filter it first. Then disinfect it one of two ways. Use regular unscented bleach, with the amount and wait time on the bleach label and in EPA's emergency disinfection steps. Or bring it to a rolling boil for 1 minute (3 minutes above 6,500 ft), as CDC advises. Never guess an amount.
 Safe water, in this order
 Way | When | What it does not remove
 1. Stored water | Drink it first. | Nothing to treat if it was stored clean; replace tap-filled water every 6 months.
@@ -188,11 +187,11 @@ Make water safe to drink (EPA): https://www.epa.gov/ground-water-and-drinking-wa
 Winter is the most dangerous part of an outage in the Long Island area. Your plan uses a layered approach: keep the main heat running safely if you can, then shrink to one warm room, then relocate if it gets too cold.
 
 Your natural gas heat needs electricity for the blower, ignition or circulator pump. The safest way to keep it running is a generator (recommended below) connected through a licensed electrician's power inlet and interlock (or a transfer switch). Furnaces draw roughly 400–800 W running, so a 2,500 W+ inverter generator can handle it along with the fridge.
-!! Backup heater rules: Use only a propane heater labeled for indoor use with an oxygen depletion sensor (ODS) and tip-over shutoff, follow its manual's ventilation requirement, keep 3 feet of clearance, never leave it running while everyone sleeps, and keep a working CO alarm in the same room.
+!! Backup heater rules: Use only a propane heater labeled for indoor use. It must have an oxygen depletion sensor (ODS) and a tip-over shutoff. Follow its manual's ventilation requirement and keep 3 feet of clearance. Never leave it running while you sleep. Keep a working CO alarm in the same room.
 - One warm room: pick a small interior room with few windows (not the basement if it floods). Everyone sleeps there.
 - Close doors to unused rooms; hang blankets over windows and doorways; put rugs/towels at door gaps.
 - Layer up: base layer, fleece, hat, socks; cold-rated sleeping bags at night.
-- Eat and drink warm calories; keep kids and older adults warm first.
+- Eat and drink warm calories; keep kids warm first.
 Pipe-freeze protocol
 When | Do this
 Before winter | Insulate exposed pipes; cover outdoor faucets; know where the main shutoff is.
@@ -385,7 +384,7 @@ Pet | Food for scenario | Water/day
 Prepare your pets (Ready.gov): https://www.ready.gov/pets
 
 16. WHEN YOU MUST LEAVE
-Your fallback is your raw land, about 120 miles away. Leave early on clear triggers, keep each tank above 7.2 gallons, and keep go-bags ready.
+Your fallback is your raw land, about 120 miles away. Leave early on clear triggers and keep go-bags ready. Your trip needs about 7.2 gallons: fill up completely as soon as a storm or evacuation warning is issued.
 
 !! Official evacuation orders override this plan: Official evacuation orders override this plan. If officials tell you to leave, go, using the routes they give.
 [ ] Add your backup destination: name, address and how to get there, printed for each go-bag. (Evacuation (Ready.gov): https://www.ready.gov/evacuation)
@@ -398,7 +397,8 @@ IF Roads closed or unsafe to drive -> Shelter in place and use this plan's shelt
 Fuel & range
 Item | Amount
 Fuel per vehicle (one way) | 4.8 gal at 25 mpg
-Keep in each tank, minimum | 7.2 gal (one-way + 50% for detours/traffic)
+Fuel for the trip | about 7.2 gal (one-way + 50% for detours/traffic)
+Keep every vehicle at least half full. Your trip needs about 7.2 gallons: fill up completely as soon as a storm or evacuation warning is issued.
 Raw-land gear (nothing is there — bring it all)
 Category | Gear | Note
 Shelter | Tent that sleeps everyone, 2 heavy tarps, paracord, stakes | Raw land has no buildings
@@ -409,7 +409,7 @@ Sanitation | Bucket toilet kit, bags, shovel, toilet paper |
 Power | Power station, solar panel, charging cables | 
 Food | Pantry + staples for the first week, cooler | 
 Tools | Saw, hatchet, work gloves, headlamps | 
-Bug-out kit: pick a level for each (Essential, Standard or Premium)
+Go-bag: pick a level for each (Essential, Standard or Premium)
 - FRS walkie-talkies  (Typical $25–$45 each): License-free FRS pair, AA or rechargeable, for household use within about a mile
 - Go-bag from a backpack you own × 2 (Typical $20–$40 each): Any sturdy backpack + the go-bag checklist; buy only the missing pieces (headlamp, water bottle, first aid)
 - Basic vehicle kit  (Typical $35–$70 each): Jumper cables, tire gauge, flashlight, blanket, paper map
