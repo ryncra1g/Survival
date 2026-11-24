@@ -144,11 +144,11 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await dash.getByText("Shopping list").click();
   const gearTotal = await dash.locator("#shopping").getByRole("checkbox").count();
   await dash.getByRole("checkbox", { name: "I have: Carbon monoxide alarm" }).check();
-  await expect(dash.getByTestId("overall-progress")).toContainText(`you have 1 of ${gearTotal} gear items`);
+  await expect(dash.getByTestId("overall-progress")).toContainText(`You have 1 of ${gearTotal} gear items`);
   await expect(page.getByRole("link", { name: /^Buy carbon monoxide alarm/ })).toHaveCount(0);
   await page.waitForTimeout(800);
   await page.reload();
-  await expect(page.getByTestId("dashboard").getByTestId("overall-progress")).toContainText(`you have 1 of ${gearTotal} gear items`);
+  await expect(page.getByTestId("dashboard").getByTestId("overall-progress")).toContainText(`You have 1 of ${gearTotal} gear items`);
   await expect(page.getByTestId("dashboard").getByTestId("stage-progress")).toHaveText(/^1 of \d+ done$/);
 
   // D10: the plan below is a card grid per chapter (2 across on a phone), each card with its key number
@@ -177,14 +177,17 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
 
   // Ticks are saved to the plan, not just this browser (the dashboard tick above shows in the full list too)
   await page.locator("details#priorities").evaluate((d) => ((d as HTMLDetailsElement).open = true));
-  await expect(page.locator("details#priorities input[type=checkbox]").first()).toBeChecked();
-  await page.locator("details#priorities input[type=checkbox]").nth(1).check();
+  // UX-13: the high-hazard step comes first now, so find the CO step by its text
+  const coBox = page.locator("details#priorities label", { hasText: /^Test or install CO alarms/ }).locator("input[type=checkbox]");
+  await expect(coBox).toBeChecked();
+  await page.locator("details#priorities input[type=checkbox]").first().check();
   await expect(page.locator("details#priorities").getByText(/^2 of \d+ done/).first()).toBeVisible();
   await page.waitForTimeout(800);
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await page.locator("details#priorities").evaluate((d) => ((d as HTMLDetailsElement).open = true));
-  await expect(page.locator("details#priorities input[type=checkbox]").nth(1)).toBeChecked();
+  await expect(page.locator("details#priorities input[type=checkbox]").first()).toBeChecked();
+  await expect(coBox).toBeChecked();
 
   // Change one answer without redoing the questionnaire
   await page.getByText("Something not right? Change an answer").click();
@@ -361,7 +364,7 @@ test("à la carte: switch a gear item's level from the plan", async ({ page }) =
   const water = gear.getByTestId("compare-options").filter({ hasText: "7-gallon" }).first();
   await water.getByText("Compare options").click();
   await expect(water.getByText("Upgrade", { exact: true })).toBeVisible();
-  await expect(water.getByText(/new total \$/).first()).toBeVisible();
+  await expect(water.getByText(/whole gear list: \$/).first()).toBeVisible();
   const premiumWater = water.getByRole("button", { name: /Switch to Premium: Stackable water bricks/ });
   await premiumWater.click();
   await expect(page).toHaveURL(/\/plan\/[0-9a-f-]{36}#gear/);
