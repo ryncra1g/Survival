@@ -47,6 +47,27 @@ Entry types: **Owner request** (Ryan asked for it), **Assistant recommendation**
 | FG-01 | Front-page focus group (20 simulated participants) | Medium | **Done**; findings below |
 | GRID-01 | Say plainly that the plan assumes no grid power for the whole period | Medium | Open (proposed November 18, not yet approved) |
 | BUY-01 | Buy links without an Associates tag; no links for "use what you own" items | High | **Done** (PR #4, PR #5) |
+| UX-1 | Places page promises saving that doesn't exist while accounts are off | P1 | **Suggested** (UX pass 2026-11-24) |
+| UX-2 | Front page says "exact" amounts; the plan calls them estimates | P1 | **Suggested** (UX pass 2026-11-24) |
+| UX-3 | Fuel advice contradicts itself (half a tank vs a gallon minimum that can exceed the tank) | P1 | **Suggested** (UX pass 2026-11-24) |
+| UX-4 | Required consent boxes below the fold, under the sticky button | P2 | **Suggested** (UX pass 2026-11-24) |
+| UX-5 | Evacuation screen asks nearly the same question twice, with different labels | P2 | **Suggested** (UX pass 2026-11-24) |
+| UX-6 | Three different step counts on the first plan screen | P2 | **Suggested** (UX pass 2026-11-24) |
+| UX-7 | Every plan is very long (51–84 steps, 17–22 page PDF), whatever the household | P2 | **Suggested** (UX pass 2026-11-24) |
+| UX-8 | Family wording ("helmets for the kids", "come get us") in one-person plans | P2 | **Suggested** (UX pass 2026-11-24) |
+| UX-9 | Plan controls below 44 px (chips, tabs, Buy, Compare, Expand all, source links) | P2 | **Suggested** (UX pass 2026-11-24) |
+| UX-10 | Same thing, different names (Confirm email / Email me my plan; go-bag / Bug-out kit; basic / Essential) | P2 | **Suggested** (UX pass 2026-11-24) |
+| UX-11 | Compare options "new total" matches no total shown elsewhere | P2 | **Suggested** (UX pass 2026-11-24) |
+| UX-12 | Mobility household told to buy 7-gallon (≈58 lb) jugs | P2 | **Suggested** (UX pass 2026-11-24) |
+| UX-13 | High wildfire-risk household's first 3 steps don't mention fire or evacuation | P2 | **Suggested** (UX pass 2026-11-24) |
+| UX-14 | Long or hard sentences (terms, sources, safety lines over 40 words) | P3 | **Suggested** (UX pass 2026-11-24) |
+| UX-15 | Choices without enough help (floors in an apartment, "Solar / battery", "FEMA recommended") | P3 | **Suggested** (UX pass 2026-11-24) |
+| UX-16 | Visible focus box around every questionnaire heading | P3 | **Suggested** (UX pass 2026-11-24) |
+| UX-17 | "Your area: Ohio, OH" | P3 | **Suggested** (UX pass 2026-11-24) |
+| UX-18 | "TOP PRIORITY:" in capitals | P3 | **Suggested** (UX pass 2026-11-24) |
+| UX-19 | Device names pasted into a sentence ("Your Oxygen concentrator, CPAP/BiPAP needs…") | P3 | **Suggested** (UX pass 2026-11-24) |
+| UX-20 | Question count differs between front page, start page and questionnaire | P3 | **Suggested** (UX pass 2026-11-24) |
+| UX-21 | Footer links 20 px tall | P3 | **Suggested** (UX pass 2026-11-24) |
 
 ### PR merge queue (each needs the owner's OK)
 #3 Windows test fixes → #4 Buy links without a tag → #5 dashboard redesign → `claude/headline-copy` (no PR yet).
@@ -421,3 +442,35 @@ AI-01 in-app assistant · diet/allergy question · attic for gear · phone notif
 
 Append new observations under the right area with a new ID: the screen or page, what happens, the desired result,
 and any screenshot reference. Mark entries Updated or Superseded when direction changes; don't overwrite.
+
+## 14. UX pass findings (Suggested)
+
+Found by `/ux-pass` (`.claude/skills/ux-pass/`). Each report is in `docs/ux/`. These are **Suggested** only: none is
+decided or approved until the owner says so. Priorities: P1 blocks or misleads, P2 friction, P3 polish. A later
+pass marks an item "Fixed per UX pass <date>"; items are never deleted.
+
+### UX pass 2026-11-24
+
+Report: `docs/ux/UX_PASS_2026-11-24.md` (screens, evidence and suggested fixes for each item).
+
+- **UX-1** (P1, Suggested): Places page promises saving that doesn't exist while accounts are off.
+- **UX-2** (P1, Suggested): Front page says "exact" amounts; the plan calls them estimates.
+- **UX-3** (P1, Suggested): Fuel advice contradicts itself (half a tank vs a gallon minimum that can exceed the tank).
+- **UX-4** (P2, Suggested): Required consent boxes below the fold, under the sticky button.
+- **UX-5** (P2, Suggested): Evacuation screen asks nearly the same question twice, with different labels.
+- **UX-6** (P2, Suggested): Three different step counts on the first plan screen.
+- **UX-7** (P2, Suggested): Every plan is very long (51–84 steps, 17–22 page PDF), whatever the household.
+- **UX-8** (P2, Suggested): Family wording ("helmets for the kids", "come get us") in one-person plans.
+- **UX-9** (P2, Suggested): Plan controls below 44 px (chips, tabs, Buy, Compare, Expand all, source links).
+- **UX-10** (P2, Suggested): Same thing, different names (Confirm email / Email me my plan; go-bag / Bug-out kit; basic / Essential).
+- **UX-11** (P2, Suggested): Compare options "new total" matches no total shown elsewhere.
+- **UX-12** (P2, Suggested): Mobility household told to buy 7-gallon (≈58 lb) jugs.
+- **UX-13** (P2, Suggested): High wildfire-risk household's first 3 steps don't mention fire or evacuation.
+- **UX-14** (P3, Suggested): Long or hard sentences (terms, sources, safety lines over 40 words).
+- **UX-15** (P3, Suggested): Choices without enough help (floors in an apartment, "Solar / battery", "FEMA recommended").
+- **UX-16** (P3, Suggested): Visible focus box around every questionnaire heading.
+- **UX-17** (P3, Suggested): "Your area: Ohio, OH".
+- **UX-18** (P3, Suggested): "TOP PRIORITY:" in capitals.
+- **UX-19** (P3, Suggested): Device names pasted into a sentence ("Your Oxygen concentrator, CPAP/BiPAP needs…").
+- **UX-20** (P3, Suggested): Question count differs between front page, start page and questionnaire.
+- **UX-21** (P3, Suggested): Footer links 20 px tall.
