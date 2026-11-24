@@ -100,10 +100,10 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(page.locator("#termsConsent")).toBeFocused();
   await expect(page.locator("#termsConsent")).toHaveAttribute("aria-describedby", "termsConsent-error");
   await expect(page.locator("#termsConsent-error")).toHaveText(/Terms of Use/);
-  const box = (await page.locator("label[for=termsConsent]").boundingBox())!;
-  const bar = (await page.getByRole("button", { name: "Build my plan" }).boundingBox())!;
-  expect(box.y).toBeGreaterThanOrEqual(0);
-  expect(box.y + box.height).toBeLessThanOrEqual(bar.y);
+  const termsBox = (await page.locator("label[for=termsConsent]").boundingBox())!;
+  const buildBar = (await page.getByRole("button", { name: "Build my plan" }).boundingBox())!;
+  expect(termsBox.y).toBeGreaterThanOrEqual(0);
+  expect(termsBox.y + termsBox.height).toBeLessThanOrEqual(buildBar.y);
   await page.getByLabel(/general guidance, not professional advice/).check();
   const qid = page.url().split("/q/")[1];
   await next(page);
