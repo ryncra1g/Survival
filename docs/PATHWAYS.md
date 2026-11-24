@@ -57,6 +57,7 @@ Answers are version 2 (owner brief D4, D5, D6). Saved version 1 answers are migr
 | No suitable storage | Keep the first 3 days of water and a go-bag; buy the rest as soon as a storm is forecast |
 | Has a shed but can't use it for supplies | It's still the place for gas cans and propane, away from the house |
 | Preferred approach (stay home, family or friends, another property, hotel or shelter, not sure) | A step for that approach with Ready.gov evacuation guidance (Red Cross shelter finder for hotel or shelter) |
+| Approach is a place (UX-5): family or friends → their home; another place I own → second home or cabin, or land with no buildings; hotel or shelter → hotel or motel, or a public shelter. Only "which one" and the distance are asked. Stay home / not sure → the full "where could you go?" question | The destination row below for whichever place it fills in (`destinationForApproach` in lib/answers/schema.ts) |
 | Destination: hotel / public shelter / not sure yet | List hotels in different directions / find your nearest shelter / choose a backup destination |
 | Destination: family or friends, second property, raw land, hotel (with a distance) | The Evacuation section with fuel math, the route drive and go-bags |
 | Personal filter | Pack it in the go-bag (links to EPA water guidance) |

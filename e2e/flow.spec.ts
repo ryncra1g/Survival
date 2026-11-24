@@ -77,15 +77,19 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(page.getByRole("button", { name: /^No suitable storage/ })).toBeVisible();
   await pick(page, "Garage");
   await next(page);
-  // D4: preferred approach, then where they could go
+  // D4 / UX-5: preferred approach; a place answer fills in where they'd go, so only "which one" and the distance are left
   await expect(page.getByRole("heading", { name: "If you have to leave" })).toBeVisible();
-  await pick(page, "Another property");
-  await pick(page, "Raw land");
+  await pick(page, "Stay home when it's safe");
+  await expect(page.getByRole("group", { name: "If officials told you to leave, where could you go?" })).toBeVisible();
+  await pick(page, "Go to another place I own");
+  await expect(page.getByRole("group", { name: "If officials told you to leave, where could you go?" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /^A second home or cabin/ })).toHaveAttribute("aria-pressed", "true");
+  await pick(page, /^Land with no buildings/);
   await pick(page, "~120 mi");
   await next(page);
   await pick(page, "$1,500–5,000");
   await page.getByRole("button", { name: "Back" }).click();
-  await expect(page.getByRole("button", { name: "Raw land" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: /^Land with no buildings/ })).toHaveAttribute("aria-pressed", "true");
   await next(page);
   await expect(page.getByText("54 gal")).toBeVisible();
   // Clickwrap: the plan isn't built until the Terms box is ticked

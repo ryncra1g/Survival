@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AnswersSchema, DEFAULT_ANSWERS, isDrive, LABELS, migrateAnswers, storageOptions, type Answers, type PetGroupT } from "@/lib/answers/schema";
+import { AnswersSchema, APPROACH_PLACE, DEFAULT_ANSWERS, destinationForApproach, isDrive, LABELS, migrateAnswers, storageOptions, type Answers, type PetGroupT } from "@/lib/answers/schema";
 import { DEFAULT_CONSTANTS } from "@/lib/rules/constants";
 import { computeFood, computeWater, household } from "@/lib/rules/engine";
 import { atLeast, lookupZip, type Level, type ZipProfile } from "@/lib/zip/profile";
@@ -115,6 +115,26 @@ interface Screen {
   render: (p: ScreenProps) => React.ReactNode;
 }
 
+/** UX-5: the two evacuation questions use clearly different words (the plan text keeps LABELS). */
+const APPROACH_UI: Record<Answers["approach"], string> = {
+  stay_home: "Stay home when it's safe",
+  family_friends: "Go to family or friends",
+  another_property: "Go to another place I own",
+  hotel_shelter: "Go to a hotel or shelter",
+  not_sure: "Not sure yet",
+};
+const DESTINATION_UI: Record<Answers["evacuation"]["destination"], string> = {
+  friends_family: "A friend's or relative's home",
+  second_property: "A second home or cabin",
+  raw_land: "Land with no buildings",
+  hotel: "A hotel or motel",
+  public_shelter: "A public shelter",
+  not_sure: "I don't know yet",
+};
+const DESTINATION_HINT: Partial<Record<Answers["evacuation"]["destination"], string>> = {
+  raw_land: "Land you can use, but no house",
+  public_shelter: "Opened by officials",
+};
 const SCREENS: Screen[] = [
   {
     id: "location",
@@ -375,35 +395,61 @@ const SCREENS: Screen[] = [
     id: "evacuation",
     title: "If you have to leave",
     valid: (a) => (isDrive(a.evacuation.destination) && !a.evacuation.distanceMiles ? "Pick about how far away it is." : null),
-    render: ({ a, set }) => (
-      <>
-        <Group label="During an emergency, what's your preferred approach?">
-          <Grid cols={1}>
-            {(["stay_home", "family_friends", "another_property", "hotel_shelter", "not_sure"] as const).map((p) => (
-              <Choice key={p} selected={a.approach === p} onClick={() => set({ approach: p })}>{LABELS.approach[p]}</Choice>
-            ))}
-          </Grid>
-        </Group>
-        <Group label="If your home becomes unsafe or officials order an evacuation, where could you go?">
-          <Grid>
-            {(["friends_family", "second_property", "raw_land", "hotel", "public_shelter", "not_sure"] as const).map((d) => (
-              <Choice key={d} selected={a.evacuation.destination === d} onClick={() => set({ evacuation: isDrive(d) ? { destination: d, distanceMiles: a.evacuation.distanceMiles ?? 50 } : { destination: d } })}>
-                {LABELS.fallback[d]}
-              </Choice>
-            ))}
-          </Grid>
-        </Group>
-        {isDrive(a.evacuation.destination) && (
-          <Group label="About how far away is it?">
-            <div className="grid grid-cols-3 gap-2">
-              {[25, 50, 120, 250, 500, 1000].map((d) => (
-                <Choice key={d} selected={a.evacuation.distanceMiles === d} onClick={() => set({ evacuation: { ...a.evacuation, distanceMiles: d } })}>{d === 1000 ? "500+ mi" : `~${d} mi`}</Choice>
+    render: ({ a, set }) => {
+      // A saved answer whose destination doesn't fit the approach (older plans) gets the full question.
+      const p0 = APPROACH_PLACE[a.approach];
+      const place = p0 && (a.evacuation.destination === p0.main || a.evacuation.destination === p0.alt) ? p0 : undefined;
+      const pick = (d: Answers["evacuation"]["destination"]) => set({ evacuation: isDrive(d) ? { destination: d, distanceMiles: a.evacuation.distanceMiles ?? 50 } : { destination: d } });
+      return (
+        <>
+          <Group label="In an emergency, what would you rather do?">
+            <Grid cols={1}>
+              {(["stay_home", "family_friends", "another_property", "hotel_shelter", "not_sure"] as const).map((p) => (
+                <Choice
+                  key={p}
+                  selected={a.approach === p}
+                  onClick={() => {
+                    // UX-5: a place answer fills in where you'd go; only the distance is left to ask.
+                    const d = destinationForApproach(p, a.evacuation.destination);
+                    set(d ? { approach: p, evacuation: isDrive(d) ? { destination: d, distanceMiles: a.evacuation.distanceMiles ?? 50 } : { destination: d } } : { approach: p });
+                  }}
+                >
+                  {APPROACH_UI[p]}
+                </Choice>
               ))}
-            </div>
+            </Grid>
           </Group>
-        )}
-      </>
-    ),
+          {place ? (
+            place.alt && (
+              <Group label="Which one?">
+                <Grid>
+                  {[place.main, place.alt].map((d) => (
+                    <Choice key={d} selected={a.evacuation.destination === d} onClick={() => pick(d)} sub={DESTINATION_HINT[d]}>{DESTINATION_UI[d]}</Choice>
+                  ))}
+                </Grid>
+              </Group>
+            )
+          ) : (
+            <Group label="If officials told you to leave, where could you go?">
+              <Grid>
+                {(["friends_family", "second_property", "raw_land", "hotel", "public_shelter", "not_sure"] as const).map((d) => (
+                  <Choice key={d} selected={a.evacuation.destination === d} onClick={() => pick(d)} sub={DESTINATION_HINT[d]}>{DESTINATION_UI[d]}</Choice>
+                ))}
+              </Grid>
+            </Group>
+          )}
+          {isDrive(a.evacuation.destination) && (
+            <Group label="About how far away is it?">
+              <div className="grid grid-cols-3 gap-2">
+                {[25, 50, 120, 250, 500, 1000].map((d) => (
+                  <Choice key={d} selected={a.evacuation.distanceMiles === d} onClick={() => set({ evacuation: { ...a.evacuation, distanceMiles: d } })}>{d === 1000 ? "500+ mi" : `~${d} mi`}</Choice>
+                ))}
+              </div>
+            </Group>
+          )}
+        </>
+      );
+    },
   },
   {
     id: "budget",
