@@ -5,7 +5,7 @@ import { AnswersSchema, APPROACH_PLACE, DEFAULT_ANSWERS, destinationForApproach,
 import { DEFAULT_CONSTANTS } from "@/lib/rules/constants";
 import { computeFood, computeWater, household } from "@/lib/rules/engine";
 import { atLeast, lookupZip, type Level, type ZipProfile } from "@/lib/zip/profile";
-import { withoutConsentTicks, checkConsent, healthConsentMessage, needsHealthConsent } from "@/lib/legal";
+import { withoutConsentTicks, checkConsent, healthConsentMessage, needsHealthConsent, TERMS_REQUIRED_MSG } from "@/lib/legal";
 import { BRAND } from "@/lib/brand";
 import { BuildProgress } from "./BuildProgress";
 import { BUILD_STAGES, parseStreamLines, type BuildStage, type OnStage } from "@/lib/plan/stages";
@@ -86,18 +86,30 @@ function ZipArea({ zip }: { zip: string }) {
 }
 
 /* ---------- screens ---------- */
-function ConsentBox({ id, checked, onChange, children }: { id: string; checked: boolean; onChange: (v: boolean) => void; children: React.ReactNode }) {
+/** UX-4: a required box. When a submit fails because it's unticked, its message shows right beside it. */
+function ConsentBox({ id, checked, onChange, children, error }: { id: string; checked: boolean; onChange: (v: boolean) => void; children: React.ReactNode; error?: string }) {
   return (
-    <label htmlFor={id} className="flex items-start gap-3 rounded-lg border border-line bg-surface p-3 text-sm">
-      <input id={id} type="checkbox" className="mt-0.5 size-5 shrink-0 accent-[var(--brand)]" checked={checked} onChange={(e) => onChange(e.target.checked)} />
-      <span>{children}</span>
-    </label>
+    <div>
+      <label htmlFor={id} className={`flex items-start gap-3 rounded-lg bg-surface p-3 text-sm scroll-mt-24 scroll-mb-32 ${error ? "border-2 border-warn" : "border border-line"}`}>
+        <input
+          id={id}
+          type="checkbox"
+          className="mt-0.5 size-5 shrink-0 accent-[var(--brand)]"
+          checked={checked}
+          onChange={(e) => onChange(e.target.checked)}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${id}-error` : undefined}
+        />
+        <span>{children}</span>
+      </label>
+      {error && <p id={`${id}-error`} role="alert" className="mt-1.5 text-sm font-medium text-warn">{error}</p>}
+    </div>
   );
 }
 
-function HealthConsent({ a, set }: { a: Draft; set: (patch: Partial<Draft>) => void }) {
+function HealthConsent({ a, set, error }: { a: Draft; set: (patch: Partial<Draft>) => void; error?: string }) {
   return (
-    <ConsentBox id="healthConsent" checked={!!a._health} onChange={(_health) => set({ _health })}>
+    <ConsentBox id="healthConsent" checked={!!a._health} onChange={(_health) => set({ _health })} error={error}>
       I agree that {BRAND.name} can use my medical and mobility answers to build my plan. They&apos;re encrypted, never sold and never used for marketing emails.
     </ConsentBox>
   );
@@ -106,7 +118,10 @@ function HealthConsent({ a, set }: { a: Draft; set: (patch: Partial<Draft>) => v
 interface ScreenProps {
   a: Draft;
   set: (patch: Partial<Draft>) => void;
+  /** UX-4: the message for a required box on this screen, shown beside it. */
+  err?: (field: ConsentField) => string | undefined;
 }
+type ConsentField = "healthConsent" | "termsConsent";
 interface Screen {
   id: string;
   title: string;
@@ -257,7 +272,7 @@ const SCREENS: Screen[] = [
     id: "medical",
     title: "Medical needs",
     valid: (a) => (needsHealthConsent(a) && !a._health ? healthConsentMessage(a) : null),
-    render: ({ a, set }) => (
+    render: ({ a, set, err }) => (
       <>
         <p className="text-sm text-muted">We don&apos;t ask about conditions or diagnoses — only what affects supplies and power.</p>
         <Group label="Does anyone take daily prescription medication?">
@@ -271,7 +286,7 @@ const SCREENS: Screen[] = [
             <Choice selected={a.poweredDevices.length === 0} onClick={() => set({ poweredDevices: [] })}>None</Choice>
           </Grid>
         </Group>
-        {needsHealthConsent(a) && <HealthConsent a={a} set={set} />}
+        {needsHealthConsent(a) && <HealthConsent a={a} set={set} error={err?.("healthConsent")} />}
       </>
     ),
   },
@@ -516,6 +531,15 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
     return i >= 0 ? i : Math.min(Number(a._step ?? 0), visible.length - 1);
   });
   const [error, setError] = useState("");
+  const [consentErr, setConsentErr] = useState<{ field: ConsentField; msg: string } | null>(null);
+  // UX-4: on a failed submit, bring the unticked box into view above the sticky bar and focus it.
+  useEffect(() => {
+    if (!consentErr) return;
+    const el = document.getElementById(consentErr.field);
+    const still = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el?.scrollIntoView({ block: "center", behavior: still ? "auto" : "smooth" });
+    el?.focus({ preventScroll: true });
+  }, [consentErr]);
   const [generating, setGenerating] = useState(false);
   const [stagesDone, setStagesDone] = useState<BuildStage[]>([]);
   const heading = useRef<HTMLHeadingElement>(null);
@@ -553,17 +577,27 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
   const screen = visible[Math.min(step, visible.length - 1)];
   const set = (patch: Partial<Draft>) => {
     setError("");
+    setConsentErr(null);
     setA((prev) => ({ ...prev, ...patch }));
   };
   const last = step >= visible.length - 1;
   const parsedAnswers = () => AnswersSchema.safeParse({ ...a, _step: undefined, _screen: undefined });
+
+  /** The first required box left unticked on this screen, in screen order (health, then Terms). */
+  function missingConsent(): { field: ConsentField; msg: string } | null {
+    const onConsentScreen = last || editOne;
+    const healthHere = screen.id === "medical" || onConsentScreen;
+    if (healthHere && needsHealthConsent(a) && !a._health) return { field: "healthConsent", msg: healthConsentMessage(a) };
+    if (onConsentScreen && !a._terms) return { field: "termsConsent", msg: TERMS_REQUIRED_MSG };
+    return null;
+  }
 
   async function build() {
     const parsed = parsedAnswers();
     if (!parsed.success) return setError(parsed.error.issues[0]?.message ?? "Please check your answers.");
     const consent = { terms: !!a._terms, health: !!a._health };
     const consentError = checkConsent(parsed.data, consent);
-    if (consentError) return setError(consentError);
+    if (consentError) return setConsentErr(missingConsent() ?? { field: "termsConsent", msg: consentError });
     if (saveTimer.current) clearTimeout(saveTimer.current);
     // A rebuild from "Change an answer" keeps the inline spinner; only the first build shows the stages card (D11).
     setGenerating(true);
@@ -586,6 +620,8 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
   }
 
   async function next() {
+    const missing = missingConsent();
+    if (missing) return setConsentErr(missing);
     const msg = screen.valid?.(a);
     if (msg) return setError(msg);
     if (!last) return setStep(step + 1);
@@ -615,25 +651,26 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
         <div className="h-full bg-accent transition-all" style={{ width: `${pct}%` }} />
       </div>
       <h1 ref={heading} tabIndex={-1} className="mt-6 text-2xl font-bold outline-none">{screen.title}</h1>
-      <div className="mt-5 space-y-6">{screen.render({ a, set })}</div>
-      {last && (() => {
-        const p = parsedAnswers();
-        return p.success ? <div className="mt-8"><Teaser a={p.data} /></div> : null;
-      })()}
+      <div className="mt-5 space-y-6">{screen.render({ a, set, err: (f) => (consentErr?.field === f ? consentErr.msg : undefined) })}</div>
+      {/* UX-4: the required boxes come right after the questions, before the teaser and the sticky bar. */}
       {(last || editOne) && (
         <div className="mt-6 space-y-3">
-          {screen.id !== "medical" && needsHealthConsent(a) && <HealthConsent a={a} set={set} />}
-          <ConsentBox id="termsConsent" checked={!!a._terms} onChange={(_terms) => set({ _terms })}>
+          {screen.id !== "medical" && needsHealthConsent(a) && <HealthConsent a={a} set={set} error={consentErr?.field === "healthConsent" ? consentErr.msg : undefined} />}
+          <ConsentBox id="termsConsent" checked={!!a._terms} onChange={(_terms) => set({ _terms })} error={consentErr?.field === "termsConsent" ? consentErr.msg : undefined}>
             I understand this plan is general guidance, not professional advice, and I agree to the{" "}
             <a href="/terms" target="_blank" rel="noopener" className="underline">Terms of Use</a>.
           </ConsentBox>
         </div>
       )}
+      {last && (() => {
+        const p = parsedAnswers();
+        return p.success ? <div className="mt-8"><Teaser a={p.data} /></div> : null;
+      })()}
       {error && <p role="alert" className="mt-4 text-warn font-medium">{error}</p>}
       <div className="mt-8 flex gap-3 sticky bottom-0 bg-bg py-3">
         <button type="button" className="btn-ghost" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0}>Back</button>
         {editOne ? (
-          <button type="button" className="btn flex-1" onClick={async () => { const msg = screen.valid?.(a); if (msg) return setError(msg); await build(); }}>Update my plan</button>
+          <button type="button" className="btn flex-1" onClick={async () => { const missing = missingConsent(); if (missing) return setConsentErr(missing); const msg = screen.valid?.(a); if (msg) return setError(msg); await build(); }}>Update my plan</button>
         ) : (
           <button type="button" className="btn flex-1" onClick={next}>{last ? "Build my plan" : "Next"}</button>
         )}

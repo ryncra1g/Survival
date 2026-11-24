@@ -96,6 +96,14 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await next(page);
   await expect(page.getByText("Please tick the box to agree to the Terms of Use")).toBeVisible();
   await expect(page).toHaveURL(/\/q\//);
+  // UX-4: the unticked box is scrolled into view above the sticky bar, focused, with its message beside it
+  await expect(page.locator("#termsConsent")).toBeFocused();
+  await expect(page.locator("#termsConsent")).toHaveAttribute("aria-describedby", "termsConsent-error");
+  await expect(page.locator("#termsConsent-error")).toHaveText(/Terms of Use/);
+  const box = (await page.locator("label[for=termsConsent]").boundingBox())!;
+  const bar = (await page.getByRole("button", { name: "Build my plan" }).boundingBox())!;
+  expect(box.y).toBeGreaterThanOrEqual(0);
+  expect(box.y + box.height).toBeLessThanOrEqual(bar.y);
   await page.getByLabel(/general guidance, not professional advice/).check();
   const qid = page.url().split("/q/")[1];
   await next(page);
@@ -407,4 +415,25 @@ test("D12: Add to my calendar downloads a .ics; the maintenance list prints", as
   expect(await r.text()).toContain("BEGIN:VEVENT");
   await page.goto(`/plan/${planId}/maintenance`);
   await expect(page.getByTestId("maintenance-list")).toContainText("Test CO and smoke alarms.");
+});
+
+test("UX-4 medical screen: Next with the health box unticked focuses it, with the message beside it", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Build my free plan" }).first().click();
+  await page.waitForURL(/\/q\//);
+  const draft = { ...SAMPLE, poweredDevices: ["cpap"], _step: 4 };
+  await page.evaluate((d) => localStorage.setItem(`rp_q_${location.pathname.split("/q/")[1]}`, JSON.stringify(d)), draft);
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Medical needs" })).toBeVisible();
+  await next(page);
+  await expect(page.getByRole("heading", { name: "Medical needs" })).toBeVisible();
+  await expect(page.locator("#healthConsent")).toBeFocused();
+  await expect(page.locator("#healthConsent-error")).toBeVisible();
+  const box = (await page.locator("label[for=healthConsent]").boundingBox())!;
+  const bar = (await page.getByRole("button", { name: "Next" }).boundingBox())!;
+  expect(box.y + box.height).toBeLessThanOrEqual(bar.y);
+  await page.locator("#healthConsent").check();
+  await expect(page.locator("#healthConsent-error")).toHaveCount(0);
+  await next(page);
+  await expect(page.getByRole("heading", { name: "Tell us about your home" })).toBeVisible();
 });
