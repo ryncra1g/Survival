@@ -95,6 +95,12 @@ table, .tabular { font-variant-numeric: tabular-nums; }
   .input { width: 100%; min-height: 48px; padding: 0 .9rem; border-radius: .6rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-size: 1rem; }
 }
 
+/* DESIGN.md C6 (design audit DA-10): transitions stay short (Tailwind's 150ms default), and under reduced motion
+   nothing moves: no transitions, no animation, no smooth scrolling. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0s !important; animation-duration: 0s !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+}
+
 @media print {
   header, footer, .no-print { display: none !important; }
   body { background: #fff; color: #000; }
