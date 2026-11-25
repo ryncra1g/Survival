@@ -213,6 +213,9 @@ function destinationStep(a: Answers): Step | null {
   }
 }
 
+/** "$790–$1,590" for a list of picks (low and high totals). */
+const priceRange = (picks: { low: number; high: number }[]) => usdRange(picks.reduce((t, g) => t + g.low, 0), picks.reduce((t, g) => t + g.high, 0));
+
 function gearPhaseItems(cp: ComputedPlan, phase: 1 | 2 | 3) {
   return cp.budget.picks.filter((p) => p.phase === phase);
 }
@@ -396,7 +399,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   // UX-25: each phase step offers every item in its phase, so every gear item has a To do step.
   const phaseStep = (phase: 1 | 2 | 3, lead: string, id?: string): Step => {
     const items = gearPhaseItems(cp, phase);
-    return { ...(id ? { id } : {}), text: `${lead}: ${plural(items.length, "item")}, about ${usdRange(items.reduce((t, g) => t + g.low, 0), items.reduce((t, g) => t + g.high, 0))}.`, buy: items.map((p) => p.item.id) };
+    return { ...(id ? { id } : {}), text: `${lead}: ${plural(items.length, "item")}, about ${priceRange(items)}.`, buy: items.map((p) => p.item.id) };
   };
   if (cp.flags.medicalDevicePriority)
     week.push({ text: "Most important: Call your medical-device supplier about battery backup, and register with your electric utility's medical-needs / life-support registry.", buy: ["med-battery"] });
@@ -471,17 +474,18 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   if (pw.generatorStatus === "recommended") d60.push({ text: "Buy the generator and fuel storage; test-run it outdoors, 20+ ft from the house, under load.", buy: ["generator-dual", "generator-small", "gas-cans"] });
   if (pw.generatorStatus === "owned_portable") d60.push("Service your generator (oil, plug, fresh stabilized fuel) and test-run it under load outdoors.");
   if (w.filterDays > 0) d60.push({ text: `Set up water filtration + collection for days ${n(w.storedDays + 1)}–${n(a.scenarioDays)} (${n(w.filterGal)} gallons).`, buy: ["filter-gravity", "filter-gravity-bag", "filter-basic"] });
-  if (gearPhaseItems(cp, 2).length) d60.push(phaseStep(2, "Buy your Phase 2 (power & comfort) gear", "d60-phase2"));
   d60.push({ text: "Assemble the sanitation kit (two-bucket toilet, bags, absorbent).", buy: ["toilet-kit"] });
   if (atLeast(prof.hurricane, "moderate") && !apt) d60.push({ text: "Pre-cut and label window protection.", buy: ["window-protection"] });
   if (d60.length < 3) d60.push("Rotate the first stored water and check expiration dates.");
+  // After the filler check: this step has its own id, and must not change which counter-numbered steps exist.
+  if (gearPhaseItems(cp, 2).length) d60.push(phaseStep(2, "Buy your Phase 2 (power & comfort) gear", "d60-phase2"));
 
-  d90.push(gearPhaseItems(cp, 3).length ? phaseStep(3, "Buy your Phase 3 upgrades") : "Buy Phase 3 upgrades: comfort and communications.");
+  d90.push(gearPhaseItems(cp, 3).length ? phaseStep(3, "Buy your Phase 3 upgrades") : "Review your shopping list and tick what you already have, so it stops suggesting it.");
   // Gear set aside because it doesn't fit the budget yet.
   if (cp.budget.deferred.length)
     d90.push({
       id: "d90-budget-allows",
-      text: `When the budget allows: ${plural(cp.budget.deferred.length, "item")} set aside in your shopping list, about ${usdRange(cp.budget.deferred.reduce((t, g) => t + g.low, 0), cp.budget.deferred.reduce((t, g) => t + g.high, 0))}.`,
+      text: `When the budget allows: ${plural(cp.budget.deferred.length, "item")} set aside in your shopping list, about ${priceRange(cp.budget.deferred)}.`,
       buy: cp.budget.deferred.map((p) => p.item.id),
     });
   d90.push("Run a 'lights-out weekend': live off your plan for 24–48 hours and fix what breaks.");
@@ -1224,7 +1228,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
               { type: "table" as const, caption: "Fuel & range", columns: ["Item", "Amount"], rows: evRows },
               // UX-3: one fuel rule. Half full always; a full tank only when the trip needs more than half.
               ...(a.vehicleFuels.some((v) => v !== "ev")
-                ? [{ type: "paragraph" as const, text: `${a.vehicleFuels.includes("ev") ? "Gas vehicles: " : ""}${HALF_FULL}${ev.tripNeedsFullTank ? ` ${fillUpLine(n(ev.reserveGalPerVehicle, 1))}` : ""}` }]
+                ? [{ type: "paragraph" as const, text: `${vehicleFuelSteps(a.vehicleFuels)[0]}${ev.tripNeedsFullTank ? ` ${fillUpLine(n(ev.reserveGalPerVehicle, 1))}` : ""}` }]
                 : []),
             ]
           : [

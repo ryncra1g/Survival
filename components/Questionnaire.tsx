@@ -656,7 +656,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
       )}
       {error && <p role="alert" className="mt-4 text-warn font-medium">{error}</p>}
       <div className="mt-8 sticky bottom-0 bg-bg py-3">
-        {last && !editOne && (() => {
+        {last && (() => {
           const p = parsedAnswers();
           return p.success ? <Teaser a={p.data} /> : null;
         })()}

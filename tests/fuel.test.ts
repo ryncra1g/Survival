@@ -7,7 +7,7 @@ import { renderPlanEmail } from "@/lib/email/render";
 import { ALL_HOUSEHOLDS } from "./fixtures/uxPersonas";
 import { buildPlan } from "./helpers/build";
 
-/** UX-3: one fuel rule. "Keep every vehicle at least half full", plus "fill up completely" only when the trip needs more. */
+/** UX-3: one fuel rule. "Keep every gas vehicle at least half full", plus "fill up completely" only when the trip needs more. */
 const PER_TANK_TARGET = /\b(each|every|per) tank\b[^.]{0,30}\d|\btank (above|minimum|at least) \d|\bKeep in each tank\b|\bfuel reserve per (car|vehicle)\b/i;
 const OLD_RULE = /half a tank/i;
 const FUEL_IN_CABIN = /\b(carry|keep|store|bring|put)\b[^.]{0,40}\b(gas|gasoline|fuel|gas cans?)\b[^.]{0,40}\b(in|inside)\s+(the|your)\s+(car|vehicle|cabin|trunk)\b/i;
@@ -28,7 +28,8 @@ describe("fuel rule (UX-3)", () => {
     expect("Keep a spare gas can in the trunk.").toMatch(FUEL_IN_CABIN);
     expect("Never store spare gasoline inside the car cabin").toMatch(FUEL_IN_CABIN);
     expect(/\b(never|don't|do not|not)\b/i.test("Never store spare gasoline inside the car cabin")).toBe(true);
-    expect("Keep every vehicle at least half full.").not.toMatch(PER_TANK_TARGET);
+    expect(HALF_FULL).not.toMatch(PER_TANK_TARGET);
+    expect(`Gas vehicles: ${HALF_FULL}`).not.toMatch(PER_TANK_TARGET);
     expect("keep each tank above 15 gallons").toMatch(PER_TANK_TARGET);
   });
 
