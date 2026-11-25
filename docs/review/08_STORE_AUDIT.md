@@ -14,18 +14,21 @@ shape than the file store. Problems that change behaviour also count: a differen
 - **3 fields dropped**, in 2 tables:
   - `gear_catalog.level` and `gear_catalog.excludes` (CAT-01, launch blocker);
   - a plan's `inventory` given at creation (`plans`).
-- **18 mistyped or drifting**, in 7 tables:
+- **20 mistyped or drifting**, in 7 tables (two of them found by the code review of this branch):
   - 12 timestamps returned in Postgres format instead of ISO;
   - catalog row shape;
   - catalog order;
   - plan `checks` default;
   - email event order;
   - the stale-questionnaire boundary;
-  - consumed-token aliasing.
+  - consumed-token aliasing;
+  - affiliate-click stats capped at 1000 rows;
+  - plan list order when two plans share a millisecond.
 - **0 renamed without a mapping.** The renames that exist are all mapped: `group` ↔ `item_group`,
   `requiresGroup` ↔ `requires_group`, `affiliateUrl` ↔ `affiliate_url`, camelCase ↔ snake_case prices and dates, and
   the sealed `*_json` columns.
-- **Schema fixes:** all in `0009_catalog_fields.sql`. No `0010` was needed: every other fix is in the mapping code.
+- **Schema fixes:** `0009_catalog_fields.sql` (catalog fields) and `0010_click_counts.sql` (click counts in SQL).
+  Every other fix is in the mapping code.
 - **Coverage:** every row below is covered by the shared store contract (`tests/helpers/storeContract.ts`). It runs
   against the file store in `npm test` and against Postgres in the `store-postgres` CI job.
 
@@ -48,6 +51,8 @@ shape than the file store. Problems that change behaviour also count: a differen
 | 13 | email_events | `sent_at` | as 7 | Mistyped | ISO |
 | 14 | email_events | `listEmailEvents` order | unspecified | Drift: the file store used insertion order | Both order by `sent_at` |
 | 15 | rule_constants | `created_at` | as 7 | Mistyped | ISO |
+| 16 | email_events | `stats()` affiliate clicks and top items | fetched click rows; PostgREST returns at most 1000 per request | Drift: counts stopped at 1000 in Supabase, not in the file store; ties in the top 8 had no set order | 0010 `affiliate_click_counts()` counts in SQL; both stores sort the top 8 by clicks, then item id |
+| 17 | plans | `listPlans` ties | `created_at` in microseconds | Drift: the file store's millisecond timestamps could tie, and ties came back oldest first | File store breaks ties by creation order, newest first |
 
 Rows 7, 8, 10, 11, 13 and 15 add up to the 12 timestamp fields.
 
@@ -65,8 +70,16 @@ Rows 7, 8, 10, 11, 13 and 15 add up to the 12 timestamp fields.
 | rate_limits | `rate_limit_hit()` has the same fixed-window rule as the file store |
 | (derived) | `stats()` counts the same rows in both stores |
 
+## Also fixed (file store only, found by the code review)
+
+- On a fresh demo install the file store handed out the shared `SEED_CATALOG` array, so the first admin edit changed
+  the seed in memory for every later plan. It now starts from a copy.
+- The store test refuses any `SUPABASE_TEST_URL` that isn't 127.0.0.1 or localhost, because the contract empties the
+  catalog and deletes anonymous questionnaires.
+
 ## Not changed
 
-- **Re-seeding:** `npm run seed` upserts the seed; it doesn't delete catalog items an admin added. An empty table seeded
-  this way holds exactly the seed catalog (tested). Rows added in the admin are kept on re-seed, on purpose.
-- **Not applied anywhere:** 0009 is a file. The owner applies migrations in order: README, "Deploy checklist".
+- **Re-seeding:** `npm run seed` upserts the seed. That resets every seed item to its seed values, including admin
+  edits to those items. It doesn't delete items an admin added (new ids). An empty table seeded this way holds
+  exactly the seed catalog (tested).
+- **Not applied anywhere:** 0009 and 0010 are files. The owner applies migrations in order: README, "Deploy checklist".

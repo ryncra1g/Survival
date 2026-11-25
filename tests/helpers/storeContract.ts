@@ -189,6 +189,19 @@ export function storeContract(name: string, load: () => Promise<Store>) {
       expect(after.affiliateClicks).toBe(before.affiliateClicks + 1);
     });
 
+    it("stats: top clicked items, most clicks first, ties by item id (counted in SQL on Supabase)", async () => {
+      const u = await user();
+      const tag = uniq();
+      const click = (id: string) => s.addEmailEvent({ user_id: u.id, type: "affiliate_click", provider_id: `${tag}-${id}`, sent_at: new Date().toISOString() });
+      for (const id of ["b", "a", "c", "b", "a", "c", "b", "a", "c", "c"]) await click(id);
+      const top = (await s.stats()).topClicks.filter((t) => t.itemId.startsWith(tag));
+      expect(top).toStrictEqual([
+        { itemId: `${tag}-c`, clicks: 4 },
+        { itemId: `${tag}-a`, clicks: 3 },
+        { itemId: `${tag}-b`, clicks: 3 },
+      ]);
+    });
+
     it("stale anonymous questionnaires go, with their plans; questionnaires with an email stay", async () => {
       const u = await user();
       const anon = await s.createQuestionnaire({ user_id: null, session_nonce: `n-${uniq()}`, answers: { zip: "1" }, complete: true, version: 2 });

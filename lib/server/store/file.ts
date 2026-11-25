@@ -35,9 +35,13 @@ const now = () => new Date().toISOString();
 export function clickStats(events: { type: string; provider_id: string | null }[]) {
   const counts = new Map<string, number>();
   for (const e of events) if (e.type === "affiliate_click" && e.provider_id) counts.set(e.provider_id, (counts.get(e.provider_id) ?? 0) + 1);
+  return clickCounts([...counts.entries()].map(([itemId, clicks]) => ({ itemId, clicks })));
+}
+/** Totals and the top 8 items, most clicks first, ties by item id (the same order in every store). */
+export function clickCounts(rows: { itemId: string; clicks: number }[]) {
   return {
-    affiliateClicks: [...counts.values()].reduce((t, n) => t + n, 0),
-    topClicks: [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([itemId, clicks]) => ({ itemId, clicks })),
+    affiliateClicks: rows.reduce((t, r) => t + r.clicks, 0),
+    topClicks: [...rows].sort((a, b) => b.clicks - a.clicks || (a.itemId < b.itemId ? -1 : a.itemId > b.itemId ? 1 : 0)).slice(0, 8),
   };
 }
 
@@ -45,7 +49,8 @@ function load(): DB {
   try {
     return JSON.parse(fs.readFileSync(FILE, "utf8")) as DB;
   } catch {
-    return { users: [], questionnaires: [], plans: [], tokens: [], gear_catalog: SEED_CATALOG, rule_constants: [], email_events: [], rate_limits: {} };
+    // A copy: writes must never change the shared SEED_CATALOG in memory (code review).
+    return { users: [], questionnaires: [], plans: [], tokens: [], gear_catalog: structuredClone(SEED_CATALOG), rule_constants: [], email_events: [], rate_limits: {} };
   }
 }
 function save(db: DB) {
@@ -193,10 +198,12 @@ export const fileStore: Store = {
     });
   },
   async listPlans(userId) {
+    // Newest first; plans made in the same millisecond keep creation order (later first), like Supabase's microseconds.
     return load()
-      .plans.filter((p) => p.user_id === userId)
-      .sort((a, b) => b.created_at.localeCompare(a.created_at))
-      .map(pOut);
+      .plans.map((p, i) => ({ p, i }))
+      .filter(({ p }) => p.user_id === userId)
+      .sort((a, b) => b.p.created_at.localeCompare(a.p.created_at) || b.i - a.i)
+      .map(({ p }) => pOut(p));
   },
   async createToken(t) {
     tx((db) => void db.tokens.push(t));

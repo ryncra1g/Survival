@@ -112,15 +112,16 @@ Copy `.env.example` to `.env.local`.
 
 ## Deployment (Vercel + Supabase + Resend)
 
-1. **Supabase.** Create a project, then run every file in [`supabase/migrations/`](supabase/migrations/), **from 0001 through the last one (currently `0009_catalog_fields`), in order**, in the SQL editor (or `supabase db push`). Don't skip any: each builds on the ones before.
+1. **Supabase.** Create a project, then run every file in [`supabase/migrations/`](supabase/migrations/), **from 0001 through the last one (currently `0010_click_counts`), in order**, in the SQL editor (or `supabase db push`). Don't skip any: each builds on the ones before.
    - 0001 creates the tables, the `rate_limit_hit` function, RLS with no policies, and a private `plans` storage bucket.
    - 0002–0003: anonymous start and optional email.
    - 0004–0005: checklist ticks and consent records.
    - 0006–0008: the accounts track (`ACCOUNTS_ENABLED`): inventory, My places and reminder preferences.
    - **0009 (launch blocker, CAT-01):** gear `level` and `excludes`, with a backfill for catalogs seeded before it. Without it, gear levels and Compare options don't work in production.
+   - 0010: `affiliate_click_counts()`, so the admin's click stats aren't capped at 1000 rows.
 
-   The owner applies migrations; nothing in this repo applies them to a real project. CI applies all of them, in order, to a throwaway local Supabase stack and runs the store contract against it (job `store-postgres`, [docs/review/08_STORE_AUDIT.md](docs/review/08_STORE_AUDIT.md)). A project already on 0008 only needs 0009.
-2. **Seed the catalog.** Run `SUPABASE_URL=… SUPABASE_SERVICE_ROLE_KEY=… npm run seed`. It upserts the seed (safe to re-run); items added in the admin are kept.
+   The owner applies migrations; nothing in this repo applies them to a real project. CI applies all of them, in order, to a throwaway local Supabase stack and runs the store contract against it (job `store-postgres`, [docs/review/08_STORE_AUDIT.md](docs/review/08_STORE_AUDIT.md)). A project already on 0008 only needs 0009 and 0010.
+2. **Seed the catalog.** Run `SUPABASE_URL=… SUPABASE_SERVICE_ROLE_KEY=… npm run seed`. It upserts the seed: re-running resets every seed item to the seed values (including admin edits to those items); items added in the admin (new ids) are kept.
 3. **Resend.** Verify your sending domain (SPF/DKIM/DMARC), create an API key, and add a webhook to `https://YOUR_APP/api/webhooks/resend` for `email.opened`, `email.bounced` and `email.complained`.
 4. **Turnstile.** Create a widget for your domain.
 5. **Vercel.** Import the repo, set the env vars above and deploy. `vercel.json` schedules the daily follow-up cron.

@@ -4,7 +4,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { catIn, catOut, type CatalogDb } from "@/lib/catalog/db";
 import { env } from "../env";
 import { seal, unseal, type Sealed } from "../crypto";
-import { clickStats } from "./file";
+import { clickCounts } from "./file";
 import { canonicalCatalogOrder } from "@/lib/catalog/order";
 import type { EmailEventRow, PlanRow, QuestionnaireRow, RuleConstantsRow, Stats, Store, TokenRow, UserRow } from "./types";
 import { AI_COPY_EVENT } from "./types";
@@ -182,7 +182,8 @@ export const supabaseStore: Store = {
     return r.data as boolean;
   },
   async stats(): Promise<Stats> {
-    const clicks = (must(await db().from("email_events").select("type, provider_id").eq("type", "affiliate_click").limit(50_000)) ?? []) as { type: string; provider_id: string | null }[];
+    // Counted in SQL (0010): PostgREST returns at most 1000 rows per request, so fetching click rows undercounted.
+    const clickRows = (must(await db().rpc("affiliate_click_counts")) ?? []) as { item_id: string; clicks: number | string }[];
     const [signups, confirmed, started, completed, plans, sent, opens, unsub, withEmail, aiCopies] = await Promise.all([
       count("users"),
       count("users", (q) => q.not("double_opt_in_at", "is", null)),
@@ -195,6 +196,6 @@ export const supabaseStore: Store = {
       count("plans", (q) => q.not("user_id", "is", null)),
       count("email_events", (q) => q.eq("type", AI_COPY_EVENT)),
     ]);
-    return { signups, confirmed, questionnairesStarted: started, questionnairesCompleted: completed, plansGenerated: plans, emailsSent: sent, emailOpens: opens, unsubscribed: unsub, plansWithEmail: withEmail, aiCopies, ...clickStats(clicks) };
+    return { signups, confirmed, questionnairesStarted: started, questionnairesCompleted: completed, plansGenerated: plans, emailsSent: sent, emailOpens: opens, unsubscribed: unsub, plansWithEmail: withEmail, aiCopies, ...clickCounts(clickRows.map((r) => ({ itemId: r.item_id, clicks: Number(r.clicks) }))) };
   },
 };

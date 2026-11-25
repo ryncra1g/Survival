@@ -24,7 +24,10 @@ describe("gear_catalog mapping (CAT-01)", () => {
     expect(catOut(catIn({ ...full, qty: 3 })).qty).toBe(3);
   });
 
-  it("migration 0009's backfill sets exactly the seed's levels and excludes", () => {
+  // Frozen to the migration, not to the growing seed: new seed levels reach production through `npm run seed`
+  // or a new migration, never by editing 0009 (already applied in production). Every 0009 line must still agree
+  // with the seed, and every slot item that existed when 0009 shipped is covered.
+  it("migration 0009's backfill agrees with the seed", () => {
     const sql = readFileSync("supabase/migrations/0009_catalog_fields.sql", "utf8");
     const rows = [...sql.matchAll(/^update gear_catalog set (.+) where id = '([^']+)' and level is null and excludes = '\{\}';$/gm)];
     const got = new Map(rows.map((m) => {
@@ -32,8 +35,11 @@ describe("gear_catalog mapping (CAT-01)", () => {
       const ex = /excludes = array\[(.+)\]::text\[\]/.exec(m[1])?.[1];
       return [m[2], { level, excludes: ex ? ex.split(", ").map((x) => x.replace(/'/g, "")) : undefined }];
     }));
-    const want = SEED_CATALOG.filter((i) => i.level || i.excludes?.length);
-    expect(got.size).toBe(want.length);
-    for (const i of want) expect(got.get(i.id), i.id).toEqual({ level: i.level, excludes: i.excludes });
+    expect(got.size).toBe(27); // the slot items in the seed when 0009 shipped
+    for (const [id, v] of got) {
+      const i = SEED_CATALOG.find((x) => x.id === id);
+      expect(i, id).toBeDefined();
+      expect(v, id).toEqual({ level: i!.level, excludes: i!.excludes });
+    }
   });
 });
