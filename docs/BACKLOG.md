@@ -511,3 +511,13 @@ UX-7 and UX-14 are deferred (owner). New, **Suggested**:
 - **UX-27** (P3, Suggested): with the summary in the sticky bar, the Terms box starts under the bar at 375×812.
   Tapping Build still scrolls to it and focuses it.
 
+### Owner decision, November 25, 2026 (PR #16, final items)
+
+- **UX-12 follow-up:** for households with mobility needs, 7-gallon jugs and 3.5-gallon bricks are back as
+  non-default choices in Compare options, each with "Heavy when full (about N lb). Choose only if someone can lift
+  it, or store it where you'll use it." The default stays 1-gallon jugs; heavy containers are never picked or set
+  aside automatically, and a choice is honoured (FACTCHECK WT-11, WT-13).
+  - **Not done: 55-gallon drums.** Drums aren't a level in Compare for any household (the engine adds them for
+    large storage spaces), so offering them would need a new kind of choice. They stay off for mobility
+    households. Question for the owner.
+

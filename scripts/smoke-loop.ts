@@ -74,8 +74,11 @@ async function run(i: number): Promise<R> {
     r = await req("choosePage", `/plan/${newPid}`);
     const h2 = await r.text();
     if (p.a.elderlyOrMobility) {
-      // UX-12: households with mobility needs only get water containers they can lift, whatever level is asked for.
-      if (h2.includes("Stackable water bricks") || h2.includes("7-gallon water container")) fail("heavy water containers offered to a mobility household");
+      // Owner decision (PR #16): heavy containers are Compare-only choices for mobility households, and a choice is
+      // honoured. The smoke run chose Premium, so the bricks are picked, and the 7-gallon option shows its warning.
+      if (!h2.includes("Stackable water bricks")) fail("chosen premium water not honoured for a mobility household");
+      if (!/✓ <!-- -->Premium|✓ Premium/.test(h2)) fail("premium not marked selected");
+      if (!h2.includes("Heavy when full (about")) fail("no heavy-container warning in Compare");
       if (!h2.includes("Keep water where you won&#x27;t need to lift it far") && !h2.includes("Keep water where you won't need to lift it far")) fail("no keep-water-close line");
     } else {
       if (!h2.includes("Stackable water bricks")) fail("premium water not shown after choose");

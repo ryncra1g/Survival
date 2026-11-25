@@ -18,7 +18,12 @@ export type CompareRow = {
   newTotal: string;
   /** "$310 over your budget", or null when within it (or the budget has no top). */
   over: string | null;
+  /** Owner decision: full weight in lb when this option is heavy for a household with mobility needs. */
+  heavyLb?: number;
 };
+
+/** Owner decision (PR #16): the warning on a heavy container offered to a household with mobility needs. */
+export const heavyWarning = (lb: number) => `Heavy when full (about ${Math.round(lb)} lb). Choose only if someone can lift it, or store it where you'll use it.`;
 
 /**
  * UX-11: the one plan total. The Budget by phase card, the budget section and Compare options all show the whole
@@ -46,7 +51,7 @@ export function compareOptions(
     // The same total as the budget section, with this option's prices swapped in.
     const lo = budget.totalLow - (current.low ?? 0) + (l.low ?? 0);
     const hi = budget.totalHigh - (current.high ?? 0) + (l.high ?? 0);
-    return { level: l.level, name: l.name, price: l.price, diff: `${d >= 0 ? "+" : "−"}${usd(Math.abs(d))}`, newTotal: gearTotal({ totalLow: lo, totalHigh: hi }), over };
+    return { level: l.level, name: l.name, price: l.price, diff: `${d >= 0 ? "+" : "−"}${usd(Math.abs(d))}`, newTotal: gearTotal({ totalLow: lo, totalHigh: hi }), over, ...(l.heavyLb ? { heavyLb: l.heavyLb } : {}) };
   };
   const others = levels.filter((l) => !l.selected && l.low !== undefined);
   if (levels.some((l) => l.level === "mix")) return { ...empty, alternatives: others.map(row) };

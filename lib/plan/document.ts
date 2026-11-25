@@ -10,6 +10,8 @@ const LevelOptionSchema = z.object({
   /** D3: line totals for this level (USD), so Compare options can show the difference and the new total. */
   low: z.number().optional(),
   high: z.number().optional(),
+  /** Heavy when full for a household with mobility needs (lb, from the catalog); Compare shows a warning. */
+  heavyLb: z.number().optional(),
 });
 export type LevelOption = z.infer<typeof LevelOptionSchema>;
 

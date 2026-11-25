@@ -24,13 +24,13 @@ const seed: Seed[] = [
     id: "water-jug", category: "Water", name: "7-gallon water container",
     spec: "Food-grade HDPE (#2), BPA-free, with spigot; stack no more than 2 high",
     models: ["Reliance Aqua-Tainer 7 gal", "Scepter 7 gal water container"], priceLow: 20, priceHigh: 35, tier: 1, phase: 1, priority: 2,
-    qty: "water_jugs", tags: ["!mobility"], group: "water", level: "standard",
+    qty: "water_jugs", tags: [], fullWeightLb: 62, group: "water", level: "standard",
   },
   {
     id: "water-gallons", category: "Water", name: "Gallon water jugs or refilled bottles (low-cost)",
     spec: "Store-bought 1-gallon water, or clean 2-liter soda bottles refilled with tap water (not milk jugs)",
     models: ["Any store-brand gallon water"], priceLow: 1, priceHigh: 1.5, tier: 1, phase: 1, priority: 2,
-    qty: "water_gallons", tags: [], essential: true, group: "water", level: "essential",
+    qty: "water_gallons", tags: [], fullWeightLb: 9, essential: true, group: "water", level: "essential",
   },
   {
     id: "water-drum", category: "Water", name: "55-gallon water drum kit",
@@ -269,7 +269,7 @@ const seed: Seed[] = [
     id: "water-bricks", category: "Water", name: "Stackable water bricks",
     spec: "Rigid 3.5-gal stackable BPA-free bricks with spigot caps; stack 4–5 high in a closet or under shelves",
     models: ["WaterBrick 3.5 gal", "Augason Farms stackable"], priceLow: 25, priceHigh: 35, tier: 3, phase: 1, priority: 2,
-    qty: "water_bricks", tags: ["!mobility"], group: "water", level: "premium",
+    qty: "water_bricks", tags: [], fullWeightLb: 31, group: "water", level: "premium",
   },
   {
     id: "generator-standby", category: "Power", name: "Whole-home standby generator (professionally installed)",

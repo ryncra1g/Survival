@@ -56,6 +56,8 @@ export interface WaterResult {
   filterDays: number;
   filterGal: number;
   jugs: number;
+  /** 7-gallon jugs needed (without drums): the jug option's quantity, even when the default container is liftable. */
+  standardJugs: number;
   drums: number;
   /** UX-12: someone has limited mobility, so water goes in containers they can lift (no 7-gal jugs, bricks or drums). */
   liftable: boolean;
@@ -103,6 +105,7 @@ export function computeWater(a: Answers, c: RuleConstants): WaterResult {
     filterDays,
     filterGal,
     jugs,
+    standardJugs: liftable ? ceil(storedGal / c.water.jugGallons) : jugs,
     drums,
     liftable,
     threeDayGal: ceil(round(dailyGal * Math.min(3, a.scenarioDays), 4)),
@@ -538,6 +541,8 @@ export interface SlotOption {
   qty: number;
   low: number;
   high: number;
+  /** Owner decision: full weight (lb) when this option is heavy for a household with mobility needs. */
+  heavyLb?: number;
 }
 /** One à la carte gear slot: the level chosen (by budget default or by the person) and every level's price. */
 export interface Slot {
@@ -571,7 +576,7 @@ export function resolveQty(item: CatalogItem, ctx: { water: WaterResult; power: 
     case "co_alarms":
       return ctx.a.floors + (ctx.a.hasBasement ? 1 : 0) + 1;
     case "water_jugs":
-      return ctx.water.jugs;
+      return ctx.water.standardJugs;
     case "water_bricks":
       return Math.ceil(Math.max(0, ctx.water.storedGal - ctx.water.drums * 55) / 3.5);
     case "food_buckets":
@@ -611,6 +616,9 @@ export function computeBudget(
   kitsWanted = false,
 ): BudgetResult {
   const planningAmount = c.budget.planningAmount[a.budget];
+  // Owner decision (PR #16): with mobility needs, containers heavier than mobilityMaxLb when full are offered in
+  // Compare options only. They are never picked or set aside automatically; a person's own choice is honoured.
+  const heavy = (it: CatalogItem) => tags.has("mobility") && (it.fullWeightLb ?? 0) > c.water.mobilityMaxLb;
   const tier = c.budget.tierByBudget[a.budget];
   const choices = (a.gearChoices ?? {}) as Record<string, SlotLevel>;
   const defaultRank = LEVEL_RANK[(c.budget.defaultLevel[a.budget] ?? "standard") as SlotLevel];
@@ -701,7 +709,7 @@ export function computeBudget(
     const choice = group ? choices[group] : undefined;
     const chosenByPerson = choice ? viable.find((o) => o.item.level === choice) : undefined;
     // Default: the budget's level or lower, best first; a person's own choice always wins (even over budget).
-    const atOrBelow = group ? viable.filter((o) => LEVEL_RANK[o.item.level ?? "standard"] <= defaultRank) : viable;
+    const atOrBelow = (group ? viable.filter((o) => LEVEL_RANK[o.item.level ?? "standard"] <= defaultRank) : viable).filter((o) => !heavy(o.item));
     const fit =
       chosenByPerson ??
       atOrBelow.find((o) => o.item.essential || spent + o.mid + bundleFor(o).reduce((t, b) => t + b.mid, 0) <= ceiling);
@@ -715,7 +723,7 @@ export function computeBudget(
           .sort((x, y) => LEVEL_RANK[x.item.level ?? "standard"] - LEVEL_RANK[y.item.level ?? "standard"])
           .map((o) => {
             const b = bundleFor(o);
-            return { level: (o.item.level ?? "standard") as SlotLevel, itemId: o.item.id, name: o.item.name, qty: o.qty, low: o.low + b.reduce((t, x) => t + x.low, 0), high: o.high + b.reduce((t, x) => t + x.high, 0) };
+            return { level: (o.item.level ?? "standard") as SlotLevel, itemId: o.item.id, name: o.item.name, qty: o.qty, low: o.low + b.reduce((t, x) => t + x.low, 0), high: o.high + b.reduce((t, x) => t + x.high, 0), ...(heavy(o.item) ? { heavyLb: o.item.fullWeightLb } : {}) };
           }),
       });
     if (fit) {
@@ -730,7 +738,8 @@ export function computeBudget(
         bundled.add(x.item.id);
       }
     } else {
-      const pool = atOrBelow.length ? atOrBelow : viable;
+      const light = viable.filter((o) => !heavy(o.item));
+      const pool = atOrBelow.length ? atOrBelow : light.length ? light : viable;
       const cheapest = [...pool].sort((x, y) => x.mid - y.mid)[0];
       if (cheapest.item.group) deferredGroups.add(cheapest.item.group);
       deferred.push({ ...cheapest, status: "deferred", reason: "Doesn't fit the remaining budget — buy next" });

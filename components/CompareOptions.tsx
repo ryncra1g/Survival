@@ -1,5 +1,5 @@
 import type { LevelOption, Overview } from "@/lib/plan/document";
-import { compareOptions, LEVEL_LABEL as LABEL, type CompareRow, GEAR_TOTAL_LABEL, gearTotal } from "@/lib/plan/compare";
+import { compareOptions, LEVEL_LABEL as LABEL, type CompareRow, GEAR_TOTAL_LABEL, gearTotal, heavyWarning } from "@/lib/plan/compare";
 
 /**
  * D3 / GEAR-01: one main pick per slot, plus "Compare options": Lower-cost, Upgrade and Other choices,
@@ -26,7 +26,7 @@ export function CompareOptions({
   const { current, lower, upgrade, alternatives } = compareOptions(levels, budget);
   // Plans saved before Compare options had no prices per level: list the levels to switch to.
   const fallback: CompareRow[] = current && !lower.length && !upgrade.length && !alternatives.length
-    ? levels.filter((l) => !l.selected).map((l) => ({ level: l.level, name: l.name, price: l.price, diff: "", newTotal: "", over: null }))
+    ? levels.filter((l) => !l.selected).map((l) => ({ level: l.level, name: l.name, price: l.price, diff: "", newTotal: "", over: null, ...(l.heavyLb ? { heavyLb: l.heavyLb } : {}) }))
     : [];
   const Row = ({ r }: { r: CompareRow }) => {
     const label = `Switch to ${LABEL[r.level]}: ${r.name}, ${r.price}`;
@@ -40,6 +40,7 @@ export function CompareOptions({
             {r.diff && <> · <span className="text-ink font-medium">{r.diff}</span> · {GEAR_TOTAL_LABEL}: {r.newTotal}</>}
           </p>
           {r.over && <p className="text-warn font-medium">{r.over}</p>}
+          {r.heavyLb && <p className="text-warn font-medium" data-testid="heavy-warning">{heavyWarning(r.heavyLb)}</p>}
         </div>
         {onChoose ? (
           <button type="button" className={btn} aria-label={label} onClick={() => onChoose(group, r.level)}>Switch</button>
