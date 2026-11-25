@@ -41,11 +41,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="mx-auto max-w-3xl px-4 py-6 space-y-2">
             <p>General preparedness guidance, not professional advice. Follow official instructions in an emergency. Prices and products change.</p>
             <p className="flex flex-wrap gap-x-4 gap-y-1">
-              <Link href="/privacy" className="tap underline">Privacy</Link>
-              <Link href="/terms" className="tap underline">Terms</Link>
-              <Link href="/sources" className="tap underline">Sources &amp; safety</Link>
-              <Link href="/account#data" className="tap underline">Export or delete my data</Link>
-              <a href="https://www.ready.gov" className="tap underline" rel="noopener">Ready.gov</a>
+              <Link href="/privacy" className="tap -mx-2 px-2 underline">Privacy</Link>
+              <Link href="/terms" className="tap -mx-2 px-2 underline">Terms</Link>
+              <Link href="/sources" className="tap -mx-2 px-2 underline">Sources &amp; safety</Link>
+              <Link href="/account#data" className="tap -mx-2 px-2 underline">Export or delete my data</Link>
+              <a href="https://www.ready.gov" className="tap -mx-2 px-2 underline" rel="noopener">Ready.gov</a>
             </p>
           </div>
         </footer>
