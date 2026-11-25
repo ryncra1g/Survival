@@ -738,19 +738,6 @@
               }
             },
             {
-              "id": "d60-phase2",
-              "text": "Buy your Phase 2 (power & comfort) gear: 3 items, about $790–$1,590.",
-              "buy": [
-                "generator-small",
-                "gen-cord",
-                "gas-cans"
-              ],
-              "see": {
-                "label": "Open your shopping list",
-                "anchor": "shopping"
-              }
-            },
-            {
               "id": "d60-20",
               "text": "Assemble the sanitation kit (two-bucket toilet, bags, absorbent).",
               "buy": [
@@ -770,6 +757,19 @@
               "link": {
                 "label": "Hazard-by-hazard guides (Ready.gov)",
                 "url": "https://www.ready.gov/be-informed"
+              }
+            },
+            {
+              "id": "d60-phase2",
+              "text": "Buy your Phase 2 (power & comfort) gear: 3 items, about $790–$1,590.",
+              "buy": [
+                "generator-small",
+                "gen-cord",
+                "gas-cans"
+              ],
+              "see": {
+                "label": "Open your shopping list",
+                "anchor": "shopping"
               }
             },
             {
