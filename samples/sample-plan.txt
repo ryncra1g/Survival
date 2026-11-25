@@ -48,7 +48,7 @@ This week
 [ ] Set aside $1,200 in small bills. (Build a kit (Ready.gov): https://www.ready.gov/kit)
 [ ] Find and label your main water shutoff, gas shutoff and electrical panel. (Make a plan (Ready.gov): https://www.ready.gov/plan)
 [ ] Buy 2 weeks of diapers (84) and wipes. (Planning with kids (Ready.gov): https://www.ready.gov/kids/family-emergency-planning)
-[ ] Keep every vehicle at least half full. (Plan your evacuation (Ready.gov): https://www.ready.gov/evacuation)
+[ ] Keep every gas vehicle at least half full. (Plan your evacuation (Ready.gov): https://www.ready.gov/evacuation)
 Phase 1 shopping list (life safety)
 - Carbon monoxide alarm × 4 (Typical $20–$40 each): UL 2034 listed, battery or plug-in with battery backup, digital readout; one per floor and outside each sleeping area
 - 7-gallon water container × 8 (Typical $20–$35 each): Food-grade HDPE (#2), BPA-free, with spigot; stack no more than 2 high
@@ -80,9 +80,11 @@ Later
 [ ] Complete the full 90 days food list: 551 lb of bulk staples plus the rest of your food mix.
 [ ] Buy the generator and fuel storage; test-run it outdoors, 20+ ft from the house, under load. (Carbon monoxide safety (CDC): https://www.cdc.gov/carbon-monoxide/about/index.html)
 [ ] Set up water filtration + collection for days 15–90 (293 gallons). (Make water safe to drink (EPA): https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water)
+[ ] Buy your Phase 2 (power & comfort) gear: 3 items, about $790–$1,590.
 [ ] Assemble the sanitation kit (two-bucket toilet, bags, absorbent). (Build a kit (Ready.gov): https://www.ready.gov/kit)
 [ ] Pre-cut and label window protection. (Hazard-by-hazard guides (Ready.gov): https://www.ready.gov/be-informed)
 [ ] Buy your Phase 3 upgrades: 1 item, about $10–$20.
+[ ] When the budget allows: 19 items set aside in your shopping list, about $2,255–$5,515.
 [ ] Run a 'lights-out weekend': live off your plan for 24–48 hours and fix what breaks. (Power outages (Ready.gov): https://www.ready.gov/power-outages)
 [ ] Drive the route to your raw land and back; note fuel stops and alternates. (Plan your evacuation (Ready.gov): https://www.ready.gov/evacuation)
 [ ] Put the maintenance calendar on your phone.
@@ -398,7 +400,7 @@ Fuel & range
 Item | Amount
 Fuel per vehicle (one way) | 4.8 gal at 25 mpg
 Fuel for the trip | about 7.2 gal (one-way + 50% for detours/traffic)
-Keep every vehicle at least half full. Your trip needs about 7.2 gallons: fill up completely as soon as a storm or evacuation warning is issued.
+Keep every gas vehicle at least half full. Your trip needs about 7.2 gallons: fill up completely as soon as a storm or evacuation warning is issued.
 Raw-land gear (nothing is there — bring it all)
 Category | Gear | Note
 Shelter | Tent that sleeps everyone, 2 heavy tarps, paracord, stakes | Raw land has no buildings

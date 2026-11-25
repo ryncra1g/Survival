@@ -246,7 +246,7 @@
             },
             {
               "id": "week-8",
-              "text": "Keep every vehicle at least half full.",
+              "text": "Keep every gas vehicle at least half full.",
               "buy": [
                 "vehicle-kit",
                 "vehicle-kit-basic"
@@ -584,6 +584,24 @@
             {
               "id": "month-10",
               "text": "Buy the rest of your Phase 1 (life safety) gear: 16 items, about $977–$1,893.",
+              "buy": [
+                "co-alarm",
+                "water-jug",
+                "first-aid",
+                "tub-bladder",
+                "filter-gravity-bag",
+                "bleach",
+                "lights",
+                "batteries",
+                "radio",
+                "power-bank",
+                "extinguisher",
+                "thermometers",
+                "buddy-heater",
+                "propane-1lb",
+                "sleep-system",
+                "pipe-insulation"
+              ],
               "see": {
                 "label": "Open your shopping list",
                 "anchor": "shopping"
@@ -720,6 +738,19 @@
               }
             },
             {
+              "id": "d60-phase2",
+              "text": "Buy your Phase 2 (power & comfort) gear: 3 items, about $790–$1,590.",
+              "buy": [
+                "generator-small",
+                "gen-cord",
+                "gas-cans"
+              ],
+              "see": {
+                "label": "Open your shopping list",
+                "anchor": "shopping"
+              }
+            },
+            {
               "id": "d60-20",
               "text": "Assemble the sanitation kit (two-bucket toilet, bags, absorbent).",
               "buy": [
@@ -744,6 +775,38 @@
             {
               "id": "d90-22",
               "text": "Buy your Phase 3 upgrades: 1 item, about $10–$20.",
+              "buy": [
+                "water-tablets"
+              ],
+              "see": {
+                "label": "Open your shopping list",
+                "anchor": "shopping"
+              }
+            },
+            {
+              "id": "d90-budget-allows",
+              "text": "When the budget allows: 19 items set aside in your shopping list, about $2,255–$5,515.",
+              "buy": [
+                "inlet-interlock",
+                "flood-kit",
+                "propane-20",
+                "coolers",
+                "storage-kit",
+                "toilet-kit",
+                "window-protection",
+                "sump-backup",
+                "pet-kit",
+                "power-station-house",
+                "solar-panel",
+                "frs-radios",
+                "docs-pouch",
+                "morale-kit",
+                "filter-spare",
+                "go-bag-basic",
+                "vehicle-kit-basic",
+                "tarp-shelter",
+                "raw-land-water"
+              ],
               "see": {
                 "label": "Open your shopping list",
                 "anchor": "shopping"
@@ -2841,7 +2904,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Keep every vehicle at least half full. Your trip needs about 7.2 gallons: fill up completely as soon as a storm or evacuation warning is issued.",
+          "text": "Keep every gas vehicle at least half full. Your trip needs about 7.2 gallons: fill up completely as soon as a storm or evacuation warning is issued.",
           "kind": "know"
         },
         {
