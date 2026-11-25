@@ -385,9 +385,10 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   const d60: Step[] = [];
   const d90: Step[] = [];
   /** "Buy … gear: 18 items, about $1,234–$2,345." The full list with Buy buttons is the shopping list. */
-  const phaseStep = (phase: 1 | 3, lead: string) => {
+  // UX-25: each phase step offers every item in its phase, so every gear item has a To do step.
+  const phaseStep = (phase: 1 | 2 | 3, lead: string, id?: string): Step => {
     const items = gearPhaseItems(cp, phase);
-    return `${lead}: ${plural(items.length, "item")}, about ${usdRange(items.reduce((t, g) => t + g.low, 0), items.reduce((t, g) => t + g.high, 0))}.`;
+    return { ...(id ? { id } : {}), text: `${lead}: ${plural(items.length, "item")}, about ${usdRange(items.reduce((t, g) => t + g.low, 0), items.reduce((t, g) => t + g.high, 0))}.`, buy: items.map((p) => p.item.id) };
   };
   if (cp.flags.medicalDevicePriority)
     week.push({ text: "Most important: Call your medical-device supplier about battery backup, and register with your electric utility's medical-needs / life-support registry.", buy: ["med-battery"] });
@@ -463,11 +464,19 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   if (pw.generatorStatus === "recommended") d60.push({ text: "Buy the generator and fuel storage; test-run it outdoors, 20+ ft from the house, under load.", buy: ["generator-dual", "generator-small", "gas-cans"] });
   if (pw.generatorStatus === "owned_portable") d60.push("Service your generator (oil, plug, fresh stabilized fuel) and test-run it under load outdoors.");
   if (w.filterDays > 0) d60.push({ text: `Set up water filtration + collection for days ${n(w.storedDays + 1)}–${n(a.scenarioDays)} (${n(w.filterGal)} gallons).`, buy: ["filter-gravity", "filter-gravity-bag", "filter-basic"] });
+  if (gearPhaseItems(cp, 2).length) d60.push(phaseStep(2, "Buy your Phase 2 (power & comfort) gear", "d60-phase2"));
   d60.push({ text: "Assemble the sanitation kit (two-bucket toilet, bags, absorbent).", buy: ["toilet-kit"] });
   if (atLeast(prof.hurricane, "moderate") && !apt) d60.push({ text: "Pre-cut and label window protection.", buy: ["window-protection"] });
   if (d60.length < 3) d60.push("Rotate the first stored water and check expiration dates.");
 
   d90.push(gearPhaseItems(cp, 3).length ? phaseStep(3, "Buy your Phase 3 upgrades") : "Buy Phase 3 upgrades: comfort and communications.");
+  // Gear set aside because it doesn't fit the budget yet.
+  if (cp.budget.deferred.length)
+    d90.push({
+      id: "d90-budget-allows",
+      text: `When the budget allows: ${plural(cp.budget.deferred.length, "item")} set aside in your shopping list, about ${usdRange(cp.budget.deferred.reduce((t, g) => t + g.low, 0), cp.budget.deferred.reduce((t, g) => t + g.high, 0))}.`,
+      buy: cp.budget.deferred.map((p) => p.item.id),
+    });
   d90.push("Run a 'lights-out weekend': live off your plan for 24–48 hours and fix what breaks.");
   const routeText = cp.evacuation
     ? cp.evacuation.vehicles
@@ -475,8 +484,6 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       : `Confirm your ride to your ${LABELS.fallback[cp.evacuation.locationType].toLowerCase()} and a backup ride; save your county's evacuation-assistance number.`
     : null;
   if (routeText) d90.push(routeText);
-  // UX-7: 72-hour to 14-day plans have no 60/90-day stage, so the route step lives in "When you must leave" instead.
-  const routeStep: Step | null = routeText && a.scenarioDays < 30 ? { id: "evac-route", text: routeText, link: HOWTO.evacuation } : null;
   d90.push("Put the maintenance calendar on your phone.");
 
 
@@ -515,7 +522,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
 
   /**
    * UX-7 (owner decision): the plan opens on "This week": at most WEEK_MAX steps, in the priority order above.
-   * The rest go to "This month" (overflow first) and "Later". 72-hour to 14-day plans have no 60/90-day work.
+   * The rest go to "This month" (overflow first) and "Later" (the 60- and 90-day work, for every scenario length).
    * Every list still goes through check() in the same order, so step ids (and saved ticks) don't move.
    */
   function priorityBlocks(): Block[] {
@@ -527,8 +534,9 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     if (weekAll.type !== "checklist" || monthList.type !== "checklist" || d60List.type !== "checklist" || d90List.type !== "checklist") return [];
     const weekList: Block = { ...weekAll, items: weekAll.items.slice(0, WEEK_MAX) };
     const monthAll: Block = { ...monthList, items: [...weekAll.items.slice(WEEK_MAX), ...monthList.items] };
-    const longPlan = a.scenarioDays >= 30;
-    const later: Block[] = longPlan ? [{ ...d60List, items: [...d60List.items, ...d90List.items] }] : [];
+    // UX-25 (owner correction): scenario length is how long the outage lasts, not how long there is to prepare,
+    // so every plan keeps its 60- and 90-day preparation, merged into one collapsed "Later" group.
+    const later: Block[] = [{ ...d60List, items: [...d60List.items, ...d90List.items] }];
     return [
       { type: "subheading", text: STAGE.week },
       weekList,
@@ -694,7 +702,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
             w.liftable
               ? `${n(w.jugs)} ${liftable(c)} jugs or cases (about ${liftableLb(c)} lb each when full)`
               : cp.budget.picks.some((p) => p.item.id === "water-gallons")
-              ? `${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${n(w.storedGal - w.drums * 55)} gallon jugs or refilled 2-liter bottles (low-cost); upgrade to ${plural(w.jugs, "7-gal jug")} later`
+              ? `${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${n(w.storedGal - w.drums * 55)} gallon jugs or refilled 2-liter bottles (low-cost); upgrade to ${plural(w.jugs, "7-gal jug")} when you can`
               : `${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${plural(w.jugs, "7-gal jug")}`,
           ],
           ["Filter + collect", w.filterDays > 0 ? `${n(w.filterGal)} gal over ${n(w.filterDays)} days` : "Not needed for this scenario (keep bleach as backup)"],
@@ -1190,7 +1198,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       facts: rawLand ? ["The raw land has no shelter or utilities, so everything has to come with them"] : [],
       blocks: [
         ORDERS_OVERRIDE,
-        check("evac", routeStep ? [destinationTodo, routeStep] : [destinationTodo]),
+        check("evac", [destinationTodo]),
         {
           type: "ifthen",
           rows: [
@@ -1241,7 +1249,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       facts: [],
       blocks: [
         ORDERS_OVERRIDE,
-        check("evac", routeStep ? [destinationTodo, routeStep] : [destinationTodo]),
+        check("evac", [destinationTodo]),
         {
           type: "ifthen",
           rows: [

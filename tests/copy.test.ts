@@ -1,3 +1,4 @@
+import { renderPlanEmail } from "@/lib/email/render";
 import { describe, expect, it } from "vitest";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
@@ -104,5 +105,22 @@ describe("one screen count (UX-20)", () => {
     for (const f of ["components/Landing.tsx", "app/start/page.tsx"]) expect(readFileSync(f, "utf8"), f).toContain("About 10 quick screens");
     const all = ROOTS.flatMap(files).flatMap((f) => uncommented(readFileSync(f, "utf8")).filter((l) => /\b\d+ quick (questions|screens)\b/i.test(l) && !/About 10 quick screens/.test(l)).map((l) => `${f}: ${l.trim()}`));
     expect(all).toEqual([]);
+  });
+});
+
+/** UX-25: "Later" names one thing, the Priority-list stage. Set-aside gear is "when budget allows"; shopping phase 3 is "Upgrades". */
+describe('"Later" means one thing (UX-25)', () => {
+  it("no other label says later", () => {
+    const hits = ROOTS.flatMap(files).flatMap((f) =>
+      uncommented(readFileSync(f, "utf8"))
+        .filter((l) => /"Later \(|>later<|\(later\)|"later"\s*[,}]|Later \(upgrades\)/.test(l))
+        .map((l) => `${f}: ${l.trim().slice(0, 120)}`),
+    );
+    expect(hits).toEqual([]);
+  });
+  it("built plans and emails never use later for anything but the stage", async () => {
+    const r = await buildPlan();
+    const email = renderPlanEmail(r.document, { appUrl: "x", unsubscribeUrl: "x", mailingAddress: "x", planUrl: "x", pdfAttached: true }).html;
+    for (const t of [JSON.stringify(r.document), email]) expect(t).not.toMatch(/Later \(|\(later\)|<em>\(later/);
   });
 });

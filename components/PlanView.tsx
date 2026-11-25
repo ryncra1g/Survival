@@ -91,7 +91,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
               <li key={i.itemId} className={`${b.compact ? "py-2 items-center" : "py-3 items-start"} flex gap-3`}>
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold">
-                    {i.name} {i.qty && <span className="text-muted font-normal whitespace-nowrap">{i.qty}</span>} {i.later && <span className="text-xs align-middle rounded px-1.5 py-0.5 bg-bg border border-line font-normal">later</span>}
+                    {i.name} {i.qty && <span className="text-muted font-normal whitespace-nowrap">{i.qty}</span>} {i.later && <span className="text-xs align-middle rounded px-1.5 py-0.5 bg-bg border border-line font-normal">when budget allows</span>}
                   </p>
                   {!b.compact && <p className="text-sm text-muted mt-0.5">{i.spec}</p>}
                   <p className="text-sm mt-0.5">{i.price}{!b.compact && i.models.length ? ` · e.g. ${i.models.join("; ")}` : ""}</p>

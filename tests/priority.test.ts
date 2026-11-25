@@ -5,7 +5,7 @@ import { STAGE, WEEK_MAX } from "@/lib/plan/priority";
 import { ALL_HOUSEHOLDS, UX_PERSONAS } from "./fixtures/uxPersonas";
 import { buildPlan } from "./helpers/build";
 
-/** UX-6 / UX-7 (owner decision): the plan opens on "This week" (≤10 steps); the rest is under "This month" and "Later". */
+/** UX-6 / UX-7 / UX-25 (owner decisions): the plan opens on "This week" (≤10 steps); the rest is under "This month" and "Later". */
 const priorities = (doc: PlanDocument) => doc.sections.find((s) => s.id === "priorities")!.blocks;
 function stages(blocks: Block[]) {
   const out: Record<string, string[]> = {};
@@ -31,15 +31,11 @@ describe("Priority list stages (UX-7)", () => {
       if (st[STAGE.week].length < WEEK_MAX) expect(st[STAGE.month].some((id) => id.startsWith("week-"))).toBe(false);
       const all = JSON.stringify(r.document);
       expect(all).not.toMatch(/Within (60|90) days/);
-      const short = h.a.scenarioDays <= 14;
+      // UX-25 (owner correction): every scenario length keeps its 60- and 90-day preparation under "Later".
       const later = st[STAGE.later] ?? [];
-      if (short) {
-        expect(later).toEqual([]);
-        expect(all).not.toMatch(/"id":"d(60|90)-/);
-      } else {
-        expect(later.length).toBeGreaterThan(0);
-        expect(later.every((id) => /^d(60|90)-/.test(id))).toBe(true);
-      }
+      expect(later.length).toBeGreaterThan(0);
+      expect(later.every((id) => /^d(60|90)-/.test(id))).toBe(true);
+      expect(later.some((id) => id.startsWith("d60-")) && later.some((id) => id.startsWith("d90-"))).toBe(true);
     });
   }
 

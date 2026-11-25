@@ -1,7 +1,7 @@
 /**
  * UX-6 / UX-7 (owner decision): how the Priority list is staged and counted.
  * - The plan opens on "This week": the first 3 steps plus at most 7 more, in the engine's priority order.
- * - Everything else is under "This month" and "Later" (collapsed on the web). 72-hour to 14-day plans have no 60/90-day work.
+ * - Everything else is under "This month" and "Later" (the 60- and 90-day work, collapsed on the web). Every plan keeps them (UX-25).
  * - One step count everywhere: To do items only (checklists of kind "do").
  */
 export const WEEK_MAX = 10;

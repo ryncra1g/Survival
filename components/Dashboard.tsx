@@ -9,7 +9,7 @@ import { budgetStatus } from "@/lib/plan/compare";
 
 const usd = (v: number) => "$" + Math.round(v).toLocaleString("en-US");
 const usdRange = (lo: number, hi: number) => (Math.round(lo) === Math.round(hi) ? usd(lo) : `${usd(lo)}–${usd(hi)}`);
-const PHASE = { 1: "Buy now (life safety)", 2: "Next (power & comfort)", 3: "Later (upgrades)" } as const;
+const PHASE = { 1: "Buy now (life safety)", 2: "Next (power & comfort)", 3: "Upgrades" } as const;
 
 /** A priority step and the stage it belongs to ("This week", "This month"…), in plan order. */
 export type PriorityStep = { stage: string; step: StepView };
@@ -181,7 +181,7 @@ export function Dashboard({ overview, priority, buyHref }: { overview?: Overview
                               <span className="block">{g.name}</span>
                               <span className="block text-sm text-muted tabular">
                                 {g.qty > 1 ? `${g.qty} × ${usdRange(g.low / g.qty, g.high / g.qty)} = ` : ""}{usdRange(g.low, g.high)}
-                                {g.later && <span className="ml-2 text-xs rounded px-1.5 py-0.5 bg-bg border border-line">later</span>}
+                                {g.later && <span className="ml-2 text-xs rounded px-1.5 py-0.5 bg-bg border border-line">when budget allows</span>}
                               </span>
                             </span>
                           </label>

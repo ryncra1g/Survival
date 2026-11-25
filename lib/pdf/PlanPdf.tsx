@@ -108,7 +108,7 @@ function BlockView({ b }: { b: Block }) {
           <Table
             columns={["Item", "Look for", "Examples", "Price"]}
             rows={b.items.map((i) => [
-              `${i.category}: ${i.name}${i.qty ? ` ${i.qty}` : ""}${i.later ? " (later)" : ""}`,
+              `${i.category}: ${i.name}${i.qty ? ` ${i.qty}` : ""}${i.later ? " (when budget allows)" : ""}`,
               i.spec + (i.levels ? `\nLevels: ${i.levels.map((l) => `${l.selected ? "[x] " : ""}${l.level[0].toUpperCase() + l.level.slice(1)} ${l.price}`).join(" · ")}` : ""),
               i.models.join("; "),
               i.price,
