@@ -97,6 +97,23 @@ export type PetGroupT = z.infer<typeof PetGroup>;
 
 export const isDrive = (d: string | undefined): d is DriveDestination => !!d && (DRIVE_DESTINATIONS as readonly string[]).includes(d);
 
+/**
+ * UX-5 (owner decision): when the preferred approach is already a place, the destination question is pre-filled
+ * with it and only the distance is asked. Each place offers one alternative of the same kind (land with no
+ * buildings; a public shelter), so every destination stays reachable. "Stay home" and "Not sure" ask the full question.
+ */
+export const APPROACH_PLACE: Partial<Record<z.infer<typeof Approach>, { main: z.infer<typeof Destination>; alt?: z.infer<typeof Destination> }>> = {
+  family_friends: { main: "friends_family" },
+  another_property: { main: "second_property", alt: "raw_land" },
+  hotel_shelter: { main: "hotel", alt: "public_shelter" },
+};
+/** The destination that matches an approach (keeps the current one when it already fits). */
+export function destinationForApproach(approach: z.infer<typeof Approach>, current: z.infer<typeof Destination>): z.infer<typeof Destination> | null {
+  const p = APPROACH_PLACE[approach];
+  if (!p) return null;
+  return current === p.main || current === p.alt ? current : p.main;
+}
+
 /** Partial answers saved while the user is mid-questionnaire (autosave). */
 export const DraftAnswersSchema = z.record(z.string(), z.unknown());
 

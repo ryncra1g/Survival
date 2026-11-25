@@ -64,13 +64,13 @@ export function EmailMyPlan({ planId, siteKey = "", onSubmit, idPrefix = "emp" }
   return (
     <form onSubmit={submit} noValidate className="card p-4 sm:p-5 space-y-3 no-print" aria-labelledby={`${idPrefix}-h`}>
       <div>
-        <h2 id={`${idPrefix}-h`} className="text-lg font-bold">Email me my plan</h2>
+        <h2 id={`${idPrefix}-h`} className="text-lg font-bold">Save my plan</h2>
         <p className="text-sm text-muted mt-1">Keep it in your inbox with the PDF and fridge checklist attached, plus a link to come back and update it. Optional.</p>
       </div>
       <label htmlFor={`${idPrefix}-email`} className="sr-only">Email</label>
       <div className="flex flex-col sm:flex-row gap-2">
         <input id={`${idPrefix}-email`} type="email" inputMode="email" autoComplete="email" autoCapitalize="none" spellCheck={false} enterKeyHint="send" placeholder="you@example.com" className="input flex-1" value={email} onChange={(e) => { setError(""); setSuggestion(null); setEmail(e.target.value); }} />
-        <button className="btn shrink-0" disabled={busy}>{busy ? "Sending…" : "Email my plan"}</button>
+        <button className="btn shrink-0" disabled={busy}>{busy ? "Saving…" : "Save my plan"}</button>
       </div>
       {suggestion && (
         <p role="status" className="text-sm">
@@ -81,7 +81,7 @@ export function EmailMyPlan({ planId, siteKey = "", onSubmit, idPrefix = "emp" }
         <label htmlFor={`${idPrefix}-website`}>Website</label>
         <input id={`${idPrefix}-website`} tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
       </div>
-      <label className="flex gap-3 items-start cursor-pointer text-sm">
+      <label className="flex min-h-[44px] gap-3 items-start py-2 cursor-pointer text-sm">
         <input id={`${idPrefix}-updates`} type="checkbox" className="mt-0.5 size-5 shrink-0 accent-[var(--brand)]" checked={updates} onChange={(e) => setUpdates(e.target.checked)} />
         <span>Also send me seasonal reminders (winter, hurricane season) and occasional preparedness updates. <span className="text-muted">Unsubscribe any time.</span></span>
       </label>

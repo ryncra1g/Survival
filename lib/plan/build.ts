@@ -1,8 +1,10 @@
+import type { ZipProfile } from "@/lib/zip/profile";
 import { hasHouseholdFilter, hasPersonalFilter, LABELS, type Answers } from "@/lib/answers/schema";
+import { STAGE, WEEK_MAX } from "./priority";
 import { labelKinds } from "./kinds";
 import { maintenanceItems } from "./maintenance";
 import { dontDoFor, tipsFor, type TipArea } from "@/lib/tips/library";
-import { mixLabel, type ComputedPlan, type GearPick } from "@/lib/rules/engine";
+import { containerFullLb, mixLabel, type ComputedPlan, type GearPick } from "@/lib/rules/engine";
 import type { RuleConstants } from "@/lib/rules/constants";
 import { atLeast } from "@/lib/zip/profile";
 import { addHelp } from "./help";
@@ -17,6 +19,7 @@ import {
 } from "@/lib/safety/required";
 import { DISCLAIMER, SOURCES, type Block, type Overview, type PlanDocument, type Section } from "./document";
 import { fillTokens, lowerFirst, n, plural, range, usd, usdRange } from "./format";
+import { GEAR_TOTAL_LABEL, gearTotal } from "./compare";
 import { AFFILIATE_DISCLOSURE, buyUrl, earnsCommission, emailSafeBuyUrl } from "@/lib/affiliate";
 
 /**
@@ -28,6 +31,74 @@ import { AFFILIATE_DISCLOSURE, buyUrl, earnsCommission, emailSafeBuyUrl } from "
  * always produced here.
  */
 
+
+
+/**
+ * UX-13: one step that names every hazard rated high for the ZIP and its most important action, so it fits in
+ * the first 3 steps even with two or three high hazards. Order: the fastest-moving dangers first.
+ */
+const HIGH_HAZARD_ACTION: { key: "wildfire" | "hurricane" | "flood" | "tornado" | "earthquake" | "heat" | "winter"; name: string; action: (solo: boolean) => string }[] = [
+  { key: "wildfire", name: "wildfire", action: (solo) => `know your evacuation zone and route, and pack ${solo ? "your go-bag" : "a go-bag for each person"}` },
+  { key: "hurricane", name: "hurricanes", action: () => "look up your hurricane evacuation zone and the route out" },
+  { key: "flood", name: "flooding", action: () => "check your flood zone and the way to higher ground" },
+  { key: "tornado", name: "tornadoes", action: () => "pick your tornado shelter spot" },
+  { key: "earthquake", name: "earthquakes", action: () => "strap the water heater and heavy furniture to the wall" },
+  { key: "heat", name: "extreme heat", action: () => "decide where you'll stay cool if the power fails" },
+  { key: "winter", name: "winter storms", action: () => "choose a warm room and a safe way to heat it if the power fails" },
+];
+export const HAZARD_STEP_ID = "week-hazard";
+export function highHazardStep(prof: ZipProfile, solo: boolean): Step | null {
+  const high = HIGH_HAZARD_ACTION.filter((x) => prof[x.key] === "high");
+  if (!high.length) return null;
+  const names = high.map((x) => x.name);
+  const list = names.length === 1 ? names[0] : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+  const actions = high.map((x) => x.action(solo)).join("; ");
+  const first = high[0].key;
+  const zone = prof.hurricane === "high" ? evacZoneLink(prof) : null;
+  const link = zone ? zone : first === "hurricane" ? HOWTO.evacuation : first === "wildfire" ? HOWTO.wildfires : first === "flood" ? HOWTO.floods : first === "tornado" ? HOWTO.severeWeather : first === "heat" ? HOWTO.heat : first === "winter" ? HOWTO.winter : HOWTO.hazards;
+  return {
+    id: HAZARD_STEP_ID,
+    text: `Your area's biggest risk${names.length > 1 ? "s are" : " is"} ${list}. This week, ${actions}.`,
+    why: "These are rated high for your ZIP. Doing this now means you can act fast when a warning comes.",
+    ...(high.some((x) => x.key === "wildfire") ? { buy: ["go-bag", "go-bag-kit", "go-bag-basic"] } : {}),
+    link,
+  };
+}
+
+/** UX-11: the one plan total (every pick, price × quantity), used by the budget card, the overview and Compare options. */
+export const planTotals = (cp: { budget: { picks: { low: number; high: number }[]; consumables: { cost: number }[] } }) => {
+  // Consumables (toilet paper, bags, diapers…) have one price, so they add to both ends, as in budget.totalMid.
+  const fixed = cp.budget.consumables.reduce((t, x) => t + x.cost, 0);
+  return {
+    totalLow: cp.budget.picks.reduce((t, p) => t + p.low, 0) + fixed,
+    totalHigh: cp.budget.picks.reduce((t, p) => t + p.high, 0) + fixed,
+  };
+};
+
+/** UX-19: "Your oxygen concentrator and CPAP/BiPAP need", with names lower-cased (acronyms kept) and the verb agreeing. */
+export function deviceSentence(devices: Answers["poweredDevices"]): string {
+  const names = devices.map((d) => lowerFirst(LABELS.device[d]));
+  const list = names.length <= 1 ? names.join("") : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+  return `Your ${list} ${names.length > 1 ? "need" : "needs"}`;
+}
+
+/** UX-12: the liftable container from the constants, e.g. "1-gallon" and its full weight in lb. */
+const liftable = (c: { water: { liftableGallons: number } }) => `${n(c.water.liftableGallons, 1)}-gallon`;
+const liftableLb = (c: RuleConstants) => n(containerFullLb({ qty: "water_gallons" }, c) ?? 0);
+
+/** UX-12: for households with mobility needs, wherever stored water is mentioned. */
+export const KEEP_WATER_CLOSE = "Keep water where you won't need to lift it far.";
+/** UX-3: the one everyday fuel rule (Ready.gov: keep at least a half tank). Never a per-tank gallon target. */
+export const HALF_FULL = "Keep every gas vehicle at least half full.";
+export const EV_CHARGE = "Keep EVs charged to at least 80% when severe weather is forecast.";
+/** Owner decision: gas-only households get HALF_FULL, EV-only get EV_CHARGE, mixed get both, each labelled. */
+export function vehicleFuelSteps(fuels: readonly string[]): string[] {
+  const gas = fuels.some((v) => v !== "ev");
+  const ev = fuels.includes("ev");
+  if (gas && ev) return [`Gas vehicles: ${HALF_FULL}`, `EVs: ${EV_CHARGE}`];
+  return [...(gas ? [HALF_FULL] : []), ...(ev ? [EV_CHARGE] : [])];
+}
+export const fillUpLine = (gal: string) => `Your trip needs about ${gal} gallons: fill up completely as soon as a storm or evacuation warning is issued.`;
 export interface SectionDraft {
   id: string;
   title: string;
@@ -80,8 +151,8 @@ function sectionKeys(cp: ComputedPlan, S: SectionDraft[]) {
     sanitation: { value: n(cp.sanitation.wasteBags), label: "waste bags" },
     pets: cp.pets ? { value: `${n(cp.pets.foodLbs)} lb`, label: "pet food" } : null,
     kids: cp.household.children ? { value: n(cp.household.children), label: cp.household.children === 1 ? "child" : "children" } : null,
-    evacuation: cp.evacuation ? { value: `${n(cp.evacuation.reserveGalPerVehicle, 1)} gal`, label: "fuel reserve per vehicle" } : null,
-    budget: { value: usdRange(gear.filter((g) => g.status !== "deferred").reduce((t, g) => t + g.low, 0), gear.filter((g) => g.status !== "deferred").reduce((t, g) => t + g.high, 0)), label: "gear in your budget" },
+    evacuation: cp.evacuation ? { value: `${n(cp.evacuation.reserveGalPerVehicle, 1)} gal`, label: "fuel for the trip" } : null,
+    budget: { value: gearTotal(planTotals(cp)), label: GEAR_TOTAL_LABEL },
     gear: { value: n(gear.length), label: "items" },
     maintenance: { value: n(S.find((s) => s.id === "maintenance")?.blocks.reduce((t, b) => t + (b.type === "table" ? b.rows.length : 0), 0) ?? 0), label: "maintenance tasks" },
   };
@@ -141,6 +212,9 @@ function destinationStep(a: Answers): Step | null {
       return null;
   }
 }
+
+/** "$790–$1,590" for a list of picks (low and high totals). */
+const priceRange = (picks: { low: number; high: number }[]) => usdRange(picks.reduce((t, g) => t + g.low, 0), picks.reduce((t, g) => t + g.high, 0));
 
 function gearPhaseItems(cp: ComputedPlan, phase: 1 | 2 | 3) {
   return cp.budget.picks.filter((p) => p.phase === phase);
@@ -204,8 +278,23 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   checklistCounter = 0;
   const a = cp.answers;
   const h = cp.household;
+  /** UX-8: one adult and no children. Wording that assumes other people (everyone, each person, kids, "us") changes. */
+  const solo = h.people === 1;
   const prof = cp.profile;
   const w = cp.water;
+  // Owner decision (PR #16): the light-container wording applies unless the person chose a heavy container in Compare.
+  // Owner decision (PR #16): the engine marks a heavy option on the water slot; this is the one the person chose, if any.
+  const waterSlot = cp.budget.slots.find((x) => x.group === "water");
+  const heavyWaterLb = waterSlot?.options.find((o) => o.itemId === waterSlot.chosen)?.heavyLb ?? 0;
+  // The container the plan names: the one chosen in the water slot (picked or set aside), from the constants.
+  const waterChoice = waterSlot?.options.find((o) => o.itemId === waterSlot.chosen);
+  const bigContainers =
+    waterChoice && /brick/.test(waterChoice.itemId)
+      ? plural(waterChoice.qty, `${n(c.water.brickGallons, 1)}-gal water brick`)
+      : waterChoice?.itemId === "water-gallons" && !w.liftable
+        ? `${n(w.storedGal - w.drums * c.water.drumGallons)} gallon jugs or refilled 2-liter bottles`
+        : plural(w.standardJugs, `${n(c.water.jugGallons)}-gal jug`);
+  const lightWater = w.liftable && !heavyWaterLb;
   const pw = cp.power;
   const winter = cp.flags.winter;
   const apt = cp.flags.apartment;
@@ -218,7 +307,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   const levelsFor = (group?: string) => {
     const slot = group ? cp.budget.slots.find((x) => x.group === group) : undefined;
     if (!slot || slot.options.length < 2) return undefined;
-    return slot.options.map((o) => ({ level: o.level, name: o.name, price: usdRange(o.low, o.high), selected: o.itemId === slot.chosen, low: o.low, high: o.high }));
+    return slot.options.map((o) => ({ level: o.level, name: o.name, price: usdRange(o.low, o.high), selected: o.itemId === slot.chosen, low: o.low, high: o.high, ...(o.heavyLb ? { heavyLb: o.heavyLb } : {}) }));
   };
   const productsBlock = (picks: GearPick[], later: (p: GearPick) => boolean, caption?: string, compact?: boolean): Block => ({
     type: "products",
@@ -320,14 +409,19 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   const d60: Step[] = [];
   const d90: Step[] = [];
   /** "Buy … gear: 18 items, about $1,234–$2,345." The full list with Buy buttons is the shopping list. */
-  const phaseStep = (phase: 1 | 3, lead: string) => {
+  // UX-25: each phase step offers every item in its phase, so every gear item has a To do step.
+  const phaseStep = (phase: 1 | 2 | 3, lead: string, id?: string): Step => {
     const items = gearPhaseItems(cp, phase);
-    return `${lead}: ${plural(items.length, "item")}, about ${usdRange(items.reduce((t, g) => t + g.low, 0), items.reduce((t, g) => t + g.high, 0))}.`;
+    return { ...(id ? { id } : {}), text: `${lead}: ${plural(items.length, "item")}, about ${priceRange(items)}.`, buy: items.map((p) => p.item.id) };
   };
   if (cp.flags.medicalDevicePriority)
-    week.push({ text: "TOP PRIORITY: Call your medical-device supplier about battery backup, and register with your electric utility's medical-needs / life-support registry.", buy: ["med-battery"] });
+    week.push({ text: "Most important: Call your medical-device supplier about battery backup, and register with your electric utility's medical-needs / life-support registry.", buy: ["med-battery"] });
   if (cp.flags.wellPumpPriority)
-    week.push({ text: "TOP PRIORITY: Your well pump needs power. Find out its voltage and starting watts (label or well contractor) so you can size a generator or battery and transfer switch.", buy: ["well-switch"] });
+    week.push({ text: "Most important: Your well pump needs power. Find out its voltage and starting watts (label or well contractor) so you can size a generator or battery and transfer switch.", buy: ["well-switch"] });
+  // UX-13: every hazard rated high for this ZIP has its key action in the first 3 steps, as one combined step
+  // right after any "Most important" step (there are at most two of those).
+  const hazardStep = highHazardStep(prof, h.people === 1);
+  if (hazardStep) week.push(hazardStep);
   if (h.elderlyOrMobility)
     week.push("Register anyone with mobility or medical needs with your county's special-needs (access & functional needs) registry or shelter program, and arrange who will help them evacuate.");
   week.push({
@@ -340,8 +434,9 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     why: "Taps can stop or become unsafe in an outage, and water is the one supply you can't go without for 3 days.",
     buy: ["water-jug", "water-bricks", "water-gallons", "water-drum"],
   });
+  // A moderate hurricane risk still gets the zone lookup; a high one has it in the combined step above.
   const zone = evacZoneLink(prof);
-  if (zone)
+  if (zone && prof.hurricane !== "high")
     week.push({
       id: "week-zone",
       text: "Look up your hurricane evacuation zone and the route out, and decide where you'd go.",
@@ -364,10 +459,9 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   if (!apt) week.push("Find and label your main water shutoff, gas shutoff and electrical panel.");
   if (a.hasPrescriptions) week.push("Ask your pharmacist or doctor how to keep an extra supply of daily prescriptions on hand.");
   if (cp.diapers) week.push(`Buy 2 weeks of diapers (${n(cp.diapers.perDay * 14)}) and wipes.`);
-  if (a.vehicleFuels.some((v) => v !== "ev")) week.push("Keep every gas/diesel vehicle above half a tank from now on.");
-  if (a.vehicleFuels.includes("ev")) week.push("Keep EVs charged to at least 80% when severe weather is forecast.");
+  week.push(...vehicleFuelSteps(a.vehicleFuels));
 
-  month.push({ text: `Finish stored water: ${n(w.storedGal)} gallons (${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${plural(w.jugs, "7-gal jug")}).`, buy: ["water-drum", "water-jug", "water-bricks", "water-gallons"] });
+  month.push({ text: lightWater ? `Finish stored water: ${n(w.storedGal)} gallons in ${liftable(c)} jugs or cases (about ${liftableLb(c)} lb each). ${KEEP_WATER_CLOSE}` : `Finish stored water: ${n(w.storedGal)} gallons (${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${bigContainers}).`, buy: ["water-drum", "water-jug", "water-bricks", "water-gallons"] });
   month.push(phaseStep(1, "Buy the rest of your Phase 1 (life safety) gear"));
   month.push(`Build a 2-week pantry from the food list (about ${n(Math.ceil((cp.food.dailyKcal * 14) / 1000))} thousand calories).`);
   if (a.homeType === "townhouse")
@@ -381,7 +475,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     month.push("Get a licensed electrician's quote for a generator power inlet + interlock (or transfer switch) so the generator can safely run your furnace.");
   if (winter && !apt) month.push({ text: "Do the pipe-freeze prep in section 5 (insulate exposed pipes, know how to drain lines).", buy: ["pipe-insulation"] });
   if (cp.pets) month.push({ text: "Stock 2 weeks of pet food; ask your vet how to keep extra medication on hand if your pet takes any.", buy: ["pet-kit"] });
-  if (cp.evacuation) month.push({ text: "Pack a go-bag for each person (see the Evacuation section).", buy: ["go-bag", "go-bag-kit", "go-bag-basic"] });
+  if (cp.evacuation) month.push({ text: prof.wildfire === "high" ? "Check your go-bag against the go-bag list (see the Evacuation section)." : solo ? "Pack your go-bag (see the Evacuation section)." : "Pack a go-bag for each person (see the Evacuation section).", buy: ["go-bag", "go-bag-kit", "go-bag-basic"] });
   if (atLeast(prof.hurricane, "moderate")) month.push({ text: "Check your flood zone and evacuation zone; review insurance (flood insurance has a 30-day wait).", link: FEMA_FLOOD_MAP });
   // D4: the preferred approach and where they could go. Fixed ids, so other checklist ids don't shift.
   month.push(approachStep(a));
@@ -396,15 +490,24 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   d60.push({ text: "Assemble the sanitation kit (two-bucket toilet, bags, absorbent).", buy: ["toilet-kit"] });
   if (atLeast(prof.hurricane, "moderate") && !apt) d60.push({ text: "Pre-cut and label window protection.", buy: ["window-protection"] });
   if (d60.length < 3) d60.push("Rotate the first stored water and check expiration dates.");
+  // After the filler check: this step has its own id, and must not change which counter-numbered steps exist.
+  if (gearPhaseItems(cp, 2).length) d60.push(phaseStep(2, "Buy your Phase 2 (power & comfort) gear", "d60-phase2"));
 
-  d90.push(gearPhaseItems(cp, 3).length ? phaseStep(3, "Buy your Phase 3 upgrades") : "Buy Phase 3 upgrades: comfort and communications.");
+  d90.push(gearPhaseItems(cp, 3).length ? phaseStep(3, "Buy your Phase 3 upgrades") : "Review your shopping list and tick what you already have, so it stops suggesting it.");
+  // Gear set aside because it doesn't fit the budget yet.
+  if (cp.budget.deferred.length)
+    d90.push({
+      id: "d90-budget-allows",
+      text: `When the budget allows: ${plural(cp.budget.deferred.length, "item")} set aside in your shopping list, about ${priceRange(cp.budget.deferred)}.`,
+      buy: cp.budget.deferred.map((p) => p.item.id),
+    });
   d90.push("Run a 'lights-out weekend': live off your plan for 24–48 hours and fix what breaks.");
-  if (cp.evacuation)
-    d90.push(
-      cp.evacuation.vehicles
-        ? `Drive the route to your ${LABELS.fallback[cp.evacuation.locationType].toLowerCase()} and back; note fuel stops and alternates.`
-        : `Confirm your ride to your ${LABELS.fallback[cp.evacuation.locationType].toLowerCase()} and a backup ride; save your county's evacuation-assistance number.`,
-    );
+  const routeText = cp.evacuation
+    ? cp.evacuation.vehicles
+      ? `Drive the route to your ${LABELS.fallback[cp.evacuation.locationType].toLowerCase()} and back; note fuel stops and alternates.`
+      : `Confirm your ride to your ${LABELS.fallback[cp.evacuation.locationType].toLowerCase()} and a backup ride; save your county's evacuation-assistance number.`
+    : null;
+  if (routeText) d90.push(routeText);
   d90.push("Put the maintenance calendar on your phone.");
 
 
@@ -433,30 +536,48 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   S.push({
     id: "priorities",
     title: "Priority list",
-    summaryTemplate: "Start with life safety this week, then water and food this month, then power and comfort. Check items off as you go.",
+    summaryTemplate: "Start with this week's steps: life safety first. This month and Later hold the rest. Check items off as you go.",
     facts: [
       ...(cp.flags.medicalDevicePriority ? ["Battery backup for a powered medical device is the top priority"] : []),
       ...(cp.flags.wellPumpPriority ? ["Powering the well pump is the top priority"] : []),
     ],
-    blocks: [
-      { type: "subheading", text: "This week" },
-      check("week", week),
+    blocks: priorityBlocks(),
+  });
+
+  /**
+   * UX-7 (owner decision): the plan opens on "This week": at most WEEK_MAX steps, in the priority order above.
+   * The rest go to "This month" (overflow first) and "Later" (the 60- and 90-day work, for every scenario length).
+   * Every list still goes through check() in the same order, so step ids (and saved ticks) don't move.
+   */
+  function priorityBlocks(): Block[] {
+    const weekAll = check("week", week);
+    const monthList = check("month", month);
+    const d60List = check("d60", d60);
+    const d90List = check("d90", d90);
+    const skillList = check("skill", practice);
+    if (weekAll.type !== "checklist" || monthList.type !== "checklist" || d60List.type !== "checklist" || d90List.type !== "checklist") return [];
+    const weekList: Block = { ...weekAll, items: weekAll.items.slice(0, WEEK_MAX) };
+    const monthAll: Block = { ...monthList, items: [...weekAll.items.slice(WEEK_MAX), ...monthList.items] };
+    // UX-25 (owner correction): scenario length is how long the outage lasts, not how long there is to prepare,
+    // so every plan keeps its 60- and 90-day preparation, merged into one collapsed "Later" group.
+    const later: Block[] = [{ ...d60List, items: [...d60List.items, ...d90List.items] }];
+    return [
+      { type: "subheading", text: STAGE.week },
+      weekList,
       productsBlock(
         cp.budget.picks.filter((p) => p.phase === 1),
         () => false,
         "Phase 1 shopping list (life safety)",
         true,
       ),
-      { type: "subheading", text: "This month" },
-      check("month", month),
-      { type: "subheading", text: "Within 60 days" },
-      check("d60", d60),
-      { type: "subheading", text: "Within 90 days" },
-      check("d90", d90),
+      { type: "subheading", text: STAGE.month },
+      monthAll,
+      { type: "subheading", text: STAGE.later },
+      ...later,
       { type: "subheading", text: "Skills to practice" },
-      check("skill", practice),
-    ],
-  });
+      skillList,
+    ];
+  }
 
   // 3. Day 0 ---------------------------------------------------------------
   const day0 = [
@@ -477,7 +598,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     { if: "A boil-water notice is issued or tap water looks/smells wrong", then: "Use stored water; disinfect any other water (see Water)." },
     ...(winter
       ? [
-          { if: `Indoor temperature drops below ${n(c.heat.warmRoomAtF)}°F`, then: "Move everyone into the warm room; close off the rest of the house." },
+          { if: `Indoor temperature drops below ${n(c.heat.warmRoomAtF)}°F`, then: solo ? "Move into the warm room; close off the rest of the house." : "Move everyone into the warm room; close off the rest of the house." },
           { if: `Indoor temperature drops below ${n(c.heat.evacuateAtF)}°F with no safe heat source`, then: cp.evacuation ? "Go to your fallback location or a warming center." : "Go to a warming center, shelter, or friends/family with power." },
           { if: "Outdoor temperature forecast below 20°F during an outage", then: "Start the pipe-freeze protocol (see Heat & warmth)." },
         ]
@@ -528,12 +649,12 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       { if: "Air quality index goes over 150", then: "Stay inside with windows closed and the HEPA purifier running; wear N95s outdoors." },
       { if: "An evacuation warning ('get set') is issued", then: "Load go-bags, pets and documents; park facing out." },
       { if: "An evacuation order ('go') is issued", then: "Leave immediately by the route officials give." },
-    ], ["Clear dead plants and debris within 5 feet of the house.", "Sign up for county evacuation alerts and know your evacuation zone.", "Keep N95 masks for each person."]);
+    ], ["Clear dead plants and debris within 5 feet of the house.", "Sign up for county evacuation alerts and know your evacuation zone.", solo ? "Keep N95 masks on hand." : "Keep N95 masks for each person."]);
   if (atLeast(prof.tornado, "moderate"))
     hzRows(`Tornado (${prof.tornado} risk)`, [
       { if: "A tornado watch is issued", then: "Keep shoes on, phones charged, and the weather radio on." },
-      { if: "A tornado warning is issued", then: "Go to the basement or a small interior room on the lowest floor; cover heads with helmets, pillows or a mattress." },
-    ], ["Pick your shelter spot and practice getting there in under a minute.", "Keep bike helmets for the kids in the shelter spot."]);
+      { if: "A tornado warning is issued", then: solo ? "Go to the basement or a small interior room on the lowest floor; cover your head with a helmet, pillows or a mattress." : "Go to the basement or a small interior room on the lowest floor; cover heads with helmets, pillows or a mattress." },
+    ], ["Pick your shelter spot and practice getting there in under a minute.", h.children ? "Keep bike helmets for the kids in the shelter spot." : "Keep a helmet (a bike helmet works) in the shelter spot."]);
   if (atLeast(prof.heat, "high"))
     hzRows(`Extreme heat (${prof.heat} risk)`, [
       { if: "Power fails during a heat wave", then: "Go to a cooling center, library or mall early in the day; a portable generator can't run central AC." },
@@ -559,9 +680,9 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   if (a.storage.includes("shed"))
     storeTips.push({ id: "store-shed", text: "Shed: the right place for gas cans and propane cylinders (detached from the house); too hot or cold for food, water and medicine.", buy: ["gas-cans", "propane-20"], link: HOWTO.powerOutages });
   if (a.storage.includes("closets"))
-    storeTips.push({ id: "store-closets", text: "Closets: water bricks or 7-gallon jugs on the floor, food in labelled bins on the top shelf, go-bags by the door.", buy: ["water-bricks", "water-jug", "storage-kit"], link: HOWTO.kit });
+    storeTips.push({ id: "store-closets", text: lightWater ? `Closets: ${liftable(c)} jugs on the floor or a low shelf, food in labelled bins at waist height, go-bags by the door. ${KEEP_WATER_CLOSE}` : "Closets: water bricks or 7-gallon jugs on the floor, food in labelled bins on the top shelf, go-bags by the door.", buy: ["water-bricks", "water-jug", "storage-kit"], link: HOWTO.kit });
   if (a.storage.includes("other_indoor"))
-    storeTips.push({ id: "store-other-indoor", text: "Other indoor space (a spare room, under the stairs or beds): water bricks and labelled bins, away from heaters and direct sun.", buy: ["water-bricks", "storage-kit", "water-jug"], link: HOWTO.kit });
+    storeTips.push({ id: "store-other-indoor", text: lightWater ? `Other indoor space (a spare room, under the stairs or beds): ${liftable(c)} jugs and labelled bins at waist height, away from heaters and direct sun.` : "Other indoor space (a spare room, under the stairs or beds): water bricks and labelled bins, away from heaters and direct sun.", buy: ["water-bricks", "storage-kit", "water-jug"], link: HOWTO.kit });
   if (a.hasShed && !a.storage.includes("shed"))
     storeTips.push({ id: "store-shed-fuel", text: "Shed: even if it isn't right for supplies, it's the place for gas cans and propane cylinders, away from the house.", buy: ["gas-cans", "propane-20"], link: HOWTO.powerOutages });
   if (a.storage.includes("none"))
@@ -602,14 +723,19 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
           ["Stored target", `${n(w.storedGal)} gal (${n(w.storedDays)} days)`],
           [
             "Containers",
-            cp.budget.picks.some((p) => p.item.id === "water-gallons")
-              ? `${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${n(w.storedGal - w.drums * 55)} gallon jugs or refilled 2-liter bottles (low-cost); upgrade to ${plural(w.jugs, "7-gal jug")} later`
-              : `${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${plural(w.jugs, "7-gal jug")}`,
+            lightWater
+              ? `${n(w.jugs)} ${liftable(c)} jugs or cases (about ${liftableLb(c)} lb each when full)`
+              : cp.budget.picks.some((p) => p.item.id === "water-gallons")
+              ? `${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${n(w.storedGal - w.drums * c.water.drumGallons)} gallon jugs or refilled 2-liter bottles (low-cost); upgrade to ${plural(w.standardJugs, "7-gal jug")} when you can`
+              : `${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${bigContainers}`,
           ],
           ["Filter + collect", w.filterDays > 0 ? `${n(w.filterGal)} gal over ${n(w.filterDays)} days` : "Not needed for this scenario (keep bleach as backup)"],
           ["Bathtub bladder (storm warning)", apt ? "Optional" : "~100 gal for flushing/washing"],
         ],
       },
+      ...(lightWater ? [{ type: "paragraph" as const, text: `Containers you can lift: ${liftable(c)} jugs or cases, about ${liftableLb(c)} lb each when full. Larger jugs are too heavy to lift safely. ${KEEP_WATER_CLOSE}` }] : []),
+      // Owner decision (PR #16): a mobility household that chose heavy containers in Compare still hears where to keep them.
+      ...(w.liftable && !lightWater ? [{ type: "paragraph" as const, text: `The containers you chose are heavy when full (about ${n(heavyWaterLb)} lb each). Store them where you will use the water. ${KEEP_WATER_CLOSE}` }] : []),
       ...(a.waterSource === "well"
         ? [{ type: "callout" as const, tone: "warning" as const, title: "Well water needs power", text: "Your well pump stops when the power does. Powering the pump (generator or battery sized for its starting watts, through an electrician-installed transfer switch) is a top priority. Keep stored water regardless." }]
         : []),
@@ -641,7 +767,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       { type: "subheading", text: "Your water kit" },
       check("water", [
         { id: "water-kit-containers", text: `Containers for ${n(w.storedGal)} gallons, filled and sealed.`, buy: ["water-jug", "water-bricks", "water-gallons", "water-drum"], link: HOWTO.cdcWater },
-        { id: "water-kit-dispense", text: w.drums ? "A way to get water out: the drum pump or siphon, and the spigot on each jug." : "A way to get water out: the spigot on each jug, or a clean pitcher.", link: HOWTO.kit },
+        { id: "water-kit-dispense", text: lightWater ? `A way to pour: ${liftable(c)} jugs pour by hand; keep a clean pitcher nearby.` : w.drums ? "A way to get water out: the drum pump or siphon, and the spigot on each jug." : "A way to get water out: the spigot on each jug, or a clean pitcher.", link: HOWTO.kit },
         { id: "water-kit-labels", text: "Rotation labels: write the fill date on every container.", link: HOWTO.kit },
         ...(hasHouseholdFilter(a) || w.filterDays > 0 ? [{ id: "water-kit-spares", text: "Spare filter elements or a backflush kit for your household filter.", buy: ["filter-spare"] }] : []),
         { id: "water-kit-backup", text: "A backup method: treatment tablets, plus unscented bleach, used as the labels direct.", buy: ["water-tablets", "bleach"], link: HOWTO.waterSafety },
@@ -675,10 +801,11 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       heatBlocks.push({
         type: "bullets",
         items: [
-          "One warm room: pick a small interior room with few windows (not the basement if it floods). Everyone sleeps there.",
+          solo ? "One warm room: pick a small interior room with few windows (not the basement if it floods), and sleep there." : "One warm room: pick a small interior room with few windows (not the basement if it floods). Everyone sleeps there.",
           "Close doors to unused rooms; hang blankets over windows and doorways; put rugs/towels at door gaps.",
           "Layer up: base layer, fleece, hat, socks; cold-rated sleeping bags at night.",
-          "Eat and drink warm calories; keep kids and older adults warm first.",
+          // UX-8: name only the people this household has.
+          h.children && h.elderlyOrMobility ? "Eat and drink warm calories; keep kids and older adults warm first." : h.children ? "Eat and drink warm calories; keep kids warm first." : h.elderlyOrMobility ? "Eat and drink warm calories; keep older adults warm first." : "Eat and drink warm calories.",
         ],
       });
     if (key === "one_warm_room" && a.heatSources.includes("electric"))
@@ -686,7 +813,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         check("heat", [
           {
             id: "heat-electric",
-            text: "Electric heat stops when the power does: choose your warm room now and keep a cold-rated sleeping bag for each person in it.",
+            text: `Electric heat stops when the power does: choose your warm room now and keep a cold-rated sleeping bag ${solo ? "in it" : "for each person in it"}.`,
             buy: ["sleep-system"],
             link: HOWTO.winter,
           },
@@ -760,7 +887,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       type: "callout",
       tone: "warning",
       title: "Powered medical devices come first",
-      text: `Your ${a.poweredDevices.map((d) => LABELS.device[d]).join(", ")} needs battery backup that covers at least 2 nights. Ask the device provider which batteries are approved, ask your utility about its medical-needs registry, and know which nearby hospital or shelter has power.`,
+      text: `${deviceSentence(a.poweredDevices)} battery backup that covers at least 2 nights. Ask the device provider which batteries are approved, ask your utility about its medical-needs registry, and know which nearby hospital or shelter has power.`,
     });
   powerBlocks.push({
     type: "ifthen",
@@ -1066,7 +1193,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     const rawLand = ev.locationType === "raw_land";
     const evRows: string[][] = [
       ["Fuel per vehicle (one way)", `${n(ev.oneWayGalPerVehicle, 1)} gal at ${n(c.evacuation.assumedMpg)} mpg`],
-      ["Keep in each tank, minimum", `${n(ev.reserveGalPerVehicle, 1)} gal (one-way + 50% for detours/traffic)`],
+      ["Fuel for the trip", `about ${n(ev.reserveGalPerVehicle, 1)} gal (one-way + 50% for detours/traffic)`],
     ];
     if (ev.hasEv) evRows.push(["EV range needed", `${n(ev.evMinRangeMiles)} miles (distance + ${n(c.evacuation.evRangeBufferPct)}% for cold/traffic)`]);
     const gearRows: string[][] = rawLand
@@ -1082,7 +1209,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         ]
       : [
           ["Bedding", "Sleeping bags or air mattresses", "Don't count on spare beds"],
-          ["Food & water", "3 days for everyone, plus snacks", "Don't arrive as a burden"],
+          ["Food & water", solo ? "3 days of food and water, plus snacks" : "3 days for everyone, plus snacks", "Don't arrive as a burden"],
           ["Meds & documents", "All medications, document pouch", ""],
           ["Power", "Power banks, chargers", ""],
         ];
@@ -1090,7 +1217,9 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
       id: "evacuation",
       title: "When you must leave",
       summaryTemplate: ev.vehicles
-        ? "Your fallback is {{evac.location}}, about {{evac.distance}} miles away. Leave early on clear triggers, keep each tank above {{evac.reserveGal}} gallons, and keep go-bags ready."
+        ? ev.tripNeedsFullTank && a.vehicleFuels.some((v) => v !== "ev")
+          ? "Your fallback is {{evac.location}}, about {{evac.distance}} miles away. Leave early on clear triggers and keep go-bags ready. Your trip needs about {{evac.reserveGal}} gallons: fill up completely as soon as a storm or evacuation warning is issued."
+          : "Your fallback is {{evac.location}}, about {{evac.distance}} miles away. Leave early on clear triggers and keep go-bags ready."
         : "Your fallback is {{evac.location}}, about {{evac.distance}} miles away. With no car, line up your ride now and leave earlier than drivers would.",
       facts: rawLand ? ["The raw land has no shelter or utilities, so everything has to come with them"] : [],
       blocks: [
@@ -1110,15 +1239,21 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
           ],
         },
         ...(ev.vehicles
-          ? [{ type: "table" as const, caption: "Fuel & range", columns: ["Item", "Amount"], rows: evRows }]
+          ? [
+              { type: "table" as const, caption: "Fuel & range", columns: ["Item", "Amount"], rows: evRows },
+              // UX-3: one fuel rule. Half full always; a full tank only when the trip needs more than half.
+              ...(a.vehicleFuels.some((v) => v !== "ev")
+                ? [{ type: "paragraph" as const, text: `${vehicleFuelSteps(a.vehicleFuels)[0]}${ev.tripNeedsFullTank ? ` ${fillUpLine(n(ev.reserveGalPerVehicle, 1))}` : ""}` }]
+                : []),
+            ]
           : [
-              { type: "callout" as const, tone: "warning" as const, title: "No car: plan your ride now", text: "Ask a family member, friend or neighbor now to take you, and agree on the trigger that means \"come get us\". Save the number for your county's evacuation-assistance or special-needs transport line, and know the nearest public pickup point. Leave on the first warning, not the order: rides and roads disappear fast." },
+              { type: "callout" as const, tone: "warning" as const, title: "No car: plan your ride now", text: `Ask a family member, friend or neighbor now to take you, and agree on the trigger that means "come get ${solo ? "me" : "us"}". Save the number for your county's evacuation-assistance or special-needs transport line, and know the nearest public pickup point. Leave on the first warning, not the order: rides and roads disappear fast.` },
             ]),
         { type: "table", caption: rawLand ? "Raw-land gear (nothing is there — bring it all)" : "What to bring", columns: ["Category", "Gear", "Note"], rows: gearRows },
         productsBlock(
           [...cp.budget.picks, ...cp.budget.deferred].filter((p) => p.item.category === "Evacuation" || p.item.group === "two-way"),
           (p) => p.status === "deferred",
-          "Bug-out kit: pick a level for each (Essential, Standard or Premium)",
+          "Go-bag: pick a level for each (Essential, Standard or Premium)",
         ),
         ...(ev.vehicles ? [{ type: "subheading" as const, text: "Vehicle kit" }] : []),
         ...(ev.vehicles ? [check("veh", ["Jump starter, tire inflator, tow strap", "Paper road map with 2 routes marked", "Blankets, water, snacks", "Phone chargers", "Flashlight, reflective triangles", ...(a.vehicleFuels.some((v) => v !== "ev") ? ["Never store spare gasoline inside the car cabin"] : [])])] : []),
@@ -1230,8 +1365,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     budget: {
       label: LABELS.budget[a.budget],
       cap: BUDGET_CAP[a.budget],
-      totalLow: cp.budget.picks.reduce((t, p) => t + p.low, 0),
-      totalHigh: cp.budget.picks.reduce((t, p) => t + p.high, 0),
+      ...planTotals(cp),
     },
     stats: [
       { key: "water", value: `${n(cp.water.storedGal)} gal`, label: "water to store", math: `${n(cp.water.dailyGal, 2)} gal/day × ${n(cp.water.storedDays)} days`, anchor: "water" },

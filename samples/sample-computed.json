@@ -134,7 +134,11 @@
     "filterDays": 76,
     "filterGal": 293,
     "jugs": 8,
+    "standardJugs": 8,
+    "brickGallons": 3.5,
+    "drumGallons": 55,
     "drums": 0,
+    "liftable": false,
     "threeDayGal": 12,
     "bleachDropsPerGal6pct": 8,
     "bleachDropsPerGal8pct": 6
@@ -443,6 +447,7 @@
     "distanceMiles": 120,
     "oneWayGalPerVehicle": 4.8,
     "reserveGalPerVehicle": 7.2,
+    "tripNeedsFullTank": true,
     "hasEv": false,
     "evMinRangeMiles": 156,
     "vehicles": 2

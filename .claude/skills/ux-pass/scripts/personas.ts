@@ -156,8 +156,15 @@ async function answerScreen(d: Driver, id: string, a: Answers) {
       break;
     }
     case "evacuation": {
-      await d.pick(d.group("preferred approach"), LABELS.approach[a.approach]);
-      await d.pick(d.group("where could you go"), LABELS.fallback[a.evacuation.destination]);
+      // UX-5 screen: a place approach pre-fills the destination ("Which one?" only when there are two kinds).
+      const APPROACH_UI = { stay_home: "Stay home when it's safe", family_friends: "Go to family or friends", another_property: "Go to another place I own", hotel_shelter: "Go to a hotel or shelter", not_sure: "Not sure yet" } as const;
+      const DEST_UI = { friends_family: "A friend's or relative's home", second_property: "A second home or cabin", raw_land: "Land with no buildings", hotel: "A hotel or motel", public_shelter: "A public shelter", not_sure: "I don't know yet" } as const;
+      const approachGroup = (await d.group("what would you rather do").count()) ? d.group("what would you rather do") : d.group("preferred approach");
+      await d.pick(approachGroup, APPROACH_UI[a.approach] ?? LABELS.approach[a.approach]);
+      const full = d.group("where could you go");
+      const which = d.group("Which one");
+      if (await full.count()) await d.pick(full, DEST_UI[a.evacuation.destination] ?? LABELS.fallback[a.evacuation.destination]);
+      else if (await which.count()) await d.pick(which, DEST_UI[a.evacuation.destination]);
       const mi = a.evacuation.distanceMiles;
       if (mi) await d.pick(d.group("how far"), mi === 1000 ? "500+ mi" : `~${mi} mi`);
       break;
@@ -235,6 +242,8 @@ async function walk(browser: Awaited<ReturnType<typeof chromium.launch>>, person
         firstSteps: steps.slice(0, 3),
         sections: document.querySelectorAll("details[data-section]").length,
         wholePlan: (document.querySelector("[data-testid=dashboard]") as HTMLElement | null)?.innerText.match(/Whole plan: [^\n]+/)?.[0] ?? null,
+        stageCount: (document.querySelector("[data-testid=stage-progress]") as HTMLElement | null)?.innerText ?? null,
+        stepCounts: ((document.querySelector("[data-testid=dashboard]") as HTMLElement | null)?.innerText.match(/\b\d+ of \d+ (done|steps)\b|\(\d+ left\)/g) ?? []).length,
         overBudget: (document.querySelector("[data-testid=over-budget]") as HTMLElement | null)?.innerText ?? null,
         stats: [...document.querySelectorAll("[data-testid^=stat-]:not([data-testid=stat-value])")].map((e) => (e as HTMLElement).innerText.replace(/\s+/g, " ").trim()),
         pageHeightScreens: Math.round((document.documentElement.scrollHeight / innerHeight) * 10) / 10,

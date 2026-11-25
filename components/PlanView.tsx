@@ -13,6 +13,7 @@ import { HelpStrip, productIndex, resolveStep, StepExtras, type StepView } from 
 import { matchMaterials } from "@/lib/tips/match";
 import { TIP_MATERIALS } from "@/lib/tips/library";
 import { KIND_LABEL, kindLabelsAt, kindOf, type Kind } from "@/lib/plan/kinds";
+import { COLLAPSED_STAGES, STAGES } from "@/lib/plan/priority";
 
 /** D8: a small label where the kind of content changes: Good to know / To do / To have. */
 function KindLabel({ kind }: { kind: Kind }) {
@@ -46,7 +47,7 @@ function TipsBox({ b, ownedNames }: { b: Extract<Block, { type: "tips" }>; owned
         {b.tips.map((t) => (
           <li key={t.id}>
             <strong>{t.situation}</strong> {t.steps.join(" ")}{" "}
-            <a href={t.source.url} className="underline" rel="noopener">{t.source.label}</a>
+            <a href={t.source.url} className="tap-inline underline" rel="noopener">{t.source.label}</a>
             {ownedNames && (() => {
               const m = matchMaterials(TIP_MATERIALS[t.id] ?? [], ownedNames);
               return m.length ? <span className="block text-ok" data-testid="tip-have">You have: {m.join(", ")}</span> : null;
@@ -83,14 +84,14 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
       return (
         <div className="my-4">
           {b.caption && <h4 className="mt-5 mb-2 font-semibold">{b.caption}</h4>}
-          {b.compact && <p className="text-sm text-muted -mt-1 mb-2">What to look for is in <a href="#gear" className="underline">Recommended gear</a>.</p>}
+          {b.compact && <p className="text-sm text-muted -mt-1 mb-2">What to look for is in <a href="#gear" className="tap-inline underline">Recommended gear</a>.</p>}
           {ctx.affiliate && b.items.some((i) => i.buyable) && <p className="text-sm text-ink mb-2" data-testid="affiliate-disclosure"><strong>Affiliate links:</strong> {BRAND.name} may earn a commission if you buy through these Buy links, at no extra cost to you. <a href="/sources#affiliate" className="underline">Details</a></p>}
           <ul className="divide-y divide-line border-y border-line">
             {b.items.map((i) => (
               <li key={i.itemId} className={`${b.compact ? "py-2 items-center" : "py-3 items-start"} flex gap-3`}>
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold">
-                    {i.name} {i.qty && <span className="text-muted font-normal whitespace-nowrap">{i.qty}</span>} {i.later && <span className="text-xs align-middle rounded px-1.5 py-0.5 bg-bg border border-line font-normal">later</span>}
+                    {i.name} {i.qty && <span className="text-muted font-normal whitespace-nowrap">{i.qty}</span>} {i.later && <span className="text-xs align-middle rounded px-1.5 py-0.5 bg-bg border border-line font-normal">when budget allows</span>}
                   </p>
                   {!b.compact && <p className="text-sm text-muted mt-0.5">{i.spec}</p>}
                   <p className="text-sm mt-0.5">{i.price}{!b.compact && i.models.length ? ` · e.g. ${i.models.join("; ")}` : ""}</p>
@@ -99,7 +100,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
                 </div>
                 {i.buyable && (
                   <BuyIfNeeded itemId={i.itemId}>
-                  <a href={buyHref ? buyHref(i.itemId) : `/go/${encodeURIComponent(i.itemId)}?p=${planId}&src=web`} target="_blank" rel="sponsored nofollow noopener" className="btn-ghost shrink-0 text-brand min-h-[40px]" aria-label={`Buy ${i.name} (opens a store, affiliate link)`}>
+                  <a href={buyHref ? buyHref(i.itemId) : `/go/${encodeURIComponent(i.itemId)}?p=${planId}&src=web`} target="_blank" rel="sponsored nofollow noopener" className="btn-ghost shrink-0 text-brand min-h-[44px]" aria-label={`Buy ${i.name} (opens a store, affiliate link)`}>
                     Buy
                   </a>
                   </BuyIfNeeded>
@@ -229,7 +230,6 @@ export function PlanView({
         <Dashboard
           overview={doc.overview}
           priority={prioritySteps(doc, ctx)}
-          allStepIds={doc.sections.flatMap((s) => s.blocks.flatMap((b) => (b.type === "checklist" && kindOf(b) === "do" ? b.items.map((i) => i.id) : [])))}
           buyHref={Object.fromEntries([...ctx.products.keys()].map((id) => [id, ctx.href(id)]))}
         />
         {afterDashboard}
@@ -266,13 +266,27 @@ export function PlanView({
                     // The dashboard's shopping list replaces the compact shopping list inside the Priority list on the web
                     // (email and PDF keep it).
                     const blocks = s.blocks.filter((b) => !(doc.overview && s.id === "priorities" && b.type === "products" && b.compact) && !(b.type === "tips" && !diyTips));
-                    const labels = kindLabelsAt(blocks);
-                    return blocks.map((b, i) => (
-                      <div key={i}>
-                        {labels[i] && <KindLabel kind={labels[i]} />}
-                        <BlockView b={b} planId={planId} buyHref={buyHref} sectionId={s.id} onChoose={onChoose} ctx={ctx} />
-                      </div>
-                    ));
+                    const render = (list: Block[]) => {
+                      const labels = kindLabelsAt(list);
+                      return list.map((b, i) => (
+                        <div key={i}>
+                          {labels[i] && <KindLabel kind={labels[i]} />}
+                          <BlockView b={b} planId={planId} buyHref={buyHref} sectionId={s.id} onChoose={onChoose} ctx={ctx} />
+                        </div>
+                      ));
+                    };
+                    if (s.id !== "priorities") return render(blocks);
+                    // UX-7: "This week" stays open; "This month" and "Later" are collapsed, one tap away.
+                    return stageSegments(blocks).map((seg, i) =>
+                      seg.stage ? (
+                        <details key={i} className="mt-3 rounded-lg border border-line" data-stage={seg.stage}>
+                          <summary className="min-h-[44px] cursor-pointer px-3 py-2.5 font-semibold">{seg.stage}</summary>
+                          <div className="px-3 pb-3">{render(seg.blocks)}</div>
+                        </details>
+                      ) : (
+                        <div key={i}>{render(seg.blocks)}</div>
+                      ),
+                    );
                   })()}
                 </div>
               </details>
@@ -283,15 +297,29 @@ export function PlanView({
         <section id="about" className="card p-4 my-4 scroll-mt-24 text-sm text-muted">
           <p>{doc.disclaimer}</p>
           {doc.affiliateDisclosure && <p className="mt-2"><strong>Affiliate disclosure:</strong> {doc.affiliateDisclosure}</p>}
-          <p className="mt-2"><a href="/sources" className="underline">Sources &amp; safety</a>: where this guidance comes from.</p>
+          <p className="mt-2"><a href="/sources" className="tap underline">Sources &amp; safety</a>: where this guidance comes from.</p>
         </section>
       </article>
     </ChecksProvider>
   );
 }
 
-/** Stages of the Priority list, in order; "Skills to practice" isn't a to-do stage. */
-const STAGES = ["This week", "This month", "Within 60 days", "Within 90 days"];
+/**
+ * Splits the Priority list into the open part ("This week") and the collapsed stages (UX-7). A collapsed stage runs
+ * from its heading to the next stage heading; "Later" also holds "Skills to practice". The heading itself becomes the
+ * <summary>, so it isn't repeated inside.
+ */
+export function stageSegments(blocks: Block[]): { stage: string | null; blocks: Block[] }[] {
+  const out: { stage: string | null; blocks: Block[] }[] = [{ stage: null, blocks: [] }];
+  for (const b of blocks) {
+    if (b.type === "subheading" && COLLAPSED_STAGES.includes(b.text)) {
+      out.push({ stage: b.text, blocks: [] });
+      continue;
+    }
+    out[out.length - 1].blocks.push(b);
+  }
+  return out.filter((seg) => seg.stage || seg.blocks.length);
+}
 
 /** Every Priority-list step with its stage, in plan order, for the dashboard's "Next up". */
 function prioritySteps(doc: PlanDocument, ctx: Ctx): PriorityStep[] {

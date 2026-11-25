@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_ANSWERS, hasHouseholdFilter, hasPersonalFilter, isDrive, type Answers } from "@/lib/answers/schema";
+import { APPROACH_PLACE, DEFAULT_ANSWERS, destinationForApproach, hasHouseholdFilter, hasPersonalFilter, isDrive, type Answers } from "@/lib/answers/schema";
 import { SEED_CATALOG } from "@/lib/catalog/seed";
 import { generatePlan } from "@/lib/plan/generate";
 import { DEFAULT_CONSTANTS as C } from "@/lib/rules/constants";
@@ -163,7 +163,9 @@ describe("pairwise: what people have (or don't) steers products, skills and cons
       expect(picked(r, "co-alarm") && r.computed.budget.picks.some((p) => p.item.group === "water"), why).toBe(true);
       for (const id of ["power-bank", "radio", "first-aid"]) expect(offered(r, id), `${id} ${why}`).toBe(true);
       // generous budgets get the sturdy jugs, not the low-cost fallback
-      if (a.budget === "5000_plus") expect(picked(r, "water-gallons"), why).toBe(false);
+      // (UX-12: unless someone has limited mobility; then every household gets containers they can lift)
+      if (a.budget === "5000_plus" && !a.elderlyOrMobility) expect(picked(r, "water-gallons"), why).toBe(false);
+      if (a.elderlyOrMobility) for (const heavy of ["water-jug", "water-bricks", "water-drum"]) expect(offered(r, heavy), why).toBe(false);
       // apartments: no fuel-burning gear or fuel storage
       if (a.homeType === "apartment") for (const id of COMBUSTION_ITEMS) expect(offered(r, id), `${id} ${why}`).toBe(false);
       // sections appear only when they apply
@@ -204,3 +206,34 @@ describe("pairwise: what people have (or don't) steers products, skills and cons
     }
   }, 120_000);
 });
+
+/**
+ * UX-5 (owner decision): the questionnaire pre-fills the destination from a place approach and asks only
+ * "which one" and the distance. Every pair it can produce must still lead to the approach step and its destination.
+ */
+describe("evacuation answers the questionnaire can produce (UX-5)", () => {
+  const pairs: [string, Partial<Answers>][] = [];
+  for (const approach of ["family_friends", "another_property", "hotel_shelter"] as const) {
+    const p = APPROACH_PLACE[approach]!;
+    for (const d of [p.main, ...(p.alt ? [p.alt] : [])]) pairs.push([`${approach} → ${d}`, { approach, evacuation: isDrive(d) ? { destination: d, distanceMiles: 120 } : { destination: d } }]);
+  }
+  for (const approach of ["stay_home", "not_sure"] as const) pairs.push([`${approach} → not sure`, { approach, evacuation: { destination: "not_sure" } }]);
+  it("a place approach always pre-fills a destination of the same kind", () => {
+    expect(destinationForApproach("family_friends", "not_sure")).toBe("friends_family");
+    expect(destinationForApproach("another_property", "raw_land")).toBe("raw_land");
+    expect(destinationForApproach("another_property", "hotel")).toBe("second_property");
+    expect(destinationForApproach("hotel_shelter", "not_sure")).toBe("hotel");
+    expect(destinationForApproach("hotel_shelter", "public_shelter")).toBe("public_shelter");
+    expect(destinationForApproach("stay_home", "hotel")).toBeNull();
+    expect(destinationForApproach("not_sure", "friends_family")).toBeNull();
+  });
+  it.each(pairs)("%s: approach step with an official link, and the destination's own step or section", async (_n, v) => {
+    const a = { ...BASE, ...v } as Answers;
+    const r = await plan(a);
+    const steps = r.document.sections.flatMap((s) => s.blocks.flatMap((b) => (b.type === "checklist" ? b.items : [])));
+    expect(steps.find((i) => i.id === "month-approach")?.link?.url).toMatch(/^https:\/\/www\.(ready\.gov|redcross\.org)\//);
+    if (isDrive(a.evacuation.destination)) expect(r.computed.evacuation?.locationType).toBe(a.evacuation.destination);
+    else expect(steps.find((i) => i.id === "month-destination")?.link?.url).toMatch(/^https:\/\//);
+  });
+});
+

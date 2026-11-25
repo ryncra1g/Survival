@@ -1,5 +1,5 @@
 import type { LevelOption, Overview } from "@/lib/plan/document";
-import { compareOptions, LEVEL_LABEL as LABEL, type CompareRow } from "@/lib/plan/compare";
+import { compareOptions, LEVEL_LABEL as LABEL, type CompareRow, GEAR_TOTAL_LABEL, gearTotal, heavyWarning } from "@/lib/plan/compare";
 
 /**
  * D3 / GEAR-01: one main pick per slot, plus "Compare options": Lower-cost, Upgrade and Other choices,
@@ -26,20 +26,21 @@ export function CompareOptions({
   const { current, lower, upgrade, alternatives } = compareOptions(levels, budget);
   // Plans saved before Compare options had no prices per level: list the levels to switch to.
   const fallback: CompareRow[] = current && !lower.length && !upgrade.length && !alternatives.length
-    ? levels.filter((l) => !l.selected).map((l) => ({ level: l.level, name: l.name, price: l.price, diff: "", newTotal: "", over: null }))
+    ? levels.filter((l) => !l.selected).map((l) => ({ level: l.level, name: l.name, price: l.price, diff: "", newTotal: "", over: null, ...(l.heavyLb ? { heavyLb: l.heavyLb } : {}) }))
     : [];
   const Row = ({ r }: { r: CompareRow }) => {
     const label = `Switch to ${LABEL[r.level]}: ${r.name}, ${r.price}`;
-    const btn = "btn-ghost border border-line text-sm px-3 min-h-[40px] shrink-0";
+    const btn = "btn-ghost border border-line text-sm px-3 min-h-[44px] shrink-0";
     return (
       <li className="flex items-start justify-between gap-3 py-2">
         <div className="min-w-0 text-sm">
           <p className="font-semibold">{group === "food" ? r.name : `${LABEL[r.level]}: ${r.name}`}</p>
           <p className="text-muted">
             {r.price}
-            {r.diff && <> · <span className="text-ink font-medium">{r.diff}</span> · new total {r.newTotal}</>}
+            {r.diff && <> · <span className="text-ink font-medium">{r.diff}</span> · {GEAR_TOTAL_LABEL}: {r.newTotal}</>}
           </p>
           {r.over && <p className="text-warn font-medium">{r.over}</p>}
+          {r.heavyLb && <p className="text-warn font-medium" data-testid="heavy-warning">{heavyWarning(r.heavyLb)}</p>}
         </div>
         {onChoose ? (
           <button type="button" className={btn} aria-label={label} onClick={() => onChoose(group, r.level)}>Switch</button>
@@ -63,8 +64,9 @@ export function CompareOptions({
         </p>
       )}
       <details className="mt-1 group/cmp">
-        <summary className="cursor-pointer text-sm font-semibold text-brand min-h-[40px] inline-flex items-center">Compare options</summary>
+        <summary className="cursor-pointer text-sm font-semibold text-brand min-h-[44px] inline-flex items-center">Compare options</summary>
         <div className="mt-1 rounded-lg border border-line p-3">
+          {budget && <p className="mb-2 text-sm text-muted" data-testid="compare-current-total">Your {GEAR_TOTAL_LABEL} now: <span className="text-ink font-medium">{gearTotal(budget)}</span> (as in Budget by phase)</p>}
           {lower.length > 0 && (
             <>
               <p className="text-xs font-semibold uppercase tracking-wide text-muted">Lower-cost</p>

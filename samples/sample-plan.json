@@ -136,7 +136,7 @@
       "id": "priorities",
       "number": 2,
       "title": "Priority list",
-      "summary": "Start with life safety this week, then water and food this month, then power and comfort. Check items off as you go.",
+      "summary": "Start with this week's steps: life safety first. This month and Later hold the rest. Check items off as you go.",
       "key": {
         "value": "9",
         "label": "steps this week"
@@ -150,6 +150,15 @@
         {
           "type": "checklist",
           "items": [
+            {
+              "id": "week-hazard",
+              "text": "Your area's biggest risks are hurricanes and flooding. This week, look up your hurricane evacuation zone and the route out; check your flood zone and the way to higher ground.",
+              "why": "These are rated high for your ZIP. Doing this now means you can act fast when a warning comes.",
+              "link": {
+                "label": "Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM)",
+                "url": "https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map"
+              }
+            },
             {
               "id": "week-1",
               "text": "Test or install CO alarms: 4 (one per level plus outside sleeping areas).",
@@ -178,15 +187,6 @@
               "link": {
                 "label": "Make water safe to drink (EPA)",
                 "url": "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water"
-              }
-            },
-            {
-              "id": "week-zone",
-              "text": "Look up your hurricane evacuation zone and the route out, and decide where you'd go.",
-              "why": "Evacuation orders are given by zone. Knowing yours now means you leave early, before roads fill.",
-              "link": {
-                "label": "Storm surge zone map (Suffolk County OEM; Nassau residents: check with Nassau County OEM)",
-                "url": "https://suffolkcountyny.gov/Departments/FRES/Office-of-Emergency-Management/Storm-Surge-Zone-Interactive-Map"
               }
             },
             {
@@ -246,9 +246,8 @@
             },
             {
               "id": "week-8",
-              "text": "Keep every gas/diesel vehicle above half a tank from now on.",
+              "text": "Keep every gas vehicle at least half full.",
               "buy": [
-                "gas-cans",
                 "vehicle-kit",
                 "vehicle-kit-basic"
               ],
@@ -585,6 +584,24 @@
             {
               "id": "month-10",
               "text": "Buy the rest of your Phase 1 (life safety) gear: 16 items, about $977–$1,893.",
+              "buy": [
+                "co-alarm",
+                "water-jug",
+                "first-aid",
+                "tub-bladder",
+                "filter-gravity-bag",
+                "bleach",
+                "lights",
+                "batteries",
+                "radio",
+                "power-bank",
+                "extinguisher",
+                "thermometers",
+                "buddy-heater",
+                "propane-1lb",
+                "sleep-system",
+                "pipe-insulation"
+              ],
               "see": {
                 "label": "Open your shopping list",
                 "anchor": "shopping"
@@ -669,7 +686,7 @@
         },
         {
           "type": "subheading",
-          "text": "Within 60 days",
+          "text": "Later",
           "kind": "know"
         },
         {
@@ -741,21 +758,55 @@
                 "label": "Hazard-by-hazard guides (Ready.gov)",
                 "url": "https://www.ready.gov/be-informed"
               }
-            }
-          ],
-          "kind": "do"
-        },
-        {
-          "type": "subheading",
-          "text": "Within 90 days",
-          "kind": "know"
-        },
-        {
-          "type": "checklist",
-          "items": [
+            },
+            {
+              "id": "d60-phase2",
+              "text": "Buy your Phase 2 (power & comfort) gear: 3 items, about $790–$1,590.",
+              "buy": [
+                "generator-small",
+                "gen-cord",
+                "gas-cans"
+              ],
+              "see": {
+                "label": "Open your shopping list",
+                "anchor": "shopping"
+              }
+            },
             {
               "id": "d90-22",
               "text": "Buy your Phase 3 upgrades: 1 item, about $10–$20.",
+              "buy": [
+                "water-tablets"
+              ],
+              "see": {
+                "label": "Open your shopping list",
+                "anchor": "shopping"
+              }
+            },
+            {
+              "id": "d90-budget-allows",
+              "text": "When the budget allows: 19 items set aside in your shopping list, about $2,255–$5,515.",
+              "buy": [
+                "inlet-interlock",
+                "flood-kit",
+                "propane-20",
+                "coolers",
+                "storage-kit",
+                "toilet-kit",
+                "window-protection",
+                "sump-backup",
+                "pet-kit",
+                "power-station-house",
+                "solar-panel",
+                "frs-radios",
+                "docs-pouch",
+                "morale-kit",
+                "filter-spare",
+                "go-bag-basic",
+                "vehicle-kit-basic",
+                "tarp-shelter",
+                "raw-land-water"
+              ],
               "see": {
                 "label": "Open your shopping list",
                 "anchor": "shopping"
@@ -990,7 +1041,6 @@
               "id": "day0-38",
               "text": "Fuel or charge vehicles.",
               "buy": [
-                "gas-cans",
                 "vehicle-kit",
                 "vehicle-kit-basic"
               ],
@@ -1388,7 +1438,7 @@
           "type": "callout",
           "tone": "info",
           "title": "How to disinfect water",
-          "text": "If water is cloudy, let it settle or filter it first. Then disinfect it with regular unscented bleach, using the amount and wait time on the bleach label and in EPA's emergency disinfection steps, or bring it to a rolling boil for 1 minute (3 minutes above 6,500 ft), as CDC advises. Never guess an amount.",
+          "text": "If water is cloudy, let it settle or filter it first. Then disinfect it one of two ways. Use regular unscented bleach, with the amount and wait time on the bleach label and in EPA's emergency disinfection steps. Or bring it to a rolling boil for 1 minute (3 minutes above 6,500 ft), as CDC advises. Never guess an amount.",
           "kind": "know"
         },
         {
@@ -1581,7 +1631,7 @@
           "type": "callout",
           "tone": "warning",
           "title": "Backup heater rules",
-          "text": "Use only a propane heater labeled for indoor use with an oxygen depletion sensor (ODS) and tip-over shutoff, follow its manual's ventilation requirement, keep 3 feet of clearance, never leave it running while everyone sleeps, and keep a working CO alarm in the same room.",
+          "text": "Use only a propane heater labeled for indoor use. It must have an oxygen depletion sensor (ODS) and a tip-over shutoff. Follow its manual's ventilation requirement and keep 3 feet of clearance. Never leave it running while you sleep. Keep a working CO alarm in the same room.",
           "kind": "know"
         },
         {
@@ -1590,7 +1640,7 @@
             "One warm room: pick a small interior room with few windows (not the basement if it floods). Everyone sleeps there.",
             "Close doors to unused rooms; hang blankets over windows and doorways; put rugs/towels at door gaps.",
             "Layer up: base layer, fleece, hat, socks; cold-rated sleeping bags at night.",
-            "Eat and drink warm calories; keep kids and older adults warm first."
+            "Eat and drink warm calories; keep kids warm first."
           ],
           "kind": "know"
         },
@@ -2776,10 +2826,10 @@
       "id": "evacuation",
       "number": 16,
       "title": "When you must leave",
-      "summary": "Your fallback is your raw land, about 120 miles away. Leave early on clear triggers, keep each tank above 7.2 gallons, and keep go-bags ready.",
+      "summary": "Your fallback is your raw land, about 120 miles away. Leave early on clear triggers and keep go-bags ready. Your trip needs about 7.2 gallons: fill up completely as soon as a storm or evacuation warning is issued.",
       "key": {
         "value": "7.2 gal",
-        "label": "fuel reserve per vehicle"
+        "label": "fuel for the trip"
       },
       "blocks": [
         {
@@ -2846,10 +2896,15 @@
               "4.8 gal at 25 mpg"
             ],
             [
-              "Keep in each tank, minimum",
-              "7.2 gal (one-way + 50% for detours/traffic)"
+              "Fuel for the trip",
+              "about 7.2 gal (one-way + 50% for detours/traffic)"
             ]
           ],
+          "kind": "know"
+        },
+        {
+          "type": "paragraph",
+          "text": "Keep every gas vehicle at least half full. Your trip needs about 7.2 gallons: fill up completely as soon as a storm or evacuation warning is issued.",
           "kind": "know"
         },
         {
@@ -2906,7 +2961,7 @@
         },
         {
           "type": "products",
-          "caption": "Bug-out kit: pick a level for each (Essential, Standard or Premium)",
+          "caption": "Go-bag: pick a level for each (Essential, Standard or Premium)",
           "items": [
             {
               "itemId": "frs-radios",
@@ -3356,8 +3411,8 @@
       "title": "Budget by phase",
       "summary": "Within your $1,500–5,000 range we planned around $3,250. Phase 1 buys life safety first; the whole list comes to about $3,404.",
       "key": {
-        "value": "$1,777–$3,503",
-        "label": "gear in your budget"
+        "value": "$3,457–$5,183",
+        "label": "whole gear list"
       },
       "blocks": [
         {
@@ -4600,8 +4655,8 @@
     "budget": {
       "label": "$1,500–5,000",
       "cap": 5000,
-      "totalLow": 1777,
-      "totalHigh": 3503
+      "totalLow": 3457,
+      "totalHigh": 5183
     },
     "stats": [
       {

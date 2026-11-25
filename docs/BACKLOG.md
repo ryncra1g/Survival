@@ -47,27 +47,34 @@ Entry types: **Owner request** (Ryan asked for it), **Assistant recommendation**
 | FG-01 | Front-page focus group (20 simulated participants) | Medium | **Done**; findings below |
 | GRID-01 | Say plainly that the plan assumes no grid power for the whole period | Medium | Open (proposed November 18, not yet approved) |
 | BUY-01 | Buy links without an Associates tag; no links for "use what you own" items | High | **Done** (PR #4, PR #5) |
-| UX-1 | Places page promises saving that doesn't exist while accounts are off | P1 | **Suggested** (UX pass 2026-11-24) |
-| UX-2 | Front page says "exact" amounts; the plan calls them estimates | P1 | **Suggested** (UX pass 2026-11-24) |
-| UX-3 | Fuel advice contradicts itself (half a tank vs a gallon minimum that can exceed the tank) | P1 | **Suggested** (UX pass 2026-11-24) |
-| UX-4 | Required consent boxes below the fold, under the sticky button | P2 | **Suggested** (UX pass 2026-11-24) |
-| UX-5 | Evacuation screen asks nearly the same question twice, with different labels | P2 | **Suggested** (UX pass 2026-11-24) |
-| UX-6 | Three different step counts on the first plan screen | P2 | **Suggested** (UX pass 2026-11-24) |
-| UX-7 | Every plan is very long (51–84 steps, 17–22 page PDF), whatever the household | P2 | **Suggested** (UX pass 2026-11-24) |
-| UX-8 | Family wording ("helmets for the kids", "come get us") in one-person plans | P2 | **Suggested** (UX pass 2026-11-24) |
-| UX-9 | Plan controls below 44 px (chips, tabs, Buy, Compare, Expand all, source links) | P2 | **Suggested** (UX pass 2026-11-24) |
-| UX-10 | Same thing, different names (Confirm email / Email me my plan; go-bag / Bug-out kit; basic / Essential) | P2 | **Suggested** (UX pass 2026-11-24) |
-| UX-11 | Compare options "new total" matches no total shown elsewhere | P2 | **Suggested** (UX pass 2026-11-24) |
-| UX-12 | Mobility household told to buy 7-gallon (≈58 lb) jugs | P2 | **Suggested** (UX pass 2026-11-24) |
-| UX-13 | High wildfire-risk household's first 3 steps don't mention fire or evacuation | P2 | **Suggested** (UX pass 2026-11-24) |
-| UX-14 | Long or hard sentences (terms, sources, safety lines over 40 words) | P3 | **Suggested** (UX pass 2026-11-24) |
-| UX-15 | Choices without enough help (floors in an apartment, "Solar / battery", "FEMA recommended") | P3 | **Suggested** (UX pass 2026-11-24) |
-| UX-16 | Visible focus box around every questionnaire heading | P3 | **Suggested** (UX pass 2026-11-24) |
-| UX-17 | "Your area: Ohio, OH" | P3 | **Suggested** (UX pass 2026-11-24) |
-| UX-18 | "TOP PRIORITY:" in capitals | P3 | **Suggested** (UX pass 2026-11-24) |
-| UX-19 | Device names pasted into a sentence ("Your Oxygen concentrator, CPAP/BiPAP needs…") | P3 | **Suggested** (UX pass 2026-11-24) |
-| UX-20 | Question count differs between front page, start page and questionnaire | P3 | **Suggested** (UX pass 2026-11-24) |
-| UX-21 | Footer links 20 px tall | P3 | **Suggested** (UX pass 2026-11-24) |
+| UX-1 | Places page promises saving that doesn't exist while accounts are off | P1 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
+| UX-2 | Front page says "exact" amounts; the plan calls them estimates | P1 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
+| UX-3 | Fuel advice contradicts itself (half a tank vs a gallon minimum that can exceed the tank) | P1 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
+| UX-4 | Required consent boxes below the fold, under the sticky button | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
+| UX-5 | Evacuation screen asks nearly the same question twice, with different labels | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) · **Accepted (owner, Nov 25 2026)** |
+| UX-6 | Three different step counts on the first plan screen | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
+| UX-7 | Every plan is very long (51–84 steps, 17–22 page PDF), whatever the household | P2 → P3 | **Suggested** (UX pass 2026-11-24) · **Changed per UX pass 2026-11-24-2**: opens on This week (owner decision); full text still long · **Deferred (owner)**: the plan now opens on This week; shortening the full text and PDF waits until real users show what they read. |
+| UX-8 | Family wording ("helmets for the kids", "come get us") in one-person plans | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
+| UX-9 | Plan controls below 44 px (chips, tabs, Buy, Compare, Expand all, source links) | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
+| UX-10 | Same thing, different names (Confirm email / Email me my plan; go-bag / Bug-out kit; basic / Essential) | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
+| UX-11 | Compare options "new total" matches no total shown elsewhere | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
+| UX-12 | Mobility household told to buy 7-gallon (≈58 lb) jugs | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) · **Accepted (owner, Nov 25 2026)** |
+| UX-13 | High wildfire-risk household's first 3 steps don't mention fire or evacuation | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
+| UX-14 | Long or hard sentences (terms, sources, safety lines over 40 words) | P3 | **Suggested** (UX pass 2026-11-24) · **Still open per UX pass 2026-11-24-2**: safety sentences split; Terms/Sources unchanged · **Deferred (owner)**: Terms and Sources are legal and source wording; a plain-language pass needs legal review first. |
+| UX-15 | Choices without enough help (floors in an apartment, "Solar / battery", "FEMA recommended") | P3 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
+| UX-16 | Visible focus box around every questionnaire heading | P3 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
+| UX-17 | "Your area: Ohio, OH" | P3 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
+| UX-18 | "TOP PRIORITY:" in capitals | P3 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
+| UX-19 | Device names pasted into a sentence ("Your Oxygen concentrator, CPAP/BiPAP needs…") | P3 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
+| UX-20 | Question count differs between front page, start page and questionnaire | P3 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
+| UX-21 | Footer links 20 px tall | P3 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
+| UX-22 | "Almost done" summary now sits below the Build button | P3 | **Suggested** (UX pass 2026-11-24-2) · **Fixed per UX pass 2026-11-25** (PR #16, not merged) |
+| UX-23 | Footer "Privacy" and "Terms" narrower than 44 px | P3 | **Suggested** (UX pass 2026-11-24-2) · **Still open per UX pass 2026-11-25** |
+| UX-24 | Short plans show a "Later" heading holding only Skills to practice | P3 | **Suggested** (UX pass 2026-11-24-2) · **Fixed per UX pass 2026-11-25** (PR #16, not merged) |
+| UX-25 | Short plans (72 h–14 days) list gear with no step for it (window protection, sanitation kit, generator test-run) | P2 | **Suggested** (UX pass 2026-11-24-2) · **Fixed per UX pass 2026-11-25** (PR #16, not merged) |
+| UX-26 | "Later" names both a shopping phase and a Priority-list stage | P3 | **Suggested** (UX pass 2026-11-24-2) · **Fixed per UX pass 2026-11-25** (PR #16, not merged) |
+| UX-27 | Taller sticky bar (with the "Almost done" line) starts with the Terms box under it at 375×812 | P3 | **Suggested** (UX pass 2026-11-25) |
+| UX-28 | Opt-in 55-gallon drum choice in Compare for households with mobility needs (non-default, with the heavy warning) | P3 | **Suggested** (owner: later, Nov 25 2026) |
 
 ### PR merge queue (each needs the owner's OK)
 #3 Windows test fixes → #4 Buy links without a tag → #5 dashboard redesign → `claude/headline-copy` (no PR yet).
@@ -474,3 +481,53 @@ Report: `docs/ux/UX_PASS_2026-11-24.md` (screens, evidence and suggested fixes f
 - **UX-19** (P3, Suggested): Device names pasted into a sentence ("Your Oxygen concentrator, CPAP/BiPAP needs…").
 - **UX-20** (P3, Suggested): Question count differs between front page, start page and questionnaire.
 - **UX-21** (P3, Suggested): Footer links 20 px tall.
+
+### UX pass 2026-11-24 (second pass)
+
+Report: `docs/ux/UX_PASS_2026-11-24-2.md`. After the fixes on `claude/ux-fixes-2026-11-24` (not merged): UX-1 to UX-6,
+UX-8 to UX-13 and UX-15 to UX-21 are fixed; UX-7 changed (now P3) and UX-14 is still open. New items, all **Suggested**:
+
+- **UX-22** (P3, Suggested): "Almost done" summary now sits below the Build button.
+- **UX-23** (P3, Suggested): Footer "Privacy" and "Terms" narrower than 44 px.
+- **UX-24** (P3, Suggested): Short plans show a "Later" heading holding only Skills to practice.
+- **UX-25** (P2, Suggested): Short plans (72 h–14 days) list gear with no step for it (window protection, sanitation kit, generator test-run).
+- **UX-26** (P3, Suggested): "Later" names both a shopping phase and a Priority-list stage.
+
+### Owner decisions, November 25, 2026 (PR #16)
+
+- **Accepted as is:** the mobility answer switches the household to lighter water containers (UX-12); the
+  14-gallon tank assumption (stays in docs/FACTCHECK.md as FU-3); the "Which one?" choice on the evacuation screen
+  (UX-5).
+  - Note for the owner: the decision says Compare options still offers the bigger containers. It doesn't. For
+    households with mobility needs, 7-gallon jugs, bricks and drums are tagged `!mobility`, so Compare doesn't
+    list them. Nothing was changed; say if they should come back as non-default Compare options.
+- **Deferred (owner):** UX-7 (full plan length: the first screen is fixed; the rest waits for real-user evidence)
+  and UX-14 (Terms and Sources reading level: legal wording, needs legal review).
+
+### UX pass 2026-11-25
+
+Report: `docs/ux/UX_PASS_2026-11-25.md` (PR #16). UX-22, UX-24, UX-25 and UX-26 are fixed; UX-23 is still open;
+UX-7 and UX-14 are deferred (owner). New, **Suggested**:
+
+- **UX-27** (P3, Suggested): with the summary in the sticky bar, the Terms box starts under the bar at 375×812.
+  Tapping Build still scrolls to it and focuses it.
+
+### Owner decision, November 25, 2026 (PR #16, final items)
+
+- **UX-12 follow-up:** for households with mobility needs, 7-gallon jugs and 3.5-gallon bricks are back as
+  non-default choices in Compare options, each with "Heavy when full (about N lb). Choose only if someone can lift
+  it, or store it where you'll use it." (N = container size × 8.34 lb from the rules constants, rounded up: 59 and 30.) The default stays 1-gallon jugs; heavy containers are never picked or set
+  aside automatically, and a choice is honoured (FACTCHECK WT-11, WT-13).
+  - **55-gallon drums: later (owner, Nov 25 2026).** Drums aren't a Compare level for any household (the engine
+    adds them for large storage spaces), so offering them needs a new kind of choice. They stay off for mobility
+    households for now; see UX-28.
+
+
+### CAT-01 The Supabase catalog drops gear levels (found Nov 25, 2026; Suggested)
+
+`lib/catalog/db.ts` (`catOut` / `catIn`) and the `gear_catalog` table have no columns for `level` or `excludes`. In
+production (Supabase store) every catalog item therefore loads without its Essential / Standard / Premium level, so
+the à la carte gear levels and Compare options don't work as they do in demo mode and tests (file store, seed
+catalog). This predates PR #16. Fix: a migration adding `level` and `excludes` columns, the mappings in `db.ts`,
+and a round-trip test; the owner applies the migration. (The PR #16 weight rule for households with mobility needs
+deliberately uses only fields the table already keeps: the item's qty key and the rules constants.)

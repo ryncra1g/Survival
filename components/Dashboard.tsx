@@ -9,7 +9,7 @@ import { budgetStatus } from "@/lib/plan/compare";
 
 const usd = (v: number) => "$" + Math.round(v).toLocaleString("en-US");
 const usdRange = (lo: number, hi: number) => (Math.round(lo) === Math.round(hi) ? usd(lo) : `${usd(lo)}–${usd(hi)}`);
-const PHASE = { 1: "Buy now (life safety)", 2: "Next (power & comfort)", 3: "Later (upgrades)" } as const;
+const PHASE = { 1: "Buy now (life safety)", 2: "Next (power & comfort)", 3: "Upgrades" } as const;
 
 /** A priority step and the stage it belongs to ("This week", "This month"…), in plan order. */
 export type PriorityStep = { stage: string; step: StepView };
@@ -27,7 +27,7 @@ function Bar({ value, label }: { value: number; label: string }) {
  * "Next up" is the first unticked priority steps, so it moves forward as you tick them (here or in the plan).
  * Ticks sync like the checklists (ChecksProvider).
  */
-export function Dashboard({ overview, priority, allStepIds, buyHref }: { overview?: Overview; priority: PriorityStep[]; allStepIds: string[]; buyHref: Record<string, string> }) {
+export function Dashboard({ overview, priority, buyHref }: { overview?: Overview; priority: PriorityStep[]; buyHref: Record<string, string> }) {
   const { checks, toggle } = useChecks();
   // A step ticked here stays a few seconds, struck through, with Undo, so a mis-tap is easy to reverse.
   const [justDone, setJustDone] = useState<string[]>([]);
@@ -42,7 +42,47 @@ export function Dashboard({ overview, priority, allStepIds, buyHref }: { overvie
   const inStage = priority.filter((p) => p.stage === stage);
   const stageDone = inStage.filter((p) => checks[p.step.id]).length;
   const next = priority.filter((p) => justDone.includes(p.step.id) || open.slice(0, 3).includes(p));
-  const allDone = allStepIds.filter((id) => checks[id]).length;
+  // UX-7: the rest of the current stage (at most 7 more for "This week"), one tap away.
+  const more = inStage.filter((p) => !next.includes(p) && !checks[p.step.id]);
+
+  const renderStep = ({ step, stage: s }: PriorityStep) => {
+    const done = !!checks[step.id];
+    const firstOpen = !done && step.id === open[0]?.step.id;
+    return (
+      <li key={step.id} className="flex gap-2">
+        {/* 44px tap target around the box */}
+        <label className="-ml-2 -mt-1.5 flex size-11 shrink-0 cursor-pointer items-center justify-center">
+          <input
+            type="checkbox"
+            className="size-5 accent-[var(--brand)]"
+            checked={done}
+            onChange={() => {
+              toggle(step.id);
+              setJustDone((j) => (done ? j.filter((x) => x !== step.id) : [...j, step.id]));
+            }}
+            aria-label={`Done: ${step.text}`}
+          />
+        </label>
+        <div className="min-w-0 flex-1">
+          <p className={done ? "text-muted line-through" : "font-medium"}>
+            {step.text}
+            {!done && s !== stage && <span className="ml-2 text-xs font-normal rounded px-1.5 py-0.5 bg-bg border border-line whitespace-nowrap">{s}</span>}
+          </p>
+          {done ? (
+            <p className="mt-1 text-sm" role="status">
+              Done.{" "}
+              <button type="button" className="underline text-brand min-h-[44px] px-1" onClick={() => { toggle(step.id); setJustDone((j) => j.filter((x) => x !== step.id)); }}>
+                Undo
+              </button>
+            </p>
+          ) : (
+            // The first open step gets its "why"; the others stay short so the dashboard fits on a phone.
+            <StepExtras step={firstOpen ? step : { ...step, why: undefined }} />
+          )}
+        </div>
+      </li>
+    );
+  };
 
   const gear = overview?.gear ?? [];
   const got = gear.filter((g) => checks[gotId(g.itemId)]);
@@ -54,7 +94,7 @@ export function Dashboard({ overview, priority, allStepIds, buyHref }: { overvie
     <section aria-labelledby="dash-h" className="mt-4 rounded-xl border-2 border-accent bg-surface p-4 sm:p-5" data-testid="dashboard">
       <h2 id="dash-h" className="sr-only">Your plan at a glance</h2>
 
-      {/* Progress: the current stage, plus the whole plan in one line */}
+      {/* Progress: the current stage only. One count on screen (UX-6). */}
       {stage ? (
         <div>
           <p className="flex items-baseline justify-between gap-3">
@@ -66,57 +106,29 @@ export function Dashboard({ overview, priority, allStepIds, buyHref }: { overvie
       ) : (
         <p className="font-bold">Every priority step is done. Keep the plan up to date with the maintenance calendar.</p>
       )}
-      <p className="mt-1.5 text-sm text-muted tabular" data-testid="overall-progress">
-        Whole plan: {allDone} of {allStepIds.length} steps{gear.length ? ` · you have ${got.length} of ${gear.length} gear items` : ""}
-      </p>
+      {gear.length > 0 && (
+        <p className="mt-1.5 text-sm text-muted tabular" data-testid="overall-progress">
+          You have {got.length} of {gear.length} gear items
+        </p>
+      )}
 
       {/* Next up: the next three things to do, tickable right here */}
       {next.length > 0 && (
         <div className="mt-4">
           <h3 className="text-lg font-bold">Next up</h3>
           <ul className="mt-2 space-y-4">
-            {next.map(({ step, stage: s }) => {
-              const done = !!checks[step.id];
-              const firstOpen = !done && step.id === open[0]?.step.id;
-              return (
-                <li key={step.id} className="flex gap-2">
-                  {/* 44px tap target around the box */}
-                  <label className="-ml-2 -mt-1.5 flex size-11 shrink-0 cursor-pointer items-center justify-center">
-                    <input
-                      type="checkbox"
-                      className="size-5 accent-[var(--brand)]"
-                      checked={done}
-                      onChange={() => {
-                        toggle(step.id);
-                        setJustDone((j) => (done ? j.filter((x) => x !== step.id) : [...j, step.id]));
-                      }}
-                      aria-label={`Done: ${step.text}`}
-                    />
-                  </label>
-                  <div className="min-w-0 flex-1">
-                    <p className={done ? "text-muted line-through" : "font-medium"}>
-                      {step.text}
-                      {!done && s !== stage && <span className="ml-2 text-xs font-normal rounded px-1.5 py-0.5 bg-bg border border-line whitespace-nowrap">{s}</span>}
-                    </p>
-                    {done ? (
-                      <p className="mt-1 text-sm" role="status">
-                        Done.{" "}
-                        <button type="button" className="underline text-brand min-h-[32px]" onClick={() => { toggle(step.id); setJustDone((j) => j.filter((x) => x !== step.id)); }}>
-                          Undo
-                        </button>
-                      </p>
-                    ) : (
-                      // The first open step gets its "why"; the others stay short so the dashboard fits on a phone.
-                      <StepExtras step={firstOpen ? step : { ...step, why: undefined }} />
-                    )}
-                  </div>
-                </li>
-              );
-            })}
+            {next.map((p) => renderStep(p))}
           </ul>
-          <a href="#priorities" className="mt-3 inline-block text-sm underline no-print">See every step ({open.length} left)</a>
+          {more.length > 0 && (
+            <details className="mt-3 rounded-lg border border-line" data-testid="more-this-stage">
+              <summary className="min-h-[44px] cursor-pointer px-3 py-2.5 font-semibold">More for {stage?.toLowerCase()}</summary>
+              <ul className="space-y-4 px-3 pb-3">{more.map((p) => renderStep(p))}</ul>
+            </details>
+          )}
+          <a href="#priorities" className="mt-1 flex min-h-[44px] items-center text-sm underline no-print">This month, Later and the full priority list</a>
         </div>
       )}
+
 
       {/* The one thing to find fast when weather turns */}
       <a href="#day0" className="mt-5 flex min-h-[48px] items-center justify-between gap-3 rounded-lg border-2 border-brand px-3 py-2 font-semibold text-brand no-underline no-print">
@@ -169,7 +181,7 @@ export function Dashboard({ overview, priority, allStepIds, buyHref }: { overvie
                               <span className="block">{g.name}</span>
                               <span className="block text-sm text-muted tabular">
                                 {g.qty > 1 ? `${g.qty} × ${usdRange(g.low / g.qty, g.high / g.qty)} = ` : ""}{usdRange(g.low, g.high)}
-                                {g.later && <span className="ml-2 text-xs rounded px-1.5 py-0.5 bg-bg border border-line">later</span>}
+                                {g.later && <span className="ml-2 text-xs rounded px-1.5 py-0.5 bg-bg border border-line">when budget allows</span>}
                               </span>
                             </span>
                           </label>

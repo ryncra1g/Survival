@@ -56,7 +56,14 @@ export interface WaterResult {
   filterDays: number;
   filterGal: number;
   jugs: number;
+  /** 7-gallon jugs needed (without drums): the jug option's quantity, even when the default container is liftable. */
+  standardJugs: number;
+  /** Container sizes from the constants, for the catalog quantities (bricks, drums). */
+  brickGallons: number;
+  drumGallons: number;
   drums: number;
+  /** UX-12: someone has limited mobility, so water goes in containers they can lift (no 7-gal jugs, bricks or drums). */
+  liftable: boolean;
   threeDayGal: number;
   bleachDropsPerGal6pct: number;
   bleachDropsPerGal8pct: number;
@@ -81,11 +88,15 @@ export function computeWater(a: Answers, c: RuleConstants): WaterResult {
   const largeStorage = a.storage.some((s) => s === "garage" || s === "basement" || s === "shed");
   let drums = 0;
   let jugs: number;
-  if (storedGal > c.water.drumThresholdGal && largeStorage && a.homeType !== "apartment") {
+  const liftable = a.elderlyOrMobility;
+  const jugs7 = ceil(storedGal / c.water.jugGallons);
+  if (liftable) {
+    jugs = ceil(storedGal / c.water.liftableGallons);
+  } else if (storedGal > c.water.drumThresholdGal && largeStorage && a.homeType !== "apartment") {
     drums = Math.floor((storedGal * 0.75) / c.water.drumGallons) || 1;
     jugs = Math.max(2, ceil((storedGal - drums * c.water.drumGallons) / c.water.jugGallons));
   } else {
-    jugs = ceil(storedGal / c.water.jugGallons);
+    jugs = jugs7;
   }
   const breakdown = [{ label: `${a.adults} adult(s)`, galPerDay: round(adults) }];
   if (kids) breakdown.push({ label: `${a.childrenAges.length} child(ren)`, galPerDay: round(kids) });
@@ -98,7 +109,11 @@ export function computeWater(a: Answers, c: RuleConstants): WaterResult {
     filterDays,
     filterGal,
     jugs,
+    standardJugs: liftable ? jugs7 : jugs,
+    brickGallons: c.water.brickGallons,
+    drumGallons: c.water.drumGallons,
     drums,
+    liftable,
     threeDayGal: ceil(round(dailyGal * Math.min(3, a.scenarioDays), 4)),
     bleachDropsPerGal6pct: c.water.bleachDropsPerGal6pct,
     bleachDropsPerGal8pct: c.water.bleachDropsPerGal8pct,
@@ -424,7 +439,10 @@ export interface EvacResult {
   locationType: DriveDestination;
   distanceMiles: number;
   oneWayGalPerVehicle: number;
+  /** Fuel the trip needs per vehicle, with margin for detours and traffic (one-way × reserve factor). */
   reserveGalPerVehicle: number;
+  /** UX-3: the trip needs more than a half-full tank, so the plan says to fill up completely when a warning is issued. */
+  tripNeedsFullTank: boolean;
   hasEv: boolean;
   evMinRangeMiles: number;
   vehicles: number;
@@ -434,11 +452,13 @@ export function computeEvac(a: Answers, c: RuleConstants): EvacResult | null {
   if (!isDrive(dest) || !a.evacuation.distanceMiles) return null;
   const d = a.evacuation.distanceMiles;
   const oneWay = round(d / c.evacuation.assumedMpg, 1);
+  const reserve = round(oneWay * c.evacuation.fuelReserveFactor, 1);
   return {
     locationType: dest,
     distanceMiles: d,
     oneWayGalPerVehicle: oneWay,
-    reserveGalPerVehicle: round(oneWay * c.evacuation.fuelReserveFactor, 1),
+    reserveGalPerVehicle: reserve,
+    tripNeedsFullTank: reserve > c.evacuation.assumedTankGal / 2,
     hasEv: a.vehicleFuels.includes("ev"),
     evMinRangeMiles: ceil(d * (1 + c.evacuation.evRangeBufferPct / 100)),
     vehicles: a.vehicleFuels.length,
@@ -527,6 +547,8 @@ export interface SlotOption {
   qty: number;
   low: number;
   high: number;
+  /** Owner decision: full weight (lb) when this option is heavy for a household with mobility needs. */
+  heavyLb?: number;
 }
 /** One à la carte gear slot: the level chosen (by budget default or by the person) and every level's price. */
 export interface Slot {
@@ -560,15 +582,15 @@ export function resolveQty(item: CatalogItem, ctx: { water: WaterResult; power: 
     case "co_alarms":
       return ctx.a.floors + (ctx.a.hasBasement ? 1 : 0) + 1;
     case "water_jugs":
-      return ctx.water.jugs;
+      return ctx.water.standardJugs;
     case "water_bricks":
-      return Math.ceil(Math.max(0, ctx.water.storedGal - ctx.water.drums * 55) / 3.5);
+      return Math.ceil(Math.max(0, ctx.water.storedGal - ctx.water.drums * ctx.water.drumGallons) / ctx.water.brickGallons);
     case "food_buckets":
       return ctx.foodBuckets ?? 0;
     case "freeze_dried_units":
       return Math.ceil(ctx.foodKcal / (2000 * 30));
     case "water_gallons":
-      return Math.max(0, ctx.water.storedGal - ctx.water.drums * 55);
+      return Math.max(0, ctx.water.storedGal - ctx.water.drums * ctx.water.drumGallons);
     case "water_drums":
       return ctx.water.drums;
     case "people":
@@ -582,6 +604,22 @@ export function resolveQty(item: CatalogItem, ctx: { water: WaterResult; power: 
     default:
       return 1;
   }
+}
+
+/**
+ * Owner decision (PR #16): a water container's weight when full, from its size in the constants and the weight of
+ * water (catalog qty key → gallons × lbPerGallon). Null for anything that isn't a water container.
+ */
+export function containerFullLb(it: Pick<CatalogItem, "qty">, c: Pick<RuleConstants, "water">): number | null {
+  const sizes = new Map<string, number>([
+    ["water_gallons", c.water.liftableGallons],
+    ["water_jugs", c.water.jugGallons],
+    ["water_bricks", c.water.brickGallons],
+    ["water_drums", c.water.drumGallons],
+  ]);
+  const gal = sizes.get(String(it.qty));
+  // Rounded up, so a lifting warning never understates the weight.
+  return gal === undefined ? null : Math.ceil(gal * c.water.lbPerGallon);
 }
 
 function tagsMatch(item: CatalogItem, tags: Set<string>): boolean {
@@ -600,6 +638,13 @@ export function computeBudget(
   kitsWanted = false,
 ): BudgetResult {
   const planningAmount = c.budget.planningAmount[a.budget];
+  // Owner decision (PR #16): with mobility needs, containers heavier than mobilityMaxLb when full are offered in
+  // Compare options only. They are never picked or set aside automatically; a person's own choice is honoured.
+  const heavyLb = (it: CatalogItem) => {
+    const lb = containerFullLb(it, c);
+    return tags.has("mobility") && lb !== null && lb > c.water.mobilityMaxLb ? lb : 0;
+  };
+  const heavy = (it: CatalogItem) => heavyLb(it) > 0;
   const tier = c.budget.tierByBudget[a.budget];
   const choices = (a.gearChoices ?? {}) as Record<string, SlotLevel>;
   const defaultRank = LEVEL_RANK[(c.budget.defaultLevel[a.budget] ?? "standard") as SlotLevel];
@@ -690,7 +735,7 @@ export function computeBudget(
     const choice = group ? choices[group] : undefined;
     const chosenByPerson = choice ? viable.find((o) => o.item.level === choice) : undefined;
     // Default: the budget's level or lower, best first; a person's own choice always wins (even over budget).
-    const atOrBelow = group ? viable.filter((o) => LEVEL_RANK[o.item.level ?? "standard"] <= defaultRank) : viable;
+    const atOrBelow = (group ? viable.filter((o) => LEVEL_RANK[o.item.level ?? "standard"] <= defaultRank) : viable).filter((o) => !heavy(o.item));
     const fit =
       chosenByPerson ??
       atOrBelow.find((o) => o.item.essential || spent + o.mid + bundleFor(o).reduce((t, b) => t + b.mid, 0) <= ceiling);
@@ -704,7 +749,7 @@ export function computeBudget(
           .sort((x, y) => LEVEL_RANK[x.item.level ?? "standard"] - LEVEL_RANK[y.item.level ?? "standard"])
           .map((o) => {
             const b = bundleFor(o);
-            return { level: (o.item.level ?? "standard") as SlotLevel, itemId: o.item.id, name: o.item.name, qty: o.qty, low: o.low + b.reduce((t, x) => t + x.low, 0), high: o.high + b.reduce((t, x) => t + x.high, 0) };
+            return { level: (o.item.level ?? "standard") as SlotLevel, itemId: o.item.id, name: o.item.name, qty: o.qty, low: o.low + b.reduce((t, x) => t + x.low, 0), high: o.high + b.reduce((t, x) => t + x.high, 0), ...((lb) => (lb ? { heavyLb: lb } : {}))(heavyLb(o.item)) };
           }),
       });
     if (fit) {
@@ -719,7 +764,9 @@ export function computeBudget(
         bundled.add(x.item.id);
       }
     } else {
-      const pool = atOrBelow.length ? atOrBelow : viable;
+      const light = viable.filter((o) => !heavy(o.item));
+      const pool = atOrBelow.length ? atOrBelow : light;
+      if (!pool.length) continue; // only heavy options: offered in Compare, never set aside automatically
       const cheapest = [...pool].sort((x, y) => x.mid - y.mid)[0];
       if (cheapest.item.group) deferredGroups.add(cheapest.item.group);
       deferred.push({ ...cheapest, status: "deferred", reason: "Doesn't fit the remaining budget — buy next" });

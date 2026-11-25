@@ -77,21 +77,39 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(page.getByRole("button", { name: /^No suitable storage/ })).toBeVisible();
   await pick(page, "Garage");
   await next(page);
-  // D4: preferred approach, then where they could go
+  // D4 / UX-5: preferred approach; a place answer fills in where they'd go, so only "which one" and the distance are left
   await expect(page.getByRole("heading", { name: "If you have to leave" })).toBeVisible();
-  await pick(page, "Another property");
-  await pick(page, "Raw land");
+  await pick(page, "Stay home when it's safe");
+  await expect(page.getByRole("group", { name: "If officials told you to leave, where could you go?" })).toBeVisible();
+  await pick(page, "Go to another place I own");
+  await expect(page.getByRole("group", { name: "If officials told you to leave, where could you go?" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /^A second home or cabin/ })).toHaveAttribute("aria-pressed", "true");
+  await pick(page, /^Land with no buildings/);
   await pick(page, "~120 mi");
   await next(page);
   await pick(page, "$1,500–5,000");
   await page.getByRole("button", { name: "Back" }).click();
-  await expect(page.getByRole("button", { name: "Raw land" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: /^Land with no buildings/ })).toHaveAttribute("aria-pressed", "true");
   await next(page);
   await expect(page.getByText("54 gal")).toBeVisible();
+  // UX-22: the "Almost done" summary sits right above Build my plan, on screen without scrolling
+  const teaser = (await page.getByTestId("plan-teaser").boundingBox())!;
+  const buildBtn = (await page.getByRole("button", { name: "Build my plan" }).boundingBox())!;
+  expect(teaser.y + teaser.height).toBeLessThanOrEqual(buildBtn.y);
+  expect(teaser.y).toBeGreaterThanOrEqual(0);
+  expect(buildBtn.y + buildBtn.height).toBeLessThanOrEqual(page.viewportSize()!.height);
   // Clickwrap: the plan isn't built until the Terms box is ticked
   await next(page);
   await expect(page.getByText("Please tick the box to agree to the Terms of Use")).toBeVisible();
   await expect(page).toHaveURL(/\/q\//);
+  // UX-4: the unticked box is scrolled into view above the sticky bar, focused, with its message beside it
+  await expect(page.locator("#termsConsent")).toBeFocused();
+  await expect(page.locator("#termsConsent")).toHaveAttribute("aria-describedby", "termsConsent-error");
+  await expect(page.locator("#termsConsent-error")).toHaveText(/Terms of Use/);
+  const termsBox = (await page.locator("label[for=termsConsent]").boundingBox())!;
+  const buildBar = (await page.getByRole("button", { name: "Build my plan" }).boundingBox())!;
+  expect(termsBox.y).toBeGreaterThanOrEqual(0);
+  expect(termsBox.y + termsBox.height).toBeLessThanOrEqual(buildBar.y);
   await page.getByLabel(/general guidance, not professional advice/).check();
   const qid = page.url().split("/q/")[1];
   await next(page);
@@ -111,6 +129,10 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   // Dashboard first: this week's progress, Next up (with why + Buy), key numbers, shopping list
   const dash = page.getByTestId("dashboard");
   await expect(dash.getByTestId("stage-progress")).toHaveText(/^0 of \d+ done$/);
+  // UX-6: one step count on screen (this stage's To do items); no whole-plan or "steps left" count
+  const dashText = await dash.innerText();
+  expect(dashText.match(/\b\d+ of \d+ (done|steps)\b|\(\d+ left\)/g)).toEqual([expect.stringMatching(/^0 of \d+ done$/)]);
+  expect(dashText).not.toContain("Whole plan");
   await expect(dash.getByRole("heading", { name: "Next up" })).toBeVisible();
   await expect(dash.getByText(/^Test or install CO alarms/)).toBeVisible();
   await expect(dash.getByText("water to store")).toBeVisible();
@@ -128,11 +150,11 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await dash.getByText("Shopping list").click();
   const gearTotal = await dash.locator("#shopping").getByRole("checkbox").count();
   await dash.getByRole("checkbox", { name: "I have: Carbon monoxide alarm" }).check();
-  await expect(dash.getByTestId("overall-progress")).toContainText(`you have 1 of ${gearTotal} gear items`);
+  await expect(dash.getByTestId("overall-progress")).toContainText(`You have 1 of ${gearTotal} gear items`);
   await expect(page.getByRole("link", { name: /^Buy carbon monoxide alarm/ })).toHaveCount(0);
   await page.waitForTimeout(800);
   await page.reload();
-  await expect(page.getByTestId("dashboard").getByTestId("overall-progress")).toContainText(`you have 1 of ${gearTotal} gear items`);
+  await expect(page.getByTestId("dashboard").getByTestId("overall-progress")).toContainText(`You have 1 of ${gearTotal} gear items`);
   await expect(page.getByTestId("dashboard").getByTestId("stage-progress")).toHaveText(/^1 of \d+ done$/);
 
   // D10: the plan below is a card grid per chapter (2 across on a phone), each card with its key number
@@ -149,7 +171,7 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   const waterBox = await page.locator("details#water").boundingBox();
   expect(waterBox!.width).toBeGreaterThan(300); // an opened card spans the full row
   await page.locator("details#water > summary").click();
-  await page.getByTestId("dashboard").getByRole("link", { name: /See every step/ }).click();
+  await page.getByTestId("dashboard").getByRole("link", { name: /full priority list/ }).click();
   await expect(page.locator("details#priorities")).toHaveAttribute("open", "");
   const nav = page.getByRole("navigation", { name: "Plan sections" });
   await nav.getByRole("link", { name: "Supplies" }).click();
@@ -161,14 +183,17 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
 
   // Ticks are saved to the plan, not just this browser (the dashboard tick above shows in the full list too)
   await page.locator("details#priorities").evaluate((d) => ((d as HTMLDetailsElement).open = true));
-  await expect(page.locator("details#priorities input[type=checkbox]").first()).toBeChecked();
-  await page.locator("details#priorities input[type=checkbox]").nth(1).check();
+  // UX-13: the high-hazard step comes first now, so find the CO step by its text
+  const coBox = page.locator("details#priorities label", { hasText: /^Test or install CO alarms/ }).locator("input[type=checkbox]");
+  await expect(coBox).toBeChecked();
+  await page.locator("details#priorities input[type=checkbox]").first().check();
   await expect(page.locator("details#priorities").getByText(/^2 of \d+ done/).first()).toBeVisible();
   await page.waitForTimeout(800);
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await page.locator("details#priorities").evaluate((d) => ((d as HTMLDetailsElement).open = true));
-  await expect(page.locator("details#priorities input[type=checkbox]").nth(1)).toBeChecked();
+  await expect(page.locator("details#priorities input[type=checkbox]").first()).toBeChecked();
+  await expect(coBox).toBeChecked();
 
   // Change one answer without redoing the questionnaire
   await page.getByText("Something not right? Change an answer").click();
@@ -199,19 +224,19 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(page.getByTestId("save-bar")).toHaveCount(1);
   await expect(page.getByTestId("save-bar")).toContainText("Saved on this device for 30 days. Confirm your email to keep it and use it on any device.");
   await expect(page.locator("form:has(input[type=email])")).toHaveCount(1); // one email entry point
-  await share.getByRole("link", { name: "Email me my plan" }).click();
+  await share.getByRole("link", { name: "Save my plan" }).click();
 
   // Optional email: typo check, then confirm flow
-  const box = page.locator("form", { has: page.getByRole("heading", { name: "Email me my plan" }) }).first();
+  const box = page.locator("form", { has: page.getByRole("heading", { name: "Save my plan" }) }).first();
   await expect(box).toBeVisible();
   await box.getByPlaceholder("you@example.com").fill("family@gmial.com");
-  await box.getByRole("button", { name: "Email my plan" }).click();
+  await box.getByRole("button", { name: "Save my plan" }).click();
   await expect(box.getByText("Did you mean")).toBeVisible();
   await box.getByRole("button", { name: "family@gmail.com" }).click();
   await box.getByPlaceholder("you@example.com").fill("family@example.com");
   await expect(box.getByRole("checkbox")).not.toBeChecked(); // marketing is opt-in
   await box.getByRole("checkbox").check();
-  await box.getByRole("button", { name: "Email my plan" }).click();
+  await box.getByRole("button", { name: "Save my plan" }).click();
   await expect(page.getByText(/Almost there: check your inbox/)).toBeVisible();
   const link = await page.getByRole("link", { name: "open the confirmation link" }).getAttribute("href");
 
@@ -345,7 +370,7 @@ test("à la carte: switch a gear item's level from the plan", async ({ page }) =
   const water = gear.getByTestId("compare-options").filter({ hasText: "7-gallon" }).first();
   await water.getByText("Compare options").click();
   await expect(water.getByText("Upgrade", { exact: true })).toBeVisible();
-  await expect(water.getByText(/new total \$/).first()).toBeVisible();
+  await expect(water.getByText(/whole gear list: \$/).first()).toBeVisible();
   const premiumWater = water.getByRole("button", { name: /Switch to Premium: Stackable water bricks/ });
   await premiumWater.click();
   await expect(page).toHaveURL(/\/plan\/[0-9a-f-]{36}#gear/);
@@ -379,7 +404,8 @@ test("D4 places page: the typed address is printed but never sent anywhere", asy
   page.on("request", (r) => sent.push(r.url() + " " + (r.postData() ?? "")));
   await page.getByLabel("Address").fill(SENTINEL);
   await page.getByLabel("Place").fill("Aunt test house");
-  await expect(page.getByText("This address isn't saved.")).toBeVisible();
+  await expect(page.getByText("This isn't saved. Print this page or write it down.")).toBeVisible();
+  await expect(page.getByTestId("places-form")).not.toContainText("Confirm your email");
   await expect(page.getByRole("link", { name: "Directions (Apple Maps)" })).toHaveAttribute("href", /maps\.apple\.com/);
   await page.emulateMedia({ media: "print" });
   await expect(page.getByTestId("places-print")).toContainText(SENTINEL);
@@ -398,4 +424,102 @@ test("D12: Add to my calendar downloads a .ics; the maintenance list prints", as
   expect(await r.text()).toContain("BEGIN:VEVENT");
   await page.goto(`/plan/${planId}/maintenance`);
   await expect(page.getByTestId("maintenance-list")).toContainText("Test CO and smoke alarms.");
+});
+
+test("UX-4 medical screen: Next with the health box unticked focuses it, with the message beside it", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Build my free plan" }).first().click();
+  await page.waitForURL(/\/q\//);
+  await page.locator("main h1").first().waitFor(); // the questionnaire has mounted (and autosaved step 0)
+  const draft = { ...SAMPLE, poweredDevices: ["cpap"], _step: 4 };
+  await page.evaluate((d) => localStorage.setItem(`rp_q_${location.pathname.split("/q/")[1]}`, JSON.stringify(d)), draft);
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Medical needs" })).toBeVisible();
+  await next(page);
+  await expect(page.getByRole("heading", { name: "Medical needs" })).toBeVisible();
+  await expect(page.locator("#healthConsent")).toBeFocused();
+  await expect(page.locator("#healthConsent-error")).toBeVisible();
+  const box = (await page.locator("label[for=healthConsent]").boundingBox())!;
+  const bar = (await page.getByRole("button", { name: "Next" }).boundingBox())!;
+  expect(box.y + box.height).toBeLessThanOrEqual(bar.y);
+  await page.locator("#healthConsent").check();
+  await expect(page.locator("#healthConsent-error")).toHaveCount(0);
+  await next(page);
+  await expect(page.getByRole("heading", { name: "Tell us about your home" })).toBeVisible();
+});
+
+test("UX-9: every control on the plan page is at least 44px tall (or has a 44px padded hit area)", async ({ page }) => {
+  const planId = await quickPlan(page);
+  await page.goto(`/plan/${planId}`);
+  // Open everything a person can open, so hidden controls are measured too.
+  await page.getByRole("button", { name: "Expand all" }).click();
+  await page.locator("details[data-stage]").evaluateAll((ds) => ds.forEach((d) => ((d as HTMLDetailsElement).open = true)));
+  await page.getByTestId("dashboard").locator("details").evaluateAll((ds) => ds.forEach((d) => ((d as HTMLDetailsElement).open = true)));
+  await page.getByTestId("compare-options").locator("details").evaluateAll((ds) => ds.forEach((d) => ((d as HTMLDetailsElement).open = true)));
+  await page.getByTestId("share-menu").locator("summary").first().click();
+  await page.waitForTimeout(300);
+  const small = await page.evaluate(() => {
+    const out: string[] = [];
+    const els = document.querySelectorAll("a[href], button, summary, input:not([type=hidden]), select, textarea, [role=button]");
+    for (const e of els) {
+      const vis = (e as HTMLElement & { checkVisibility?: (o: object) => boolean }).checkVisibility?.({ visibilityProperty: true, opacityProperty: true }) ?? true;
+      const r0 = e.getBoundingClientRect();
+      if (!vis || r0.width <= 1 || r0.height <= 1) continue; // the sr-only skip link until focused
+      // A checkbox inside a label: the label is what you tap.
+      const target = e.matches("input[type=checkbox],input[type=radio]") ? (e.closest("label") ?? e) : e;
+      const r = target.getBoundingClientRect();
+      if (r.height < 44) out.push(`${e.tagName.toLowerCase()} "${((e as HTMLElement).innerText || e.getAttribute("aria-label") || "").trim().slice(0, 50)}" ${Math.round(r.height)}px`);
+    }
+    return [...new Set(out)];
+  });
+  expect(small).toEqual([]);
+});
+
+test("UX-21, UX-23: header and footer links are at least 44px tall (footer links 44px wide too) on every kind of page", async ({ page }) => {
+  for (const path of ["/", "/help", "/sources", "/start"]) {
+    await page.goto(path);
+    const small = await page.evaluate(() =>
+      [...document.querySelectorAll("header a[href], footer a[href], header summary")]
+        .filter((e) => e.getBoundingClientRect().height > 1)
+        .filter((e) => e.getBoundingClientRect().height < 44 || (e.closest("footer") !== null && e.getBoundingClientRect().width < 44))
+        .map((e) => `${(e as HTMLElement).innerText.trim()} ${Math.round(e.getBoundingClientRect().height)}px`),
+    );
+    expect(small, path).toEqual([]);
+  }
+});
+
+test("UX-27: at 375×812 the Terms box is fully visible above the sticky bar, and the summary is one line", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Build my free plan" }).first().click();
+  await page.waitForURL(/\/q\//);
+  await page.locator("main h1").first().waitFor(); // the questionnaire has mounted (and autosaved step 0)
+  const draft = { ...SAMPLE, hasPrescriptions: true, _step: 99 };
+  await page.evaluate((d) => localStorage.setItem(`rp_q_${location.pathname.split("/q/")[1]}`, JSON.stringify(d)), draft);
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Budget and skills" })).toBeVisible();
+  const teaser = page.getByTestId("plan-teaser");
+  await expect(teaser).toBeVisible();
+  const line = (await teaser.boundingBox())!;
+  expect(line.height).toBeLessThanOrEqual(24); // a single line of text-sm
+  const barTop = await teaser.evaluate((el) => el.parentElement!.getBoundingClientRect().top);
+  const terms = (await page.locator("label[for=termsConsent]").boundingBox())!;
+  expect(terms.y).toBeGreaterThanOrEqual(0);
+  expect(terms.y + terms.height).toBeLessThanOrEqual(barTop);
+});
+
+test("UX-27: the summary line is never cut off, even for a big 90-day household", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Build my free plan" }).first().click();
+  await page.waitForURL(/\/q\//);
+  await page.locator("main h1").first().waitFor();
+  const draft = { ...SAMPLE, adults: 6, childrenAges: [3, 8, 12, 15], scenarioDays: 90, _step: 99 };
+  await page.evaluate((d) => localStorage.setItem(`rp_q_${location.pathname.split("/q/")[1]}`, JSON.stringify(d)), draft);
+  await page.reload();
+  const teaser = page.getByTestId("plan-teaser");
+  await expect(teaser).toContainText("calories");
+  const fits = await teaser.evaluate((el) => el.scrollWidth <= el.clientWidth && el.getBoundingClientRect().right <= window.innerWidth);
+  expect(fits).toBe(true);
+  expect((await teaser.boundingBox())!.height).toBeLessThanOrEqual(24); // still one line at 375
 });

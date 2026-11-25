@@ -20,7 +20,7 @@ export const APARTMENT_GENERATOR_RULE =
   "Use battery power stations indoors instead, and only run a generator if you have open ground 20+ feet from every building opening and your building allows it.";
 
 export const INDOOR_HEATER_RULE =
-  "Use only a propane heater labeled for indoor use with an oxygen depletion sensor (ODS) and tip-over shutoff, follow its manual's ventilation requirement, keep 3 feet of clearance, never leave it running while everyone sleeps, and keep a working CO alarm in the same room.";
+  "Use only a propane heater labeled for indoor use. It must have an oxygen depletion sensor (ODS) and a tip-over shutoff. Follow its manual's ventilation requirement and keep 3 feet of clearance. Never leave it running while you sleep. Keep a working CO alarm in the same room.";
 
 export const BLEACH_RULE =
-  "If water is cloudy, let it settle or filter it first. Then disinfect it with regular unscented bleach, using the amount and wait time on the bleach label and in EPA's emergency disinfection steps, or bring it to a rolling boil for 1 minute (3 minutes above 6,500 ft), as CDC advises. Never guess an amount.";
+  "If water is cloudy, let it settle or filter it first. Then disinfect it one of two ways. Use regular unscented bleach, with the amount and wait time on the bleach label and in EPA's emergency disinfection steps. Or bring it to a rolling boil for 1 minute (3 minutes above 6,500 ft), as CDC advises. Never guess an amount.";

@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
-import { PLACES_NOT_SAVED } from "@/lib/copy";
+import { placesNote } from "@/lib/copy";
 
 /**
  * D4 (launch): type a backup destination and print it. Nothing is saved or sent: the fields have no
  * name, there is no form submit, and nothing here calls the server. Directions open a maps app only
  * when tapped. No embedded map. The address is never used in emails, analytics or AI.
  */
-export function PlacesForm() {
+export function PlacesForm({ accounts = false }: { accounts?: boolean }) {
   const [place, setPlace] = useState("");
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
@@ -27,7 +27,7 @@ export function PlacesForm() {
           <span className="text-sm font-semibold">Notes (route, phone, key)</span>
           <input className="input mt-1 w-full" autoComplete="off" value={notes} onChange={(e) => setNotes(e.target.value)} />
         </label>
-        <p className="text-sm text-muted" role="note">{PLACES_NOT_SAVED}</p>
+        <p className="text-sm text-muted" role="note">{placesNote(accounts)}</p>
         <div className="flex flex-wrap gap-2">
           <button type="button" className="btn text-sm px-4 min-h-[44px]" onClick={() => window.print()} disabled={!address.trim()}>Print</button>
           {address.trim() && (

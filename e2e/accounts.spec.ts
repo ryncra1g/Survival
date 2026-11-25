@@ -19,6 +19,8 @@ test("accounts on: tabs, food card, tips, inventory feeds the shopping list", as
   const planId = await quickPlan(page);
   await page.goto(`/plan/${planId}`);
   const tabs = page.getByTestId("plan-tabs");
+  // UX-9: the accounts-track tabs are 44px tall too
+  for (const name of ["Overview", "Inventory", "Report"]) expect((await tabs.getByRole("link", { name }).boundingBox())!.height).toBeGreaterThanOrEqual(44);
   for (const t of ["Overview", "Inventory", "Report"]) await expect(tabs.getByRole("link", { name: t })).toBeVisible();
   await expect(page.getByTestId("food-mix-card")).toBeVisible();
   await expect(page.getByTestId("save-bar")).toContainText("Your plan and inventory are saved on this device for 30 days.");

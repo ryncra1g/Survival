@@ -23,7 +23,7 @@ export function LevelChips({
     <div className="mt-2" role="group" aria-label="Choose a level">
       <div className="flex flex-wrap gap-1.5">
         {levels.map((l) => {
-          const cls = `rounded-lg border px-2.5 py-1.5 text-left text-xs leading-tight min-h-[40px] ${l.selected ? "border-brand bg-brand-soft font-semibold" : "border-line bg-surface"}`;
+          const cls = `rounded-lg border px-2.5 py-1.5 text-left text-xs leading-tight min-h-[44px] ${l.selected ? "border-brand bg-brand-soft font-semibold" : "border-line bg-surface"}`;
           const inner = (
             <>
               <span className="block">{l.selected ? "✓ " : ""}{LABEL[l.level]}</span>

@@ -72,7 +72,7 @@ export function SectionNav({ chapters }: { chapters: NavChapter[] }) {
               document.getElementById(`ch-${c.id}`)?.scrollIntoView({ behavior: "smooth" });
               history.replaceState(null, "", `#ch-${c.id}`);
             }}
-            className={`rounded-lg px-1 py-2 text-center text-sm font-semibold leading-tight ${c.id === current?.id ? "bg-brand text-brand-ink" : "text-ink"}`}
+            className={`flex min-h-[44px] items-center justify-center rounded-lg px-1 py-2 text-center text-sm font-semibold leading-tight ${c.id === current?.id ? "bg-brand text-brand-ink" : "text-ink"}`}
           >
             <span className="sm:hidden">{c.short}</span>
             <span className="hidden sm:inline">{c.title}</span>
@@ -81,8 +81,8 @@ export function SectionNav({ chapters }: { chapters: NavChapter[] }) {
       </div>
     </nav>
     <div className="no-print mt-2 flex justify-end gap-4 text-sm">
-      <button type="button" className="underline min-h-[32px]" onClick={() => setAll(true)}>Expand all</button>
-      <button type="button" className="underline min-h-[32px]" onClick={() => setAll(false)}>Collapse all</button>
+      <button type="button" className="underline min-h-[44px] px-1" onClick={() => setAll(true)}>Expand all</button>
+      <button type="button" className="underline min-h-[44px] px-1" onClick={() => setAll(false)}>Collapse all</button>
     </div>
     </>
   );

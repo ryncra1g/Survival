@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { fuzzHouseholds } from "./fixtures/fuzz";
 import type Anthropic from "@anthropic-ai/sdk";
 import { AnswersSchema, type Answers } from "@/lib/answers/schema";
 import { SEED_CATALOG } from "@/lib/catalog/seed";
@@ -66,13 +67,13 @@ describe("adversarial households", () => {
   it("powered medical device is the top priority and gets a battery even on the smallest budget", async () => {
     const r = await gen(at({ poweredDevices: ["oxygen"], budget: "under_500" }));
     const week = r.document.sections.find((s) => s.id === "priorities")!.blocks[1];
-    expect(week.type === "checklist" && week.items[0].text).toMatch(/^TOP PRIORITY: .*medical-needs/);
+    expect(week.type === "checklist" && week.items[0].text).toMatch(/^Most important: .*medical-needs/);
     expect(picked(r, "med-battery")).toBe(true);
   });
 
   it("well water flags the pump as top priority", async () => {
     const r = await gen(at({ waterSource: "well" }));
-    expect(text(r.document)).toMatch(/TOP PRIORITY: Your well pump needs power/);
+    expect(text(r.document)).toMatch(/Most important: Your well pump needs power/);
     expect(sectionText(r.document, "water")).toMatch(/Well water needs power/);
   });
 
@@ -89,41 +90,11 @@ describe("adversarial households", () => {
 });
 
 describe("fuzz: random households never produce unsafe text", () => {
-  // Deterministic PRNG so failures are reproducible.
-  let seed = 42;
-  const rnd = () => ((seed = (seed * 1664525 + 1013904223) % 2 ** 32) / 2 ** 32);
-  const pick = <T,>(xs: readonly T[]) => xs[Math.floor(rnd() * xs.length)];
-  const some = <T,>(xs: readonly T[]) => xs.filter(() => rnd() < 0.4);
-  const zips = ["11746", "10001", "33101", "70112", "94110", "98101", "55401", "80202", "85004", "99501", "60601", "00000", "77002", "02108"];
+  // The same 300 households as tests/fixtures/fuzz.ts (deterministic, so failures are reproducible).
 
   it("300 random households pass the linter and include required safety text", async () => {
-    for (let i = 0; i < 300; i++) {
-      const homeType = pick(["house", "townhouse", "apartment"] as const);
-      const a = at({
-        zip: pick(zips),
-        scenarioDays: pick([3, 14, 30, 90] as const),
-        adults: 1 + Math.floor(rnd() * 4),
-        childrenAges: some([0, 1, 2, 3, 5, 9, 15]),
-        elderlyOrMobility: rnd() < 0.3,
-        toddlerNeeds: some(["diapers", "formula", "milk"] as const),
-        pets: rnd() < 0.5 ? [{ type: pick(["dog", "cat", "other"] as const), count: 1 + Math.floor(rnd() * 2), size: pick(["small", "medium", "large"] as const), specialDiet: rnd() < 0.3, medications: rnd() < 0.3 }] : [],
-        hasPrescriptions: rnd() < 0.5,
-        poweredDevices: some(["cpap", "oxygen", "nebulizer"] as const),
-        homeType,
-        floors: 1 + Math.floor(rnd() * 3),
-        hasBasement: rnd() < 0.5,
-        hasGarage: rnd() < 0.5,
-        hasYard: rnd() < 0.5,
-        heatSources: [pick(["natural_gas", "oil", "propane", "electric", "wood"] as const), ...some(["wood", "electric"] as const)].filter((v, j, arr) => arr.indexOf(v) === j),
-        cooking: pick(["gas", "electric", "induction"] as const),
-        waterSource: pick(["municipal", "well"] as const),
-        hasFiltration: rnd() < 0.3,
-        backupPower: pick(["none", "portable_generator", "standby_generator", "solar_battery"] as const),
-        vehicleFuels: some(["gas", "diesel", "ev", "hybrid"] as const),
-        storage: [pick(["garage", "basement", "closets", "shed", "limited"] as const)],
-        evacuation: rnd() < 0.5 ? { mode: "fallback", locationType: pick(["friends_family", "second_property", "raw_land"] as const), distanceMiles: 10 + Math.floor(rnd() * 400) } : { mode: "shelter_only" },
-        budget: pick(["under_500", "500_1500", "1500_5000", "5000_plus"] as const),
-      });
+    for (const a of fuzzHouseholds()) {
+      const homeType = a.homeType;
       const r = await gen(a);
       const d = r.document;
       expect(lintDocument(d), JSON.stringify(a)).toEqual([]);

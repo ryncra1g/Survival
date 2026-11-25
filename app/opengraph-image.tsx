@@ -16,7 +16,7 @@ export default function OgImage() {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           <div style={{ fontSize: 80, fontWeight: 700, lineHeight: 1.1 }}>Get what you need. Know what to do.</div>
-          <div style={{ fontSize: 34, color: "#4a5663" }}>An emergency plan built for your household · exact water, food and fuel · free</div>
+          <div style={{ fontSize: 34, color: "#4a5663" }}>An emergency plan built for your household · water, food and fuel, with the math shown · free</div>
         </div>
       </div>
     ),

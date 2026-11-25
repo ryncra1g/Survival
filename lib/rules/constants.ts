@@ -19,7 +19,14 @@ export const DEFAULT_CONSTANTS = {
     otherPetGalPerDay: 0.05,
     storedDaysCap: 14,
     jugGallons: 7,
+    /** Stackable water bricks (premium water level). */
+    brickGallons: 3.5,
     drumGallons: 55,
+    /** UX-12: water weighs about 8.34 lb a gallon. Households with mobility needs get containers of at most mobilityMaxLb when full. */
+    lbPerGallon: 8.34,
+    mobilityMaxLb: 25,
+    /** The container size they get instead: 1-gallon jugs or cases (about 9 lb full). */
+    liftableGallons: 1,
     /** Use 55-gal drums once stored water exceeds this and there is garage/basement space. */
     drumThresholdGal: 60,
     /** EPA emergency disinfection: drops of 6% unscented bleach per gallon of clear water. */
@@ -102,6 +109,8 @@ export const DEFAULT_CONSTANTS = {
   evacuation: {
     assumedMpg: 25,
     fuelReserveFactor: 1.5,
+    /** UX-3: a typical passenger-car tank (most hold 12–16 gal). "Half full" = half of this; a trip needing more gets "fill up completely". Planning assumption, in FACTCHECK. */
+    assumedTankGal: 14,
     evRangeBufferPct: 30,
   },
   foodBuild: {
@@ -174,11 +183,15 @@ export const RuleConstantsSchema = z.object({
     otherPetGalPerDay: num,
     storedDaysCap: num,
     jugGallons: num,
+    brickGallons: z.number().positive(),
+    lbPerGallon: z.number().positive(),
+    mobilityMaxLb: z.number().positive(),
+    liftableGallons: z.number().positive(),
     drumGallons: num,
     drumThresholdGal: num,
     bleachDropsPerGal6pct: num,
     bleachDropsPerGal8pct: num,
-  }),
+  }).refine((w) => w.liftableGallons * w.lbPerGallon <= w.mobilityMaxLb, "UX-12: a liftable container must weigh at most mobilityMaxLb when full"),
   calories: z.object({ adultPerDay: num, childBands: z.array(z.tuple([num, num])).min(1) }),
   staples: z
     .array(
@@ -225,7 +238,7 @@ export const RuleConstantsSchema = z.object({
     gasolineShelfLifeMonthsStabilized: num,
     fuelTableAmountsGal: z.array(z.number().positive()).min(1),
   }),
-  evacuation: z.object({ assumedMpg: z.number().positive(), fuelReserveFactor: num, evRangeBufferPct: num }),
+  evacuation: z.object({ assumedMpg: z.number().positive(), fuelReserveFactor: num, evRangeBufferPct: num, assumedTankGal: z.number().positive() }),
   foodBuild: z.object({ phase2Days: z.number().positive() }),
   foodMix: z.object({ readyCostPer1000Kcal: z.number().positive() }),
   cash: z.object({ perAdult: z.record(z.string(), num) }),

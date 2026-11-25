@@ -10,7 +10,8 @@ committed are `docs/ux/UX_PASS_<date>.md` and `docs/BACKLOG.md`. Everything else
 `.data/ux/<date>/`, which is git-ignored. If a script here breaks because the app changed, fix the script under
 `.claude/skills/ux-pass/scripts/` in a separate commit on a separate branch, never in the pass's branch.
 
-`<date>` is today in `YYYY-MM-DD`. All commands run from the repo root in Git Bash. Set
+`<date>` is today in `YYYY-MM-DD`. A second pass on the same day uses `<date>-2` (then `-3`) for `UX_DATE`, the
+`.data/ux/` folder and the report name, so the earlier pass stays intact for "compare with last pass". All commands run from the repo root in Git Bash. Set
 `NEXT_PUBLIC_BRAND_NAME=ReadyReport` in the shell only, as for `/release-check`. Never turn a flag on outside the
 test-only server below, never touch `.env*` files, migrations or hosting.
 

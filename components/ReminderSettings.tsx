@@ -31,7 +31,7 @@ export function ReminderSettings({ initial, items }: { initial: ReminderPrefs; i
                 <input type="checkbox" className="mt-1 size-5 accent-[var(--brand)]" checked={type(m.id).on} onChange={(e) => save({ ...prefs, types: { ...prefs.types, [m.id]: { ...type(m.id), on: e.target.checked } } })} />
                 <span className="text-sm"><strong>{m.when}:</strong> {m.task}</span>
               </label>
-              <select className="input text-sm min-h-[40px]" aria-label={`How often: ${m.task}`} value={type(m.id).every} onChange={(e) => save({ ...prefs, types: { ...prefs.types, [m.id]: { ...type(m.id), every: e.target.value as (typeof REMINDER_EVERY)[number] } } })}>
+              <select className="input text-sm min-h-[44px]" aria-label={`How often: ${m.task}`} value={type(m.id).every} onChange={(e) => save({ ...prefs, types: { ...prefs.types, [m.id]: { ...type(m.id), every: e.target.value as (typeof REMINDER_EVERY)[number] } } })}>
                 {REMINDER_EVERY.map((v) => <option key={v} value={v}>{EVERY_LABEL[v]}</option>)}
               </select>
             </li>

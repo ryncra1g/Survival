@@ -49,7 +49,7 @@ async function run(i: number): Promise<R> {
   const html = await r.text();
   if (r.status !== 200) fail(`plan page ${r.status}`);
   if (!html.includes('data-testid="dashboard"') || !html.includes(">Next up<")) fail("no dashboard / Next up");
-  if (!html.includes("Email me my plan")) fail("no email box");
+  if (!html.includes("Save my plan")) fail("no email box");
   res.info.planHtmlKB = Math.round(html.length / 1024);
   res.info.sections = (html.match(/<details[^>]*data-section/g) ?? []).length;
   res.info.hazards = html.includes("Your area&#x27;s hazards") || html.includes("Your area's hazards");
@@ -73,8 +73,17 @@ async function run(i: number): Promise<R> {
   else {
     r = await req("choosePage", `/plan/${newPid}`);
     const h2 = await r.text();
-    if (!h2.includes("Stackable water bricks")) fail("premium water not shown after choose");
-    if (!/✓ <!-- -->Premium|✓ Premium/.test(h2)) fail("premium not marked selected");
+    if (p.a.elderlyOrMobility) {
+      // Owner decision (PR #16): heavy containers are Compare-only choices for mobility households, and a choice is
+      // honoured. The smoke run chose Premium, so the bricks are picked, and the 7-gallon option shows its warning.
+      if (!h2.includes("Stackable water bricks")) fail("chosen premium water not honoured for a mobility household");
+      if (!/✓ <!-- -->Premium|✓ Premium/.test(h2)) fail("premium not marked selected");
+      if (!h2.includes("Heavy when full (about")) fail("no heavy-container warning in Compare");
+      if (!h2.includes("Keep water where you won&#x27;t need to lift it far") && !h2.includes("Keep water where you won't need to lift it far")) fail("no keep-water-close line");
+    } else {
+      if (!h2.includes("Stackable water bricks")) fail("premium water not shown after choose");
+      if (!/✓ <!-- -->Premium|✓ Premium/.test(h2)) fail("premium not marked selected");
+    }
     if (!/checked=""[^>]*>|aria-checked/.test(h2) && !h2.includes('"week-1":true')) res.info.tickCarried = "not visible in HTML";
     res.info.levels = (h2.match(/data-testid="compare-options"/g) ?? []).length;
   }

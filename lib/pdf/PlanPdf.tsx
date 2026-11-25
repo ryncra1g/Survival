@@ -108,7 +108,7 @@ function BlockView({ b }: { b: Block }) {
           <Table
             columns={["Item", "Look for", "Examples", "Price"]}
             rows={b.items.map((i) => [
-              `${i.category}: ${i.name}${i.qty ? ` ${i.qty}` : ""}${i.later ? " (later)" : ""}`,
+              `${i.category}: ${i.name}${i.qty ? ` ${i.qty}` : ""}${i.later ? " (when budget allows)" : ""}`,
               i.spec + (i.levels ? `\nLevels: ${i.levels.map((l) => `${l.selected ? "[x] " : ""}${l.level[0].toUpperCase() + l.level.slice(1)} ${l.price}`).join(" · ")}` : ""),
               i.models.join("; "),
               i.price,
@@ -148,6 +148,15 @@ function BlockView({ b }: { b: Block }) {
   }
 }
 
+/**
+ * UX-7: the PDF follows the web order: the Priority list ("This week" first) on page 1, then the rest of the plan.
+ * Sections keep the plan's own numbers, because the text refers to them ("section 5").
+ */
+export function pdfSections(doc: PlanDocument): PlanDocument["sections"] {
+  const first = doc.sections.filter((s) => s.id === "priorities");
+  return [...first, ...doc.sections.filter((s) => s.id !== "priorities")];
+}
+
 export function PlanPdf({ doc, diyTips = false }: { doc: PlanDocument; diyTips?: boolean }) {
   return (
     <Document title={doc.title} author={BRAND.name} subject="Emergency preparedness plan">
@@ -156,7 +165,7 @@ export function PlanPdf({ doc, diyTips = false }: { doc: PlanDocument; diyTips?:
         <Text style={s.h1}>{pdfSafe(doc.title)}</Text>
         <Text style={s.sub}>{pdfSafe(doc.subtitle)} · Generated {doc.generatedAt.slice(0, 10)}</Text>
         <Text style={{ fontSize: 8, color: muted, marginBottom: 6 }}>General guidance, not professional advice. Full disclaimer and sources at the end.</Text>
-        {doc.sections.map((sec) => (
+        {pdfSections(doc).map((sec) => (
           <View key={sec.id}>
             <Text style={s.h2} minPresenceAhead={60}>
               {sec.number}. {pdfSafe(sec.title)}

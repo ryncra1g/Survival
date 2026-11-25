@@ -28,7 +28,7 @@ const seed: Seed[] = [
   },
   {
     id: "water-gallons", category: "Water", name: "Gallon water jugs or refilled bottles (low-cost)",
-    spec: "Store-bought 1-gallon water, or clean 2-liter soda bottles refilled with tap water (not milk jugs); upgrade to 7-gal jugs later",
+    spec: "Store-bought 1-gallon water, or clean 2-liter soda bottles refilled with tap water (not milk jugs)",
     models: ["Any store-brand gallon water"], priceLow: 1, priceHigh: 1.5, tier: 1, phase: 1, priority: 2,
     qty: "water_gallons", tags: [], essential: true, group: "water", level: "essential",
   },
