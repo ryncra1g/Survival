@@ -72,7 +72,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
     case "tips":
       return ctx.diyTips ? <TipsBox b={b} ownedNames={ctx.ownedNames} /> : null;
     case "help":
-      return <HelpStrip b={b} products={ctx.products} href={ctx.href} />;
+      return <HelpStrip b={b} products={ctx.products} href={ctx.href} affiliate={ctx.affiliate} />;
     case "levelchoice":
       return (
         <div className="my-4">
@@ -121,7 +121,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
         </ul>
       );
     case "checklist":
-      return <Checklist items={b.items.map((i) => resolveStep(i, ctx.products, ctx.href))} />;
+      return <Checklist items={b.items.map((i) => resolveStep(i, ctx.products, ctx.href))} affiliate={ctx.affiliate} />;
     case "table":
       return (
         <div className="my-4 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
@@ -230,6 +230,7 @@ export function PlanView({
         <Dashboard
           overview={doc.overview}
           priority={prioritySteps(doc, ctx)}
+          affiliate={ctx.affiliate}
           buyHref={Object.fromEntries([...ctx.products.keys()].map((id) => [id, ctx.href(id)]))}
         />
         {afterDashboard}

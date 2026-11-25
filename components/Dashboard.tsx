@@ -4,7 +4,7 @@ import type { Overview } from "@/lib/plan/document";
 import { gotId } from "./BuyIfNeeded";
 import { useChecks } from "./ChecksContext";
 import { Chevron } from "./Chevron";
-import { StepExtras, type StepView } from "./StepExtras";
+import { BuyNote, StepExtras, type StepView } from "./StepExtras";
 import { budgetStatus } from "@/lib/plan/compare";
 import { nextSteps, REASSURANCE, startHeading } from "@/lib/plan/nextSteps";
 
@@ -28,7 +28,7 @@ function Bar({ value, label }: { value: number; label: string }) {
  * "Start with these 3" is the first unticked priority steps, so it moves forward as you tick them (here or in the plan).
  * Ticks sync like the checklists (ChecksProvider).
  */
-export function Dashboard({ overview, priority, buyHref }: { overview?: Overview; priority: PriorityStep[]; buyHref: Record<string, string> }) {
+export function Dashboard({ overview, priority, buyHref, affiliate = false }: { overview?: Overview; priority: PriorityStep[]; buyHref: Record<string, string>; affiliate?: boolean }) {
   const { checks, toggle } = useChecks();
   // A step ticked here stays a few seconds, struck through, with Undo, so a mis-tap is easy to reverse.
   const [justDone, setJustDone] = useState<string[]>([]);
@@ -113,6 +113,7 @@ export function Dashboard({ overview, priority, buyHref }: { overview?: Overview
         <div className="mt-4" data-testid="next-up">
           <h3 className="text-lg font-bold">{heading.title}</h3>
           {heading.note && <p className="text-sm text-muted" data-testid="can-wait">{heading.note}</p>}
+          {next.some((p) => p.step.buy && !checks[p.step.id]) && <BuyNote affiliate={affiliate} className="mt-1" />}
           <ul className="mt-2 space-y-4">
             {next.map((p) => renderStep(p))}
           </ul>
@@ -162,6 +163,7 @@ export function Dashboard({ overview, priority, buyHref }: { overview?: Overview
           </summary>
           <div className="px-3 pb-3">
             <p className="text-sm text-muted">Tick what you already have. It comes off your total and its Buy buttons disappear.</p>
+            {left.some((g) => buyHref[g.itemId]) && <BuyNote affiliate={affiliate} className="mt-1" />}
             {overview?.budget && budgetStatus(overview.budget) && <p className="mt-1 text-sm text-warn font-medium" data-testid="over-budget">{budgetStatus(overview.budget)}. Your budget is a target: safety items come first, and you can switch any item to a lower-cost option.</p>}
             {([1, 2, 3] as const).map((ph) => {
               const rows = gear.filter((g) => g.phase === ph);
