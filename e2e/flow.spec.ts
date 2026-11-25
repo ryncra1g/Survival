@@ -507,3 +507,19 @@ test("UX-27: at 375×812 the Terms box is fully visible above the sticky bar, an
   expect(terms.y).toBeGreaterThanOrEqual(0);
   expect(terms.y + terms.height).toBeLessThanOrEqual(barTop);
 });
+
+test("UX-27: the summary line is never cut off, even for a big 90-day household", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Build my free plan" }).first().click();
+  await page.waitForURL(/\/q\//);
+  await page.locator("main h1").first().waitFor();
+  const draft = { ...SAMPLE, adults: 6, childrenAges: [3, 8, 12, 15], scenarioDays: 90, _step: 99 };
+  await page.evaluate((d) => localStorage.setItem(`rp_q_${location.pathname.split("/q/")[1]}`, JSON.stringify(d)), draft);
+  await page.reload();
+  const teaser = page.getByTestId("plan-teaser");
+  await expect(teaser).toContainText("calories");
+  const fits = await teaser.evaluate((el) => el.scrollWidth <= el.clientWidth && el.getBoundingClientRect().right <= window.innerWidth);
+  expect(fits).toBe(true);
+  expect((await teaser.boundingBox())!.height).toBeLessThanOrEqual(24); // still one line at 375
+});

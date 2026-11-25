@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { SEED_CATALOG } from "@/lib/catalog/seed";
 import { DEFAULT_CONSTANTS as C } from "@/lib/rules/constants";
+import { containerFullLb } from "@/lib/rules/engine";
 import { KEEP_WATER_CLOSE } from "@/lib/plan/build";
 import { compareOptions, heavyWarning } from "@/lib/plan/compare";
 import { documentStrings } from "@/lib/safety/linter";
@@ -12,15 +13,16 @@ import { buildPlan } from "./helpers/build";
  * and water is kept close. The heavy containers come back as non-default choices in Compare options only, with a
  * weight warning; they are never picked or set aside automatically, and a person's own choice is honoured.
  */
-const fullLb = (id: string) => SEED_CATALOG.find((i) => i.id === id)!.fullWeightLb!;
-const isHeavy = (id: string) => (SEED_CATALOG.find((i) => i.id === id)?.fullWeightLb ?? 0) > C.water.mobilityMaxLb;
+const fullLb = (id: string) => containerFullLb(SEED_CATALOG.find((i) => i.id === id)!, C)!;
+const isHeavy = (id: string) => { const it = SEED_CATALOG.find((i) => i.id === id); return !!it && (containerFullLb(it, C) ?? 0) > C.water.mobilityMaxLb; };
 
 describe("water containers for households with mobility needs (UX-12, owner decision)", () => {
-  it("the catalog weights: 1-gallon jugs are light; 7-gallon jugs and bricks are heavy; drums stay out", () => {
+  it("weights come from the constants: 1-gallon jugs are light; 7-gallon jugs, bricks and drums are heavy", () => {
     expect(C.water.mobilityMaxLb).toBe(25);
     expect(fullLb("water-gallons")).toBeLessThanOrEqual(C.water.mobilityMaxLb);
-    for (const id of ["water-jug", "water-bricks"]) expect(fullLb(id), id).toBeGreaterThan(C.water.mobilityMaxLb);
-    expect(SEED_CATALOG.find((i) => i.id === "water-drum")?.tags).toContain("!mobility");
+    for (const id of ["water-jug", "water-bricks", "water-drum"]) expect(fullLb(id), id).toBeGreaterThan(C.water.mobilityMaxLb);
+    expect(Math.round(fullLb("water-jug"))).toBe(58); // 7 gal × 8.34 lb
+    expect(Math.round(fullLb("water-bricks"))).toBe(29); // 3.5 gal × 8.34 lb
   });
 
   const mobility = ALL_HOUSEHOLDS.filter((h) => h.a.elderlyOrMobility);
@@ -57,7 +59,7 @@ describe("water containers for households with mobility needs (UX-12, owner deci
     const t = documentStrings(jug.document).join("\n");
     expect(t).toMatch(new RegExp(`${pick.qty} 7-gal jugs`));
     expect(t).not.toContain("1-gallon jugs or cases");
-    expect(t).toContain("heavy when full (about 62 lb each)");
+    expect(t).toContain("heavy when full (about 58 lb each)");
     expect(t).toContain(KEEP_WATER_CLOSE);
     const bricks = await buildPlan({ ...h, gearChoices: { water: "premium" } });
     expect(bricks.computed.budget.picks.find((p) => p.item.group === "water")!.item.id).toBe("water-bricks");
@@ -83,5 +85,16 @@ describe("UX-12 numbers come from the constants (code review)", () => {
     const t = documentStrings(r.document).join("\n");
     expect(t).toContain("2-gallon jugs or cases (about 17 lb");
     expect(t).not.toContain("1-gallon jugs or cases");
+  });
+});
+
+describe("the plan names the container that was chosen (code review)", () => {
+  it("choosing bricks says bricks, not 7-gallon jugs", async () => {
+    const h = ALL_HOUSEHOLDS.find((x) => x.id === "elderly-mobility")!.a;
+    const r = await buildPlan({ ...h, gearChoices: { water: "premium" } });
+    const t = documentStrings(r.document).join("\n");
+    expect(t).toMatch(/3\.5-gal water bricks?/);
+    expect(t).not.toMatch(/\d+ 7-gal jugs?\b/);
+    expect(t).toContain("heavy when full (about 29 lb each)");
   });
 });

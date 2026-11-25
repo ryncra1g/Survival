@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { areaName } from "@/lib/zip/states";
 import { AnswersSchema, APPROACH_PLACE, DEFAULT_ANSWERS, destinationForApproach, isDrive, LABELS, migrateAnswers, storageOptions, type Answers, type PetGroupT } from "@/lib/answers/schema";
 import { DEFAULT_CONSTANTS } from "@/lib/rules/constants";
-import { computeFood, computeWater, household } from "@/lib/rules/engine";
+import { computeFood, computeWater } from "@/lib/rules/engine";
 import { atLeast, lookupZip, type Level, type ZipProfile } from "@/lib/zip/profile";
 import { withoutConsentTicks, checkConsent, healthConsentMessage, needsHealthConsent, TERMS_REQUIRED_MSG } from "@/lib/legal";
 import { BRAND } from "@/lib/brand";
@@ -501,13 +501,13 @@ const SCREENS: Screen[] = [
 function Teaser({ a }: { a: Answers }) {
   const w = computeWater(a, DEFAULT_CONSTANTS);
   const f = computeFood(a, DEFAULT_CONSTANTS);
-  const h = household(a, DEFAULT_CONSTANTS);
-  const n = (v: number) => v.toLocaleString("en-US");
+  const short = (v: number) => (v >= 100_000 ? new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(v) : v.toLocaleString("en-US"));
   // UX-22: one line in the sticky bar, right above "Build my plan", so it's always seen before building.
   return (
-    // UX-27: one short line that never wraps, so the sticky bar stays small and the Terms box above it shows.
-    <p className="mb-1.5 truncate whitespace-nowrap text-sm text-muted" data-testid="plan-teaser" title={`Your ${{ 3: "72-hour", 14: "2-week", 30: "30-day", 90: "90-day" }[a.scenarioDays]} plan for ${h.people} ${h.people === 1 ? "person" : "people"}`}>
-      <span className="font-semibold text-ink">Almost done:</span> <span className="tabular-nums">{n(w.storedGal)} gal</span> water · <span className="tabular-nums">{n(f.totalKcal)}</span> calories · 18+ sections
+    // UX-27: one short line at 375 px, so the sticky bar stays small; compact numbers keep big households on one line.
+    // On narrower phones it wraps rather than running off the screen.
+    <p className="mb-1.5 text-sm text-muted" data-testid="plan-teaser">
+      <span className="font-semibold text-ink">Almost done:</span> <span className="tabular-nums">{short(w.storedGal)} gal</span> of water and <span className="tabular-nums">{short(f.totalKcal)}</span> calories
     </p>
   );
 }

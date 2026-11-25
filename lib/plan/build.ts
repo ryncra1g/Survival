@@ -283,7 +283,12 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   const prof = cp.profile;
   const w = cp.water;
   // Owner decision (PR #16): the light-container wording applies unless the person chose a heavy container in Compare.
-  const heavyWaterLb = cp.budget.picks.find((p) => p.item.group === "water" && (p.item.fullWeightLb ?? 0) > c.water.mobilityMaxLb)?.item.fullWeightLb ?? 0;
+  // Owner decision (PR #16): the engine marks a heavy option on the water slot; this is the one the person chose, if any.
+  const waterSlot = cp.budget.slots.find((x) => x.group === "water");
+  const heavyWaterLb = waterSlot?.options.find((o) => o.itemId === waterSlot.chosen)?.heavyLb ?? 0;
+  const waterPick = cp.budget.picks.find((p) => p.item.group === "water");
+  // The containers the plan names: bricks when bricks are picked, otherwise 7-gallon jugs.
+  const bigContainers = waterPick?.item.qty === "water_bricks" ? plural(waterPick.qty, `${n(c.water.brickGallons, 1)}-gal water brick`) : plural(w.standardJugs, "7-gal jug");
   const lightWater = w.liftable && !heavyWaterLb;
   const pw = cp.power;
   const winter = cp.flags.winter;
@@ -451,7 +456,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   if (cp.diapers) week.push(`Buy 2 weeks of diapers (${n(cp.diapers.perDay * 14)}) and wipes.`);
   week.push(...vehicleFuelSteps(a.vehicleFuels));
 
-  month.push({ text: lightWater ? `Finish stored water: ${n(w.storedGal)} gallons in ${liftable(c)} jugs or cases (about ${liftableLb(c)} lb each). ${KEEP_WATER_CLOSE}` : `Finish stored water: ${n(w.storedGal)} gallons (${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${plural(w.standardJugs, "7-gal jug")}).`, buy: ["water-drum", "water-jug", "water-bricks", "water-gallons"] });
+  month.push({ text: lightWater ? `Finish stored water: ${n(w.storedGal)} gallons in ${liftable(c)} jugs or cases (about ${liftableLb(c)} lb each). ${KEEP_WATER_CLOSE}` : `Finish stored water: ${n(w.storedGal)} gallons (${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${bigContainers}).`, buy: ["water-drum", "water-jug", "water-bricks", "water-gallons"] });
   month.push(phaseStep(1, "Buy the rest of your Phase 1 (life safety) gear"));
   month.push(`Build a 2-week pantry from the food list (about ${n(Math.ceil((cp.food.dailyKcal * 14) / 1000))} thousand calories).`);
   if (a.homeType === "townhouse")
@@ -717,7 +722,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
               ? `${n(w.jugs)} ${liftable(c)} jugs or cases (about ${liftableLb(c)} lb each when full)`
               : cp.budget.picks.some((p) => p.item.id === "water-gallons")
               ? `${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${n(w.storedGal - w.drums * 55)} gallon jugs or refilled 2-liter bottles (low-cost); upgrade to ${plural(w.standardJugs, "7-gal jug")} when you can`
-              : `${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${plural(w.standardJugs, "7-gal jug")}`,
+              : `${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${bigContainers}`,
           ],
           ["Filter + collect", w.filterDays > 0 ? `${n(w.filterGal)} gal over ${n(w.filterDays)} days` : "Not needed for this scenario (keep bleach as backup)"],
           ["Bathtub bladder (storm warning)", apt ? "Optional" : "~100 gal for flushing/washing"],

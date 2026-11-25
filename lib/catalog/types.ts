@@ -56,8 +56,6 @@ export const CatalogItemSchema = z.object({
   /** How quantity is determined. A number is a fixed count; a string names a rules-engine quantity. */
   qty: z.union([z.number().int().positive(), z.string()]),
   tags: z.array(z.string()),
-  /** Weight when full, in lb (water containers). Over water.mobilityMaxLb it is "heavy" for households with mobility needs. */
-  fullWeightLb: z.number().positive().optional(),
   essential: z.boolean().default(false),
   /** Items sharing a group are alternatives (a "slot"): the engine picks one level; people can switch à la carte. */
   group: z.string().optional(),

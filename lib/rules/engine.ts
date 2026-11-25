@@ -86,13 +86,14 @@ export function computeWater(a: Answers, c: RuleConstants): WaterResult {
   let drums = 0;
   let jugs: number;
   const liftable = a.elderlyOrMobility;
+  const jugs7 = ceil(storedGal / c.water.jugGallons);
   if (liftable) {
     jugs = ceil(storedGal / c.water.liftableGallons);
   } else if (storedGal > c.water.drumThresholdGal && largeStorage && a.homeType !== "apartment") {
     drums = Math.floor((storedGal * 0.75) / c.water.drumGallons) || 1;
     jugs = Math.max(2, ceil((storedGal - drums * c.water.drumGallons) / c.water.jugGallons));
   } else {
-    jugs = ceil(storedGal / c.water.jugGallons);
+    jugs = jugs7;
   }
   const breakdown = [{ label: `${a.adults} adult(s)`, galPerDay: round(adults) }];
   if (kids) breakdown.push({ label: `${a.childrenAges.length} child(ren)`, galPerDay: round(kids) });
@@ -105,7 +106,7 @@ export function computeWater(a: Answers, c: RuleConstants): WaterResult {
     filterDays,
     filterGal,
     jugs,
-    standardJugs: liftable ? ceil(storedGal / c.water.jugGallons) : jugs,
+    standardJugs: liftable ? jugs7 : jugs,
     drums,
     liftable,
     threeDayGal: ceil(round(dailyGal * Math.min(3, a.scenarioDays), 4)),
@@ -578,7 +579,7 @@ export function resolveQty(item: CatalogItem, ctx: { water: WaterResult; power: 
     case "water_jugs":
       return ctx.water.standardJugs;
     case "water_bricks":
-      return Math.ceil(Math.max(0, ctx.water.storedGal - ctx.water.drums * 55) / 3.5);
+      return Math.ceil(Math.max(0, ctx.water.storedGal - ctx.water.drums * 55) / DEFAULT_BRICK_GAL);
     case "food_buckets":
       return ctx.foodBuckets ?? 0;
     case "freeze_dried_units":
@@ -600,6 +601,17 @@ export function resolveQty(item: CatalogItem, ctx: { water: WaterResult; power: 
   }
 }
 
+/** The default brick size, for the qty resolver (which has no constants); constants.water.brickGallons is the same. */
+const DEFAULT_BRICK_GAL = 3.5;
+/**
+ * Owner decision (PR #16): a water container's weight when full, from its size in the constants and the weight of
+ * water (catalog qty key → gallons × lbPerGallon). Null for anything that isn't a water container.
+ */
+export function containerFullLb(it: Pick<CatalogItem, "qty">, c: RuleConstants): number | null {
+  const gal = { water_gallons: c.water.liftableGallons, water_jugs: c.water.jugGallons, water_bricks: c.water.brickGallons, water_drums: c.water.drumGallons }[String(it.qty)];
+  return gal === undefined ? null : gal * c.water.lbPerGallon;
+}
+
 function tagsMatch(item: CatalogItem, tags: Set<string>): boolean {
   return item.tags.every((t) => (t.startsWith("!") ? !tags.has(t.slice(1)) : tags.has(t)));
 }
@@ -618,7 +630,11 @@ export function computeBudget(
   const planningAmount = c.budget.planningAmount[a.budget];
   // Owner decision (PR #16): with mobility needs, containers heavier than mobilityMaxLb when full are offered in
   // Compare options only. They are never picked or set aside automatically; a person's own choice is honoured.
-  const heavy = (it: CatalogItem) => tags.has("mobility") && (it.fullWeightLb ?? 0) > c.water.mobilityMaxLb;
+  const heavyLb = (it: CatalogItem) => {
+    const lb = containerFullLb(it, c);
+    return tags.has("mobility") && lb !== null && lb > c.water.mobilityMaxLb ? Math.round(lb) : 0;
+  };
+  const heavy = (it: CatalogItem) => heavyLb(it) > 0;
   const tier = c.budget.tierByBudget[a.budget];
   const choices = (a.gearChoices ?? {}) as Record<string, SlotLevel>;
   const defaultRank = LEVEL_RANK[(c.budget.defaultLevel[a.budget] ?? "standard") as SlotLevel];
@@ -723,7 +739,7 @@ export function computeBudget(
           .sort((x, y) => LEVEL_RANK[x.item.level ?? "standard"] - LEVEL_RANK[y.item.level ?? "standard"])
           .map((o) => {
             const b = bundleFor(o);
-            return { level: (o.item.level ?? "standard") as SlotLevel, itemId: o.item.id, name: o.item.name, qty: o.qty, low: o.low + b.reduce((t, x) => t + x.low, 0), high: o.high + b.reduce((t, x) => t + x.high, 0), ...(heavy(o.item) ? { heavyLb: o.item.fullWeightLb } : {}) };
+            return { level: (o.item.level ?? "standard") as SlotLevel, itemId: o.item.id, name: o.item.name, qty: o.qty, low: o.low + b.reduce((t, x) => t + x.low, 0), high: o.high + b.reduce((t, x) => t + x.high, 0), ...(heavy(o.item) ? { heavyLb: heavyLb(o.item) } : {}) };
           }),
       });
     if (fit) {

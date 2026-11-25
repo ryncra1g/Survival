@@ -515,9 +515,18 @@ UX-7 and UX-14 are deferred (owner). New, **Suggested**:
 
 - **UX-12 follow-up:** for households with mobility needs, 7-gallon jugs and 3.5-gallon bricks are back as
   non-default choices in Compare options, each with "Heavy when full (about N lb). Choose only if someone can lift
-  it, or store it where you'll use it." The default stays 1-gallon jugs; heavy containers are never picked or set
+  it, or store it where you'll use it." (N = container size × 8.34 lb from the rules constants: 58 and 29.) The default stays 1-gallon jugs; heavy containers are never picked or set
   aside automatically, and a choice is honoured (FACTCHECK WT-11, WT-13).
   - **Not done: 55-gallon drums.** Drums aren't a level in Compare for any household (the engine adds them for
     large storage spaces), so offering them would need a new kind of choice. They stay off for mobility
     households. Question for the owner.
 
+
+### CAT-01 The Supabase catalog drops gear levels (found Nov 25, 2026; Suggested)
+
+`lib/catalog/db.ts` (`catOut` / `catIn`) and the `gear_catalog` table have no columns for `level` or `excludes`. In
+production (Supabase store) every catalog item therefore loads without its Essential / Standard / Premium level, so
+the à la carte gear levels and Compare options don't work as they do in demo mode and tests (file store, seed
+catalog). This predates PR #16. Fix: a migration adding `level` and `excludes` columns, the mappings in `db.ts`,
+and a round-trip test; the owner applies the migration. (The PR #16 weight rule for households with mobility needs
+deliberately uses only fields the table already keeps: the item's qty key and the rules constants.)

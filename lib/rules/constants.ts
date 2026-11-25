@@ -19,6 +19,8 @@ export const DEFAULT_CONSTANTS = {
     otherPetGalPerDay: 0.05,
     storedDaysCap: 14,
     jugGallons: 7,
+    /** Stackable water bricks (premium water level). */
+    brickGallons: 3.5,
     drumGallons: 55,
     /** UX-12: water weighs about 8.34 lb a gallon. Households with mobility needs get containers of at most mobilityMaxLb when full. */
     lbPerGallon: 8.34,
@@ -181,6 +183,7 @@ export const RuleConstantsSchema = z.object({
     otherPetGalPerDay: num,
     storedDaysCap: num,
     jugGallons: num,
+    brickGallons: z.number().positive(),
     lbPerGallon: z.number().positive(),
     mobilityMaxLb: z.number().positive(),
     liftableGallons: z.number().positive(),
