@@ -503,25 +503,11 @@ function Teaser({ a }: { a: Answers }) {
   const f = computeFood(a, DEFAULT_CONSTANTS);
   const h = household(a, DEFAULT_CONSTANTS);
   const n = (v: number) => v.toLocaleString("en-US");
-  const stats: [string, string][] = [
-    [`${n(w.storedGal)} gal`, "of water to store"],
-    [`${n(f.totalKcal)}`, "calories of food"],
-    ["18+", "sections, with checklists"],
-  ];
+  // UX-22: one line in the sticky bar, right above "Build my plan", so it's always seen before building.
   return (
-    <div className="card p-4">
-      <p className="text-sm text-muted">Almost done. Your {{ 3: "72-hour", 14: "2-week", 30: "30-day", 90: "90-day" }[a.scenarioDays]} plan for {h.people} {h.people === 1 ? "person" : "people"}{a.pets.length ? " + pets" : ""} includes:</p>
-      <dl className="mt-3 grid grid-cols-3 gap-2 text-center">
-        {stats.map(([v, l]) => (
-          <div key={l} className="rounded-lg bg-brand-soft p-2">
-            <dt className="sr-only">{l}</dt>
-            <dd className="text-xl font-bold tabular-nums">{v}</dd>
-            <dd className="text-xs text-muted">{l}</dd>
-          </div>
-        ))}
-      </dl>
-      <p className="mt-3 text-sm">Plus your priority checklist, fuel math, heat plan, local hazard steps and a gear list fitted to your budget.</p>
-    </div>
+    <p className="mb-2 text-sm text-muted" data-testid="plan-teaser">
+      <span className="font-semibold text-ink">Almost done.</span> Your {{ 3: "72-hour", 14: "2-week", 30: "30-day", 90: "90-day" }[a.scenarioDays]} plan for {h.people} {h.people === 1 ? "person" : "people"}{a.pets.length ? " + pets" : ""}: <span className="tabular-nums">{n(w.storedGal)} gal</span> of water, <span className="tabular-nums">{n(f.totalKcal)}</span> calories of food, 18+ sections with checklists.
+    </p>
   );
 }
 
@@ -668,18 +654,20 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
           </ConsentBox>
         </div>
       )}
-      {last && (() => {
-        const p = parsedAnswers();
-        return p.success ? <div className="mt-8"><Teaser a={p.data} /></div> : null;
-      })()}
       {error && <p role="alert" className="mt-4 text-warn font-medium">{error}</p>}
-      <div className="mt-8 flex gap-3 sticky bottom-0 bg-bg py-3">
+      <div className="mt-8 sticky bottom-0 bg-bg py-3">
+        {last && !editOne && (() => {
+          const p = parsedAnswers();
+          return p.success ? <Teaser a={p.data} /> : null;
+        })()}
+        <div className="flex gap-3">
         <button type="button" className="btn-ghost" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0}>Back</button>
         {editOne ? (
           <button type="button" className="btn flex-1" onClick={async () => { const missing = missingConsent(); if (missing) return setConsentErr(missing); const msg = screen.valid?.(a); if (msg) return setError(msg); await build(); }}>Update my plan</button>
         ) : (
           <button type="button" className="btn flex-1" onClick={next}>{last ? "Build my plan" : "Next"}</button>
         )}
+        </div>
       </div>
       {editOne && !last && <button type="button" className="text-sm underline text-muted" onClick={next}>Review the next question instead</button>}
     </div>

@@ -92,6 +92,12 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(page.getByRole("button", { name: /^Land with no buildings/ })).toHaveAttribute("aria-pressed", "true");
   await next(page);
   await expect(page.getByText("54 gal")).toBeVisible();
+  // UX-22: the "Almost done" summary sits right above Build my plan, on screen without scrolling
+  const teaser = (await page.getByTestId("plan-teaser").boundingBox())!;
+  const buildBtn = (await page.getByRole("button", { name: "Build my plan" }).boundingBox())!;
+  expect(teaser.y + teaser.height).toBeLessThanOrEqual(buildBtn.y);
+  expect(teaser.y).toBeGreaterThanOrEqual(0);
+  expect(buildBtn.y + buildBtn.height).toBeLessThanOrEqual(page.viewportSize()!.height);
   // Clickwrap: the plan isn't built until the Terms box is ticked
   await next(page);
   await expect(page.getByText("Please tick the box to agree to the Terms of Use")).toBeVisible();
