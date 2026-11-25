@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { areaName } from "@/lib/zip/states";
+import { ERR, errorFromThrown, friendlyError } from "@/lib/errors";
 import { AnswersSchema, APPROACH_PLACE, DEFAULT_ANSWERS, destinationForApproach, isDrive, LABELS, migrateAnswers, storageOptions, type Answers, type PetGroupT } from "@/lib/answers/schema";
 import { DEFAULT_CONSTANTS } from "@/lib/rules/constants";
 import { computeFood, computeWater } from "@/lib/rules/engine";
@@ -121,6 +122,8 @@ interface ScreenProps {
   set: (patch: Partial<Draft>) => void;
   /** UX-4: the message for a required box on this screen, shown beside it. */
   err?: (field: ConsentField) => string | undefined;
+  /** DA-6: the screen's own check (`valid`) failed; shown under the field it's about (`field`). */
+  fieldErr?: string;
 }
 type ConsentField = "healthConsent" | "termsConsent";
 interface Screen {
@@ -128,6 +131,8 @@ interface Screen {
   title: string;
   show?: (a: Draft) => boolean;
   valid?: (a: Draft) => string | null;
+  /** The input `valid` checks: its message is shown under it and it gets focus (DA-6). */
+  field?: string;
   render: (p: ScreenProps) => React.ReactNode;
 }
 
@@ -156,17 +161,26 @@ const DESTINATION_HINT: Partial<Record<Answers["evacuation"]["destination"], str
   raw_land: "Land you can use, but no house",
   public_shelter: "Opened by officials",
 };
+/** DA-6: say what's wrong and what to type, with an example. Never "invalid". */
+export function zipMessage(zip: string): string | null {
+  if (/^\d{5}$/.test(zip)) return null;
+  if (!zip) return "Enter your 5-digit ZIP code, like 43215.";
+  return `That's ${zip.length} digit${zip.length === 1 ? "" : "s"}. A ZIP code has 5, like 43215.`;
+}
+
 const SCREENS: Screen[] = [
   {
     id: "location",
     title: "Where is home, and how long should you plan for?",
-    valid: (a) => (/^\d{5}$/.test(a.zip) ? null : "Enter a 5-digit ZIP code."),
-    render: ({ a, set }) => (
+    valid: (a) => zipMessage(a.zip),
+    field: "zip",
+    render: ({ a, set, fieldErr }) => (
       <>
         <div>
           <label htmlFor="zip" className="font-semibold">ZIP code</label>
           <p className="text-sm text-muted">Used for your climate and local hazards. We never ask for your street address.</p>
-          <input id="zip" className="input mt-2 text-lg tracking-widest max-w-[10rem]" inputMode="numeric" autoComplete="postal-code" maxLength={5} value={a.zip} onChange={(e) => set({ zip: e.target.value.replace(/\D/g, "").slice(0, 5) })} aria-describedby="zip-area" />
+          <input id="zip" className="input mt-2 text-lg tracking-widest max-w-[10rem]" inputMode="numeric" autoComplete="postal-code" maxLength={5} value={a.zip} onChange={(e) => set({ zip: e.target.value.replace(/\D/g, "").slice(0, 5) })} aria-invalid={fieldErr ? true : undefined} aria-describedby={fieldErr ? "zip-error zip-area" : "zip-area"} />
+          {fieldErr && <p id="zip-error" role="alert" className="mt-1.5 text-sm font-medium text-warn">{fieldErr}</p>}
           <ZipArea zip={a.zip} />
         </div>
         <Group label="Plan for an outage or disruption lasting…">
@@ -524,6 +538,14 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
     return i >= 0 ? i : Math.min(Number(a._step ?? 0), visible.length - 1);
   });
   const [error, setError] = useState("");
+  const [fieldErr, setFieldErr] = useState("");
+  // DA-4: a failed build or save scrolls its message into view, so it's never hidden under the sticky bar.
+  const errorRef = useRef<HTMLParagraphElement>(null);
+  useEffect(() => {
+    if (!error) return;
+    const still = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    errorRef.current?.scrollIntoView({ block: "center", behavior: still ? "auto" : "smooth" });
+  }, [error]);
   const [consentErr, setConsentErr] = useState<{ field: ConsentField; msg: string } | null>(null);
   // UX-4: on a failed submit, bring the unticked box into view above the sticky bar and focus it.
   useEffect(() => {
@@ -544,7 +566,8 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
       const local = JSON.parse(localStorage.getItem(`rp_q_${id}`) ?? "null") as Partial<Draft> | null;
       if (local) {
         setA((prev) => ({ ...prev, ...(migrateAnswers(withoutConsentTicks(local)) as Partial<Draft>) }));
-        if (typeof local._step === "number") setStep(local._step);
+        // DA-8: clamp, so a stale draft never shows "Step 100 of 11" (the render clamps the screen; the count must match).
+        if (typeof local._step === "number") setStep(Math.max(0, Math.floor(local._step)));
       }
     } catch {}
   }, [id]);
@@ -567,13 +590,16 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
     heading.current?.focus();
   }, [step]);
 
-  const screen = visible[Math.min(step, visible.length - 1)];
+  // DA-8: one clamped position for the screen, the count, the progress bar and the buttons.
+  const cur = Math.min(step, visible.length - 1);
+  const screen = visible[cur];
   const set = (patch: Partial<Draft>) => {
     setError("");
+    setFieldErr("");
     setConsentErr(null);
     setA((prev) => ({ ...prev, ...patch }));
   };
-  const last = step >= visible.length - 1;
+  const last = cur >= visible.length - 1;
   const parsedAnswers = () => AnswersSchema.safeParse({ ...a, _step: undefined, _screen: undefined });
 
   /** The first required box left unticked on this screen, in screen order (health, then Terms). */
@@ -587,7 +613,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
 
   async function build() {
     const parsed = parsedAnswers();
-    if (!parsed.success) return setError(parsed.error.issues[0]?.message ?? "Please check your answers.");
+    if (!parsed.success) return setError(ERR.answers);
     const consent = { terms: !!a._terms, health: !!a._health };
     const consentError = checkConsent(parsed.data, consent);
     if (consentError) return setConsentErr(missingConsent() ?? { field: "termsConsent", msg: consentError });
@@ -608,7 +634,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
       router.push(`/plan/${j.planId}`);
     } catch (e) {
       setGenerating(false);
-      setError((e as Error).message);
+      setError(errorFromThrown(e, ERR.build));
     }
   }
 
@@ -616,10 +642,15 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
     const missing = missingConsent();
     if (missing) return setConsentErr(missing);
     const msg = screen.valid?.(a);
+    if (msg && screen.field) {
+      setFieldErr(msg);
+      document.getElementById(screen.field)?.focus();
+      return;
+    }
     if (msg) return setError(msg);
-    if (!last) return setStep(step + 1);
+    if (!last) return setStep(cur + 1);
     const parsed = parsedAnswers();
-    if (!parsed.success) return setError(parsed.error.issues[0]?.message ?? "Please check your answers.");
+    if (!parsed.success) return setError(ERR.answers);
     await build();
   }
 
@@ -633,18 +664,18 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
     );
   }
 
-  const pct = Math.round(((step + 1) / visible.length) * 100);
+  const pct = Math.round(((cur + 1) / visible.length) * 100);
   return (
     <div className="mx-auto max-w-xl px-4 py-6">
       <div className="flex items-center justify-between text-sm text-muted">
-        <span>Step {step + 1} of {visible.length}</span>
-        <span>{last ? "Last step" : `About ${Math.max(1, Math.round(((visible.length - step) * 25) / 60))} min left`} · Saved</span>
+        <span>Step {cur + 1} of {visible.length}</span>
+        <span>{last ? "Last step" : `About ${Math.max(1, Math.round(((visible.length - cur) * 25) / 60))} min left`} · Saved</span>
       </div>
       <div className="mt-2 h-2 rounded-full bg-line overflow-hidden" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label="Progress">
         <div className="h-full bg-accent transition-all" style={{ width: `${pct}%` }} />
       </div>
       <h1 ref={heading} tabIndex={-1} className="mt-6 text-2xl font-bold outline-none">{screen.title}</h1>
-      <div className="mt-5 space-y-6">{screen.render({ a, set, err: (f) => (consentErr?.field === f ? consentErr.msg : undefined) })}</div>
+      <div className="mt-5 space-y-6">{screen.render({ a, set, err: (f) => (consentErr?.field === f ? consentErr.msg : undefined), fieldErr })}</div>
       {/* UX-4: the required boxes come right after the questions, before the teaser and the sticky bar. */}
       {(last || editOne) && (
         <div className="mt-4 space-y-2">
@@ -655,14 +686,19 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
           </ConsentBox>
         </div>
       )}
-      {error && <p role="alert" className="mt-4 text-warn font-medium">{error}</p>}
+      {error && <p ref={errorRef} role="alert" className="mt-4 text-warn font-medium scroll-mb-40">{error}</p>}
       <div className="mt-6 sticky bottom-0 bg-bg pt-2 pb-3">
         {last && (() => {
           const p = parsedAnswers();
           return p.success ? <Teaser a={p.data} /> : null;
         })()}
         <div className="flex gap-3">
-        <button type="button" className="btn-ghost" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0}>Back</button>
+        {/* DA-6: Back always works. On the first screen it goes to the front page; answers are already saved. */}
+        {cur === 0 && !editOne && !onGenerate ? (
+          <a href="/" className="btn-ghost">Back</a>
+        ) : (
+          <button type="button" className="btn-ghost" onClick={() => setStep(Math.max(0, cur - 1))} disabled={cur === 0}>Back</button>
+        )}
         {editOne ? (
           <button type="button" className="btn flex-1" onClick={async () => { const missing = missingConsent(); if (missing) return setConsentErr(missing); const msg = screen.valid?.(a); if (msg) return setError(msg); await build(); }}>Update my plan</button>
         ) : (
@@ -689,7 +725,7 @@ async function requestPlan(id: string, body: unknown, onStage: OnStage): Promise
   const type = r.headers.get("content-type") ?? "";
   if (!type.includes("ndjson") || !r.body) {
     const j = (await r.json()) as { planId?: string; error?: string };
-    if (!r.ok || !j.planId) throw new Error(j.error ?? "Couldn't build the plan.");
+    if (!r.ok || !j.planId) throw new Error(friendlyError(r.status, j.error, ERR.build));
     for (const s of BUILD_STAGES) onStage(s.id);
     return { planId: j.planId };
   }
@@ -703,12 +739,12 @@ async function requestPlan(id: string, body: unknown, onStage: OnStage): Promise
     buf = rest;
     for (const line of lines) {
       if ("stage" in line) onStage(line.stage);
-      else if ("error" in line) throw new Error(line.error);
+      else if ("error" in line) throw new Error(friendlyError(400, line.error, ERR.build));
       else if ("planId" in line) {
         for (const s of BUILD_STAGES) onStage(s.id);
         return { planId: line.planId };
       }
     }
-    if (done) throw new Error("Couldn't build the plan. Try again.");
+    if (done) throw new Error(ERR.build);
   }
 }

@@ -1,4 +1,5 @@
 import { chromium, type Page } from "@playwright/test";
+import { ERR } from "@/lib/errors";
 import { ALL_SCREENS_HOUSEHOLD, BASE_OFF, BASE_ON, OUT, SCHEMES, VIEWPORTS, ensureDir, mainText, makePlan, measure, newCtx, openQuestion, signIn, writeJson, type Metrics } from "./common";
 
 /**
@@ -59,7 +60,7 @@ export const SHOTS: Shot[] = [
     name: "error-build",
     server: "off",
     run: async (c) => {
-      await c.page.route("**/generate", (r) => r.fulfill({ status: 200, contentType: "application/x-ndjson", body: JSON.stringify({ error: "Couldn't build the plan. Try again." }) + "\n" }));
+      await c.page.route("**/generate", (r) => r.fulfill({ status: 200, contentType: "application/x-ndjson", body: JSON.stringify({ error: ERR.build }) + "\n" }));
       await openQuestion(c.page, c.base, 99);
       await c.page.locator("#termsConsent").check();
       if (await c.page.locator("#healthConsent").isVisible()) await c.page.locator("#healthConsent").check();
