@@ -57,7 +57,7 @@ function TipsBox({ b, ownedNames }: { b: Extract<Block, { type: "tips" }>; owned
       </ul>
       {b.dontDo.length > 0 && (
         <>
-          <p className="mt-3 text-sm font-semibold text-[var(--danger)]">Don&apos;t do this</p>
+          <p className="mt-3 text-sm font-semibold text-[var(--danger)]" data-safety>Don&apos;t do this</p>
           <ul className="mt-1 list-disc pl-5 text-sm">
             {b.dontDo.map((d) => <li key={d}>{d}</li>)}
           </ul>
@@ -163,7 +163,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
       );
     case "callout":
       return (
-        <div className={`my-4 border-l-4 bg-bg p-3 rounded-r ${toneCls[b.tone]}`} role={b.tone === "danger" ? "note" : undefined}>
+        <div className={`my-4 border-l-4 bg-bg p-3 rounded-r ${toneCls[b.tone]}`} role={b.tone === "danger" ? "note" : undefined} data-safety={b.tone === "danger" ? "" : undefined}>
           <p className="font-semibold">{b.title}</p>
           <p className="text-ink mt-1">{b.text}</p>
         </div>

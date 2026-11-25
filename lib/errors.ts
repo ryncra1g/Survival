@@ -7,7 +7,7 @@ export const ERR = {
   build: "We couldn't build your plan just now. Your answers are saved. Try again in a minute.",
   network: "We couldn't reach the server. Check your connection and try again. Nothing you entered is lost.",
   reload: "This page has been open a while. Reload it and try again.",
-  gone: "We can't find this any more. It may have been started in another browser, or more than 30 days ago.",
+  gone: "We can't find this any more. It may have been started in another browser, or more than 30 days ago. Start a new plan from the front page.",
   signedOut: "Your sign-in has ended. Sign in again from the menu, then try again.",
   save: "We couldn't save that just now. Check your connection and try again.",
   email: "Check the email address. It should look like name@example.com.",
