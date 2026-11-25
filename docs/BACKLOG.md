@@ -51,14 +51,14 @@ Entry types: **Owner request** (Ryan asked for it), **Assistant recommendation**
 | UX-2 | Front page says "exact" amounts; the plan calls them estimates | P1 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
 | UX-3 | Fuel advice contradicts itself (half a tank vs a gallon minimum that can exceed the tank) | P1 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
 | UX-4 | Required consent boxes below the fold, under the sticky button | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
-| UX-5 | Evacuation screen asks nearly the same question twice, with different labels | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
+| UX-5 | Evacuation screen asks nearly the same question twice, with different labels | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) · **Accepted (owner, Nov 25 2026)** |
 | UX-6 | Three different step counts on the first plan screen | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
 | UX-7 | Every plan is very long (51–84 steps, 17–22 page PDF), whatever the household | P2 → P3 | **Suggested** (UX pass 2026-11-24) · **Changed per UX pass 2026-11-24-2**: opens on This week (owner decision); full text still long |
 | UX-8 | Family wording ("helmets for the kids", "come get us") in one-person plans | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
 | UX-9 | Plan controls below 44 px (chips, tabs, Buy, Compare, Expand all, source links) | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
 | UX-10 | Same thing, different names (Confirm email / Email me my plan; go-bag / Bug-out kit; basic / Essential) | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
 | UX-11 | Compare options "new total" matches no total shown elsewhere | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
-| UX-12 | Mobility household told to buy 7-gallon (≈58 lb) jugs | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
+| UX-12 | Mobility household told to buy 7-gallon (≈58 lb) jugs | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) · **Accepted (owner, Nov 25 2026)** |
 | UX-13 | High wildfire-risk household's first 3 steps don't mention fire or evacuation | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
 | UX-14 | Long or hard sentences (terms, sources, safety lines over 40 words) | P3 | **Suggested** (UX pass 2026-11-24) · **Still open per UX pass 2026-11-24-2**: safety sentences split; Terms/Sources unchanged |
 | UX-15 | Choices without enough help (floors in an apartment, "Solar / battery", "FEMA recommended") | P3 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
@@ -490,3 +490,13 @@ UX-8 to UX-13 and UX-15 to UX-21 are fixed; UX-7 changed (now P3) and UX-14 is s
 - **UX-24** (P3, Suggested): Short plans show a "Later" heading holding only Skills to practice.
 - **UX-25** (P2, Suggested): Short plans (72 h–14 days) list gear with no step for it (window protection, sanitation kit, generator test-run).
 - **UX-26** (P3, Suggested): "Later" names both a shopping phase and a Priority-list stage.
+
+### Owner decisions, November 25, 2026 (PR #16)
+
+- **Accepted as is:** the mobility answer switches the household to lighter water containers (UX-12); the
+  14-gallon tank assumption (stays in docs/FACTCHECK.md as FU-3); the "Which one?" choice on the evacuation screen
+  (UX-5).
+  - Note for the owner: the decision says Compare options still offers the bigger containers. It doesn't. For
+    households with mobility needs, 7-gallon jugs, bricks and drums are tagged `!mobility`, so Compare doesn't
+    list them. Nothing was changed; say if they should come back as non-default Compare options.
+
