@@ -297,4 +297,123 @@ The averages come from this table. They're recomputed by `npx tsx scripts/design
 
 ## Re-score after the fixes
 
-Filled in after step 5.
+**What was re-scored:**
+- The same 40 screens, captured again on the final build with the fixed capture script.
+- Raw capture: `.data/ux/2026-11-25-3/` (200 captures, 0 failed).
+- Same rubric. Evidence is given where a score changed. Every other score keeps the "before" evidence above, re-checked against the new screenshots.
+
+**Before → after (averages, `scripts/design-scores.ts`):**
+
+| Quality | Before | After |
+|---|---|---|
+| Calm | 4.30 | 4.58 |
+| Trust | 4.13 | 4.45 |
+| Ease | 4.03 | 4.38 |
+| Clarity | 3.95 | 4.20 |
+
+**No screen scores under 4.**
+
+| # | Screen | Calm | Trust | Ease | Clarity |
+|---|---|---|---|---|---|
+| 1 | Front page | 5 | 4 | 5 | 5 |
+| 2 | Front page, menu open | 5 | 4 | 5 | 5 |
+| 3 | Start | 5 | 5 | 5 | 5 |
+| 4 | Help | 5 | 5 | 4 | 5 |
+| 5 | About | 5 | 5 | 4 | 4 |
+| 6 | Sources & safety | 5 | 5 | 4 | 4 |
+| 7 | Terms / Privacy | 4 | 5 | 4 | 4 |
+| 8 | Sample plan | 4 | 4 | 4 | 4 |
+| 9 | Q1 Location (first question) | 4 | 5 | 5 | 4 |
+| 10 | Q2 Household | 5 | 4 | 5 | 4 |
+| 11 | Q3 Little ones | 5 | 4 | 5 | 5 |
+| 12 | Q4 Pets | 5 | 4 | 4 | 4 |
+| 13 | Q5 Medical | 5 | 5 | 4 | 4 |
+| 14 | Q6 Home | 5 | 4 | 5 | 4 |
+| 15 | Q7 Heat, cooking, water | 5 | 4 | 4 | 4 |
+| 16 | Q8 Power and vehicles | 5 | 4 | 5 | 4 |
+| 17 | Q9 Storage | 5 | 4 | 5 | 4 |
+| 18 | Q10 If you have to leave | 4 | 4 | 5 | 4 |
+| 19 | Q11 Budget, skills, consent | 4 | 4 | 4 | 4 |
+| 20 | ZIP error | 5 | 5 | 5 | 5 |
+| 21 | Loading | 5 | 5 | 4 | 5 |
+| 22 | Plan build failed | 4 | 5 | 5 | 4 |
+| 23 | Plan top | 4 | 4 | 4 | 4 |
+| 24 | This week | 4 | 5 | 4 | 4 |
+| 25 | Shopping list | 4 | 5 | 4 | 4 |
+| 26 | Chapters (card grid) | 4 | 4 | 4 | 4 |
+| 27 | Section open (water, evacuation) | 4 | 5 | 4 | 4 |
+| 28 | Compare options | 4 | 5 | 4 | 4 |
+| 29 | Share menu | 5 | 4 | 5 | 5 |
+| 30 | Save bar and email form | 4 | 4 | 4 | 4 |
+| 31 | Places (backup destination) | 5 | 5 | 4 | 4 |
+| 32 | Maintenance list | 5 | 4 | 4 | 4 |
+| 33 | Not found / expired plan | 5 | 5 | 5 | 4 |
+| 34 | Account (flags off) | 4 | 4 | 4 | 4 |
+| 35 | Flags on: plan tabs + food card | 4 | 4 | 4 | 4 |
+| 36 | Flags on: DIY tips | 4 | 5 | 4 | 4 |
+| 37 | Flags on: plan inventory | 4 | 4 | 4 | 4 |
+| 38 | Flags on: My plans | 5 | 4 | 4 | 4 |
+| 39 | Flags on: My places | 5 | 5 | 4 | 4 |
+| 40 | Flags on: Reminders | 5 | 4 | 5 | 4 |
+
+### Evidence for the scores that changed
+
+- **1 Front page:**
+  - C5 and E5: "About 5 minutes. Free, no sign-up. You'll get a short list of what to do first…" now sits right under the button, in the first screen.
+  - Cl5: one way to say how long it takes, used everywhere.
+- **3 Start:**
+  - T5: "Your answers are saved in this browser as you go" says where.
+  - Cl5: "About 5 minutes".
+- **8 Sample plan:**
+  - C4: one amber button. "Build your own" is now a plain button.
+- **9 Q1 Location:**
+  - E5: Back goes to the front page (`e2e/design.spec.ts`), and the ZIP error sits under the field.
+- **20 ZIP error:**
+  - "Enter your 5-digit ZIP code, like 43215." (or "That's 3 digits. A ZIP code has 5, like 43215."), under the field.
+  - The field is focused, with `aria-invalid` set and linked to the message (5/5/5/5).
+- **22 Plan build failed:**
+  - "We couldn't build your plan just now. Your answers are saved. Try again in a minute.", scrolled into view right above "Build my plan".
+  - C4: it's still a failure, shown in warning color.
+- **23 Plan top:**
+  - C4: it now opens with "Your plan is ready. You don't need to do this all at once." The gear count moved into the shopping list.
+  - "0 of 10 done" and the "Most important:" step text remain (see "Chosen not to change"), so it's a 4, not a 5.
+- **24 This week:**
+  - C4: "Start with these 3 / Everything else can wait.", which is true by test (`tests/nextSteps.test.ts`).
+  - T5: "Prices are estimates." next to the Buy boxes, with the commission line when Buy links can earn one.
+- **25 Shopping list:**
+  - T5: the note sits above the Buy buttons.
+- **27 Section open:**
+  - Cl4: the table reads "2 adults", "2 children".
+- **28 Compare options:**
+  - C4: "Costs less" / "Costs more", and "The same job at different prices… switch only if another suits you better."
+  - T5: "Prices are estimates."
+- **33 Not found:**
+  - C5 and T5: "We can't find that page", followed by the likely reason in plain words.
+  - E5: "Build a new plan" (primary) and "I confirmed my email: sign in".
+  - Cl4: the explanation is two sentences long.
+- **34 Account:**
+  - Cl4: "Change my answers", and dates like "Nov 25, 2026".
+- **35 Food card:**
+  - Cl4: "✓ Your pick", then "Recommended mix: all ready-to-eat".
+- **37 Plan inventory:**
+  - E4: "You only need to change what you already have. Everything else stays on your list as Need." The layout is unchanged (backlog).
+- **38 My plans:**
+  - Cl4: dates like "Nov 25, 2026".
+- **39 My places:**
+  - T5: a failed save says "We couldn't save that just now. Check your connection and try again.", in warning color, and no longer blames the address.
+- **40 Reminders:**
+  - E5: a failed save now shows in warning color, not grey.
+
+### Emotional journey (after)
+
+The two breaks are closed.
+- **The plan top:** it says "capable" before it shows any work: "Your plan is ready. You don't need to do this all at once." Then "Start with these 3. Everything else can wait."
+- **The other-browser / expired return:** it explains what happened and offers a 5-minute way forward.
+- **Shopping list and Compare:** they read as advice rather than a store: "Costs more" instead of "UPGRADE", and prices are called estimates next to every Buy button.
+
+### Automated checks (after)
+
+- axe: 0 violations on all 200 captures.
+- No sideways scroll and no tap targets under 44px.
+- Lighthouse: see the PR description. Accessibility stays at 100 on every URL.
+- Guardrails added in this pass: `tests/design.test.ts` (45 tests) and `e2e/design.spec.ts` (2 tests, one amber button and red only for safety, on rendered screens).
