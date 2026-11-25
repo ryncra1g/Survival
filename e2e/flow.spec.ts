@@ -336,7 +336,7 @@ test("admin: dashboard, catalog, rule constants, affiliate tag → tracked Buy c
   await expect(page.getByTestId("stay-ready").getByRole("button", { name: "Copy for your AI assistant" })).toBeVisible(); // also next to Add to my calendar
   await expect(page.getByText("Copied. Paste it into your AI assistant to get started.")).toBeVisible();
   const copied = await page.evaluate(() => navigator.clipboard.readText());
-  expect(copied).toContain("Use these amounts exactly; don't recalculate them.");
+  expect(copied).toContain("Use these amounts as given; don't recalculate them.");
   expect(copied).not.toMatch(/\b\d{5}\b/);
   await page.goto("/admin");
   await expect(page.getByTestId("stat-Copy for AI").getByTestId("stat-value")).toHaveText("1");

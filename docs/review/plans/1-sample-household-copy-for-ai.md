@@ -31,7 +31,7 @@ My first steps
 3. Look up your hurricane evacuation zone and the route out, and decide where you'd go.
 
 Ground rules for you, the assistant
-- Use these amounts exactly; don't recalculate them.
+- Use these amounts as given; don't recalculate them.
 - Follow the product label and CDC/EPA guidance for water treatment; never give dosages.
 - Never suggest grills, generators or fuel-burning heaters indoors or in a garage.
 - Official evacuation orders override this plan.
