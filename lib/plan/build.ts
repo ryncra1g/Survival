@@ -89,7 +89,15 @@ const liftableLb = (c: { water: { liftableGallons: number; lbPerGallon: number }
 /** UX-12: for households with mobility needs, wherever stored water is mentioned. */
 export const KEEP_WATER_CLOSE = "Keep water where you won't need to lift it far.";
 /** UX-3: the one everyday fuel rule (Ready.gov: keep at least a half tank). Never a per-tank gallon target. */
-export const HALF_FULL = "Keep every vehicle at least half full.";
+export const HALF_FULL = "Keep every gas vehicle at least half full.";
+export const EV_CHARGE = "Keep EVs charged to at least 80% when severe weather is forecast.";
+/** Owner decision: gas-only households get HALF_FULL, EV-only get EV_CHARGE, mixed get both, each labelled. */
+export function vehicleFuelSteps(fuels: readonly string[]): string[] {
+  const gas = fuels.some((v) => v !== "ev");
+  const ev = fuels.includes("ev");
+  if (gas && ev) return [`Gas vehicles: ${HALF_FULL}`, `EVs: ${EV_CHARGE}`];
+  return [...(gas ? [HALF_FULL] : []), ...(ev ? [EV_CHARGE] : [])];
+}
 export const fillUpLine = (gal: string) => `Your trip needs about ${gal} gallons: fill up completely as soon as a storm or evacuation warning is issued.`;
 export interface SectionDraft {
   id: string;
@@ -435,8 +443,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   if (!apt) week.push("Find and label your main water shutoff, gas shutoff and electrical panel.");
   if (a.hasPrescriptions) week.push("Ask your pharmacist or doctor how to keep an extra supply of daily prescriptions on hand.");
   if (cp.diapers) week.push(`Buy 2 weeks of diapers (${n(cp.diapers.perDay * 14)}) and wipes.`);
-  if (a.vehicleFuels.some((v) => v !== "ev")) week.push(HALF_FULL);
-  if (a.vehicleFuels.includes("ev")) week.push("Keep EVs charged to at least 80% when severe weather is forecast.");
+  week.push(...vehicleFuelSteps(a.vehicleFuels));
 
   month.push({ text: w.liftable ? `Finish stored water: ${n(w.storedGal)} gallons in ${liftable(c)} jugs or cases (about ${liftableLb(c)} lb each). ${KEEP_WATER_CLOSE}` : `Finish stored water: ${n(w.storedGal)} gallons (${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${plural(w.jugs, "7-gal jug")}).`, buy: ["water-drum", "water-jug", "water-bricks", "water-gallons"] });
   month.push(phaseStep(1, "Buy the rest of your Phase 1 (life safety) gear"));
@@ -1217,7 +1224,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
               { type: "table" as const, caption: "Fuel & range", columns: ["Item", "Amount"], rows: evRows },
               // UX-3: one fuel rule. Half full always; a full tank only when the trip needs more than half.
               ...(a.vehicleFuels.some((v) => v !== "ev")
-                ? [{ type: "paragraph" as const, text: ev.tripNeedsFullTank ? `${HALF_FULL} ${fillUpLine(n(ev.reserveGalPerVehicle, 1))}` : HALF_FULL }]
+                ? [{ type: "paragraph" as const, text: `${a.vehicleFuels.includes("ev") ? "Gas vehicles: " : ""}${HALF_FULL}${ev.tripNeedsFullTank ? ` ${fillUpLine(n(ev.reserveGalPerVehicle, 1))}` : ""}` }]
                 : []),
             ]
           : [

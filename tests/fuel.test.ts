@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_ANSWERS } from "@/lib/answers/schema";
+import { DEFAULT_ANSWERS, type Answers } from "@/lib/answers/schema";
 import { computeEvac } from "@/lib/rules/engine";
 import { DEFAULT_CONSTANTS as C } from "@/lib/rules/constants";
-import { HALF_FULL } from "@/lib/plan/build";
+import { EV_CHARGE, HALF_FULL } from "@/lib/plan/build";
 import { renderPlanEmail } from "@/lib/email/render";
 import { ALL_HOUSEHOLDS } from "./fixtures/uxPersonas";
 import { buildPlan } from "./helpers/build";
@@ -58,5 +58,29 @@ describe("fuel rule edge cases (code review)", () => {
     const a = { ...DEFAULT_ANSWERS, zip: "11746", vehicleFuels: ["ev" as const], evacuation: { destination: "friends_family" as const, distanceMiles: 250 } };
     const doc = JSON.stringify((await buildPlan(a)).document);
     expect(doc).not.toMatch(/fill up completely|half full/);
+  });
+});
+
+describe("gas and EV wording (owner decision)", () => {
+  const week = async (fuels: Answers["vehicleFuels"]) => {
+    const r = await buildPlan({ ...DEFAULT_ANSWERS, zip: "60614", vehicleFuels: fuels });
+    const b = r.document.sections.find((s) => s.id === "priorities")!.blocks.filter((x) => x.type === "checklist");
+    return { steps: b.flatMap((x) => (x.type === "checklist" ? x.items.map((i) => i.text) : [])), doc: JSON.stringify(r.document) };
+  };
+  it("gas only: the half-full line, no EV line", async () => {
+    const { steps, doc } = await week(["gas", "diesel"]);
+    expect(steps).toContain("Keep every gas vehicle at least half full.");
+    expect(doc).not.toContain(EV_CHARGE);
+  });
+  it("EV only: only the EV-charging line", async () => {
+    const { steps, doc } = await week(["ev"]);
+    expect(steps).toContain(EV_CHARGE);
+    expect(doc).not.toMatch(/half full/);
+  });
+  it("mixed: both, each labelled", async () => {
+    const { steps } = await week(["gas", "ev"]);
+    expect(steps).toContain("Gas vehicles: Keep every gas vehicle at least half full.");
+    expect(steps).toContain(`EVs: ${EV_CHARGE}`);
+    expect(steps).not.toContain(HALF_FULL); // never unlabelled in a mixed household
   });
 });
