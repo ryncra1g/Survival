@@ -135,6 +135,8 @@
     "filterGal": 293,
     "jugs": 8,
     "standardJugs": 8,
+    "brickGallons": 3.5,
+    "drumGallons": 55,
     "drums": 0,
     "liftable": false,
     "threeDayGal": 12,
