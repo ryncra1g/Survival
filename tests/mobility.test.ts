@@ -57,6 +57,8 @@ describe("water containers for households with mobility needs (UX-12, owner deci
     const t = documentStrings(jug.document).join("\n");
     expect(t).toMatch(new RegExp(`${pick.qty} 7-gal jugs`));
     expect(t).not.toContain("1-gallon jugs or cases");
+    expect(t).toContain("heavy when full (about 62 lb each)");
+    expect(t).toContain(KEEP_WATER_CLOSE);
     const bricks = await buildPlan({ ...h, gearChoices: { water: "premium" } });
     expect(bricks.computed.budget.picks.find((p) => p.item.group === "water")!.item.id).toBe("water-bricks");
   });
