@@ -58,6 +58,9 @@ export interface WaterResult {
   jugs: number;
   /** 7-gallon jugs needed (without drums): the jug option's quantity, even when the default container is liftable. */
   standardJugs: number;
+  /** Container sizes from the constants, for the catalog quantities (bricks, drums). */
+  brickGallons: number;
+  drumGallons: number;
   drums: number;
   /** UX-12: someone has limited mobility, so water goes in containers they can lift (no 7-gal jugs, bricks or drums). */
   liftable: boolean;
@@ -107,6 +110,8 @@ export function computeWater(a: Answers, c: RuleConstants): WaterResult {
     filterGal,
     jugs,
     standardJugs: liftable ? jugs7 : jugs,
+    brickGallons: c.water.brickGallons,
+    drumGallons: c.water.drumGallons,
     drums,
     liftable,
     threeDayGal: ceil(round(dailyGal * Math.min(3, a.scenarioDays), 4)),
@@ -579,13 +584,13 @@ export function resolveQty(item: CatalogItem, ctx: { water: WaterResult; power: 
     case "water_jugs":
       return ctx.water.standardJugs;
     case "water_bricks":
-      return Math.ceil(Math.max(0, ctx.water.storedGal - ctx.water.drums * 55) / DEFAULT_BRICK_GAL);
+      return Math.ceil(Math.max(0, ctx.water.storedGal - ctx.water.drums * ctx.water.drumGallons) / ctx.water.brickGallons);
     case "food_buckets":
       return ctx.foodBuckets ?? 0;
     case "freeze_dried_units":
       return Math.ceil(ctx.foodKcal / (2000 * 30));
     case "water_gallons":
-      return Math.max(0, ctx.water.storedGal - ctx.water.drums * 55);
+      return Math.max(0, ctx.water.storedGal - ctx.water.drums * ctx.water.drumGallons);
     case "water_drums":
       return ctx.water.drums;
     case "people":
@@ -601,15 +606,20 @@ export function resolveQty(item: CatalogItem, ctx: { water: WaterResult; power: 
   }
 }
 
-/** The default brick size, for the qty resolver (which has no constants); constants.water.brickGallons is the same. */
-const DEFAULT_BRICK_GAL = 3.5;
 /**
  * Owner decision (PR #16): a water container's weight when full, from its size in the constants and the weight of
  * water (catalog qty key → gallons × lbPerGallon). Null for anything that isn't a water container.
  */
-export function containerFullLb(it: Pick<CatalogItem, "qty">, c: RuleConstants): number | null {
-  const gal = { water_gallons: c.water.liftableGallons, water_jugs: c.water.jugGallons, water_bricks: c.water.brickGallons, water_drums: c.water.drumGallons }[String(it.qty)];
-  return gal === undefined ? null : gal * c.water.lbPerGallon;
+export function containerFullLb(it: Pick<CatalogItem, "qty">, c: Pick<RuleConstants, "water">): number | null {
+  const sizes = new Map<string, number>([
+    ["water_gallons", c.water.liftableGallons],
+    ["water_jugs", c.water.jugGallons],
+    ["water_bricks", c.water.brickGallons],
+    ["water_drums", c.water.drumGallons],
+  ]);
+  const gal = sizes.get(String(it.qty));
+  // Rounded up, so a lifting warning never understates the weight.
+  return gal === undefined ? null : Math.ceil(gal * c.water.lbPerGallon);
 }
 
 function tagsMatch(item: CatalogItem, tags: Set<string>): boolean {
@@ -632,7 +642,7 @@ export function computeBudget(
   // Compare options only. They are never picked or set aside automatically; a person's own choice is honoured.
   const heavyLb = (it: CatalogItem) => {
     const lb = containerFullLb(it, c);
-    return tags.has("mobility") && lb !== null && lb > c.water.mobilityMaxLb ? Math.round(lb) : 0;
+    return tags.has("mobility") && lb !== null && lb > c.water.mobilityMaxLb ? lb : 0;
   };
   const heavy = (it: CatalogItem) => heavyLb(it) > 0;
   const tier = c.budget.tierByBudget[a.budget];
@@ -739,7 +749,7 @@ export function computeBudget(
           .sort((x, y) => LEVEL_RANK[x.item.level ?? "standard"] - LEVEL_RANK[y.item.level ?? "standard"])
           .map((o) => {
             const b = bundleFor(o);
-            return { level: (o.item.level ?? "standard") as SlotLevel, itemId: o.item.id, name: o.item.name, qty: o.qty, low: o.low + b.reduce((t, x) => t + x.low, 0), high: o.high + b.reduce((t, x) => t + x.high, 0), ...(heavy(o.item) ? { heavyLb: heavyLb(o.item) } : {}) };
+            return { level: (o.item.level ?? "standard") as SlotLevel, itemId: o.item.id, name: o.item.name, qty: o.qty, low: o.low + b.reduce((t, x) => t + x.low, 0), high: o.high + b.reduce((t, x) => t + x.high, 0), ...((lb) => (lb ? { heavyLb: lb } : {}))(heavyLb(o.item)) };
           }),
       });
     if (fit) {
@@ -755,7 +765,8 @@ export function computeBudget(
       }
     } else {
       const light = viable.filter((o) => !heavy(o.item));
-      const pool = atOrBelow.length ? atOrBelow : light.length ? light : viable;
+      const pool = atOrBelow.length ? atOrBelow : light;
+      if (!pool.length) continue; // only heavy options: offered in Compare, never set aside automatically
       const cheapest = [...pool].sort((x, y) => x.mid - y.mid)[0];
       if (cheapest.item.group) deferredGroups.add(cheapest.item.group);
       deferred.push({ ...cheapest, status: "deferred", reason: "Doesn't fit the remaining budget — buy next" });

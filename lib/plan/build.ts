@@ -4,7 +4,7 @@ import { STAGE, WEEK_MAX } from "./priority";
 import { labelKinds } from "./kinds";
 import { maintenanceItems } from "./maintenance";
 import { dontDoFor, tipsFor, type TipArea } from "@/lib/tips/library";
-import { mixLabel, type ComputedPlan, type GearPick } from "@/lib/rules/engine";
+import { containerFullLb, mixLabel, type ComputedPlan, type GearPick } from "@/lib/rules/engine";
 import type { RuleConstants } from "@/lib/rules/constants";
 import { atLeast } from "@/lib/zip/profile";
 import { addHelp } from "./help";
@@ -84,7 +84,7 @@ export function deviceSentence(devices: Answers["poweredDevices"]): string {
 
 /** UX-12: the liftable container from the constants, e.g. "1-gallon" and its full weight in lb. */
 const liftable = (c: { water: { liftableGallons: number } }) => `${n(c.water.liftableGallons, 1)}-gallon`;
-const liftableLb = (c: { water: { liftableGallons: number; lbPerGallon: number } }) => n(Math.ceil(c.water.liftableGallons * c.water.lbPerGallon));
+const liftableLb = (c: RuleConstants) => n(containerFullLb({ qty: "water_gallons" }, c) ?? 0);
 
 /** UX-12: for households with mobility needs, wherever stored water is mentioned. */
 export const KEEP_WATER_CLOSE = "Keep water where you won't need to lift it far.";
@@ -286,9 +286,14 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   // Owner decision (PR #16): the engine marks a heavy option on the water slot; this is the one the person chose, if any.
   const waterSlot = cp.budget.slots.find((x) => x.group === "water");
   const heavyWaterLb = waterSlot?.options.find((o) => o.itemId === waterSlot.chosen)?.heavyLb ?? 0;
-  const waterPick = cp.budget.picks.find((p) => p.item.group === "water");
-  // The containers the plan names: bricks when bricks are picked, otherwise 7-gallon jugs.
-  const bigContainers = waterPick?.item.qty === "water_bricks" ? plural(waterPick.qty, `${n(c.water.brickGallons, 1)}-gal water brick`) : plural(w.standardJugs, "7-gal jug");
+  // The container the plan names: the one chosen in the water slot (picked or set aside), from the constants.
+  const waterChoice = waterSlot?.options.find((o) => o.itemId === waterSlot.chosen);
+  const bigContainers =
+    waterChoice && /brick/.test(waterChoice.itemId)
+      ? plural(waterChoice.qty, `${n(c.water.brickGallons, 1)}-gal water brick`)
+      : waterChoice?.itemId === "water-gallons" && !w.liftable
+        ? `${n(w.storedGal - w.drums * c.water.drumGallons)} gallon jugs or refilled 2-liter bottles`
+        : plural(w.standardJugs, `${n(c.water.jugGallons)}-gal jug`);
   const lightWater = w.liftable && !heavyWaterLb;
   const pw = cp.power;
   const winter = cp.flags.winter;
@@ -721,7 +726,7 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
             lightWater
               ? `${n(w.jugs)} ${liftable(c)} jugs or cases (about ${liftableLb(c)} lb each when full)`
               : cp.budget.picks.some((p) => p.item.id === "water-gallons")
-              ? `${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${n(w.storedGal - w.drums * 55)} gallon jugs or refilled 2-liter bottles (low-cost); upgrade to ${plural(w.standardJugs, "7-gal jug")} when you can`
+              ? `${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${n(w.storedGal - w.drums * c.water.drumGallons)} gallon jugs or refilled 2-liter bottles (low-cost); upgrade to ${plural(w.standardJugs, "7-gal jug")} when you can`
               : `${w.drums ? `${plural(w.drums, "55-gal drum")} + ` : ""}${bigContainers}`,
           ],
           ["Filter + collect", w.filterDays > 0 ? `${n(w.filterGal)} gal over ${n(w.filterDays)} days` : "Not needed for this scenario (keep bleach as backup)"],

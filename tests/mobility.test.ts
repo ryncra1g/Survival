@@ -21,8 +21,8 @@ describe("water containers for households with mobility needs (UX-12, owner deci
     expect(C.water.mobilityMaxLb).toBe(25);
     expect(fullLb("water-gallons")).toBeLessThanOrEqual(C.water.mobilityMaxLb);
     for (const id of ["water-jug", "water-bricks", "water-drum"]) expect(fullLb(id), id).toBeGreaterThan(C.water.mobilityMaxLb);
-    expect(Math.round(fullLb("water-jug"))).toBe(58); // 7 gal × 8.34 lb
-    expect(Math.round(fullLb("water-bricks"))).toBe(29); // 3.5 gal × 8.34 lb
+    expect(fullLb("water-jug")).toBe(59); // 7 gal × 8.34 lb = 58.4, rounded up
+    expect(fullLb("water-bricks")).toBe(30); // 3.5 gal × 8.34 lb = 29.2, rounded up
   });
 
   const mobility = ALL_HOUSEHOLDS.filter((h) => h.a.elderlyOrMobility);
@@ -59,7 +59,7 @@ describe("water containers for households with mobility needs (UX-12, owner deci
     const t = documentStrings(jug.document).join("\n");
     expect(t).toMatch(new RegExp(`${pick.qty} 7-gal jugs`));
     expect(t).not.toContain("1-gallon jugs or cases");
-    expect(t).toContain("heavy when full (about 58 lb each)");
+    expect(t).toContain("heavy when full (about 59 lb each)");
     expect(t).toContain(KEEP_WATER_CLOSE);
     const bricks = await buildPlan({ ...h, gearChoices: { water: "premium" } });
     expect(bricks.computed.budget.picks.find((p) => p.item.group === "water")!.item.id).toBe("water-bricks");
@@ -95,6 +95,25 @@ describe("the plan names the container that was chosen (code review)", () => {
     const t = documentStrings(r.document).join("\n");
     expect(t).toMatch(/3\.5-gal water bricks?/);
     expect(t).not.toMatch(/\d+ 7-gal jugs?\b/);
-    expect(t).toContain("heavy when full (about 29 lb each)");
+    expect(t).toContain("heavy when full (about 30 lb each)");
+  });
+});
+
+describe("container wording and quantities follow the constants (code review 2)", () => {
+  it("a household that picks 1-gallon jugs is never told to buy 7-gal jugs", async () => {
+    const r = await buildPlan({ ...ALL_HOUSEHOLDS.find((x) => x.id === "toddlers")!.a, gearChoices: { water: "essential" } });
+    const t = documentStrings(r.document).join("\n");
+    expect(r.computed.budget.picks.some((p) => p.item.id === "water-gallons")).toBe(true);
+    // The step names the picked container (an "upgrade to … 7-gal jugs" hint elsewhere is fine).
+    const step = t.split("\n").find((l) => l.startsWith("Finish stored water"))!;
+    expect(step).not.toMatch(/7-gal jug/);
+    expect(step).toMatch(/gallon jugs or refilled 2-liter bottles/);
+  });
+  it("the bricks count uses constants.water.brickGallons", async () => {
+    const five = { ...C, water: { ...C.water, brickGallons: 5 }, affiliate: { amazonTag: "test-20" } };
+    const r = await buildPlan({ ...ALL_HOUSEHOLDS.find((x) => x.id === "toddlers")!.a, gearChoices: { water: "premium" } }, five as never);
+    const b = r.computed.budget.picks.find((p) => p.item.id === "water-bricks")!;
+    expect(b.qty).toBe(Math.ceil((r.computed.water.storedGal - r.computed.water.drums * C.water.drumGallons) / 5));
+    expect(documentStrings(r.document).join("\n")).toContain(`${b.qty} 5-gal water brick`);
   });
 });
