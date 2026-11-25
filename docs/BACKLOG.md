@@ -74,6 +74,7 @@ Entry types: **Owner request** (Ryan asked for it), **Assistant recommendation**
 | UX-25 | Short plans (72 h–14 days) list gear with no step for it (window protection, sanitation kit, generator test-run) | P2 | **Suggested** (UX pass 2026-11-24-2) · **Fixed per UX pass 2026-11-25** (PR #16, not merged) |
 | UX-26 | "Later" names both a shopping phase and a Priority-list stage | P3 | **Suggested** (UX pass 2026-11-24-2) · **Fixed per UX pass 2026-11-25** (PR #16, not merged) |
 | UX-27 | Taller sticky bar (with the "Almost done" line) starts with the Terms box under it at 375×812 | P3 | **Suggested** (UX pass 2026-11-25) |
+| UX-28 | Opt-in 55-gallon drum choice in Compare for households with mobility needs (non-default, with the heavy warning) | P3 | **Suggested** (owner: later, Nov 25 2026) |
 
 ### PR merge queue (each needs the owner's OK)
 #3 Windows test fixes → #4 Buy links without a tag → #5 dashboard redesign → `claude/headline-copy` (no PR yet).
@@ -517,9 +518,9 @@ UX-7 and UX-14 are deferred (owner). New, **Suggested**:
   non-default choices in Compare options, each with "Heavy when full (about N lb). Choose only if someone can lift
   it, or store it where you'll use it." (N = container size × 8.34 lb from the rules constants, rounded up: 59 and 30.) The default stays 1-gallon jugs; heavy containers are never picked or set
   aside automatically, and a choice is honoured (FACTCHECK WT-11, WT-13).
-  - **Not done: 55-gallon drums.** Drums aren't a level in Compare for any household (the engine adds them for
-    large storage spaces), so offering them would need a new kind of choice. They stay off for mobility
-    households. Question for the owner.
+  - **55-gallon drums: later (owner, Nov 25 2026).** Drums aren't a Compare level for any household (the engine
+    adds them for large storage spaces), so offering them needs a new kind of choice. They stay off for mobility
+    households for now; see UX-28.
 
 
 ### CAT-01 The Supabase catalog drops gear levels (found Nov 25, 2026; Suggested)
