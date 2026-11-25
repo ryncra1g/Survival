@@ -53,14 +53,14 @@ Entry types: **Owner request** (Ryan asked for it), **Assistant recommendation**
 | UX-4 | Required consent boxes below the fold, under the sticky button | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
 | UX-5 | Evacuation screen asks nearly the same question twice, with different labels | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) · **Accepted (owner, Nov 25 2026)** |
 | UX-6 | Three different step counts on the first plan screen | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
-| UX-7 | Every plan is very long (51–84 steps, 17–22 page PDF), whatever the household | P2 → P3 | **Suggested** (UX pass 2026-11-24) · **Changed per UX pass 2026-11-24-2**: opens on This week (owner decision); full text still long |
+| UX-7 | Every plan is very long (51–84 steps, 17–22 page PDF), whatever the household | P2 → P3 | **Suggested** (UX pass 2026-11-24) · **Changed per UX pass 2026-11-24-2**: opens on This week (owner decision); full text still long · **Deferred (owner)**: the plan now opens on This week; shortening the full text and PDF waits until real users show what they read. |
 | UX-8 | Family wording ("helmets for the kids", "come get us") in one-person plans | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
 | UX-9 | Plan controls below 44 px (chips, tabs, Buy, Compare, Expand all, source links) | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
 | UX-10 | Same thing, different names (Confirm email / Email me my plan; go-bag / Bug-out kit; basic / Essential) | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
 | UX-11 | Compare options "new total" matches no total shown elsewhere | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
 | UX-12 | Mobility household told to buy 7-gallon (≈58 lb) jugs | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) · **Accepted (owner, Nov 25 2026)** |
 | UX-13 | High wildfire-risk household's first 3 steps don't mention fire or evacuation | P2 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
-| UX-14 | Long or hard sentences (terms, sources, safety lines over 40 words) | P3 | **Suggested** (UX pass 2026-11-24) · **Still open per UX pass 2026-11-24-2**: safety sentences split; Terms/Sources unchanged |
+| UX-14 | Long or hard sentences (terms, sources, safety lines over 40 words) | P3 | **Suggested** (UX pass 2026-11-24) · **Still open per UX pass 2026-11-24-2**: safety sentences split; Terms/Sources unchanged · **Deferred (owner)**: Terms and Sources are legal and source wording; a plain-language pass needs legal review first. |
 | UX-15 | Choices without enough help (floors in an apartment, "Solar / battery", "FEMA recommended") | P3 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
 | UX-16 | Visible focus box around every questionnaire heading | P3 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
 | UX-17 | "Your area: Ohio, OH" | P3 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
@@ -499,4 +499,6 @@ UX-8 to UX-13 and UX-15 to UX-21 are fixed; UX-7 changed (now P3) and UX-14 is s
   - Note for the owner: the decision says Compare options still offers the bigger containers. It doesn't. For
     households with mobility needs, 7-gallon jugs, bricks and drums are tagged `!mobility`, so Compare doesn't
     list them. Nothing was changed; say if they should come back as non-default Compare options.
+- **Deferred (owner):** UX-7 (full plan length: the first screen is fixed; the rest waits for real-user evidence)
+  and UX-14 (Terms and Sources reading level: legal wording, needs legal review).
 
