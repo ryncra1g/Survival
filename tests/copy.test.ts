@@ -100,10 +100,11 @@ describe("one name per thing (UX-10)", () => {
   });
 });
 
-describe("one screen count (UX-20)", () => {
-  it("the front page and the start page both say About 10 quick screens", () => {
-    for (const f of ["components/Landing.tsx", "app/start/page.tsx"]) expect(readFileSync(f, "utf8"), f).toContain("About 10 quick screens");
-    const all = ROOTS.flatMap(files).flatMap((f) => uncommented(readFileSync(f, "utf8")).filter((l) => /\b\d+ quick (questions|screens)\b/i.test(l) && !/About 10 quick screens/.test(l)).map((l) => `${f}: ${l.trim()}`));
+describe("one way to say how long it takes (UX-20, design audit DA-9)", () => {
+  it("the front page and the start page say About 5 minutes, like the questionnaire's 'About N min left'", () => {
+    for (const f of ["components/Landing.tsx", "app/start/page.tsx"]) expect(readFileSync(f, "utf8"), f).toContain("About 5 minutes");
+    expect(readFileSync("components/Questionnaire.tsx", "utf8")).toMatch(/min left/);
+    const all = ROOTS.flatMap(files).flatMap((f) => uncommented(readFileSync(f, "utf8")).filter((l) => /\b\d+ quick (questions|screens)\b/i.test(l)).map((l) => `${f}: ${l.trim()}`));
     expect(all).toEqual([]);
   });
 });
