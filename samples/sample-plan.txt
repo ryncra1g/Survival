@@ -150,8 +150,8 @@ Your household uses about 3.85 gal of water a day. Store 54 gallons (14 days). A
 
 Daily need (drinking + basic cooking/hygiene)
 Who | Per day
-2 adult(s) | 2 gal/day
-2 child(ren) | 1.5 gal/day
+2 adults | 2 gal/day
+2 children | 1.5 gal/day
 Pets | 0.35 gal/day
 Total | 3.85 gal/day
 Storage plan
