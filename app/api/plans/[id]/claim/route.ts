@@ -1,3 +1,4 @@
+import { ERR } from "@/lib/errors";
 import { isId } from "@/lib/ids";
 import { after } from "next/server";
 import { z } from "zod";
@@ -31,10 +32,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const plan = await loadPlanFor(session, id);
   if (!plan || !session) return err("Not found", 404);
   const body = Body.safeParse(await readJson(req));
-  if (!body.success) return err("Enter a valid email address.");
+  if (!body.success) return err(ERR.email);
   const ip = await clientIp();
   if (!(await limit(`signup:ip:${ip}`, LIMITS.signupPerIpHour, 3600))) return err("Too many attempts. Try again in an hour.", 429);
-  if (!(await verifyTurnstile(body.data.turnstileToken, ip))) return err("The bot check didn't pass. Reload and try again.");
+  if (!(await verifyTurnstile(body.data.turnstileToken, ip))) return err(ERR.botCheck);
 
   const { email, updates } = body.data;
   const now = new Date().toISOString();

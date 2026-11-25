@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { suggestEmail } from "@/lib/email/typos";
 import { Turnstile } from "./Turnstile";
 import { BRAND } from "@/lib/brand";
+import { ERR, errorFromThrown, friendlyError } from "@/lib/errors";
 
 type Result = { status: "sent" | "confirm"; email: string; demoLink?: string };
 
@@ -28,7 +29,7 @@ export function EmailMyPlan({ planId, siteKey = "", onSubmit, idPrefix = "emp" }
     e.preventDefault();
     setError("");
     const value = email.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return setError("Enter a valid email address.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return setError(ERR.email);
     const fix = suggestEmail(value);
     if (fix && suggestion !== fix) return setSuggestion(fix);
     if (onSubmit) {
@@ -39,10 +40,10 @@ export function EmailMyPlan({ planId, siteKey = "", onSubmit, idPrefix = "emp" }
     try {
       const r = await fetch(`/api/plans/${planId}/claim`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: value, updates, turnstileToken: token || undefined, website: website || undefined }) });
       const j = (await r.json()) as Result & { error?: string };
-      if (!r.ok) throw new Error(j.error ?? "Something went wrong. Try again.");
+      if (!r.ok) throw new Error(friendlyError(r.status, j.error, ERR.save));
       setDone(j);
     } catch (err) {
-      setError((err as Error).message);
+      setError(errorFromThrown(err, ERR.save));
     } finally {
       setBusy(false);
     }

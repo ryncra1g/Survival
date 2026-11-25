@@ -1,4 +1,5 @@
 import { after } from "next/server";
+import { ERR } from "@/lib/errors";
 import { AnswersSchema, migrateAnswers } from "@/lib/answers/schema";
 import { checkConsent, consentRecord, type ConsentInput } from "@/lib/legal";
 import { isId } from "@/lib/ids";
@@ -21,7 +22,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (!q || !(await canAccessQuestionnaire(session, q))) return err("Not found", 404);
   const body = await readJson<{ answers?: unknown; consent?: ConsentInput }>(req, 20_000);
   const parsed = AnswersSchema.safeParse(migrateAnswers(body?.answers ?? q.answers));
-  if (!parsed.success) return err(parsed.error.issues[0]?.message ?? "Some answers are missing");
+  if (!parsed.success) return err(ERR.answers);
   const consentError = checkConsent(parsed.data, body?.consent);
   if (consentError) return err(consentError);
   const ip = await clientIp();
@@ -51,7 +52,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
           send(finish(plan));
         } catch (e) {
           console.error("[generate]", e);
-          send({ error: "Couldn't build the plan. Try again." });
+          send({ error: ERR.build });
         }
         c.close();
       },

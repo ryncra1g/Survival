@@ -1,4 +1,5 @@
 "use client";
+import { ERR } from "@/lib/errors";
 import { useState } from "react";
 import type { Place } from "@/lib/accountData";
 
@@ -47,7 +48,7 @@ export function PlacesEditor({ initial }: { initial: Place[] }) {
         <button type="button" className="btn text-sm px-4 min-h-[44px]" onClick={save} disabled={state === "saving"}>Save my places</button>
         <button type="button" className="btn-ghost border border-line text-sm px-3 min-h-[44px]" onClick={() => window.print()}>Print</button>
       </div>
-      <p role="status" className="text-sm text-muted no-print">{state === "saved" ? "Saved to your account." : state === "error" ? "Couldn't save. Check the address and try again." : ""}</p>
+      <p role="status" className={`text-sm no-print ${state === "error" ? "text-warn font-medium" : "text-muted"}`}>{state === "saved" ? "Saved to your account." : state === "error" ? ERR.save : ""}</p>
       <p className="hidden print:block text-lg">Official evacuation orders override this plan.</p>
     </div>
   );

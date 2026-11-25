@@ -1,4 +1,5 @@
 "use client";
+import { ERR, friendlyError } from "@/lib/errors";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -72,10 +73,11 @@ export function LoginForm() {
     <form className="card p-4 space-y-3" onSubmit={async (e) => {
       e.preventDefault();
       setState("busy");
-      const r = await post("/api/auth/login", { email });
-      const j = (await r.json()) as { error?: string; demoLink?: string };
-      if (!r.ok) {
-        setError(j.error ?? "Try again");
+      setError("");
+      const r = await post("/api/auth/login", { email }).catch(() => null);
+      const j = ((await r?.json().catch(() => ({}))) ?? {}) as { error?: string; demoLink?: string };
+      if (!r?.ok) {
+        setError(friendlyError(r?.status ?? 0, j.error, ERR.save));
         setState("idle");
       } else {
         setDemoLink(j.demoLink ?? "");

@@ -1,4 +1,5 @@
 "use client";
+import { ERR } from "@/lib/errors";
 import { useEffect, useRef, useState } from "react";
 import { INVENTORY_STATUS, type Inventory, type InventoryEntry } from "@/lib/accountData";
 
@@ -33,8 +34,8 @@ export function InventoryEditor({ planId, items, initial, accounts }: { planId: 
 
   return (
     <div data-testid="inventory">
-      <p className="text-sm text-muted" role="status">
-        {state === "saving" ? "Saving…" : state === "error" ? "Couldn't save. Check your connection." : state === "saved" && accounts ? "Saved." : ""}
+      <p className={`text-sm ${state === "error" ? "text-warn font-medium" : "text-muted"}`} role="status">
+        {state === "saving" ? "Saving…" : state === "error" ? ERR.save : state === "saved" && accounts ? "Saved." : ""}
       </p>
       <ul className="mt-2 divide-y divide-line border-y border-line">
         {items.map((it) => {
