@@ -6,6 +6,7 @@ import { useChecks } from "./ChecksContext";
 import { Chevron } from "./Chevron";
 import { StepExtras, type StepView } from "./StepExtras";
 import { budgetStatus } from "@/lib/plan/compare";
+import { nextSteps, REASSURANCE, startHeading } from "@/lib/plan/nextSteps";
 
 const usd = (v: number) => "$" + Math.round(v).toLocaleString("en-US");
 const usdRange = (lo: number, hi: number) => (Math.round(lo) === Math.round(hi) ? usd(lo) : `${usd(lo)}–${usd(hi)}`);
@@ -24,7 +25,7 @@ function Bar({ value, label }: { value: number; label: string }) {
 
 /**
  * The plan's home: what to do next, how far along you are, the key numbers, and what's left to buy.
- * "Next up" is the first unticked priority steps, so it moves forward as you tick them (here or in the plan).
+ * "Start with these 3" is the first unticked priority steps, so it moves forward as you tick them (here or in the plan).
  * Ticks sync like the checklists (ChecksProvider).
  */
 export function Dashboard({ overview, priority, buyHref }: { overview?: Overview; priority: PriorityStep[]; buyHref: Record<string, string> }) {
@@ -36,12 +37,10 @@ export function Dashboard({ overview, priority, buyHref }: { overview?: Overview
     const t = setTimeout(() => setJustDone([]), 5000);
     return () => clearTimeout(t);
   }, [justDone]);
-  const open = priority.filter((p) => !checks[p.step.id]);
-  // Progress is shown for the current stage (this week, then this month…): a near goal, not 0 of 80.
-  const stage = open[0]?.stage;
-  const inStage = priority.filter((p) => p.stage === stage);
-  const stageDone = inStage.filter((p) => checks[p.step.id]).length;
-  const next = priority.filter((p) => justDone.includes(p.step.id) || open.slice(0, 3).includes(p));
+  // DA-1: "Start with these 3" are the first open steps in the plan's own order (lib/plan/nextSteps.ts).
+  const { open, stage, inStage, stageDone, startWith, fresh } = nextSteps(priority, checks);
+  const next = priority.filter((p) => justDone.includes(p.step.id) || startWith.includes(p));
+  const heading = startHeading(startWith.length, open.length);
   // UX-7: the rest of the current stage (at most 7 more for "This week"), one tap away.
   const more = inStage.filter((p) => !next.includes(p) && !checks[p.step.id]);
 
@@ -94,6 +93,8 @@ export function Dashboard({ overview, priority, buyHref }: { overview?: Overview
     <section aria-labelledby="dash-h" className="mt-4 rounded-xl border-2 border-accent bg-surface p-4 sm:p-5" data-testid="dashboard">
       <h2 id="dash-h" className="sr-only">Your plan at a glance</h2>
 
+      {/* DA-1: say "you can do this" before showing any work or counts. */}
+      {fresh && <p className="mb-3 text-lg font-semibold" data-testid="reassurance">{REASSURANCE}</p>}
       {/* Progress: the current stage only. One count on screen (UX-6). */}
       {stage ? (
         <div>
@@ -106,16 +107,12 @@ export function Dashboard({ overview, priority, buyHref }: { overview?: Overview
       ) : (
         <p className="font-bold">Every priority step is done. Keep the plan up to date with the maintenance calendar.</p>
       )}
-      {gear.length > 0 && (
-        <p className="mt-1.5 text-sm text-muted tabular" data-testid="overall-progress">
-          You have {got.length} of {gear.length} gear items
-        </p>
-      )}
 
-      {/* Next up: the next three things to do, tickable right here */}
+      {/* Start with these 3: the next three things to do, tickable right here */}
       {next.length > 0 && (
-        <div className="mt-4">
-          <h3 className="text-lg font-bold">Next up</h3>
+        <div className="mt-4" data-testid="next-up">
+          <h3 className="text-lg font-bold">{heading.title}</h3>
+          {heading.note && <p className="text-sm text-muted" data-testid="can-wait">{heading.note}</p>}
           <ul className="mt-2 space-y-4">
             {next.map((p) => renderStep(p))}
           </ul>
@@ -158,6 +155,8 @@ export function Dashboard({ overview, priority, buyHref }: { overview?: Overview
             <span>
               <span className="font-bold">Shopping list</span>
               <span className="block text-sm text-muted tabular">{left.length ? `${left.length} items to buy now or next · about ${usdRange(leftLow, leftHigh)}` : "You have everything planned for now"}</span>
+              {/* DA-1: the gear count lives with the list it counts, not at the top of the plan. */}
+              <span className="block text-sm text-muted tabular" data-testid="overall-progress">You have {got.length} of {gear.length} gear items</span>
             </span>
             <Chevron />
           </summary>

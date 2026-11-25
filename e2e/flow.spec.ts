@@ -133,7 +133,10 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   const dashText = await dash.innerText();
   expect(dashText.match(/\b\d+ of \d+ (done|steps)\b|\(\d+ left\)/g)).toEqual([expect.stringMatching(/^0 of \d+ done$/)]);
   expect(dashText).not.toContain("Whole plan");
-  await expect(dash.getByRole("heading", { name: "Next up" })).toBeVisible();
+  // DA-1: reassurance first, then "Start with these 3" and "Everything else can wait."
+  await expect(dash.getByTestId("reassurance")).toHaveText("Your plan is ready. You don't need to do this all at once.");
+  await expect(dash.getByRole("heading", { name: "Start with these 3" })).toBeVisible();
+  await expect(dash.getByTestId("can-wait")).toHaveText("Everything else can wait.");
   await expect(dash.getByText(/^Test or install CO alarms/)).toBeVisible();
   await expect(dash.getByText("water to store")).toBeVisible();
   await expect(dash.getByText(/gal\/day × \d+ days/)).toBeVisible();

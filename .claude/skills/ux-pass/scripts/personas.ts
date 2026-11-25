@@ -236,7 +236,7 @@ async function walk(browser: Awaited<ReturnType<typeof chromium.launch>>, person
     const text = await mainText(page);
     fs.writeFileSync(`${OUT}/personas/${persona.id}-plan.txt`, text);
     const facts = await page.evaluate(() => {
-      const nextUp = [...document.querySelectorAll("[data-testid=dashboard] h3")].find((h) => /Next up/.test(h.textContent ?? ""));
+      const nextUp = document.querySelector("[data-testid=next-up] h3");
       const steps = nextUp ? [...(nextUp.parentElement?.querySelectorAll("li") ?? [])].map((li) => (li.querySelector("p") as HTMLElement | null)?.innerText.trim() ?? "") : [];
       return {
         firstSteps: steps.slice(0, 3),
