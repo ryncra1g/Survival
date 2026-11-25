@@ -9,7 +9,7 @@ alter table gear_catalog add constraint gear_catalog_level_check check (level is
 alter table gear_catalog add column if not exists excludes text[] not null default '{}';
 
 -- Backfill from lib/catalog/seed.ts for rows seeded before this migration. Only rows still missing both values are
--- touched, so admin edits made after this migration are never overwritten. tests/store.migrations.test.ts checks
+-- touched, so admin edits made after this migration are never overwritten. tests/catalog-db.test.ts checks
 -- these lines against the seed.
 update gear_catalog set level = 'standard' where id = 'water-jug' and level is null and excludes = '{}';
 update gear_catalog set level = 'essential' where id = 'water-gallons' and level is null and excludes = '{}';
