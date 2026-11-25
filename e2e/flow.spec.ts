@@ -430,6 +430,7 @@ test("UX-4 medical screen: Next with the health box unticked focuses it, with th
   await page.goto("/");
   await page.getByRole("button", { name: "Build my free plan" }).first().click();
   await page.waitForURL(/\/q\//);
+  await page.locator("main h1").first().waitFor(); // the questionnaire has mounted (and autosaved step 0)
   const draft = { ...SAMPLE, poweredDevices: ["cpap"], _step: 4 };
   await page.evaluate((d) => localStorage.setItem(`rp_q_${location.pathname.split("/q/")[1]}`, JSON.stringify(d)), draft);
   await page.reload();
@@ -485,4 +486,24 @@ test("UX-21: header and footer links are at least 44px tall on every kind of pag
     );
     expect(small, path).toEqual([]);
   }
+});
+
+test("UX-27: at 375×812 the Terms box is fully visible above the sticky bar, and the summary is one line", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Build my free plan" }).first().click();
+  await page.waitForURL(/\/q\//);
+  await page.locator("main h1").first().waitFor(); // the questionnaire has mounted (and autosaved step 0)
+  const draft = { ...SAMPLE, hasPrescriptions: true, _step: 99 };
+  await page.evaluate((d) => localStorage.setItem(`rp_q_${location.pathname.split("/q/")[1]}`, JSON.stringify(d)), draft);
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Budget and skills" })).toBeVisible();
+  const teaser = page.getByTestId("plan-teaser");
+  await expect(teaser).toBeVisible();
+  const line = (await teaser.boundingBox())!;
+  expect(line.height).toBeLessThanOrEqual(24); // a single line of text-sm
+  const barTop = await teaser.evaluate((el) => el.parentElement!.getBoundingClientRect().top);
+  const terms = (await page.locator("label[for=termsConsent]").boundingBox())!;
+  expect(terms.y).toBeGreaterThanOrEqual(0);
+  expect(terms.y + terms.height).toBeLessThanOrEqual(barTop);
 });

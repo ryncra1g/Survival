@@ -91,7 +91,7 @@ function ZipArea({ zip }: { zip: string }) {
 function ConsentBox({ id, checked, onChange, children, error }: { id: string; checked: boolean; onChange: (v: boolean) => void; children: React.ReactNode; error?: string }) {
   return (
     <div>
-      <label htmlFor={id} className={`flex items-start gap-3 rounded-lg bg-surface p-3 text-sm scroll-mt-24 scroll-mb-32 ${error ? "border-2 border-warn" : "border border-line"}`}>
+      <label htmlFor={id} className={`flex items-start gap-3 rounded-lg bg-surface px-3 py-2.5 text-sm scroll-mt-24 scroll-mb-32 ${error ? "border-2 border-warn" : "border border-line"}`}>
         <input
           id={id}
           type="checkbox"
@@ -505,8 +505,9 @@ function Teaser({ a }: { a: Answers }) {
   const n = (v: number) => v.toLocaleString("en-US");
   // UX-22: one line in the sticky bar, right above "Build my plan", so it's always seen before building.
   return (
-    <p className="mb-2 text-sm text-muted" data-testid="plan-teaser">
-      <span className="font-semibold text-ink">Almost done.</span> Your {{ 3: "72-hour", 14: "2-week", 30: "30-day", 90: "90-day" }[a.scenarioDays]} plan for {h.people} {h.people === 1 ? "person" : "people"}{a.pets.length ? " + pets" : ""}: <span className="tabular-nums">{n(w.storedGal)} gal</span> of water, <span className="tabular-nums">{n(f.totalKcal)}</span> calories of food, 18+ sections with checklists.
+    // UX-27: one short line that never wraps, so the sticky bar stays small and the Terms box above it shows.
+    <p className="mb-1.5 truncate whitespace-nowrap text-sm text-muted" data-testid="plan-teaser" title={`Your ${{ 3: "72-hour", 14: "2-week", 30: "30-day", 90: "90-day" }[a.scenarioDays]} plan for ${h.people} ${h.people === 1 ? "person" : "people"}`}>
+      <span className="font-semibold text-ink">Almost done:</span> <span className="tabular-nums">{n(w.storedGal)} gal</span> water · <span className="tabular-nums">{n(f.totalKcal)}</span> calories · 18+ sections
     </p>
   );
 }
@@ -646,7 +647,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
       <div className="mt-5 space-y-6">{screen.render({ a, set, err: (f) => (consentErr?.field === f ? consentErr.msg : undefined) })}</div>
       {/* UX-4: the required boxes come right after the questions, before the teaser and the sticky bar. */}
       {(last || editOne) && (
-        <div className="mt-6 space-y-3">
+        <div className="mt-4 space-y-2">
           {screen.id !== "medical" && needsHealthConsent(a) && <HealthConsent a={a} set={set} error={consentErr?.field === "healthConsent" ? consentErr.msg : undefined} />}
           <ConsentBox id="termsConsent" checked={!!a._terms} onChange={(_terms) => set({ _terms })} error={consentErr?.field === "termsConsent" ? consentErr.msg : undefined}>
             I understand this plan is general guidance, not professional advice, and I agree to the{" "}
@@ -655,7 +656,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
         </div>
       )}
       {error && <p role="alert" className="mt-4 text-warn font-medium">{error}</p>}
-      <div className="mt-8 sticky bottom-0 bg-bg py-3">
+      <div className="mt-6 sticky bottom-0 bg-bg pt-2 pb-3">
         {last && (() => {
           const p = parsedAnswers();
           return p.success ? <Teaser a={p.data} /> : null;
