@@ -559,6 +559,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
   const [stagesDone, setStagesDone] = useState<BuildStage[]>([]);
   const heading = useRef<HTMLHeadingElement>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingSave = useRef<(() => void) | null>(null);
 
   // After mount: restore any newer local copy (e.g. answers typed while offline).
   useEffect(() => {
@@ -581,10 +582,20 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
     } catch {}
     if (saveTimer.current) clearTimeout(saveTimer.current);
     if (onGenerate) return;
-    saveTimer.current = setTimeout(() => {
-      fetch(`/api/questionnaire/${id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ answers: draft }) }).catch(() => {});
-    }, 700);
+    const save = () => {
+      saveTimer.current = null;
+      pendingSave.current = null;
+      // keepalive: the save still lands if the page is left right away (Back on the first screen).
+      fetch(`/api/questionnaire/${id}`, { method: "PUT", keepalive: true, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ answers: draft }) }).catch(() => {});
+    };
+    pendingSave.current = save;
+    saveTimer.current = setTimeout(save, 700);
   }, [a, step, id, onGenerate]);
+  /** Send a debounced save now, before leaving the page. */
+  const flushSave = () => {
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    pendingSave.current?.();
+  };
 
   useEffect(() => {
     heading.current?.focus();
@@ -638,16 +649,21 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
     }
   }
 
+  /** DA-6: the screen's own check. A field's message goes under that field and focuses it; returns false if it failed. */
+  function showValidation(): boolean {
+    const msg = screen.valid?.(a);
+    if (!msg) return true;
+    if (screen.field) {
+      setFieldErr(msg);
+      document.getElementById(screen.field)?.focus();
+    } else setError(msg);
+    return false;
+  }
+
   async function next() {
     const missing = missingConsent();
     if (missing) return setConsentErr(missing);
-    const msg = screen.valid?.(a);
-    if (msg && screen.field) {
-      setFieldErr(msg);
-      document.getElementById(screen.field)?.focus();
-      return;
-    }
-    if (msg) return setError(msg);
+    if (!showValidation()) return;
     if (!last) return setStep(cur + 1);
     const parsed = parsedAnswers();
     if (!parsed.success) return setError(ERR.answers);
@@ -695,12 +711,12 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
         <div className="flex gap-3">
         {/* DA-6: Back always works. On the first screen it goes to the front page; answers are already saved. */}
         {cur === 0 && !editOne && !onGenerate ? (
-          <a href="/" className="btn-ghost">Back</a>
+          <a href="/" className="btn-ghost" onClick={flushSave}>Back</a>
         ) : (
           <button type="button" className="btn-ghost" onClick={() => setStep(Math.max(0, cur - 1))} disabled={cur === 0}>Back</button>
         )}
         {editOne ? (
-          <button type="button" className="btn flex-1" onClick={async () => { const missing = missingConsent(); if (missing) return setConsentErr(missing); const msg = screen.valid?.(a); if (msg) return setError(msg); await build(); }}>Update my plan</button>
+          <button type="button" className="btn flex-1" onClick={async () => { const missing = missingConsent(); if (missing) return setConsentErr(missing); if (!showValidation()) return; await build(); }}>Update my plan</button>
         ) : (
           <button type="button" className="btn flex-1" onClick={next}>{last ? "Build my plan" : "Next"}</button>
         )}

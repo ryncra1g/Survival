@@ -111,9 +111,11 @@ export function Dashboard({ overview, priority, buyHref, affiliate = false }: { 
       {/* Start with these 3: the next three things to do, tickable right here */}
       {next.length > 0 && (
         <div className="mt-4" data-testid="next-up">
-          <h3 className="text-lg font-bold">{heading.title}</h3>
+          {/* Only while a step is open: the last one ticked lingers (Undo) under no "Start with these 0". */}
+          {startWith.length > 0 && <h3 className="text-lg font-bold">{heading.title}</h3>}
           {heading.note && <p className="text-sm text-muted" data-testid="can-wait">{heading.note}</p>}
-          {next.some((p) => p.step.buy && !checks[p.step.id]) && <BuyNote affiliate={affiliate} className="mt-1" />}
+          {/* The note only when a Buy button is actually showing (BuyIfNeeded hides it for gear you have). */}
+          {next.some((p) => p.step.buy && !checks[p.step.id] && !checks[gotId(p.step.buy.itemId)]) && <BuyNote affiliate={affiliate} className="mt-1" />}
           <ul className="mt-2 space-y-4">
             {next.map((p) => renderStep(p))}
           </ul>

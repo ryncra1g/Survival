@@ -205,6 +205,10 @@ describe("DESIGN.md T8: errors", () => {
     }
     expect(errorFromThrown(new TypeError("Failed to fetch"), ERR.build)).toBe(ERR.network);
     expect(friendlyError(400, ERR.email, ERR.save)).toBe(ERR.email);
+    // A route's own sentence wins at any status (code review: the resend route's 401 was replaced by "sign-in ended").
+    const resend = "We can't find the email for this plan. Use Save my plan to enter it again.";
+    expect(friendlyError(401, resend, ERR.save)).toBe(resend);
+    expect(friendlyError(401, "Sign in first", ERR.save)).toBe(ERR.signedOut);
   });
   it("routes people reach send plain sentences, not codes", () => {
     const VISITOR = ["app/api/plans/[id]/claim/route.ts", "app/api/auth/login/route.ts", "app/api/auth/resend/route.ts", "app/api/questionnaire/[id]/generate/route.ts", "app/api/account/prefs/route.ts"];

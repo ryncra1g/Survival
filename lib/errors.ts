@@ -15,20 +15,26 @@ export const ERR = {
   botCheck: "The security check didn't finish. Reload the page and try again.",
 } as const;
 
-/** A message for the screen from a failed request: the server's own sentence when it wrote one for people, else a plain fallback. */
+/** Written for people: more than one word, ending like a sentence. Codes ("Not found", "Bad origin", "Invalid") aren't. */
+const isSentence = (m: string | undefined): m is string => !!m && /\s/.test(m) && /[.?)]$/.test(m);
+
+/**
+ * A message for the screen from a failed request. A route's own sentence wins at any status (e.g. the resend route's
+ * 401 "We can't find the email for this plan…"); codes are replaced by a plain sentence for that status.
+ */
 export function friendlyError(status: number, serverMsg: string | undefined, fallback: string): string {
   if (status === 0) return ERR.network;
+  if (status >= 500) return fallback;
+  if (isSentence(serverMsg)) return serverMsg;
   if (status === 401) return ERR.signedOut;
   if (status === 403) return ERR.reload;
   if (status === 404) return ERR.gone;
-  if (status >= 500) return fallback;
-  // 400 / 429: routes write these for people (lib/errors.ts ERR or a full sentence). Anything terse falls back.
-  return serverMsg && /\s/.test(serverMsg) && /[.?]$/.test(serverMsg) ? serverMsg : fallback;
+  return fallback;
 }
 
 /** fetch() rejects with a TypeError ("Failed to fetch") when offline: say so plainly. */
 export function errorFromThrown(e: unknown, fallback: string): string {
   if (e instanceof TypeError) return ERR.network;
   const m = e instanceof Error ? e.message : "";
-  return m && /\s/.test(m) && /[.?]$/.test(m) ? m : fallback;
+  return isSentence(m) ? m : fallback;
 }

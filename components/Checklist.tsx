@@ -1,4 +1,5 @@
 "use client";
+import { gotId } from "./BuyIfNeeded";
 import { useChecks } from "./ChecksContext";
 import { BuyNote, StepExtras, type StepView } from "./StepExtras";
 
@@ -13,7 +14,7 @@ export function Checklist({ items, affiliate = false }: { planId?: string; items
           {done} of {items.length} done{done === items.length ? " ✓" : ""}
         </p>
       )}
-      {items.some((i) => i.buy && !checks[i.id]) && <BuyNote affiliate={affiliate} className="mb-1" />}
+      {items.some((i) => i.buy && !checks[i.id] && !checks[gotId(i.buy.itemId)]) && <BuyNote affiliate={affiliate} className="mb-1" />}
       <ul className="space-y-1">
         {items.map((it) => (
           <li key={it.id}>
