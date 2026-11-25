@@ -1,0 +1,45 @@
+import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { catIn, catOut } from "@/lib/catalog/db";
+import { SEED_CATALOG } from "@/lib/catalog/seed";
+import { CatalogItemSchema, type CatalogItem } from "@/lib/catalog/types";
+
+/**
+ * CAT-01: every catalog field must survive the database. If a new field is added to CatalogItemSchema and not to
+ * the gear_catalog mapping (lib/catalog/db.ts + a migration), the "every field" test fails here, before production.
+ */
+describe("gear_catalog mapping (CAT-01)", () => {
+  it("every seed item round-trips exactly", () => {
+    for (const item of SEED_CATALOG) expect(catOut(catIn(item)), item.id).toStrictEqual(item);
+  });
+
+  it("an item with every schema field set round-trips, and no schema field is left unmapped", () => {
+    const full: CatalogItem = {
+      id: "x-full", category: "Test", name: "Every field", spec: "spec", models: ["A", "B"], priceLow: 10.5, priceHigh: 20, tier: 2, phase: 2,
+      priority: 7, qty: "water_jugs", tags: ["mobility", "!apartment"], essential: true, group: "water", level: "premium", excludes: ["gas-cans"],
+      requiresGroup: "generator", bundle: true, affiliateUrl: "https://example.com/x", notes: "n", active: false, reviewedAt: "2026-11-25",
+    };
+    expect(Object.keys(full).sort()).toEqual(Object.keys(CatalogItemSchema.shape).sort());
+    expect(catOut(catIn(full))).toStrictEqual(full);
+    expect(catOut(catIn({ ...full, qty: 3 })).qty).toBe(3);
+  });
+
+  // Frozen to the migration, not to the growing seed: new seed levels reach production through `npm run seed`
+  // or a new migration, never by editing 0009 (already applied in production). Every 0009 line must still agree
+  // with the seed, and every slot item that existed when 0009 shipped is covered.
+  it("migration 0009's backfill agrees with the seed", () => {
+    const sql = readFileSync("supabase/migrations/0009_catalog_fields.sql", "utf8");
+    const rows = [...sql.matchAll(/^update gear_catalog set (.+) where id = '([^']+)' and level is null and excludes = '\{\}';$/gm)];
+    const got = new Map(rows.map((m) => {
+      const level = /level = '([a-z]+)'/.exec(m[1])?.[1];
+      const ex = /excludes = array\[(.+)\]::text\[\]/.exec(m[1])?.[1];
+      return [m[2], { level, excludes: ex ? ex.split(", ").map((x) => x.replace(/'/g, "")) : undefined }];
+    }));
+    expect(got.size).toBe(27); // the slot items in the seed when 0009 shipped
+    for (const [id, v] of got) {
+      const i = SEED_CATALOG.find((x) => x.id === id);
+      expect(i, id).toBeDefined();
+      expect(v, id).toEqual({ level: i!.level, excludes: i!.excludes });
+    }
+  });
+});

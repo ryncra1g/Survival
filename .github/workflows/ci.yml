@@ -33,3 +33,40 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm test
+
+  # The Supabase store against a real Postgres (docs/review/08_STORE_AUDIT.md). Plain Postgres isn't enough: the
+  # store talks to PostgREST through supabase-js, and migration 0001 creates a Storage bucket. So this starts the
+  # Supabase CLI's local stack (Postgres + PostgREST + Storage), which applies supabase/migrations 0001 onward, in
+  # order, then runs the same store contract as the file store. Local only: no real Supabase project is touched.
+  store-postgres:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      ACCOUNTS_ENABLED: "false"
+      DIY_TIPS_ENABLED: "false"
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.122.1
+      - name: Start the local Supabase stack (applies every migration, in order)
+        run: supabase start
+      - name: List the applied migrations
+        run: supabase migration list --local
+      - name: Store contract on Postgres
+        run: |
+          supabase status -o env > "$RUNNER_TEMP/sb.env"
+          set -a; . "$RUNNER_TEMP/sb.env"; set +a
+          export SUPABASE_TEST_URL="$API_URL"
+          export SUPABASE_TEST_SERVICE_KEY="${SERVICE_ROLE_KEY:-$SECRET_KEY}"
+          export REQUIRE_SUPABASE_TEST=1
+          npx vitest run tests/store.supabase.test.ts
+      - name: Stop the stack
+        if: always()
+        run: supabase stop --no-backup

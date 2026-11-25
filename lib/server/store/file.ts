@@ -5,6 +5,7 @@ import path from "node:path";
 import { SEED_CATALOG } from "@/lib/catalog/seed";
 import type { CatalogItem } from "@/lib/catalog/types";
 import { newId, seal, unseal, type Sealed } from "../crypto";
+import { canonicalCatalogOrder } from "@/lib/catalog/order";
 import type { EmailEventRow, PlanRow, QuestionnaireRow, RuleConstantsRow, Stats, Store, TokenRow, UserRow } from "./types";
 import { AI_COPY_EVENT } from "./types";
 import { DEFAULT_REMINDER_PREFS, type Inventory, type Place, type ReminderPrefs } from "@/lib/accountData";
@@ -34,9 +35,13 @@ const now = () => new Date().toISOString();
 export function clickStats(events: { type: string; provider_id: string | null }[]) {
   const counts = new Map<string, number>();
   for (const e of events) if (e.type === "affiliate_click" && e.provider_id) counts.set(e.provider_id, (counts.get(e.provider_id) ?? 0) + 1);
+  return clickCounts([...counts.entries()].map(([itemId, clicks]) => ({ itemId, clicks })));
+}
+/** Totals and the top 8 items, most clicks first, ties by item id (the same order in every store). */
+export function clickCounts(rows: { itemId: string; clicks: number }[]) {
   return {
-    affiliateClicks: [...counts.values()].reduce((t, n) => t + n, 0),
-    topClicks: [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([itemId, clicks]) => ({ itemId, clicks })),
+    affiliateClicks: rows.reduce((t, r) => t + r.clicks, 0),
+    topClicks: [...rows].sort((a, b) => b.clicks - a.clicks || (a.itemId < b.itemId ? -1 : a.itemId > b.itemId ? 1 : 0)).slice(0, 8),
   };
 }
 
@@ -44,7 +49,8 @@ function load(): DB {
   try {
     return JSON.parse(fs.readFileSync(FILE, "utf8")) as DB;
   } catch {
-    return { users: [], questionnaires: [], plans: [], tokens: [], gear_catalog: SEED_CATALOG, rule_constants: [], email_events: [], rate_limits: {} };
+    // A copy: writes must never change the shared SEED_CATALOG in memory (code review).
+    return { users: [], questionnaires: [], plans: [], tokens: [], gear_catalog: structuredClone(SEED_CATALOG), rule_constants: [], email_events: [], rate_limits: {} };
   }
 }
 function save(db: DB) {
@@ -67,6 +73,7 @@ const pOut = (p: StoredP): PlanRow => {
   const { computed_quantities_json, plan_json, consent_json, inventory_json, ...rest } = p;
   return {
     ...rest,
+    checks: rest.checks ?? {},
     computed_quantities: unseal(computed_quantities_json),
     plan: unseal(plan_json),
     consent: consent_json ? unseal<PlanConsent>(consent_json) : null,
@@ -139,7 +146,8 @@ export const fileStore: Store = {
     return tx((db) => {
       const cutoff = Date.now() - days * 86_400_000;
       const before = db.questionnaires.length;
-      const gone = new Set(db.questionnaires.filter((q) => !q.user_id && Date.parse(q.updated_at) <= cutoff).map((q) => q.id));
+      // Strictly older than the cutoff, like the Supabase store's .lt("updated_at", cutoff).
+      const gone = new Set(db.questionnaires.filter((q) => !q.user_id && Date.parse(q.updated_at) < cutoff).map((q) => q.id));
       db.questionnaires = db.questionnaires.filter((q) => !gone.has(q.id));
       db.plans = db.plans.filter((p) => !gone.has(p.questionnaire_id));
       return before - db.questionnaires.length;
@@ -150,8 +158,9 @@ export const fileStore: Store = {
   },
   async createPlan(p) {
     return tx((db) => {
-      const { computed_quantities, plan, consent, ...rest } = p;
-      const row: StoredP = { ...rest, computed_quantities_json: seal(computed_quantities), plan_json: seal(plan), consent_json: consent ? seal(consent) : null, id: newId(), created_at: now() };
+      // inventory is sealed like in Supabase (it was stored unencrypted under "inventory" and then read back as null).
+      const { computed_quantities, plan, consent, inventory, ...rest } = p;
+      const row: StoredP = { ...rest, computed_quantities_json: seal(computed_quantities), plan_json: seal(plan), consent_json: consent ? seal(consent) : null, inventory_json: inventory ? seal(inventory) : null, id: newId(), created_at: now() };
       db.plans.push(row);
       return pOut(row);
     });
@@ -189,10 +198,12 @@ export const fileStore: Store = {
     });
   },
   async listPlans(userId) {
+    // Newest first; plans made in the same millisecond keep creation order (later first), like Supabase's microseconds.
     return load()
-      .plans.filter((p) => p.user_id === userId)
-      .sort((a, b) => b.created_at.localeCompare(a.created_at))
-      .map(pOut);
+      .plans.map((p, i) => ({ p, i }))
+      .filter(({ p }) => p.user_id === userId)
+      .sort((a, b) => b.p.created_at.localeCompare(a.p.created_at) || b.i - a.i)
+      .map(({ p }) => pOut(p));
   },
   async createToken(t) {
     tx((db) => void db.tokens.push(t));
@@ -202,11 +213,11 @@ export const fileStore: Store = {
       const t = db.tokens.find((x) => x.token_hash === hash);
       if (!t || t.used_at || new Date(t.expires_at) < new Date()) return null;
       t.used_at = now();
-      return t;
+      return { ...t };
     });
   },
   async listCatalog() {
-    return load().gear_catalog;
+    return canonicalCatalogOrder(load().gear_catalog);
   },
   async upsertCatalogItem(item) {
     tx((db) => {
@@ -236,7 +247,7 @@ export const fileStore: Store = {
     return load().email_events.some((e) => e.user_id === userId && e.type === type);
   },
   async listEmailEvents(userId) {
-    return load().email_events.filter((e) => e.user_id === userId);
+    return load().email_events.filter((e) => e.user_id === userId).sort((a, b) => a.sent_at.localeCompare(b.sent_at));
   },
   async rateLimit(key, limit, windowSec) {
     return tx((db) => {

@@ -4,8 +4,9 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { catIn, catOut, type CatalogDb } from "@/lib/catalog/db";
 import { env } from "../env";
 import { seal, unseal, type Sealed } from "../crypto";
-import { clickStats } from "./file";
-import type { EmailEventRow, PlanRow, QuestionnaireRow, RuleConstantsRow, Stats, Store, UserRow } from "./types";
+import { clickCounts } from "./file";
+import { canonicalCatalogOrder } from "@/lib/catalog/order";
+import type { EmailEventRow, PlanRow, QuestionnaireRow, RuleConstantsRow, Stats, Store, TokenRow, UserRow } from "./types";
 import { AI_COPY_EVENT } from "./types";
 import { DEFAULT_REMINDER_PREFS, type Inventory, type Place, type ReminderPrefs } from "@/lib/accountData";
 
@@ -26,14 +27,27 @@ type QDb = Omit<QuestionnaireRow, "answers"> & { answers_json: Sealed };
 type PDb = Omit<PlanRow, "computed_quantities" | "plan" | "consent" | "inventory"> & { computed_quantities_json: Sealed; plan_json: Sealed; consent_json?: Sealed | null; inventory_json?: Sealed | null };
 /** Users are read without their sealed columns (places_json, migration 0007; reminder_prefs, 0008). */
 const USER_COLS = "id,email,consent_at,double_opt_in_at,unsubscribed_at,followups_opt_in,created_at";
-const qOut = ({ answers_json, ...r }: QDb): QuestionnaireRow => ({ ...r, answers: unseal(answers_json) });
+/**
+ * Postgres returns timestamptz as "2026-11-25T15:59:32.123456+00:00"; the app (and the file store) use ISO strings
+ * ("2026-11-25T15:59:32.123Z"). Every timestamp leaves this store in that one format (docs/review/08_STORE_AUDIT.md).
+ */
+const iso = (v: string | null): string | null => (v ? new Date(v).toISOString() : null);
+const isoReq = (v: string): string => new Date(v).toISOString();
+const uOut = (r: UserRow): UserRow => ({ ...r, consent_at: isoReq(r.consent_at), double_opt_in_at: iso(r.double_opt_in_at), unsubscribed_at: iso(r.unsubscribed_at), created_at: isoReq(r.created_at) });
+const qOut = ({ answers_json, ...r }: QDb): QuestionnaireRow => ({ ...r, created_at: isoReq(r.created_at), updated_at: isoReq(r.updated_at), answers: unseal(answers_json) });
 const pOut = ({ computed_quantities_json, plan_json, consent_json, inventory_json, ...r }: PDb): PlanRow => ({
   ...r,
+  emailed_at: iso(r.emailed_at),
+  created_at: isoReq(r.created_at),
+  checks: r.checks ?? {},
   computed_quantities: unseal(computed_quantities_json),
   plan: unseal(plan_json),
   consent: consent_json ? unseal<PlanConsent>(consent_json) : null,
   inventory: inventory_json ? unseal<Inventory>(inventory_json) : null,
 });
+const tOut = (r: TokenRow): TokenRow => ({ ...r, expires_at: isoReq(r.expires_at), used_at: iso(r.used_at) });
+const eOut = (r: EmailEventRow): EmailEventRow => ({ ...r, sent_at: isoReq(r.sent_at) });
+const rcOut = (r: RuleConstantsRow): RuleConstantsRow => ({ ...r, created_at: isoReq(r.created_at) });
 
 async function count(table: string, filter?: (q: ReturnType<ReturnType<SupabaseClient["from"]>["select"]>) => unknown): Promise<number> {
   let q = db().from(table).select("*", { count: "exact", head: true });
@@ -45,19 +59,21 @@ async function count(table: string, filter?: (q: ReturnType<ReturnType<SupabaseC
 
 export const supabaseStore: Store = {
   async getUserByEmail(email) {
-    return must(await db().from("users").select(USER_COLS).eq("email", email.toLowerCase()).maybeSingle()) as UserRow | null;
+    const r = must(await db().from("users").select(USER_COLS).eq("email", email.toLowerCase()).maybeSingle()) as UserRow | null;
+    return r ? uOut(r) : null;
   },
   async getUser(id) {
-    return must(await db().from("users").select(USER_COLS).eq("id", id).maybeSingle()) as UserRow | null;
+    const r = must(await db().from("users").select(USER_COLS).eq("id", id).maybeSingle()) as UserRow | null;
+    return r ? uOut(r) : null;
   },
   async createUser(u) {
-    return must(await db().from("users").insert({ ...u, email: u.email.toLowerCase() }).select(USER_COLS).single()) as UserRow;
+    return uOut(must(await db().from("users").insert({ ...u, email: u.email.toLowerCase() }).select(USER_COLS).single()) as UserRow);
   },
   async updateUser(id, patch) {
     must(await db().from("users").update(patch).eq("id", id));
   },
   async listUsers() {
-    return must(await db().from("users").select(USER_COLS)) as UserRow[];
+    return (must(await db().from("users").select(USER_COLS)) as UserRow[]).map(uOut);
   },
   async deleteUserCascade(id) {
     // FK ON DELETE CASCADE removes questionnaires, plans, tokens and email events; storage objects removed here.
@@ -89,8 +105,10 @@ export const supabaseStore: Store = {
   async listQuestionnaires(userId) {
     return (must(await db().from("questionnaires").select("*").eq("user_id", userId)) as QDb[]).map(qOut);
   },
-  async createPlan({ computed_quantities, plan, consent, ...p }) {
-    return pOut(must(await db().from("plans").insert({ ...p, computed_quantities_json: seal(computed_quantities), plan_json: seal(plan), consent_json: consent ? seal(consent) : null }).select().single()) as PDb);
+  async createPlan({ computed_quantities, plan, consent, inventory, ...p }) {
+    // inventory is a sealed column (0006); passing it through as "inventory" would fail (no such column).
+    const row = { ...p, computed_quantities_json: seal(computed_quantities), plan_json: seal(plan), consent_json: consent ? seal(consent) : null, inventory_json: inventory ? seal(inventory) : null };
+    return pOut(must(await db().from("plans").insert(row).select().single()) as PDb);
   },
   async getPlan(id) {
     const r = must(await db().from("plans").select("*").eq("id", id).maybeSingle()) as PDb | null;
@@ -130,10 +148,11 @@ export const supabaseStore: Store = {
       .gt("expires_at", new Date().toISOString())
       .select()
       .maybeSingle();
-    return must(r);
+    const t = must(r) as TokenRow | null;
+    return t ? tOut(t) : null;
   },
   async listCatalog() {
-    return (must(await db().from("gear_catalog").select("*").order("phase").order("priority")) as CatalogDb[]).map(catOut);
+    return canonicalCatalogOrder((must(await db().from("gear_catalog").select("*")) as CatalogDb[]).map(catOut));
   },
   async upsertCatalogItem(item) {
     must(await db().from("gear_catalog").upsert(catIn(item)));
@@ -142,10 +161,11 @@ export const supabaseStore: Store = {
     must(await db().from("gear_catalog").delete().eq("id", id));
   },
   async latestRuleConstants() {
-    return must(await db().from("rule_constants").select("*").order("version", { ascending: false }).limit(1).maybeSingle());
+    const r = must(await db().from("rule_constants").select("*").order("version", { ascending: false }).limit(1).maybeSingle()) as RuleConstantsRow | null;
+    return r ? rcOut(r) : null;
   },
   async saveRuleConstants(overrides, by) {
-    return must(await db().from("rule_constants").insert({ overrides, created_by: by }).select().single()) as RuleConstantsRow;
+    return rcOut(must(await db().from("rule_constants").insert({ overrides, created_by: by }).select().single()) as RuleConstantsRow);
   },
   async addEmailEvent(e) {
     must(await db().from("email_events").insert(e));
@@ -154,7 +174,7 @@ export const supabaseStore: Store = {
     return (await count("email_events", (q) => q.eq("user_id", userId).eq("type", type))) > 0;
   },
   async listEmailEvents(userId) {
-    return (must(await db().from("email_events").select("*").eq("user_id", userId)) ?? []) as EmailEventRow[];
+    return ((must(await db().from("email_events").select("*").eq("user_id", userId).order("sent_at")) ?? []) as EmailEventRow[]).map(eOut);
   },
   async rateLimit(key, limit, windowSec) {
     const r = await db().rpc("rate_limit_hit", { p_key: key, p_limit: limit, p_window_seconds: windowSec });
@@ -162,7 +182,8 @@ export const supabaseStore: Store = {
     return r.data as boolean;
   },
   async stats(): Promise<Stats> {
-    const clicks = (must(await db().from("email_events").select("type, provider_id").eq("type", "affiliate_click").limit(50_000)) ?? []) as { type: string; provider_id: string | null }[];
+    // Counted in SQL (0010): PostgREST returns at most 1000 rows per request, so fetching click rows undercounted.
+    const clickRows = (must(await db().rpc("affiliate_click_counts")) ?? []) as { item_id: string; clicks: number | string }[];
     const [signups, confirmed, started, completed, plans, sent, opens, unsub, withEmail, aiCopies] = await Promise.all([
       count("users"),
       count("users", (q) => q.not("double_opt_in_at", "is", null)),
@@ -175,6 +196,6 @@ export const supabaseStore: Store = {
       count("plans", (q) => q.not("user_id", "is", null)),
       count("email_events", (q) => q.eq("type", AI_COPY_EVENT)),
     ]);
-    return { signups, confirmed, questionnairesStarted: started, questionnairesCompleted: completed, plansGenerated: plans, emailsSent: sent, emailOpens: opens, unsubscribed: unsub, plansWithEmail: withEmail, aiCopies, ...clickStats(clicks) };
+    return { signups, confirmed, questionnairesStarted: started, questionnairesCompleted: completed, plansGenerated: plans, emailsSent: sent, emailOpens: opens, unsubscribed: unsub, plansWithEmail: withEmail, aiCopies, ...clickCounts(clickRows.map((r) => ({ itemId: r.item_id, clicks: Number(r.clicks) }))) };
   },
 };
