@@ -12,7 +12,8 @@ const O = { Origin: "http://localhost:3100" };
 async function amberButtons(page: Page): Promise<string[]> {
   return page.evaluate(() =>
     [...document.querySelectorAll<HTMLElement>(".btn")]
-      .filter((el) => el.classList.contains("btn") && el.offsetParent !== null && getComputedStyle(el).visibility !== "hidden")
+      // Visible only: the skip link is a .btn too, but sr-only (1px) until it gets keyboard focus.
+      .filter((el) => el.classList.contains("btn") && el.checkVisibility({ visibilityProperty: true }) && el.getBoundingClientRect().width > 2)
       .map((el) => el.innerText.trim()),
   );
 }
@@ -82,10 +83,11 @@ test("design: the questionnaire, the plan and its error and empty states", async
     const amber = await page.evaluate(() =>
       [...document.querySelectorAll<HTMLElement>(".btn")].filter((el) => {
         const r = el.getBoundingClientRect();
-        return el.offsetParent !== null && r.bottom > 0 && r.top < innerHeight;
-      }).length,
+        // checkVisibility: closed <details> content keeps its layout in Chromium but isn't drawn.
+        return el.checkVisibility({ visibilityProperty: true }) && r.width > 2 && r.bottom > 0 && r.top < innerHeight;
+      }).map((el) => el.innerText.trim()),
     );
-    expect(amber, `plan at y=${y}`).toBeLessThanOrEqual(1);
+    expect(amber.length, `plan at y=${y}: ${JSON.stringify(amber)}`).toBeLessThanOrEqual(1);
   }
   // Open every section so every callout and "Don't do this" list is on screen for the color check.
   await page.evaluate(() => document.querySelectorAll("main details").forEach((d) => ((d as HTMLDetailsElement).open = true)));
