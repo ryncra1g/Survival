@@ -4,6 +4,8 @@ Mobile-first Next.js 16 app: a household answers ~10 screens, gets an emergency 
 optionally emails it, and can buy gear through tracked affiliate links. See README.md for architecture.
 
 ## Non-negotiable rules
+- **Read docs/DESIGN.md before any UI or copy change.** Calm, trust and ease rules for every screen;
+  `tests/design.test.ts` and `e2e/design.spec.ts` enforce what a machine can check, and `/ux-pass` scores the rest.
 - **Every quantity comes from `lib/rules/engine.ts` + `lib/rules/constants.ts`.** The LLM layer
   (`lib/llm/writer.ts`) only rewords section summaries and may reference numbers only via `{{tokens}}`.
   Never let model output set or change a number.
