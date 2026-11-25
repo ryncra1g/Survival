@@ -54,7 +54,32 @@ export const SHOTS: Shot[] = [
       await c.page.getByTestId("build-progress").waitFor();
     },
   },
+  {
+    // An error state: the plan build fails on the server.
+    name: "error-build",
+    server: "off",
+    run: async (c) => {
+      await c.page.route("**/generate", (r) => r.fulfill({ status: 200, contentType: "application/x-ndjson", body: JSON.stringify({ error: "Couldn't build the plan. Try again." }) + "\n" }));
+      await openQuestion(c.page, c.base, 99);
+      await c.page.locator("#termsConsent").check();
+      if (await c.page.locator("#healthConsent").isVisible()) await c.page.locator("#healthConsent").check();
+      await c.page.getByRole("button", { name: "Build my plan" }).click();
+      // Not getByRole("alert"): Next's route announcer also has that role.
+      const msg = c.page.locator("main [role=alert]").first();
+      await msg.waitFor();
+      await msg.evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 300));
+    },
+  },
   { name: "plan-top", server: "off", run: (c) => plan(c) },
+  {
+    // "This week": the dashboard's next steps, scrolled so the list fills the screen.
+    name: "plan-this-week",
+    server: "off",
+    run: async (c) => {
+      await plan(c);
+      await c.page.getByTestId("dashboard").evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 70));
+    },
+  },
   { name: "plan-ch-do-now", server: "off", run: async (c) => { await plan(c); await scrollTo(c.page, "#ch-do-now"); } },
   { name: "plan-ch-supplies", server: "off", run: async (c) => { await plan(c); await scrollTo(c.page, "#ch-supplies"); } },
   { name: "plan-ch-power-heat", server: "off", run: async (c) => { await plan(c); await scrollTo(c.page, "#ch-power-heat"); } },

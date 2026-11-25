@@ -65,6 +65,8 @@ export async function openQuestion(page: Page, base: string, step: number, answe
   await page.goto(`${base}/`);
   await page.getByRole("button", { name: "Build my free plan" }).first().click();
   await page.waitForURL(/\/q\//);
+  // Wait for the questionnaire to mount first: its mount autosave would otherwise overwrite the draft written below.
+  await page.locator("main h1").first().waitFor();
   await page.evaluate(([a, s]) => localStorage.setItem(`rp_q_${location.pathname.split("/q/")[1]}`, JSON.stringify({ ...(a as object), _step: s })), [answers, step] as const);
   await page.reload();
   await page.locator("h1").first().waitFor();
