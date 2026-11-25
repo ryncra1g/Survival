@@ -283,7 +283,8 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   const prof = cp.profile;
   const w = cp.water;
   // Owner decision (PR #16): the light-container wording applies unless the person chose a heavy container in Compare.
-  const lightWater = w.liftable && !cp.budget.picks.some((p) => p.item.group === "water" && (p.item.fullWeightLb ?? 0) > c.water.mobilityMaxLb);
+  const heavyWaterLb = cp.budget.picks.find((p) => p.item.group === "water" && (p.item.fullWeightLb ?? 0) > c.water.mobilityMaxLb)?.item.fullWeightLb ?? 0;
+  const lightWater = w.liftable && !heavyWaterLb;
   const pw = cp.power;
   const winter = cp.flags.winter;
   const apt = cp.flags.apartment;
@@ -723,6 +724,8 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
         ],
       },
       ...(lightWater ? [{ type: "paragraph" as const, text: `Containers you can lift: ${liftable(c)} jugs or cases, about ${liftableLb(c)} lb each when full. Larger jugs are too heavy to lift safely. ${KEEP_WATER_CLOSE}` }] : []),
+      // Owner decision (PR #16): a mobility household that chose heavy containers in Compare still hears where to keep them.
+      ...(w.liftable && !lightWater ? [{ type: "paragraph" as const, text: `The containers you chose are heavy when full (about ${n(heavyWaterLb)} lb each). Store them where you will use the water. ${KEEP_WATER_CLOSE}` }] : []),
       ...(a.waterSource === "well"
         ? [{ type: "callout" as const, tone: "warning" as const, title: "Well water needs power", text: "Your well pump stops when the power does. Powering the pump (generator or battery sized for its starting watts, through an electrician-installed transfer switch) is a top priority. Keep stored water regardless." }]
         : []),
