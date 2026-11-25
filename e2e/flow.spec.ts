@@ -254,7 +254,7 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
 
   await page.goto("/account");
   await expect(page.getByText("family@example.com")).toBeVisible();
-  await page.getByRole("button", { name: "Edit answers & regenerate" }).click();
+  await page.getByRole("button", { name: "Change my answers" }).click();
   await expect(page).toHaveURL(/\/q\//);
   await expect(page.getByLabel("ZIP code")).toHaveValue("11746");
 

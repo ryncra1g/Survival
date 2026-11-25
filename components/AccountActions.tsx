@@ -15,7 +15,7 @@ export function EditAnswersButton() {
       const j = (await r.json()) as { questionnaireId?: string };
       if (j.questionnaireId) router.push(`/q/${j.questionnaireId}`);
       else setBusy(false);
-    }}>{busy ? "Opening…" : "Edit answers & regenerate"}</button>
+    }}>{busy ? "Opening…" : "Change my answers"}</button>
   );
 }
 
