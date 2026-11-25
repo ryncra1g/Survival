@@ -60,7 +60,7 @@ export function CompareOptions({
     <div className="mt-2" data-testid="compare-options">
       {current && (
         <p className="text-sm">
-          <span className="rounded border border-brand bg-brand-soft px-1.5 py-0.5 text-xs font-semibold" aria-current="true">✓ {LABEL[current.level]}</span>{" "}
+          <span className="rounded border border-brand bg-brand-soft px-1.5 py-0.5 text-xs font-semibold" aria-current="true">{/* DA-15: food names already start with the label ("Recommended mix: …"); say it once. */}{current.name.startsWith(LABEL[current.level]) ? "✓ Your pick" : `✓ ${LABEL[current.level]}`}</span>{" "}
           <span className="text-muted">{current.name}</span>
         </p>
       )}
