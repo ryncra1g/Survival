@@ -4,6 +4,8 @@ export const usd = (v: number) => "$" + Math.round(v).toLocaleString("en-US");
 export const usdRange = (lo: number, hi: number) => (lo === hi ? usd(lo) : `${usd(lo)}–${usd(hi)}`);
 export const range = (lo: number, hi: number, dp = 1) => (lo === hi ? n(lo, dp) : `${n(lo, dp)}–${n(hi, dp)}`);
 export const plural = (count: number, one: string, many = one + "s") => `${n(count)} ${count === 1 ? one : many}`;
+/** DA-12: "Nov 25, 2026", not "2026-11-25". UTC, so the server and browser agree. */
+export const shortDate = (iso: string) => new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 /** Mid-sentence item name: "Carbon monoxide alarm" → "carbon monoxide alarm"; "NOAA weather radio", "AA/AAA battery stock" keep their capitals. */
 export const lowerFirst = (s: string) => (/^[A-Z][a-z]/.test(s) ? s.charAt(0).toLowerCase() + s.slice(1) : s);
 

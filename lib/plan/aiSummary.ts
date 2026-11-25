@@ -12,7 +12,7 @@ import type { Block, PlanDocument } from "./document";
  * Ground rules are word for word from the owner's brief (docs/FACTCHECK.md).
  */
 export const AI_GROUND_RULES = [
-  "Use these amounts exactly; don't recalculate them.",
+  "Use these amounts as given; don't recalculate them.",
   "Follow the product label and CDC/EPA guidance for water treatment; never give dosages.",
   "Never suggest grills, generators or fuel-burning heaters indoors or in a garage.",
   "Official evacuation orders override this plan.",

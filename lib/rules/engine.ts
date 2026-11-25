@@ -98,8 +98,9 @@ export function computeWater(a: Answers, c: RuleConstants): WaterResult {
   } else {
     jugs = jugs7;
   }
-  const breakdown = [{ label: `${a.adults} adult(s)`, galPerDay: round(adults) }];
-  if (kids) breakdown.push({ label: `${a.childrenAges.length} child(ren)`, galPerDay: round(kids) });
+  // DA-13: labels only ("2 adults", "1 child"); the amounts are unchanged.
+  const breakdown = [{ label: `${a.adults} ${a.adults === 1 ? "adult" : "adults"}`, galPerDay: round(adults) }];
+  if (kids) breakdown.push({ label: `${a.childrenAges.length} ${a.childrenAges.length === 1 ? "child" : "children"}`, galPerDay: round(kids) });
   if (pets) breakdown.push({ label: "Pets", galPerDay: round(pets) });
   return {
     dailyGal,

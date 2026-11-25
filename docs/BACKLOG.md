@@ -75,6 +75,8 @@ Entry types: **Owner request** (Ryan asked for it), **Assistant recommendation**
 | UX-26 | "Later" names both a shopping phase and a Priority-list stage | P3 | **Suggested** (UX pass 2026-11-24-2) · **Fixed per UX pass 2026-11-25** (PR #16, not merged) |
 | UX-27 | Taller sticky bar (with the "Almost done" line) starts with the Terms box under it at 375×812 | P3 | **Suggested** (UX pass 2026-11-25) |
 | UX-28 | Opt-in 55-gallon drum choice in Compare for households with mobility needs (non-default, with the heavy warning) | P3 | **Suggested** (owner: later, Nov 25 2026) |
+| UX-29 | Q2 wording: "Is anyone elderly or has limited mobility?" isn't grammatical (design audit DA-14) | P3 | **Suggested** (design audit 2026-11-25) |
+| UX-30 | Inventory page: 31 rows of status, quantity and date at once; show only what you mark (design audit DA-17) | P3 | **Suggested** (design audit 2026-11-25) |
 
 ### PR merge queue (each needs the owner's OK)
 #3 Windows test fixes → #4 Buy links without a tag → #5 dashboard redesign → `claude/headline-copy` (no PR yet).
@@ -523,7 +525,7 @@ UX-7 and UX-14 are deferred (owner). New, **Suggested**:
     households for now; see UX-28.
 
 
-### CAT-01 The Supabase catalog drops gear levels (found Nov 25, 2026; Suggested)
+### CAT-01 The Supabase catalog drops gear levels (found Nov 25, 2026; **Fixed** in PR #17, merged: migrations 0009 and 0010, owner applies them)
 
 `lib/catalog/db.ts` (`catOut` / `catIn`) and the `gear_catalog` table have no columns for `level` or `excludes`. In
 production (Supabase store) every catalog item therefore loads without its Essential / Standard / Premium level, so
@@ -531,3 +533,12 @@ the à la carte gear levels and Compare options don't work as they do in demo mo
 catalog). This predates PR #16. Fix: a migration adding `level` and `excludes` columns, the mappings in `db.ts`,
 and a round-trip test; the owner applies the migration. (The PR #16 weight rule for households with mobility needs
 deliberately uses only fields the table already keeps: the item's qty key and the rules constants.)
+
+### Design audit 2026-11-25 (docs/ux/DESIGN_AUDIT_2026-11-25.md)
+Scored against docs/DESIGN.md. DA-1 to DA-13, DA-15 and DA-16 are fixed on branch claude/design-pass. Two are left for the
+owner:
+- **UX-29** (DA-14, P3, Suggested): Q2 asks "Is anyone elderly or has limited mobility?". Suggested: "Is anyone older or
+  less mobile?" The label feeds docs/PATHWAYS.md and the e2e tests by name, so it's the owner's call.
+- **UX-30** (DA-17, P3, Suggested): the accounts-track inventory page shows every item with a status, quantity and date.
+  Suggested: list items as plain rows and open the details only for the ones marked Have, Bought or Low. A one-line
+  intro ("You only need to change what you already have…") was added for now.

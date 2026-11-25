@@ -8,7 +8,8 @@ Every new safety-relevant sentence added in this run (water, food, heat, power, 
 
 | ID | File | Exact text | Official source | Status |
 |---|---|---|---|---|
-| AI-1 | `lib/plan/aiSummary.ts` | Use these amounts exactly; don't recalculate them. | (product rule: amounts come from lib/rules/engine.ts; no external source needed) | needs owner review |
+| AI-1 | `lib/plan/aiSummary.ts` | Use these amounts exactly; don't recalculate them. (Replaced by AI-1a in the design pass.) | (product rule: amounts come from lib/rules/engine.ts; no external source needed) | needs owner review |
+| AI-1a | `lib/plan/aiSummary.ts` | Use these amounts as given; don't recalculate them. (Design pass, audit DA-11: docs/DESIGN.md T9 bans "exact" in product copy, because amounts are planning estimates. Same instruction to the assistant, without a precision claim. The brief A6 had "exactly".) | (product rule: amounts come from lib/rules/engine.ts; no external source needed) | needs owner review |
 | AI-2 | `lib/plan/aiSummary.ts` | Follow the product label and CDC/EPA guidance for water treatment; never give dosages. | https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water · https://www.cdc.gov/natural-disasters/response/what-to-do-protect-yourself-during-a-power-outage.html | needs owner review |
 | AI-3 | `lib/plan/aiSummary.ts` | Never suggest grills, generators or fuel-burning heaters indoors or in a garage. (Review 6: "heaters" became "fuel-burning heaters"; the brief's wording would also forbid electric heaters.) | https://www.cdc.gov/carbon-monoxide/about/index.html | needs owner review |
 | AI-4 | `lib/plan/aiSummary.ts` | Official evacuation orders override this plan. | https://www.ready.gov/evacuation | needs owner review |

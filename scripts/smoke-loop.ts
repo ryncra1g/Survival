@@ -48,7 +48,7 @@ async function run(i: number): Promise<R> {
   r = await req("planPage", `/plan/${pid}`);
   const html = await r.text();
   if (r.status !== 200) fail(`plan page ${r.status}`);
-  if (!html.includes('data-testid="dashboard"') || !html.includes(">Next up<")) fail("no dashboard / Next up");
+  if (!html.includes('data-testid="dashboard"') || !html.includes('data-testid="next-up"')) fail("no dashboard / Start with these 3");
   if (!html.includes("Save my plan")) fail("no email box");
   res.info.planHtmlKB = Math.round(html.length / 1024);
   res.info.sections = (html.match(/<details[^>]*data-section/g) ?? []).length;

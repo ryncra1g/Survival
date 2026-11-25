@@ -1,3 +1,4 @@
+import { shortDate } from "@/lib/plan/format";
 import Link from "next/link";
 import { DeleteData, EditAnswersButton, FollowupToggle, LoginForm, SignOut } from "@/components/AccountActions";
 import type { PlanDocument } from "@/lib/plan/document";
@@ -39,7 +40,7 @@ export async function AccountActions({ searchParams }: { searchParams: Record<st
             {plans.map((p) => (
               <li key={p.id} className="py-2 flex justify-between gap-3">
                 <Link href={`/plan/${p.id}`} className="tap underline">{(p.plan as PlanDocument).subtitle}</Link>
-                <span className="text-sm text-muted shrink-0">{p.created_at.slice(0, 10)}</span>
+                <span className="text-sm text-muted shrink-0">{shortDate(p.created_at)}</span>
               </li>
             ))}
           </ul>

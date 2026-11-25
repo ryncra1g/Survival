@@ -125,7 +125,7 @@ function block(b: Block, doc: PlanDocument, diyTips: boolean, products: Products
           }
           if (it.levels?.length && !b.compact) {
             const c = compareOptions(it.levels, doc.overview?.budget);
-            const rows = [...c.lower.map((r) => ["Lower-cost", r] as const), ...c.upgrade.map((r) => ["Upgrade", r] as const), ...c.alternatives.map((r) => ["Other", r] as const)];
+            const rows = [...c.lower.map((r) => ["Costs less", r] as const), ...c.upgrade.map((r) => ["Costs more", r] as const), ...c.alternatives.map((r) => ["Other", r] as const)];
             lines.push(`  - Compare options: current ${c.current ? `${LEVEL_LABEL[c.current.level]} (${c.current.name}, ${c.current.price})` : "—"}`);
             for (const [k, r] of rows) lines.push(`    - ${k}: ${LEVEL_LABEL[r.level]}, ${r.name}, ${r.price} · ${r.diff} · new total ${r.newTotal}${r.over ? ` · ${r.over}` : ""}`);
           }

@@ -55,7 +55,7 @@ describe("copy never promises a shareable link or cross-device saving without an
 
 /**
  * UX-2: amounts are planning estimates (Sources, plan footer), so no user-facing text calls them exact.
- * The Copy for AI ground rule "Use these amounts exactly" is an instruction to the assistant (owner brief A6), not a claim.
+ * The Copy for AI ground rule said "Use these amounts exactly" (owner brief A6); since the design pass it says "as given" (FACTCHECK AI-1a).
  */
 const EXACT_PROMISE = /\bexact(ly)?\s+(amounts?|water|food|fuel|how much|food list|quantities)\b/i;
 describe("copy never calls the amounts exact (UX-2)", () => {
@@ -100,10 +100,11 @@ describe("one name per thing (UX-10)", () => {
   });
 });
 
-describe("one screen count (UX-20)", () => {
-  it("the front page and the start page both say About 10 quick screens", () => {
-    for (const f of ["components/Landing.tsx", "app/start/page.tsx"]) expect(readFileSync(f, "utf8"), f).toContain("About 10 quick screens");
-    const all = ROOTS.flatMap(files).flatMap((f) => uncommented(readFileSync(f, "utf8")).filter((l) => /\b\d+ quick (questions|screens)\b/i.test(l) && !/About 10 quick screens/.test(l)).map((l) => `${f}: ${l.trim()}`));
+describe("one way to say how long it takes (UX-20, design audit DA-9)", () => {
+  it("the front page and the start page say About 5 minutes, like the questionnaire's 'About N min left'", () => {
+    for (const f of ["components/Landing.tsx", "app/start/page.tsx"]) expect(readFileSync(f, "utf8"), f).toContain("About 5 minutes");
+    expect(readFileSync("components/Questionnaire.tsx", "utf8")).toMatch(/min left/);
+    const all = ROOTS.flatMap(files).flatMap((f) => uncommented(readFileSync(f, "utf8")).filter((l) => /\b\d+ quick (questions|screens)\b/i.test(l)).map((l) => `${f}: ${l.trim()}`));
     expect(all).toEqual([]);
   });
 });

@@ -81,6 +81,18 @@ Check each screen against:
 
 Every finding needs evidence you saw: a screenshot, a metric or a quoted line. Don't report guesses.
 
+## 4b. Design score (against docs/DESIGN.md)
+Read `docs/DESIGN.md` first. Score **every captured screen** 1–5 on **Calm, Trust, Ease and Clarity** with its rubric,
+from the 375 light screenshot (check dark and 768 too), with one line of evidence per score. Write the scores as a
+table with exactly this header, so the script can read it:
+```
+| # | Screen | Calm | Trust | Ease | Clarity |
+```
+Then run `npx tsx scripts/design-scores.ts docs/ux/UX_PASS_<date>.md`. It prints the average per quality and every
+screen under 4, and exits 1 if any score is under 4. **Every score under 4 is a finding** (P1 if it misleads, alarms
+or dead-ends; P2 otherwise), with the DESIGN.md rule it breaks. Compare the averages with the newest
+`docs/ux/DESIGN_AUDIT_*.md` or earlier pass, and say which went down.
+
 ## 5. Report: `docs/ux/UX_PASS_<date>.md`
 ```
 # UX pass <date>
@@ -93,6 +105,7 @@ Build <short sha> on <branch>; brand set in shell; flags off (accounts screens f
 - What's wrong: …   - Why it matters: …   - Suggested fix: …
 ### P2: friction        ### P3: polish
 ## Persona walkthroughs   table: household · taps · screens · plan words / PDF pages · first 3 steps fit? · notes
+## Design scores         the 4b table, the averages per quality, every score under 4 (DESIGN.md rule broken)
 ## Automated checks       axe totals by rule; Lighthouse table; sideways scroll; tap targets
 ## Compare with last pass  Fixed / New / Still open, by UX-n (first pass: say so)
 ## Questions only real users can answer   5–10 short items

@@ -1,3 +1,4 @@
+import { shortDate } from "@/lib/plan/format";
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { PlanDocument } from "@/lib/plan/document";
@@ -25,7 +26,7 @@ export default async function MyPlans() {
             <li key={p.id} className="p-4 flex flex-wrap items-center justify-between gap-2">
               <span>
                 <Link href={`/plan/${p.id}`} className="font-semibold underline">{(p.plan as PlanDocument).subtitle}</Link>
-                <span className="block text-sm text-muted">{p.created_at.slice(0, 10)}</span>
+                <span className="block text-sm text-muted">{shortDate(p.created_at)}</span>
               </span>
               <Link href={`/plan/${p.id}/inventory`} className="btn-ghost border border-line text-sm px-3 min-h-[44px] inline-flex items-center">Inventory</Link>
             </li>

@@ -2,7 +2,8 @@ import type { LevelOption, Overview } from "@/lib/plan/document";
 import { compareOptions, LEVEL_LABEL as LABEL, type CompareRow, GEAR_TOTAL_LABEL, gearTotal, heavyWarning } from "@/lib/plan/compare";
 
 /**
- * D3 / GEAR-01: one main pick per slot, plus "Compare options": Lower-cost, Upgrade and Other choices,
+ * D3 / GEAR-01: one main pick per slot, plus "Compare options": Costs less, Costs more and Other choices (DA-5: plain
+ * names, not an upsell),
  * each with the price difference and the plan's new total. Switching is a plain form POST to
  * /api/plans/<id>/choose (works without JavaScript); the demo passes `onChoose`. Ranking never uses commission.
  */
@@ -59,23 +60,24 @@ export function CompareOptions({
     <div className="mt-2" data-testid="compare-options">
       {current && (
         <p className="text-sm">
-          <span className="rounded border border-brand bg-brand-soft px-1.5 py-0.5 text-xs font-semibold" aria-current="true">✓ {LABEL[current.level]}</span>{" "}
+          <span className="rounded border border-brand bg-brand-soft px-1.5 py-0.5 text-xs font-semibold" aria-current="true">{/* DA-15: food names already start with the label ("Recommended mix: …"); say it once. */}{current.name.startsWith(LABEL[current.level]) ? "✓ Your pick" : `✓ ${LABEL[current.level]}`}</span>{" "}
           <span className="text-muted">{current.name}</span>
         </p>
       )}
       <details className="mt-1 group/cmp">
         <summary className="cursor-pointer text-sm font-semibold text-brand min-h-[44px] inline-flex items-center">Compare options</summary>
         <div className="mt-1 rounded-lg border border-line p-3">
+          <p className="mb-1 text-sm">The same job at different prices. Your current pick is marked ✓; switch only if another suits you better.</p>
           {budget && <p className="mb-2 text-sm text-muted" data-testid="compare-current-total">Your {GEAR_TOTAL_LABEL} now: <span className="text-ink font-medium">{gearTotal(budget)}</span> (as in Budget by phase)</p>}
           {lower.length > 0 && (
             <>
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted">Lower-cost</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted">Costs less</p>
               <ul className="divide-y divide-line">{lower.map((r) => <Row key={r.level} r={r} />)}</ul>
             </>
           )}
           {upgrade.length > 0 && (
             <>
-              <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-muted">Upgrade</p>
+              <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-muted">Costs more</p>
               <ul className="divide-y divide-line">{upgrade.map((r) => <Row key={r.level} r={r} />)}</ul>
             </>
           )}
@@ -87,7 +89,7 @@ export function CompareOptions({
               <p className="text-sm">Same kind of item from other makers: {models.join("; ")}.</p>
             </>
           )}
-          <p className="mt-2 text-xs text-muted">Your budget is a target, not a limit. Safety items come first; commissions never change the order.</p>
+          <p className="mt-2 text-xs text-muted">Prices are estimates. Your budget is a target, not a limit. Safety items come first; commissions never change the order.</p>
         </div>
       </details>
     </div>

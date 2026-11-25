@@ -18,7 +18,7 @@ export default async function Sample() {
     <div className="mx-auto max-w-3xl px-4 py-6">
       <div className="mb-4 flex items-center justify-between gap-3 text-sm text-muted">
         <p className="min-w-0">Sample: a Long Island family of four with a dog, 90 days.</p>
-        <StartButton label="Build your own" small />
+        <StartButton label="Build your own" small secondary />
       </div>
       <h1 className="text-3xl font-bold">{doc.title}</h1>
       <Subtitle text={doc.subtitle} />

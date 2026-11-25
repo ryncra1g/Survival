@@ -27,6 +27,8 @@ export default async function InventoryPage({ params }: { params: Promise<{ id: 
       <p className="text-sm"><Link href={`/plan/${plan.id}`} className="underline">Back to your plan</Link></p>
       <h1 className="text-2xl font-bold">Household &amp; inventory</h1>
       <p className="text-muted">Mark what you have, what you need, what you&apos;ve bought and what&apos;s running low. Items you have or bought come off your shopping list.</p>
+      {/* DA-17: 31 rows look like a lot of work; most people only change a few. */}
+      <p className="mt-2 font-medium">You only need to change what you already have. Everything else stays on your list as Need.</p>
       {session?.scope !== "full" && <p className="card p-3 text-sm">{saveBarText(true)} <Link href={`/plan/${plan.id}#email`} className="underline">Confirm your email</Link></p>}
       <InventoryEditor planId={plan.id} items={items} initial={seedInventory(plan.inventory, plan.checks)} accounts={flags().accounts} />
     </div>

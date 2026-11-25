@@ -117,11 +117,11 @@
     "dailyGal": 3.85,
     "breakdown": [
       {
-        "label": "2 adult(s)",
+        "label": "2 adults",
         "galPerDay": 2
       },
       {
-        "label": "2 child(ren)",
+        "label": "2 children",
         "galPerDay": 1.5
       },
       {

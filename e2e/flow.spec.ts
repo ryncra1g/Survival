@@ -133,7 +133,10 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   const dashText = await dash.innerText();
   expect(dashText.match(/\b\d+ of \d+ (done|steps)\b|\(\d+ left\)/g)).toEqual([expect.stringMatching(/^0 of \d+ done$/)]);
   expect(dashText).not.toContain("Whole plan");
-  await expect(dash.getByRole("heading", { name: "Next up" })).toBeVisible();
+  // DA-1: reassurance first, then "Start with these 3" and "Everything else can wait."
+  await expect(dash.getByTestId("reassurance")).toHaveText("Your plan is ready. You don't need to do this all at once.");
+  await expect(dash.getByRole("heading", { name: "Start with these 3" })).toBeVisible();
+  await expect(dash.getByTestId("can-wait")).toHaveText("Everything else can wait.");
   await expect(dash.getByText(/^Test or install CO alarms/)).toBeVisible();
   await expect(dash.getByText("water to store")).toBeVisible();
   await expect(dash.getByText(/gal\/day × \d+ days/)).toBeVisible();
@@ -251,7 +254,7 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
 
   await page.goto("/account");
   await expect(page.getByText("family@example.com")).toBeVisible();
-  await page.getByRole("button", { name: "Edit answers & regenerate" }).click();
+  await page.getByRole("button", { name: "Change my answers" }).click();
   await expect(page).toHaveURL(/\/q\//);
   await expect(page.getByLabel("ZIP code")).toHaveValue("11746");
 
@@ -333,7 +336,7 @@ test("admin: dashboard, catalog, rule constants, affiliate tag → tracked Buy c
   await expect(page.getByTestId("stay-ready").getByRole("button", { name: "Copy for your AI assistant" })).toBeVisible(); // also next to Add to my calendar
   await expect(page.getByText("Copied. Paste it into your AI assistant to get started.")).toBeVisible();
   const copied = await page.evaluate(() => navigator.clipboard.readText());
-  expect(copied).toContain("Use these amounts exactly; don't recalculate them.");
+  expect(copied).toContain("Use these amounts as given; don't recalculate them.");
   expect(copied).not.toMatch(/\b\d{5}\b/);
   await page.goto("/admin");
   await expect(page.getByTestId("stat-Copy for AI").getByTestId("stat-value")).toHaveText("1");
@@ -366,10 +369,10 @@ test("à la carte: switch a gear item's level from the plan", async ({ page }) =
   await page.goto(`/plan/${planId}#gear`);
   const gear = page.locator("details#gear");
   await expect(gear).toHaveAttribute("open", "");
-  // D3: each slot shows its main pick; "Compare options" lists Lower-cost / Upgrade with the difference and new total
+  // D3: each slot shows its main pick; "Compare options" lists Costs less / Costs more (DA-5) with the difference and new total
   const water = gear.getByTestId("compare-options").filter({ hasText: "7-gallon" }).first();
   await water.getByText("Compare options").click();
-  await expect(water.getByText("Upgrade", { exact: true })).toBeVisible();
+  await expect(water.getByText("Costs more", { exact: true })).toBeVisible();
   await expect(water.getByText(/whole gear list: \$/).first()).toBeVisible();
   const premiumWater = water.getByRole("button", { name: /Switch to Premium: Stackable water bricks/ });
   await premiumWater.click();

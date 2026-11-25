@@ -1,0 +1,98 @@
+# Design standard
+
+Every UI or copy change must meet this standard. `/ux-pass` scores every screen against it, and `tests/design.test.ts`
+enforces the rules a machine can check. A rule here that the code breaks is a bug.
+
+## Who it's for
+
+A tired, slightly anxious person on a phone, often right after an outage or storm warning. They may live alone or
+with a family; never assume either.
+
+**The journey we want:** arrives worried → feels oriented within seconds → feels capable → leaves with a short,
+doable list.
+
+Each screen should move them one step along that line. If a screen makes them feel more worried, more lost or more
+behind than when they arrived, it fails, however correct it is.
+
+## Calm
+
+| ID | Rule | How it's checked |
+|---|---|---|
+| C1 | No fear or urgency language: no "Don't wait!", "disaster could strike", "act now", countdowns, "before it's too late". Safety instructions may be direct ("Leave by the route officials give"), but they state what to do, not how scared to be. | `tests/design.test.ts` banned list |
+| C2 | No exclamation marks in product copy. | `tests/design.test.ts` |
+| C3 | Red (`--danger`) only for real safety warnings: carbon monoxide, generators, fire, evacuation orders, "Don't do this". Errors, budget notes and heavy-item notes use `--warn`, never red. | `tests/design.test.ts` (red only in safety components) |
+| C4 | Generous spacing: at least 12px between stacked controls, 16px page gutters, one idea per card. | `/ux-pass` screenshots |
+| C5 | At most one primary (amber `.btn`) action in view on any screen. Everything else is `.btn-ghost` or a link. | `tests/design.test.ts` (source), `/ux-pass` metrics (rendered) |
+| C6 | No auto-playing or looping motion. Transitions under 250ms, and none under `prefers-reduced-motion`. | `tests/design.test.ts` (no `animate-spin`/`animate-pulse` without `motion-safe:`), `globals.css` |
+| C7 | No stock disaster imagery (flames, flood photos, wrecked houses). Icons are simple line drawings. | review |
+| C8 | No pop-ups or modals that interrupt a task. Menus open only when tapped. | review |
+
+## Trust
+
+| ID | Rule | How it's checked |
+|---|---|---|
+| T1 | Every number can show its math: key numbers show the formula; amounts in the plan link to the section that explains them. | `tests/` engine and overview tests |
+| T2 | Sources are visible where advice is given: official links next to steps, `/sources` linked under the plan title. | `tests/pathways.test.ts` (every answer traces to a source or product) |
+| T3 | Say plainly what's saved and where (`lib/copy.ts`). Never promise syncing, devices or accuracy the app doesn't deliver. | `tests/copy.test.ts` |
+| T4 | The affiliate disclosure is clear and next to Buy buttons, wherever Buy buttons appear. | `tests/design.test.ts` |
+| T5 | Prices are labeled as estimates wherever a list of them appears. | `tests/design.test.ts` |
+| T6 | No dark patterns: no pre-ticked boxes, no confirm-shaming ("No thanks, I don't care about safety"), no fake scarcity or timers, no hidden costs. | `tests/design.test.ts` (no `defaultChecked`, no `useState(true)` for consent) |
+| T7 | Consistent names: one name per thing (plan, shopping list, Day 0 checklist, fridge checklist, Save my plan). | `/ux-pass` term variants |
+| T8 | Errors say what happened and what to do next, in plain words, and never blame the person ("invalid", "you failed", "wrong"). | `tests/design.test.ts` |
+| T9 | Never claim precision we don't have: no "exact", "perfect" or "guaranteed". Amounts are planning amounts. | `tests/design.test.ts` |
+
+## Ease
+
+| ID | Rule | How it's checked |
+|---|---|---|
+| E1 | One clear next step on every screen, including empty, error and "done" states. | `/ux-pass` |
+| E2 | Sensible defaults: the most common answer is preselected where it's safe to do so. | review |
+| E3 | Back always works, and answers are kept. | e2e |
+| E4 | Nothing required that isn't needed. Email is optional. | e2e |
+| E5 | Reading level at or below grade 8; no sentence over 25 words in screen copy. | `/ux-pass` copy script |
+| E6 | Tap targets at least 44×44px. | `/ux-pass` metrics, e2e |
+| E7 | The main action is reachable by thumb (in the lower part of the first screen, or sticky). | `/ux-pass` metrics `firstPrimaryInView` |
+| E8 | Empty, loading and error states are designed: a sentence that says what's going on and a way forward. | `/ux-pass` |
+
+## Voice
+
+A calm, knowledgeable neighbor.
+
+- Short sentences. Say "you". Start steps with a verb ("Fill", "Test", "Write down").
+- Reassuring, but never falsely. "You don't need to do this all at once" is true; "You'll be safe" is not ours to
+  promise.
+- Name the next small thing, not the whole mountain. "Start with these 3" beats "0 of 31 done".
+- Explain why once, briefly, then get out of the way.
+- Never assume a family, a car, a house or money. "You and your household."
+
+| Instead of | Write |
+|---|---|
+| Don't wait until disaster strikes! | When you have 20 minutes, start with these. |
+| Invalid ZIP | Enter your 5-digit ZIP code, like 43215. |
+| Most important: … | Start here: … |
+| Upgrade | Costs more |
+| exact amounts | amounts worked out for your household |
+
+## Color and components
+
+| Token | Use for | Never for |
+|---|---|---|
+| `--accent` (amber) | the one primary action (`.btn`); progress fill | decoration, warnings |
+| `--danger` (red) | safety callouts (`tone: "danger"`) and "Don't do this" lists | errors, budget, prices |
+| `--warn` | form errors, over-budget and heavy-item notes | safety warnings |
+| `--ok` | "done" and "sent" confirmations | |
+| `--brand` | links, selected options, secondary emphasis | |
+
+## Scoring (used by `/ux-pass`)
+
+Each screen gets 1–5 on **Calm, Trust, Ease, Clarity**, with one line of evidence per score.
+
+| Score | Meaning |
+|---|---|
+| 5 | Meets every rule; a worried person would feel better after this screen. |
+| 4 | Meets every rule; small polish left. |
+| 3 | One rule broken, or the screen is correct but heavy (too much at once, unclear next step). |
+| 2 | Several rules broken, or it adds worry or confusion. |
+| 1 | Misleads, blocks or alarms. |
+
+Anything under 4 is a finding to fix before release.

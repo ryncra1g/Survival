@@ -34,13 +34,14 @@ export function Landing({ cta, footer, sampleLink }: { cta: ReactNode; footer?: 
         {cta}
         {sampleLink}
       </div>
-      <p className="mt-3 text-sm text-muted">Every amount is worked out for your household, with the math shown. Free, no sign-up.</p>
+      {/* DA-9: in the first five seconds, how long it takes and what you leave with. */}
+      <p className="mt-3 text-sm text-muted">About 5 minutes. Free, no sign-up. You&apos;ll get a short list of what to do first, with every amount worked out for your household.</p>
 
       <section aria-labelledby="how-h" className="mt-10">
         <h2 id="how-h" className="text-xl font-bold">How it works</h2>
         <ol className="mt-3 grid gap-3 sm:grid-cols-3">
           {[
-            ["About 10 quick screens", "Your ZIP, who lives with you, your home, heat, water and budget. No sign-up."],
+            ["About 5 minutes of questions", "Your ZIP, who lives with you, your home, heat, water and budget. No sign-up."],
             ["Get your plan right away", "Amounts worked out for your household, with the math shown, plus a week-by-week checklist and steps for your area's hazards."],
             ["Buy only what you're missing", "A shopping list in priority order that skips what you already have and fits your budget, from Essential to Premium."],
           ].map(([t, d], i) => (

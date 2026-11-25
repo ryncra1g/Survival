@@ -57,7 +57,7 @@ function TipsBox({ b, ownedNames }: { b: Extract<Block, { type: "tips" }>; owned
       </ul>
       {b.dontDo.length > 0 && (
         <>
-          <p className="mt-3 text-sm font-semibold text-[var(--danger)]">Don&apos;t do this</p>
+          <p className="mt-3 text-sm font-semibold text-[var(--danger)]" data-safety>Don&apos;t do this</p>
           <ul className="mt-1 list-disc pl-5 text-sm">
             {b.dontDo.map((d) => <li key={d}>{d}</li>)}
           </ul>
@@ -72,7 +72,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
     case "tips":
       return ctx.diyTips ? <TipsBox b={b} ownedNames={ctx.ownedNames} /> : null;
     case "help":
-      return <HelpStrip b={b} products={ctx.products} href={ctx.href} />;
+      return <HelpStrip b={b} products={ctx.products} href={ctx.href} affiliate={ctx.affiliate} />;
     case "levelchoice":
       return (
         <div className="my-4">
@@ -121,7 +121,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
         </ul>
       );
     case "checklist":
-      return <Checklist items={b.items.map((i) => resolveStep(i, ctx.products, ctx.href))} />;
+      return <Checklist items={b.items.map((i) => resolveStep(i, ctx.products, ctx.href))} affiliate={ctx.affiliate} />;
     case "table":
       return (
         <div className="my-4 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
@@ -163,7 +163,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
       );
     case "callout":
       return (
-        <div className={`my-4 border-l-4 bg-bg p-3 rounded-r ${toneCls[b.tone]}`} role={b.tone === "danger" ? "note" : undefined}>
+        <div className={`my-4 border-l-4 bg-bg p-3 rounded-r ${toneCls[b.tone]}`} role={b.tone === "danger" ? "note" : undefined} data-safety={b.tone === "danger" ? "" : undefined}>
           <p className="font-semibold">{b.title}</p>
           <p className="text-ink mt-1">{b.text}</p>
         </div>
@@ -230,6 +230,7 @@ export function PlanView({
         <Dashboard
           overview={doc.overview}
           priority={prioritySteps(doc, ctx)}
+          affiliate={ctx.affiliate}
           buyHref={Object.fromEntries([...ctx.products.keys()].map((id) => [id, ctx.href(id)]))}
         />
         {afterDashboard}

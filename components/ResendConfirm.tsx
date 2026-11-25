@@ -1,16 +1,17 @@
 "use client";
 import { useState } from "react";
+import { friendlyError } from "@/lib/errors";
 
 export function ResendConfirm({ email }: { email: string }) {
   const [state, setState] = useState<"idle" | "busy" | "sent" | "error">("idle");
   const [msg, setMsg] = useState("");
   async function resend() {
     setState("busy");
-    const r = await fetch("/api/auth/resend", { method: "POST", headers: { "Content-Type": "application/json" } });
-    const j = (await r.json().catch(() => ({}))) as { error?: string; demoLink?: string };
-    if (!r.ok) {
+    const r = await fetch("/api/auth/resend", { method: "POST", headers: { "Content-Type": "application/json" } }).catch(() => null);
+    const j = ((await r?.json().catch(() => ({}))) ?? {}) as { error?: string; demoLink?: string };
+    if (!r?.ok) {
       setState("error");
-      setMsg(j.error ?? "Couldn't resend. Try again shortly.");
+      setMsg(friendlyError(r?.status ?? 0, j.error, "We couldn't resend it just now. Try again in a minute."));
       return;
     }
     try {

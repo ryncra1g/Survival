@@ -1,3 +1,4 @@
+import { ERR } from "@/lib/errors";
 import { z } from "zod";
 import { sendConfirm, sendLogin } from "@/lib/server/auth";
 import { isDemo } from "@/lib/server/env";
@@ -10,10 +11,10 @@ import { verifyTurnstile } from "@/lib/server/turnstile";
 export async function POST(req: Request) {
   if (!sameOrigin(req)) return err("Bad origin", 403);
   const body = z.object({ email: z.string().trim().toLowerCase().email(), turnstileToken: z.string().optional() }).safeParse(await readJson(req));
-  if (!body.success) return err("Enter a valid email.");
+  if (!body.success) return err(ERR.email);
   const ip = await clientIp();
-  if (!(await limit(`login:ip:${ip}`, LIMITS.signupPerIpHour, 3600))) return err("Too many attempts. Try again later.", 429);
-  if (!(await verifyTurnstile(body.data.turnstileToken, ip))) return err("Bot check failed.");
+  if (!(await limit(`login:ip:${ip}`, LIMITS.signupPerIpHour, 3600))) return err("Too many attempts. Try again in an hour.", 429);
+  if (!(await verifyTurnstile(body.data.turnstileToken, ip))) return err(ERR.botCheck);
   const user = await store.getUserByEmail(body.data.email);
   let link: string | null = null;
   if (user && (await limit(`mail:${user.id}`, LIMITS.loginPerEmailHour, 3600)))
