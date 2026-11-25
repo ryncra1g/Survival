@@ -68,11 +68,12 @@ Entry types: **Owner request** (Ryan asked for it), **Assistant recommendation**
 | UX-19 | Device names pasted into a sentence ("Your Oxygen concentrator, CPAP/BiPAP needs…") | P3 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
 | UX-20 | Question count differs between front page, start page and questionnaire | P3 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
 | UX-21 | Footer links 20 px tall | P3 | **Suggested** (UX pass 2026-11-24) · **Fixed per UX pass 2026-11-24-2** (branch claude/ux-fixes-2026-11-24, not merged) |
-| UX-22 | "Almost done" summary now sits below the Build button | P3 | **Suggested** (UX pass 2026-11-24-2) |
-| UX-23 | Footer "Privacy" and "Terms" narrower than 44 px | P3 | **Suggested** (UX pass 2026-11-24-2) |
-| UX-24 | Short plans show a "Later" heading holding only Skills to practice | P3 | **Suggested** (UX pass 2026-11-24-2) |
-| UX-25 | Short plans (72 h–14 days) list gear with no step for it (window protection, sanitation kit, generator test-run) | P2 | **Suggested** (UX pass 2026-11-24-2) |
-| UX-26 | "Later" names both a shopping phase and a Priority-list stage | P3 | **Suggested** (UX pass 2026-11-24-2) |
+| UX-22 | "Almost done" summary now sits below the Build button | P3 | **Suggested** (UX pass 2026-11-24-2) · **Fixed per UX pass 2026-11-25** (PR #16, not merged) |
+| UX-23 | Footer "Privacy" and "Terms" narrower than 44 px | P3 | **Suggested** (UX pass 2026-11-24-2) · **Still open per UX pass 2026-11-25** |
+| UX-24 | Short plans show a "Later" heading holding only Skills to practice | P3 | **Suggested** (UX pass 2026-11-24-2) · **Fixed per UX pass 2026-11-25** (PR #16, not merged) |
+| UX-25 | Short plans (72 h–14 days) list gear with no step for it (window protection, sanitation kit, generator test-run) | P2 | **Suggested** (UX pass 2026-11-24-2) · **Fixed per UX pass 2026-11-25** (PR #16, not merged) |
+| UX-26 | "Later" names both a shopping phase and a Priority-list stage | P3 | **Suggested** (UX pass 2026-11-24-2) · **Fixed per UX pass 2026-11-25** (PR #16, not merged) |
+| UX-27 | Taller sticky bar (with the "Almost done" line) starts with the Terms box under it at 375×812 | P3 | **Suggested** (UX pass 2026-11-25) |
 
 ### PR merge queue (each needs the owner's OK)
 #3 Windows test fixes → #4 Buy links without a tag → #5 dashboard redesign → `claude/headline-copy` (no PR yet).
@@ -501,4 +502,12 @@ UX-8 to UX-13 and UX-15 to UX-21 are fixed; UX-7 changed (now P3) and UX-14 is s
     list them. Nothing was changed; say if they should come back as non-default Compare options.
 - **Deferred (owner):** UX-7 (full plan length: the first screen is fixed; the rest waits for real-user evidence)
   and UX-14 (Terms and Sources reading level: legal wording, needs legal review).
+
+### UX pass 2026-11-25
+
+Report: `docs/ux/UX_PASS_2026-11-25.md` (PR #16). UX-22, UX-24, UX-25 and UX-26 are fixed; UX-23 is still open;
+UX-7 and UX-14 are deferred (owner). New, **Suggested**:
+
+- **UX-27** (P3, Suggested): with the summary in the sticky bar, the Terms box starts under the bar at 375×812.
+  Tapping Build still scrolls to it and focuses it.
 
