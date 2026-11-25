@@ -5,6 +5,7 @@ import path from "node:path";
 import { SEED_CATALOG } from "@/lib/catalog/seed";
 import type { CatalogItem } from "@/lib/catalog/types";
 import { newId, seal, unseal, type Sealed } from "../crypto";
+import { canonicalCatalogOrder } from "@/lib/catalog/order";
 import type { EmailEventRow, PlanRow, QuestionnaireRow, RuleConstantsRow, Stats, Store, TokenRow, UserRow } from "./types";
 import { AI_COPY_EVENT } from "./types";
 import { DEFAULT_REMINDER_PREFS, type Inventory, type Place, type ReminderPrefs } from "@/lib/accountData";
@@ -67,6 +68,7 @@ const pOut = (p: StoredP): PlanRow => {
   const { computed_quantities_json, plan_json, consent_json, inventory_json, ...rest } = p;
   return {
     ...rest,
+    checks: rest.checks ?? {},
     computed_quantities: unseal(computed_quantities_json),
     plan: unseal(plan_json),
     consent: consent_json ? unseal<PlanConsent>(consent_json) : null,
@@ -139,7 +141,8 @@ export const fileStore: Store = {
     return tx((db) => {
       const cutoff = Date.now() - days * 86_400_000;
       const before = db.questionnaires.length;
-      const gone = new Set(db.questionnaires.filter((q) => !q.user_id && Date.parse(q.updated_at) <= cutoff).map((q) => q.id));
+      // Strictly older than the cutoff, like the Supabase store's .lt("updated_at", cutoff).
+      const gone = new Set(db.questionnaires.filter((q) => !q.user_id && Date.parse(q.updated_at) < cutoff).map((q) => q.id));
       db.questionnaires = db.questionnaires.filter((q) => !gone.has(q.id));
       db.plans = db.plans.filter((p) => !gone.has(p.questionnaire_id));
       return before - db.questionnaires.length;
@@ -150,8 +153,9 @@ export const fileStore: Store = {
   },
   async createPlan(p) {
     return tx((db) => {
-      const { computed_quantities, plan, consent, ...rest } = p;
-      const row: StoredP = { ...rest, computed_quantities_json: seal(computed_quantities), plan_json: seal(plan), consent_json: consent ? seal(consent) : null, id: newId(), created_at: now() };
+      // inventory is sealed like in Supabase (it was stored unencrypted under "inventory" and then read back as null).
+      const { computed_quantities, plan, consent, inventory, ...rest } = p;
+      const row: StoredP = { ...rest, computed_quantities_json: seal(computed_quantities), plan_json: seal(plan), consent_json: consent ? seal(consent) : null, inventory_json: inventory ? seal(inventory) : null, id: newId(), created_at: now() };
       db.plans.push(row);
       return pOut(row);
     });
@@ -202,11 +206,11 @@ export const fileStore: Store = {
       const t = db.tokens.find((x) => x.token_hash === hash);
       if (!t || t.used_at || new Date(t.expires_at) < new Date()) return null;
       t.used_at = now();
-      return t;
+      return { ...t };
     });
   },
   async listCatalog() {
-    return load().gear_catalog;
+    return canonicalCatalogOrder(load().gear_catalog);
   },
   async upsertCatalogItem(item) {
     tx((db) => {
@@ -236,7 +240,7 @@ export const fileStore: Store = {
     return load().email_events.some((e) => e.user_id === userId && e.type === type);
   },
   async listEmailEvents(userId) {
-    return load().email_events.filter((e) => e.user_id === userId);
+    return load().email_events.filter((e) => e.user_id === userId).sort((a, b) => a.sent_at.localeCompare(b.sent_at));
   },
   async rateLimit(key, limit, windowSec) {
     return tx((db) => {
