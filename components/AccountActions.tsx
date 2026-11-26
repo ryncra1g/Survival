@@ -1,4 +1,5 @@
 "use client";
+import { Notice } from "./Notice";
 import { ERR, friendlyError } from "@/lib/errors";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -38,7 +39,7 @@ export function DeleteData() {
   const [confirming, setConfirming] = useState(false);
   if (!confirming) return <button className="btn-ghost" onClick={() => setConfirming(true)}>Delete my data</button>;
   return (
-    <div className="card p-4 border-2 border-warn space-y-3">
+    <div className="rounded-lg bg-warn-soft p-4 space-y-3">
       <p>This permanently deletes your account, answers, plans and email history. It can&apos;t be undone.</p>
       <div className="flex gap-3">
         <button className="btn-ghost border-2 border-ink" onClick={async () => {
@@ -64,10 +65,10 @@ export function LoginForm() {
   const [error, setError] = useState("");
   if (state === "sent")
     return (
-      <div className="card p-4" role="status">
+      <Notice tone="success">
         <p>If there&apos;s a plan for that email, a sign-in link is on its way. It works once and expires in an hour.</p>
         {demoLink && <p className="mt-2 text-sm">Demo mode: <a className="underline break-all" href={demoLink}>open the link</a></p>}
-      </div>
+      </Notice>
     );
   return (
     <form className="card p-4 space-y-3" onSubmit={async (e) => {
@@ -86,7 +87,7 @@ export function LoginForm() {
     }}>
       <label htmlFor="login-email" className="font-semibold block">Email</label>
       <input id="login-email" className="input" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-      {error && <p role="alert" className="text-warn font-medium">{error}</p>}
+      {error && <Notice tone="error">{error}</Notice>}
       <button className="btn w-full" disabled={state === "busy"}>Email me a sign-in link</button>
     </form>
   );

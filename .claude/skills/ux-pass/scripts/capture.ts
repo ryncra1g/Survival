@@ -81,6 +81,18 @@ export const SHOTS: Shot[] = [
       await c.page.getByTestId("dashboard").evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 70));
     },
   },
+  {
+    // "This week" with the rest of the week's steps opened.
+    name: "plan-this-week-expanded",
+    server: "off",
+    run: async (c) => {
+      await plan(c);
+      const toggle = c.page.getByTestId("more-this-stage-toggle");
+      if (await toggle.count()) await toggle.first().click();
+      else await c.page.getByTestId("more-this-stage").locator("summary").first().click();
+      await c.page.getByTestId("more-this-stage").evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 120));
+    },
+  },
   { name: "plan-ch-do-now", server: "off", run: async (c) => { await plan(c); await scrollTo(c.page, "#ch-do-now"); } },
   { name: "plan-ch-supplies", server: "off", run: async (c) => { await plan(c); await scrollTo(c.page, "#ch-supplies"); } },
   { name: "plan-ch-power-heat", server: "off", run: async (c) => { await plan(c); await scrollTo(c.page, "#ch-power-heat"); } },
@@ -102,7 +114,7 @@ export const SHOTS: Shot[] = [
     server: "off",
     run: async (c) => {
       await plan(c);
-      const list = c.page.getByTestId("dashboard").locator("details").filter({ hasText: "Shopping list" }).first();
+      const list = c.page.locator("#shopping");
       await list.locator("summary").first().click();
       await list.scrollIntoViewIfNeeded();
     },

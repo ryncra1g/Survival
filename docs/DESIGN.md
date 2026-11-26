@@ -83,6 +83,18 @@ A calm, knowledgeable neighbor.
 | `--ok` | "done" and "sent" confirmations | |
 | `--brand` | links, selected options, secondary emphasis | |
 
+## Visual
+
+| ID | Rule | How it's checked |
+|---|---|---|
+| V1 | One idea at a time. The plan's first screen (375×812) shows only the reassurance, "Start with these 3" and 3 compact step cards; details sit behind "How to do it", and numbers, the shopping list and saving start below the fold. | `e2e/design.spec.ts` |
+| V2 | One count on screen: "0 of 3 done", then "This week: N of 10". A gear count appears only after something is ticked or owned. | `tests/nextSteps.test.ts`, e2e |
+| V3 | "Prices are estimates." sits beside Buy boxes and Compare options, never under a reassurance line. | `tests/design.test.ts` |
+| V4 | Errors and notices use `components/Notice.tsx`: a soft tint, a small icon, body-size text, and "Try again" where retrying helps. | `tests/design.test.ts` (no hand-made `role="alert"`) |
+| V5 | Icons come from `components/Icon.tsx` only: simple line icons, brand blue, always next to a text label. | `tests/design.test.ts` (every chapter and section has one) |
+| V6 | Illustrations are inline SVG, home-themed or abstract, no disaster imagery and no faces, under 15 KB. No image file over 30 KB. Lighthouse performance stays at 95+. | `tests/design.test.ts`, `/ux-pass` Lighthouse |
+| V7 | Spacing does the separating: cards on the page background without borders, at least 12px between cards and 32px between chapters. Step text at body size (17px); lines capped at about 65 characters. | `/ux-pass` screenshots |
+
 ## Scoring (used by `/ux-pass`)
 
 Each screen gets 1–5 on **Calm, Trust, Ease, Clarity**, with one line of evidence per score.

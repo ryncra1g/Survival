@@ -113,7 +113,8 @@ export function documentStrings(doc: PlanDocument): string[] {
           s.push(...b.items);
           break;
         case "checklist":
-          s.push(...b.items.flatMap((i) => [i.text, i.why ?? "", i.link?.label ?? ""]).filter(Boolean));
+          // The card title is the step's headline on the dashboard: linted like the text (code review).
+          s.push(...b.items.flatMap((i) => [i.title ?? "", i.text, i.why ?? "", i.link?.label ?? ""]).filter(Boolean));
           break;
         case "table":
           if (b.caption) s.push(b.caption);

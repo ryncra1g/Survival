@@ -62,6 +62,17 @@ export function compareOptions(
   };
 }
 
+/**
+ * Visual calm pass (item 4): the one line of difference under each choice in Compare options,
+ * e.g. "$152 less" or "$260 more, $168 over your budget". Built from the row's own diff and over, so no new numbers.
+ */
+export function differenceLine(r: Pick<CompareRow, "diff" | "over">): string {
+  if (!r.diff) return r.over ?? "";
+  const amount = r.diff.slice(1);
+  const base = amount === "$0" ? "Same price" : r.diff.startsWith("+") ? `${amount} more` : `${amount} less`;
+  return r.over ? `${base}, ${r.over}` : base;
+}
+
 /** The plan's own position against the stated budget, e.g. "$120 over your budget ($1,500–5,000)". */
 export function budgetStatus(budget: Overview["budget"]): string | null {
   if (!budget || budget.cap === null) return null;

@@ -1,5 +1,5 @@
 import type { LevelOption, Overview } from "@/lib/plan/document";
-import { compareOptions, LEVEL_LABEL as LABEL, type CompareRow, GEAR_TOTAL_LABEL, gearTotal, heavyWarning } from "@/lib/plan/compare";
+import { compareOptions, differenceLine, LEVEL_LABEL as LABEL, type CompareRow, gearTotal, heavyWarning } from "@/lib/plan/compare";
 
 /**
  * D3 / GEAR-01: one main pick per slot, plus "Compare options": Costs less, Costs more and Other choices (DA-5: plain
@@ -36,11 +36,9 @@ export function CompareOptions({
       <li className="flex items-start justify-between gap-3 py-2">
         <div className="min-w-0 text-sm">
           <p className="font-semibold">{group === "food" ? r.name : `${LABEL[r.level]}: ${r.name}`}</p>
-          <p className="text-muted">
-            {r.price}
-            {r.diff && <> · <span className="text-ink font-medium">{r.diff}</span> · {GEAR_TOTAL_LABEL}: {r.newTotal}</>}
-          </p>
-          {r.over && <p className="text-warn font-medium">{r.over}</p>}
+          {/* Item 4: name, price range, and one line of difference. */}
+          <p className="text-muted tabular">{r.price}</p>
+          {(r.diff || r.over) && <p className={`tabular ${r.over ? "text-warn" : "text-ink"}`} data-testid="compare-diff">{differenceLine(r)}</p>}
           {r.heavyLb && <p className="text-warn font-medium" data-testid="heavy-warning">{heavyWarning(r.heavyLb)}</p>}
         </div>
         {onChoose ? (
@@ -67,8 +65,10 @@ export function CompareOptions({
       <details className="mt-1 group/cmp">
         <summary className="cursor-pointer text-sm font-semibold text-brand min-h-[44px] inline-flex items-center">Compare options</summary>
         <div className="mt-1 rounded-lg border border-line p-3">
-          <p className="mb-1 text-sm">The same job at different prices. Your current pick is marked ✓; switch only if another suits you better.</p>
-          {budget && <p className="mb-2 text-sm text-muted" data-testid="compare-current-total">Your {GEAR_TOTAL_LABEL} now: <span className="text-ink font-medium">{gearTotal(budget)}</span> (as in Budget by phase)</p>}
+          {/* Item 4: the whole-list total once, at the top; prices are estimates (item 3). */}
+          <p className="mb-2 text-sm text-muted tabular" data-testid="compare-current-total">
+            {budget ? <>Your gear list now: <span className="text-ink font-medium">{gearTotal(budget)}</span>. </> : null}Prices are estimates.
+          </p>
           {lower.length > 0 && (
             <>
               <p className="text-xs font-semibold uppercase tracking-wide text-muted">Costs less</p>
@@ -89,7 +89,7 @@ export function CompareOptions({
               <p className="text-sm">Same kind of item from other makers: {models.join("; ")}.</p>
             </>
           )}
-          <p className="mt-2 text-xs text-muted">Prices are estimates. Your budget is a target, not a limit. Safety items come first; commissions never change the order.</p>
+          <p className="mt-2 text-xs text-muted">The same job at different prices; switch only if another suits you better. Your budget is a target, not a limit. Safety items come first, and commissions never change the order.</p>
         </div>
       </details>
     </div>

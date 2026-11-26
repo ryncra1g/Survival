@@ -1,4 +1,5 @@
 "use client";
+import { Notice } from "./Notice";
 import { useState } from "react";
 import { friendlyError } from "@/lib/errors";
 
@@ -28,7 +29,7 @@ export function ResendConfirm({ email }: { email: string }) {
           {state === "busy" ? "Sending…" : "Didn't get it? Resend"}
         </button>
       )}
-      {msg && <span role="status" className={state === "error" ? "text-warn font-medium" : ""}>{msg}</span>}
+      {msg && (state === "error" ? <Notice tone="error" size="sm" className="w-full" action={{ label: "Try again", onClick: () => void resend() }}>{msg}</Notice> : <span role="status">{msg}</span>)}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 "use client";
+import { Notice } from "./Notice";
 import { ERR } from "@/lib/errors";
 import { useState } from "react";
 import { REMINDER_EVERY, type ReminderPrefs } from "@/lib/accountData";
@@ -39,7 +40,11 @@ export function ReminderSettings({ initial, items }: { initial: ReminderPrefs; i
           ))}
         </ul>
       )}
-      <p role="status" className={`text-sm ${state === "error" ? "text-warn font-medium" : "text-muted"}`}>{state === "saved" ? "Saved." : state === "error" ? ERR.save : ""}</p>
+      {state === "error" ? (
+        <Notice tone="error" action={{ label: "Try again", onClick: () => void save(prefs) }}>{ERR.save}</Notice>
+      ) : (
+        <p role="status" className="text-sm text-muted">{state === "saved" ? "Saved." : ""}</p>
+      )}
     </div>
   );
 }

@@ -58,6 +58,7 @@ export function highHazardStep(prof: ZipProfile, solo: boolean): Step | null {
   const link = zone ? zone : first === "hurricane" ? HOWTO.evacuation : first === "wildfire" ? HOWTO.wildfires : first === "flood" ? HOWTO.floods : first === "tornado" ? HOWTO.severeWeather : first === "heat" ? HOWTO.heat : first === "winter" ? HOWTO.winter : HOWTO.hazards;
   return {
     id: HAZARD_STEP_ID,
+    title: names.length > 2 ? "Get ready for your area's biggest risks" : `Get ready for ${list}`,
     text: `Your area's biggest risk${names.length > 1 ? "s are" : " is"} ${list}. This week, ${actions}.`,
     why: "These are rated high for your ZIP. Doing this now means you can act fast when a warning comes.",
     ...(high.some((x) => x.key === "wildfire") ? { buy: ["go-bag", "go-bag-kit", "go-bag-basic"] } : {}),
@@ -175,7 +176,7 @@ const BUDGET_CAP: Record<Answers["budget"], number | null> = { under_500: 500, "
 
 let checklistCounter = 0;
 /** A checklist step: plain text, or text plus why / what to buy / an official link. */
-type Step = string | { text: string; why?: string; buy?: string[]; link?: OfficialLink; id?: string };
+type Step = string | { text: string; title?: string; why?: string; buy?: string[]; link?: OfficialLink; id?: string };
 const check = (prefix: string, items: Step[]): Block => ({
   type: "checklist",
   items: items.map((st) => {
@@ -415,22 +416,26 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
     return { ...(id ? { id } : {}), text: `${lead}: ${plural(items.length, "item")}, about ${priceRange(items)}.`, buy: items.map((p) => p.item.id) };
   };
   if (cp.flags.medicalDevicePriority)
-    week.push({ text: "Most important: Call your medical-device supplier about battery backup, and register with your electric utility's medical-needs / life-support registry.", buy: ["med-battery"] });
+    week.push({ title: "Call your medical-device supplier", text: "Most important: Call your medical-device supplier about battery backup, and register with your electric utility's medical-needs / life-support registry.", buy: ["med-battery"] });
   if (cp.flags.wellPumpPriority)
-    week.push({ text: "Most important: Your well pump needs power. Find out its voltage and starting watts (label or well contractor) so you can size a generator or battery and transfer switch.", buy: ["well-switch"] });
+    week.push({ title: "Find out what your well pump needs", text: "Most important: Your well pump needs power. Find out its voltage and starting watts (label or well contractor) so you can size a generator or battery and transfer switch.", buy: ["well-switch"] });
   // UX-13: every hazard rated high for this ZIP has its key action in the first 3 steps, as one combined step
   // right after any "Most important" step (there are at most two of those).
   const hazardStep = highHazardStep(prof, h.people === 1);
   if (hazardStep) week.push(hazardStep);
   if (h.elderlyOrMobility)
-    week.push("Register anyone with mobility or medical needs with your county's special-needs (access & functional needs) registry or shelter program, and arrange who will help them evacuate.");
+    week.push({ title: "Register for help if you must leave", text: "Register anyone with mobility or medical needs with your county's special-needs (access & functional needs) registry or shelter program, and arrange who will help them evacuate." });
+  // One expression for the title and the text, so a rule change can't make them disagree (code review).
+  const coAlarms = n(a.floors + (a.hasBasement ? 1 : 0) + 1);
   week.push({
-    text: `Test or install CO alarms: ${n(a.floors + (a.hasBasement ? 1 : 0) + 1)} (one per level plus outside sleeping areas).`,
+    title: `Test or install CO alarms: ${coAlarms}`,
+    text: `Test or install CO alarms: ${coAlarms} (one per level plus outside sleeping areas).`,
     why: "Carbon monoxide from generators, heaters and grills is one of the most common ways people die after storms and outages, and an alarm is the cheapest life-saver in this plan.",
     buy: ["co-alarm"],
   });
   week.push({
-    text: `Store your first 3 days of water: ${n(w.threeDayGal)} gallons.`,
+    title: `Store 3 days of water: ${n(w.threeDayGal)} gallons`,
+    text: `Store your first 3 days of water: ${n(w.threeDayGal)} gallons.`, // same n(w.threeDayGal); tests/nextSteps.test.ts checks title numbers are in the text
     why: "Taps can stop or become unsafe in an outage, and water is the one supply you can't go without for 3 days.",
     buy: ["water-jug", "water-bricks", "water-gallons", "water-drum"],
   });
@@ -439,25 +444,27 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   if (zone && prof.hurricane !== "high")
     week.push({
       id: "week-zone",
+      title: "Look up your evacuation zone",
       text: "Look up your hurricane evacuation zone and the route out, and decide where you'd go.",
       why: "Evacuation orders are given by zone. Knowing yours now means you leave early, before roads fill.",
       link: zone,
     });
   week.push({
+    title: "Turn on emergency alerts",
     text: "Turn on Wireless Emergency Alerts and sign up for your county's alert system.",
     why: "Official warnings reach your phone even when TV and internet are out.",
     buy: ["radio"],
     link: alertLink(prof),
   });
   if (cp.household.people === 1) {
-    week.push({ text: "Write your communications plan (see Communications) and pick an out-of-area contact.", buy: ["frs-radios", "gmrs"] });
-    week.push("Ask a neighbor or nearby friend to check on you during long outages, and agree how you'll reach each other.");
+    week.push({ title: "Write your communications plan", text: "Write your communications plan (see Communications) and pick an out-of-area contact.", buy: ["frs-radios", "gmrs"] });
+    week.push({ title: "Ask someone to check on you", text: "Ask a neighbor or nearby friend to check on you during long outages, and agree how you'll reach each other." });
   } else {
-    week.push({ text: "Write your household communications plan (see Communications) and pick an out-of-area contact.", buy: ["frs-radios", "gmrs"] });
+    week.push({ title: "Write your communications plan", text: "Write your household communications plan (see Communications) and pick an out-of-area contact.", buy: ["frs-radios", "gmrs"] });
   }
   week.push(`Set aside ${usd(cp.cash.total)} in small bills.`);
-  if (!apt) week.push("Find and label your main water shutoff, gas shutoff and electrical panel.");
-  if (a.hasPrescriptions) week.push("Ask your pharmacist or doctor how to keep an extra supply of daily prescriptions on hand.");
+  if (!apt) week.push({ title: "Find your water, gas and power shutoffs", text: "Find and label your main water shutoff, gas shutoff and electrical panel." });
+  if (a.hasPrescriptions) week.push({ title: "Ask about extra prescriptions", text: "Ask your pharmacist or doctor how to keep an extra supply of daily prescriptions on hand." });
   if (cp.diapers) week.push(`Buy 2 weeks of diapers (${n(cp.diapers.perDay * 14)}) and wipes.`);
   week.push(...vehicleFuelSteps(a.vehicleFuels));
 

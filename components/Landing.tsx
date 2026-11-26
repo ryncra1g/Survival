@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { sampleSummary } from "@/lib/plan/sampleSummary";
+import { CHAPTER_ICON, Icon } from "./Icon";
+import { HomeIllustration } from "./Illustration";
 
 const CHAPTER_CARDS = [
   { id: "do-now", title: "Do now", outcome: "Your first steps this week, in order, and a Day 0 checklist for when it happens." },
@@ -8,25 +10,13 @@ const CHAPTER_CARDS = [
   { id: "people-plans", title: "People & plans", outcome: "Kids, pets, medical needs, contacts and when you must leave." },
 ] as const;
 
-function ChapterIcon({ id }: { id: (typeof CHAPTER_CARDS)[number]["id"] }) {
-  const d = {
-    "do-now": "M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9",
-    supplies: "M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z",
-    "power-heat": "M13 2L4 14h7l-1 8 9-12h-7l1-8z",
-    "people-plans": "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8",
-  }[id];
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d={d} />
-    </svg>
-  );
-}
-
 /** Front page, shared by the app and the standalone demo. */
 export function Landing({ cta, footer, sampleLink }: { cta: ReactNode; footer?: ReactNode; sampleLink?: ReactNode }) {
   const sample = sampleSummary();
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:py-14">
+      {/* Visual calm pass (item 6): a small home-themed illustration; no disaster imagery, no faces. */}
+      <HomeIllustration className="mb-4 h-24 w-auto sm:float-right sm:ml-6 sm:h-40" />
       {/* LP-02: no eyebrow line. LP-03 / LP-04: owner's headline direction (working copy). */}
       <h1 className="text-[2.1rem] sm:text-6xl font-bold leading-tight text-balance">Get what you need. Know what to do.</h1>
       <p className="mt-3 sm:text-lg text-muted max-w-2xl">Take the guesswork out of getting prepared. Know what to keep on hand, what to do first and how to stay ready.</p>
@@ -34,14 +24,16 @@ export function Landing({ cta, footer, sampleLink }: { cta: ReactNode; footer?: 
         {cta}
         {sampleLink}
       </div>
-      {/* DA-9: in the first five seconds, how long it takes and what you leave with. */}
-      <p className="mt-3 text-sm text-muted">About 5 minutes. Free, no sign-up. You&apos;ll get a short list of what to do first, with every amount worked out for your household.</p>
+      {/* Item 8 / DA-9: the emotional promise. True for every test household: about 5 minutes of questions (10–11
+          screens), and every plan opens on its first 3 steps (tests/nextSteps.test.ts). */}
+      <p className="mt-4 text-base">About 5 minutes of questions, and you leave with 3 things to do first.</p>
+      <p className="mt-1 text-sm text-muted">Free, no sign-up. Every amount is worked out for your household.</p>
 
       <section aria-labelledby="how-h" className="mt-10">
         <h2 id="how-h" className="text-xl font-bold">How it works</h2>
         <ol className="mt-3 grid gap-3 sm:grid-cols-3">
           {[
-            ["About 5 minutes of questions", "Your ZIP, who lives with you, your home, heat, water and budget. No sign-up."],
+            ["A few quick questions", "Your ZIP, who lives with you, your home, heat, water and budget. No sign-up."],
             ["Get your plan right away", "Amounts worked out for your household, with the math shown, plus a week-by-week checklist and steps for your area's hazards."],
             ["Buy only what you're missing", "A shopping list in priority order that skips what you already have and fits your budget, from Essential to Premium."],
           ].map(([t, d], i) => (
@@ -61,7 +53,7 @@ export function Landing({ cta, footer, sampleLink }: { cta: ReactNode; footer?: 
           {CHAPTER_CARDS.map((c) => (
             <li key={c.id} className="card p-4">
               <p className="flex items-center gap-2 font-semibold text-brand">
-                <ChapterIcon id={c.id} />
+                <Icon name={CHAPTER_ICON[c.id]} />
                 {c.title}
               </p>
               <p className="mt-1">{c.outcome}</p>

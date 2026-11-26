@@ -29,6 +29,9 @@ export const BlockSchema = z.discriminatedUnion("type", [
       z.object({
         id: z.string(),
         text: z.string(),
+        /** Visual calm pass: a short title for the step card ("Test or install CO alarms: 3"). The full text stays in
+         *  `text` and is shown under "How to do it"; the PDF and email use `text`. Never changes a number. */
+        title: z.string().optional(),
         /** One line on why this step matters (shown under the step). Written by code. */
         why: z.string().optional(),
         /** Catalog item ids that can fulfil this step, best first. Renderers show a Buy button for the first one

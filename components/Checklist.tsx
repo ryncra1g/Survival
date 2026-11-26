@@ -1,12 +1,13 @@
 "use client";
 import { gotId } from "./BuyIfNeeded";
 import { useChecks } from "./ChecksContext";
-import { BuyNote, StepExtras, type StepView } from "./StepExtras";
+import { StepExtras, type StepView } from "./StepExtras";
 
 /** A tickable list with a running count. Ticks live in ChecksProvider (synced to the plan when possible). */
 export function Checklist({ items, affiliate = false }: { planId?: string; items: StepView[]; affiliate?: boolean }) {
   const { checks, toggle } = useChecks();
   const done = items.filter((i) => checks[i.id]).length;
+  const firstBuy = items.find((i) => i.buy && !checks[i.id] && !checks[gotId(i.buy.itemId)])?.id;
   return (
     <div className="my-3">
       {items.length > 2 && (
@@ -14,7 +15,6 @@ export function Checklist({ items, affiliate = false }: { planId?: string; items
           {done} of {items.length} done{done === items.length ? " ✓" : ""}
         </p>
       )}
-      {items.some((i) => i.buy && !checks[i.id] && !checks[gotId(i.buy.itemId)]) && <BuyNote affiliate={affiliate} className="mb-1" />}
       <ul className="space-y-1">
         {items.map((it) => (
           <li key={it.id}>
@@ -22,7 +22,8 @@ export function Checklist({ items, affiliate = false }: { planId?: string; items
               <input type="checkbox" className="mt-1 size-5 shrink-0 accent-[var(--brand)]" checked={!!checks[it.id]} onChange={() => toggle(it.id)} />
               <span className={checks[it.id] ? "line-through text-muted" : ""}>{it.text}</span>
             </label>
-            {!checks[it.id] && <div className="pl-8 pb-2"><StepExtras step={it} /></div>}
+            {/* Item 3: the note sits beside the first Buy box a person can see, not above the list. */}
+            {!checks[it.id] && <div className="pl-8 pb-2"><StepExtras step={it} buyNote={it.id === firstBuy ? { affiliate } : undefined} /></div>}
           </li>
         ))}
       </ul>

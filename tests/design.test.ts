@@ -222,3 +222,34 @@ describe("DESIGN.md T8: errors", () => {
     }
   });
 });
+
+/** Visual calm pass: errors and notices come from one component, and images stay small. */
+describe("visual calm pass", () => {
+  it("item 5: every alert and notice box is the Notice component (no hand-made role=alert)", () => {
+    const hits = SOURCES.filter((f) => !/components[\/]Notice\.tsx$/.test(f)).flatMap((f) =>
+      readFileSync(f, "utf8").split(/\r?\n/).map((l, i) => [f, i + 1, l] as const).filter(([, , l]) => /role="alert"|card[^"`]*border-(2 border-)?(warn|ok)/.test(l)),
+    );
+    expect(hits.map(([f, n, l]) => `${f}:${n} ${l.trim().slice(0, 120)}`)).toEqual([]);
+  });
+  it("item 6: the illustrations are inline SVG under 15 KB, and no image file is over 30 KB", () => {
+    expect(statSync("components/Illustration.tsx").size).toBeLessThan(15_000);
+    const images = ["public", "app"].flatMap((d) => {
+      const walk = (p: string): string[] => (statSync(p).isDirectory() ? readdirSync(p).flatMap((n) => walk(join(p, n))) : [p]);
+      return walk(d).filter((f) => /\.(png|jpe?g|gif|webp|avif|svg|ico)$/i.test(f));
+    });
+    for (const f of images) expect(statSync(f).size, f).toBeLessThan(30_000);
+  });
+  it("item 6: every plan section and chapter has an icon from the one set", async () => {
+    const { SECTION_ICON, CHAPTER_ICON } = await import("@/components/Icon");
+    const { CHAPTERS } = await import("@/lib/plan/chapters");
+    for (const ch of CHAPTERS) {
+      expect(CHAPTER_ICON[ch.id], ch.id).toBeTruthy();
+      for (const s of ch.sections) expect(SECTION_ICON[s], s).toBeTruthy();
+    }
+  });
+  it("item 3: no 'Prices are estimates' under the reassurance (only beside Buy boxes and Compare)", () => {
+    const dash = readFileSync("components/Dashboard.tsx", "utf8");
+    const first = dash.slice(dash.indexOf("export function Dashboard"), dash.indexOf("export function PlanOverview"));
+    expect(first).not.toMatch(/<BuyNote/);
+  });
+});

@@ -137,11 +137,18 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(dash.getByTestId("reassurance")).toHaveText("Your plan is ready. You don't need to do this all at once.");
   await expect(dash.getByRole("heading", { name: "Start with these 3" })).toBeVisible();
   await expect(dash.getByTestId("can-wait")).toHaveText("Everything else can wait.");
-  await expect(dash.getByText(/^Test or install CO alarms/)).toBeVisible();
-  await expect(dash.getByText("water to store")).toBeVisible();
-  await expect(dash.getByText(/gal\/day × \d+ days/)).toBeVisible();
-  // No affiliate tag set yet: Buy links still show (plain store search), but no commission disclosure
+  await expect(dash.getByRole("checkbox", { name: /^Done: Test or install CO alarms/ })).toBeVisible();
+  // Visual calm pass: the numbers and shopping list are their own section below the first screen.
+  const overview = page.getByTestId("plan-overview");
+  await expect(overview.getByText("water to store")).toBeVisible();
+  await expect(overview.getByText(/gal\/day × \d+ days/)).toBeVisible();
+  await expect(dash.getByTestId("step-card")).toHaveCount(3);
+  // No affiliate tag set yet: Buy links still show (plain store search), but no commission disclosure.
+  // The Buy box is behind "How to do it", with "Prices are estimates." beside it.
+  const coCard = dash.getByTestId("step-card").filter({ hasText: /^Test or install CO alarms/ });
+  await coCard.getByText("How to do it").click();
   await expect(dash.getByRole("link", { name: /^Buy carbon monoxide alarm/ })).toBeVisible();
+  await expect(coCard.getByTestId("buy-note")).toHaveText(/^Prices are estimates\./);
   await expect(page.getByTestId("affiliate-disclosure")).toHaveCount(0);
 
   // Ticking a Next-up step shows Undo, counts toward this week, and the next step moves up
@@ -150,14 +157,16 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   await expect(dash.getByTestId("stage-progress")).toHaveText(/^1 of \d+ done$/);
 
   // Shopping list: "I have this" ticks persist and remove that item's Buy buttons
-  await dash.getByText("Shopping list").click();
-  const gearTotal = await dash.locator("#shopping").getByRole("checkbox").count();
-  await dash.getByRole("checkbox", { name: "I have: Carbon monoxide alarm" }).check();
-  await expect(dash.getByTestId("overall-progress")).toContainText(`You have 1 of ${gearTotal} gear items`);
+  // Item 2: the gear count is hidden until something is marked owned.
+  await expect(overview.getByTestId("overall-progress")).toHaveCount(0);
+  await overview.getByText("Shopping list").click();
+  const gearTotal = await overview.locator("#shopping").getByRole("checkbox").count();
+  await overview.getByRole("checkbox", { name: "I have: Carbon monoxide alarm" }).check();
+  await expect(overview.getByTestId("overall-progress")).toContainText(`You have 1 of ${gearTotal} gear items`);
   await expect(page.getByRole("link", { name: /^Buy carbon monoxide alarm/ })).toHaveCount(0);
   await page.waitForTimeout(800);
   await page.reload();
-  await expect(page.getByTestId("dashboard").getByTestId("overall-progress")).toContainText(`You have 1 of ${gearTotal} gear items`);
+  await expect(page.getByTestId("plan-overview").getByTestId("overall-progress")).toContainText(`You have 1 of ${gearTotal} gear items`);
   await expect(page.getByTestId("dashboard").getByTestId("stage-progress")).toHaveText(/^1 of \d+ done$/);
 
   // D10: the plan below is a card grid per chapter (2 across on a phone), each card with its key number
@@ -174,6 +183,7 @@ test("phone: no sign-up → plan → optional email → confirm → email + PDFs
   const waterBox = await page.locator("details#water").boundingBox();
   expect(waterBox!.width).toBeGreaterThan(300); // an opened card spans the full row
   await page.locator("details#water > summary").click();
+  await page.getByTestId("more-this-stage-toggle").click();
   await page.getByTestId("dashboard").getByRole("link", { name: /full priority list/ }).click();
   await expect(page.locator("details#priorities")).toHaveAttribute("open", "");
   const nav = page.getByRole("navigation", { name: "Plan sections" });
@@ -318,6 +328,8 @@ test("admin: dashboard, catalog, rule constants, affiliate tag → tracked Buy c
   const planId = await quickPlan(page);
   await page.goto(`/plan/${planId}`);
   await expect(page.getByText(/Affiliate disclosure/).first()).toBeVisible();
+  // The Buy box is behind "How to do it" on the step card (visual calm pass).
+  await page.getByTestId("step-card").filter({ hasText: /^Test or install CO alarms/ }).getByText("How to do it").click();
   const buy = page.getByTestId("dashboard").getByRole("link", { name: /^Buy carbon monoxide alarm/ });
   await expect(buy).toHaveAttribute("rel", /sponsored/);
   const href = await buy.getAttribute("href");
@@ -373,7 +385,9 @@ test("à la carte: switch a gear item's level from the plan", async ({ page }) =
   const water = gear.getByTestId("compare-options").filter({ hasText: "7-gallon" }).first();
   await water.getByText("Compare options").click();
   await expect(water.getByText("Costs more", { exact: true })).toBeVisible();
-  await expect(water.getByText(/whole gear list: \$/).first()).toBeVisible();
+  // Item 4: one line of difference per choice; the whole-list total once, at the top.
+  await expect(water.getByTestId("compare-diff").first()).toHaveText(/^\$[\d,]+ (more|less)/);
+  await expect(water.getByTestId("compare-current-total")).toHaveText(/^Your gear list now: \$[\d,]+–\$[\d,]+\. Prices are estimates\.$/);
   const premiumWater = water.getByRole("button", { name: /Switch to Premium: Stackable water bricks/ });
   await premiumWater.click();
   await expect(page).toHaveURL(/\/plan\/[0-9a-f-]{36}#gear/);
@@ -457,7 +471,7 @@ test("UX-9: every control on the plan page is at least 44px tall (or has a 44px 
   // Open everything a person can open, so hidden controls are measured too.
   await page.getByRole("button", { name: "Expand all" }).click();
   await page.locator("details[data-stage]").evaluateAll((ds) => ds.forEach((d) => ((d as HTMLDetailsElement).open = true)));
-  await page.getByTestId("dashboard").locator("details").evaluateAll((ds) => ds.forEach((d) => ((d as HTMLDetailsElement).open = true)));
+  await page.locator("[data-testid=dashboard] details, [data-testid=plan-overview] details").evaluateAll((ds) => ds.forEach((d) => ((d as HTMLDetailsElement).open = true)));
   await page.getByTestId("compare-options").locator("details").evaluateAll((ds) => ds.forEach((d) => ((d as HTMLDetailsElement).open = true)));
   await page.getByTestId("share-menu").locator("summary").first().click();
   await page.waitForTimeout(300);

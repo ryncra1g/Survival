@@ -152,6 +152,7 @@
           "items": [
             {
               "id": "week-hazard",
+              "title": "Get ready for hurricanes and flooding",
               "text": "Your area's biggest risks are hurricanes and flooding. This week, look up your hurricane evacuation zone and the route out; check your flood zone and the way to higher ground.",
               "why": "These are rated high for your ZIP. Doing this now means you can act fast when a warning comes.",
               "link": {
@@ -161,6 +162,7 @@
             },
             {
               "id": "week-1",
+              "title": "Test or install CO alarms: 4",
               "text": "Test or install CO alarms: 4 (one per level plus outside sleeping areas).",
               "why": "Carbon monoxide from generators, heaters and grills is one of the most common ways people die after storms and outages, and an alarm is the cheapest life-saver in this plan.",
               "buy": [
@@ -173,6 +175,7 @@
             },
             {
               "id": "week-2",
+              "title": "Store 3 days of water: 12 gallons",
               "text": "Store your first 3 days of water: 12 gallons.",
               "why": "Taps can stop or become unsafe in an outage, and water is the one supply you can't go without for 3 days.",
               "buy": [
@@ -191,6 +194,7 @@
             },
             {
               "id": "week-3",
+              "title": "Turn on emergency alerts",
               "text": "Turn on Wireless Emergency Alerts and sign up for your county's alert system.",
               "why": "Official warnings reach your phone even when TV and internet are out.",
               "buy": [
@@ -203,6 +207,7 @@
             },
             {
               "id": "week-4",
+              "title": "Write your communications plan",
               "text": "Write your household communications plan (see Communications) and pick an out-of-area contact.",
               "buy": [
                 "frs-radios",
@@ -227,6 +232,7 @@
             },
             {
               "id": "week-6",
+              "title": "Find your water, gas and power shutoffs",
               "text": "Find and label your main water shutoff, gas shutoff and electrical panel.",
               "buy": [
                 "quake-kit"

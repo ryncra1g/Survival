@@ -1,4 +1,5 @@
 "use client";
+import { Notice } from "./Notice";
 import Link from "next/link";
 import { useCallback, useState } from "react";
 import { suggestEmail } from "@/lib/email/typos";
@@ -51,15 +52,15 @@ export function EmailMyPlan({ planId, siteKey = "", onSubmit, idPrefix = "emp" }
 
   if (done)
     return (
-      <div className="card p-4 border-ok" role="status">
-        <p className="font-semibold">{done.status === "sent" ? "✓ On its way" : "✓ Almost there: check your inbox"}</p>
+      <Notice tone="success">
+        <p className="font-semibold">{done.status === "sent" ? "On its way" : "Almost there: check your inbox"}</p>
         <p className="mt-1 text-sm">
           {done.status === "sent"
             ? <>Your plan, PDF and fridge checklist are on their way to <strong className="break-all">{done.email}</strong>.</>
             : <>We sent a confirmation link to <strong className="break-all">{done.email}</strong>. Tap it and we&apos;ll email your plan, PDF and fridge checklist.</>}
         </p>
         {done.demoLink && <p className="mt-2 text-sm">Demo mode (no email provider): <a className="underline break-all" href={done.demoLink}>open the confirmation link</a></p>}
-      </div>
+      </Notice>
     );
 
   return (
@@ -87,7 +88,7 @@ export function EmailMyPlan({ planId, siteKey = "", onSubmit, idPrefix = "emp" }
         <span>Also send me seasonal reminders (winter, hurricane season) and occasional preparedness updates. <span className="text-muted">Unsubscribe any time.</span></span>
       </label>
       <Turnstile siteKey={siteKey} onToken={onToken} />
-      {error && <p role="alert" className="text-warn font-medium">{error}</p>}
+      {error && <Notice tone="error">{error}</Notice>}
       <p className="text-xs text-muted">Only used for {BRAND.name}, never sold. <Link href="/privacy" className="underline">Privacy policy</Link>.</p>
     </form>
   );

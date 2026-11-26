@@ -4,6 +4,7 @@ import type { Overview } from "@/lib/plan/document";
 import { gotId } from "./BuyIfNeeded";
 import { useChecks } from "./ChecksContext";
 import { Chevron } from "./Chevron";
+import { ReadyMark } from "./Illustration";
 import { BuyNote, StepExtras, type StepView } from "./StepExtras";
 import { budgetStatus } from "@/lib/plan/compare";
 import { nextSteps, REASSURANCE, startHeading } from "@/lib/plan/nextSteps";
@@ -15,165 +16,182 @@ const PHASE = { 1: "Buy now (life safety)", 2: "Next (power & comfort)", 3: "Upg
 /** A priority step and the stage it belongs to ("This week", "This month"…), in plan order. */
 export type PriorityStep = { stage: string; step: StepView };
 
-function Bar({ value, label }: { value: number; label: string }) {
-  return (
-    <div className="mt-1.5 h-3 w-full rounded-full bg-brand-soft" role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(value)}>
-      <div className="h-full rounded-full bg-accent transition-[width]" style={{ width: `${Math.max(3, value)}%` }} />
-    </div>
-  );
-}
-
 /**
- * The plan's home: what to do next, how far along you are, the key numbers, and what's left to buy.
- * "Start with these 3" is the first unticked priority steps, so it moves forward as you tick them (here or in the plan).
- * Ticks sync like the checklists (ChecksProvider).
+ * The plan's first screen (visual calm pass): one idea at a time. The reassurance, "Start with these 3" with one count,
+ * three compact step cards (details behind "How to do it"), and one quiet link to the rest of the week. Nothing else:
+ * the numbers and the shopping list are in <PlanOverview> below. Ticks sync like the checklists (ChecksProvider).
  */
-export function Dashboard({ overview, priority, buyHref, affiliate = false }: { overview?: Overview; priority: PriorityStep[]; buyHref: Record<string, string>; affiliate?: boolean }) {
+export function Dashboard({ priority, affiliate = false, top }: { priority: PriorityStep[]; affiliate?: boolean; top?: React.ReactNode }) {
   const { checks, toggle } = useChecks();
-  // A step ticked here stays a few seconds, struck through, with Undo, so a mis-tap is easy to reverse.
+  // A step ticked from "the rest of the week" stays a few seconds, struck through, with Undo.
   const [justDone, setJustDone] = useState<string[]>([]);
   useEffect(() => {
     if (!justDone.length) return;
     const t = setTimeout(() => setJustDone([]), 5000);
     return () => clearTimeout(t);
   }, [justDone]);
-  // DA-1: "Start with these 3" are the first open steps in the plan's own order (lib/plan/nextSteps.ts).
-  const { open, stage, inStage, stageDone, startWith, fresh } = nextSteps(priority, checks);
-  const next = priority.filter((p) => justDone.includes(p.step.id) || startWith.includes(p));
-  const heading = startHeading(startWith.length, open.length);
-  // UX-7: the rest of the current stage (at most 7 more for "This week"), one tap away.
-  const more = inStage.filter((p) => !next.includes(p) && !checks[p.step.id]);
+  // Just-ticked steps keep their place (with Undo) for a few seconds: lib/plan/nextSteps.ts `linger`.
+  const { open, stage, onFirst, shown, rest, startWith, count, fresh } = nextSteps(priority, checks, justDone);
+  const heading = startHeading(onFirst, startWith.length, open.length, shown.length);
 
-  const renderStep = ({ step, stage: s }: PriorityStep) => {
+  const card = ({ step, stage: s }: PriorityStep, rest = false) => {
     const done = !!checks[step.id];
-    const firstOpen = !done && step.id === open[0]?.step.id;
+    const title = step.title ?? step.text;
+    const detail = step.title && step.title !== step.text;
+    const hasHow = detail || step.why || step.buy || step.link || step.see;
     return (
-      <li key={step.id} className="flex gap-2">
-        {/* 44px tap target around the box */}
-        <label className="-ml-2 -mt-1.5 flex size-11 shrink-0 cursor-pointer items-center justify-center">
-          <input
-            type="checkbox"
-            className="size-5 accent-[var(--brand)]"
-            checked={done}
-            onChange={() => {
-              toggle(step.id);
-              setJustDone((j) => (done ? j.filter((x) => x !== step.id) : [...j, step.id]));
-            }}
-            aria-label={`Done: ${step.text}`}
-          />
-        </label>
-        <div className="min-w-0 flex-1">
-          <p className={done ? "text-muted line-through" : "font-medium"}>
-            {step.text}
-            {!done && s !== stage && <span className="ml-2 text-xs font-normal rounded px-1.5 py-0.5 bg-bg border border-line whitespace-nowrap">{s}</span>}
-          </p>
-          {done ? (
-            <p className="mt-1 text-sm" role="status">
-              Done.{" "}
-              <button type="button" className="underline text-brand min-h-[44px] px-1" onClick={() => { toggle(step.id); setJustDone((j) => j.filter((x) => x !== step.id)); }}>
-                Undo
-              </button>
+      <li key={step.id} className="rounded-xl bg-surface px-3 py-1" data-testid={rest ? "rest-step-card" : "step-card"}>
+        <div className="flex gap-1">
+          {/* 44px tap target around the box */}
+          <label className="flex size-11 shrink-0 cursor-pointer items-center justify-center">
+            <input
+              type="checkbox"
+              className="size-5 accent-[var(--brand)]"
+              checked={done}
+              onChange={() => {
+                toggle(step.id);
+                setJustDone((j) => (done ? j.filter((x) => x !== step.id) : [...j, step.id]));
+              }}
+              aria-label={`Done: ${title}`}
+            />
+          </label>
+          <div className="min-w-0 flex-1 pt-2.5 pb-1">
+            <p className={done ? "text-muted line-through" : "font-medium"}>
+              {title}
+              {/* A card from a later stage (e.g. This month) says so, next to the count for this one. */}
+              {!done && s !== stage && <span className="ml-2 whitespace-nowrap rounded bg-bg px-1.5 py-0.5 text-xs font-normal text-muted">{s}</span>}
             </p>
-          ) : (
-            // The first open step gets its "why"; the others stay short so the dashboard fits on a phone.
-            <StepExtras step={firstOpen ? step : { ...step, why: undefined }} />
-          )}
+            {done ? (
+              <p className="text-sm" role="status">
+                Done.{" "}
+                <button type="button" className="underline text-brand min-h-[44px] px-1" onClick={() => { toggle(step.id); setJustDone((j) => j.filter((x) => x !== step.id)); }}>
+                  Undo
+                </button>
+              </p>
+            ) : (
+              hasHow && (
+                <details className="group/how">
+                  <summary className="tap list-none cursor-pointer text-sm font-semibold text-brand [&::-webkit-details-marker]:hidden">
+                    How to do it<span aria-hidden className="ml-1 inline-block transition-transform group-open/how:rotate-90">›</span>
+                  </summary>
+                  <div className="pb-1">
+                    {detail && <p className="max-w-prose">{step.text}</p>}
+                    <StepExtras step={step} buyNote={{ affiliate }} />
+                  </div>
+                </details>
+              )
+            )}
+          </div>
         </div>
       </li>
     );
   };
 
+  return (
+    // On phones the title and 3 cards fill exactly one screen, so everything else starts below the fold. Only with 3
+    // cards: with fewer (or everything done) the page just flows on, with no empty screen (code review).
+    <div className={shown.length >= 3 ? "max-sm:min-h-[calc(100svh-5.25rem)]" : ""} data-testid="first-screen">
+    {top}
+    <section aria-labelledby="dash-h" className="mt-3" data-testid="dashboard">
+      <h2 id="dash-h" className="sr-only">Your plan at a glance</h2>
+
+      {/* DA-1: say "you can do this" before showing any work. */}
+      {fresh && (
+        <div className="flex items-center gap-3">
+          <ReadyMark className="size-14 shrink-0" />
+          <p className="text-lg font-semibold leading-snug" data-testid="reassurance">{REASSURANCE}</p>
+        </div>
+      )}
+
+      {stage ? (
+        <div className={fresh ? "mt-5" : ""} data-testid="next-up">
+          <div className="flex items-baseline justify-between gap-3">
+            {startWith.length > 0 || onFirst ? <h3 className="text-lg font-bold">{heading.title}</h3> : <span />}
+            {/* One count only (item 2): "0 of 3 done", then "This week: N of 10". */}
+            {count && <span className="tabular text-sm text-muted shrink-0" data-testid="stage-progress">{count}</span>}
+          </div>
+          {heading.note && <p className="text-sm text-muted" data-testid="can-wait">{heading.note}</p>}
+          <ul className="mt-3 space-y-3">{shown.map((p) => card(p))}</ul>
+          {rest.length > 0 && (
+            <details className="mt-2" data-testid="more-this-stage">
+              <summary className="tap list-none cursor-pointer text-brand underline [&::-webkit-details-marker]:hidden" data-testid="more-this-stage-toggle">
+                See the rest of {stage.toLowerCase()} ({rest.length} more)
+              </summary>
+              <ul className="mt-2 space-y-3">{rest.map((p) => card(p, true))}</ul>
+              <a href="#priorities" className="tap mt-2 text-sm underline no-print">This month, Later and the full priority list</a>
+            </details>
+          )}
+          {/* Always reachable, even when nothing else is left in this stage (code review). */}
+          {rest.length === 0 && <a href="#priorities" className="tap mt-1 text-sm underline no-print">This month, Later and the full priority list</a>}
+        </div>
+      ) : (
+        <p className="font-semibold">Every priority step is done. Keep the plan up to date with the maintenance calendar.</p>
+      )}
+    </section>
+    </div>
+  );
+}
+
+/**
+ * Below the first screen: the Day 0 link, the key numbers (each with its math) and the shopping list. The gear count
+ * shows only once something is ticked or marked owned (item 2: one count on the first screen).
+ */
+export function PlanOverview({ overview, buyHref, affiliate = false }: { overview?: Overview; buyHref: Record<string, string>; affiliate?: boolean }) {
+  const { checks, toggle } = useChecks();
   const gear = overview?.gear ?? [];
   const got = gear.filter((g) => checks[gotId(g.itemId)]);
   const left = gear.filter((g) => !checks[gotId(g.itemId)] && !g.later);
   const leftLow = left.reduce((t, g) => t + g.low, 0);
   const leftHigh = left.reduce((t, g) => t + g.high, 0);
-
   return (
-    <section aria-labelledby="dash-h" className="mt-4 rounded-xl border-2 border-accent bg-surface p-4 sm:p-5" data-testid="dashboard">
-      <h2 id="dash-h" className="sr-only">Your plan at a glance</h2>
-
-      {/* DA-1: say "you can do this" before showing any work or counts. */}
-      {fresh && <p className="mb-3 text-lg font-semibold" data-testid="reassurance">{REASSURANCE}</p>}
-      {/* Progress: the current stage only. One count on screen (UX-6). */}
-      {stage ? (
-        <div>
-          <p className="flex items-baseline justify-between gap-3">
-            <span className="font-bold">{stage}</span>
-            <span className="tabular text-sm" data-testid="stage-progress">{stageDone} of {inStage.length} done</span>
-          </p>
-          <Bar value={(stageDone / inStage.length) * 100} label={`${stage}: steps done`} />
-        </div>
-      ) : (
-        <p className="font-bold">Every priority step is done. Keep the plan up to date with the maintenance calendar.</p>
-      )}
-
-      {/* Start with these 3: the next three things to do, tickable right here */}
-      {next.length > 0 && (
-        <div className="mt-4" data-testid="next-up">
-          {/* Only while a step is open: the last one ticked lingers (Undo) under no "Start with these 0". */}
-          {startWith.length > 0 && <h3 className="text-lg font-bold">{heading.title}</h3>}
-          {heading.note && <p className="text-sm text-muted" data-testid="can-wait">{heading.note}</p>}
-          {/* The note only when a Buy button is actually showing (BuyIfNeeded hides it for gear you have). */}
-          {next.some((p) => p.step.buy && !checks[p.step.id] && !checks[gotId(p.step.buy.itemId)]) && <BuyNote affiliate={affiliate} className="mt-1" />}
-          <ul className="mt-2 space-y-4">
-            {next.map((p) => renderStep(p))}
-          </ul>
-          {more.length > 0 && (
-            <details className="mt-3 rounded-lg border border-line" data-testid="more-this-stage">
-              <summary className="min-h-[44px] cursor-pointer px-3 py-2.5 font-semibold">More for {stage?.toLowerCase()}</summary>
-              <ul className="space-y-4 px-3 pb-3">{more.map((p) => renderStep(p))}</ul>
-            </details>
-          )}
-          <a href="#priorities" className="mt-1 flex min-h-[44px] items-center text-sm underline no-print">This month, Later and the full priority list</a>
-        </div>
-      )}
-
-
+    <section aria-label="Your numbers and shopping list" className="mt-10 space-y-6" data-testid="plan-overview">
       {/* The one thing to find fast when weather turns */}
-      <a href="#day0" className="mt-5 flex min-h-[48px] items-center justify-between gap-3 rounded-lg border-2 border-brand px-3 py-2 font-semibold text-brand no-underline no-print">
+      <a href="#day0" className="flex min-h-[48px] items-center justify-between gap-3 rounded-xl bg-brand-soft px-4 py-3 font-semibold text-brand no-underline no-print">
         <span>Storm or outage coming? Open your Day 0 checklist</span>
         <span aria-hidden>→</span>
       </a>
 
       {/* Key numbers, each with its math */}
       {overview && (
-        <ul className="mt-5 grid grid-cols-2 gap-2" aria-label="Key numbers">
-          {overview.stats.map((s) => (
-            <li key={s.key}>
-              <a href={`#${s.anchor}`} className="block h-full rounded-lg bg-brand-soft p-3 no-underline hover:outline hover:outline-2 hover:outline-brand">
-                <span className="block text-xl font-bold text-brand tabular">{s.value}</span>
-                <span className="block text-sm">{s.label}</span>
-                <span className="block text-xs text-muted tabular">{s.math}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
+        <div>
+          <h2 className="text-lg font-bold">Your numbers</h2>
+          <ul className="mt-3 grid grid-cols-2 gap-3" aria-label="Key numbers">
+            {overview.stats.map((s) => (
+              <li key={s.key}>
+                <a href={`#${s.anchor}`} className="block h-full rounded-xl bg-surface p-3 no-underline hover:outline hover:outline-2 hover:outline-brand">
+                  <span className="block text-xl font-bold text-brand tabular">{s.value}</span>
+                  <span className="block text-sm">{s.label}</span>
+                  <span className="block text-xs text-muted tabular">{s.math}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
 
       {/* Shopping list: everything the plan recommends, with "I have this" ticks */}
       {gear.length > 0 && (
-        <details className="group mt-4 rounded-lg border border-line" id="shopping">
-          <summary className="flex min-h-[48px] cursor-pointer list-none items-center justify-between gap-3 p-3 [&::-webkit-details-marker]:hidden">
+        <details className="group rounded-xl bg-surface" id="shopping">
+          <summary className="flex min-h-[48px] cursor-pointer list-none items-center justify-between gap-3 p-4 [&::-webkit-details-marker]:hidden">
             <span>
               <span className="font-bold">Shopping list</span>
               <span className="block text-sm text-muted tabular">{left.length ? `${left.length} items to buy now or next · about ${usdRange(leftLow, leftHigh)}` : "You have everything planned for now"}</span>
-              {/* DA-1: the gear count lives with the list it counts, not at the top of the plan. */}
-              <span className="block text-sm text-muted tabular" data-testid="overall-progress">You have {got.length} of {gear.length} gear items</span>
+              {got.length > 0 && <span className="block text-sm text-muted tabular" data-testid="overall-progress">You have {got.length} of {gear.length} gear items</span>}
             </span>
             <Chevron />
           </summary>
-          <div className="px-3 pb-3">
+          <div className="px-4 pb-4">
             <p className="text-sm text-muted">Tick what you already have. It comes off your total and its Buy buttons disappear.</p>
-            {left.some((g) => buyHref[g.itemId]) && <BuyNote affiliate={affiliate} className="mt-1" />}
             {overview?.budget && budgetStatus(overview.budget) && <p className="mt-1 text-sm text-warn font-medium" data-testid="over-budget">{budgetStatus(overview.budget)}. Your budget is a target: safety items come first, and you can switch any item to a lower-cost option.</p>}
+            {/* Item 3: beside the Buy buttons. */}
+            {left.some((g) => buyHref[g.itemId]) && <BuyNote affiliate={affiliate} className="mt-2" />}
             {([1, 2, 3] as const).map((ph) => {
               const rows = gear.filter((g) => g.phase === ph);
               if (!rows.length) return null;
               return (
-                <div key={ph} className="mt-3">
-                  <h4 className="text-sm font-semibold">{PHASE[ph]}</h4>
-                  <ul className="mt-1 divide-y divide-line border-y border-line">
+                <div key={ph} className="mt-4">
+                  <h3 className="text-sm font-semibold">{PHASE[ph]}</h3>
+                  <ul className="mt-1 divide-y divide-line">
                     {rows.map((g) => {
                       const have = !!checks[gotId(g.itemId)];
                       return (
