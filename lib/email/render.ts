@@ -2,12 +2,13 @@ import { HOWTO } from "@/lib/zip/resources";
 import type { Block, PlanDocument } from "@/lib/plan/document";
 import { BRAND } from "@/lib/brand";
 import { groupIntoChapters } from "@/lib/plan/chapters";
-import { REASSURANCE, START_WITH } from "@/lib/plan/nextSteps";
-import { STAGE } from "@/lib/plan/priority";
+import { firstScreen, REASSURANCE } from "@/lib/plan/nextSteps";
 
 /**
- * Email HTML. Table-based layout, inline styles (Gmail/iOS Mail safe), system fonts, under Gmail's ~102 KB clipping
- * limit. Every email has the CAN-SPAM footer (physical address + one-click unsubscribe) via `footer()`.
+ * Email HTML. Table-based layout, system fonts, under Gmail's ~102 KB clipping limit. Structure, headings, summaries,
+ * buttons and Buy links are styled inline; the small repeated touches (muted color, link color, small sizes) are
+ * classes in the <style> block to stay under the limit. A client that strips <style> shows those in the body color and
+ * size: still readable, just plainer. Every email has the CAN-SPAM footer (physical address + one-click unsubscribe) via `footer()`.
  *
  * Off-site design pass (docs/DESIGN.md): the web's palette (ink-blue headings and links, one amber button per email),
  * calm subject lines, the first 3 steps near the top of the plan email, and a dark mode: clients that honor
@@ -22,8 +23,8 @@ const C = { ink: "#14202c", muted: "#4a5663", line: "#d5d9d2", brand: "#1e3a5c",
 /** Dark palette for clients that support prefers-color-scheme (same values as the web's dark tokens). */
 const DARK = `@media (prefers-color-scheme:dark){
 .bg{background:#0e1319!important}.cd{background:#151c25!important}.tx,.tx p,.tx li,.tx td,.tx th{color:#e9eef3!important}
-.mu{color:#a2afbc!important}.ln{color:#9fc3ea!important}.br{color:#9fc3ea!important}.tn{background:#1a293a!important}
-th.c{background:#1a293a!important}td.c,th.c{border-color:#2a3541!important}.co{background:#1a293a!important}.dg{color:#f08a7e!important}}`;
+.tx .mu,.mu{color:#a2afbc!important}.tx .ln,.ln{color:#9fc3ea!important}.br{color:#9fc3ea!important}.tn{background:#1a293a!important}
+th.c{background:#1a293a!important}td.c,th.c{border-color:#2a3541!important}.co{background:#1a293a!important}.tx .dg,.dg{color:#f08a7e!important}}`;
 
 export interface EmailMeta {
   appUrl: string;
@@ -34,7 +35,7 @@ export interface EmailMeta {
 
 function shell(title: string, body: string, meta: EmailMeta): string {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark"><title>${esc(title)}</title>
-<style>td.c,th.c{padding:6px 8px;border-bottom:1px solid ${C.line};vertical-align:top;font-size:14px;text-align:left}th.c{background:${C.tint};font-weight:700}.mu{color:${C.muted}}.ln{color:${C.info}}.f12{font-size:12px}.f13{font-size:13px}.f14{font-size:14px}.f15{font-size:15px}.b{font-weight:700}h3.s{margin:22px 0 4px;font-size:17px;border-top:1px solid ${C.line};padding-top:14px}p.sm{margin:4px 0 8px;font-size:15px;background:${C.tint};padding:10px 12px;border-radius:6px}${DARK}</style></head>
+<style>td.c,th.c{padding:6px 8px;border-bottom:1px solid ${C.line};vertical-align:top;font-size:14px;text-align:left}th.c{background:${C.tint};font-weight:700}.mu{color:${C.muted}}.ln{color:${C.info}}.f12{font-size:12px}.f13{font-size:13px}.f14{font-size:14px}.f15{font-size:15px}${DARK}</style></head>
 <body class="bg" style="margin:0;padding:0;background:${C.bg};${FONT};color:${C.ink};-webkit-text-size-adjust:100%">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0">${esc(meta.preheader ?? title)}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="bg" style="background:${C.bg}"><tr><td align="center" style="padding:16px 8px">
@@ -96,7 +97,7 @@ function block(b: Block, ctx: { appUrl: string; planId?: string; seen?: Set<stri
       return `${b.caption ? `<p class="mu" style="margin:12px 0 4px;font-size:14px;font-weight:600;color:${C.muted}">${esc(b.caption)}</p>` : ""}<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:6px 0"><tr>${th("Item")}${th("Price")}${th("")}</tr>${b.items
         .map(
           (i) =>
-            `<tr><td class="c"><strong>${esc(i.name)}</strong>${i.qty ? ` ${esc(i.qty)}` : ""}${i.later ? " <em>(when budget allows)</em>" : ""}<br>${muted(esc(i.spec), 13)}${levelLine(i.levels)}</td><td class="c">${esc(i.price)}</td><td class="c">${i.buyable ? (i.emailSafe ? `<a class="ln b" href="${esc(ctx.appUrl + goPath(i.itemId, ctx.planId, "email"))}">Buy</a>` : ctx.planId ? `<a class="ln b" href="${esc(`${ctx.appUrl}/plan/${ctx.planId}#priorities`)}">Shop</a>` : "") : ""}</td></tr>`,
+            `<tr><td class="c"><strong>${esc(i.name)}</strong>${i.qty ? ` ${esc(i.qty)}` : ""}${i.later ? " <em>(when budget allows)</em>" : ""}<br>${muted(esc(i.spec), 13)}${levelLine(i.levels)}</td><td class="c">${esc(i.price)}</td><td class="c">${i.buyable ? (i.emailSafe ? `<a class="ln" href="${esc(ctx.appUrl + goPath(i.itemId, ctx.planId, "email"))}" style="font-weight:700">Buy</a>` : ctx.planId ? `<a class="ln" href="${esc(`${ctx.appUrl}/plan/${ctx.planId}#priorities`)}" style="font-weight:700">Shop</a>` : "") : ""}</td></tr>`,
         )
         .join("")}</table>`;
     case "paragraph":
@@ -125,25 +126,17 @@ function tipsHtml(b: Extract<Block, { type: "tips" }>): string {
   return `<div style="border:1px solid ${C.line};padding:8px 10px;margin:10px 0"><p style="margin:0;font-weight:700">No time to buy? Use what you have</p>${tips}${b.dontDo.length ? `<p class="dg" style="margin:6px 0 0;font-size:14px;color:${C.danger}"><strong>Don't do this:</strong> ${b.dontDo.map(esc).join(" ")}</p>` : ""}</div>`;
 }
 
-type Item = Extract<Block, { type: "checklist" }>["items"][number];
-/** "This week" in plan order (the priority list's first checklist after its "This week" heading). */
-function weekRows(doc: PlanDocument): Item[] {
-  const blocks = doc.sections.find((x) => x.id === "priorities")?.blocks ?? [];
-  const at = blocks.findIndex((b) => b.type === "subheading" && b.text === STAGE.week);
-  const list = (at >= 0 ? blocks.slice(at + 1) : blocks).find((b) => b.type === "checklist");
-  return list?.type === "checklist" ? list.items : [];
-}
-/** The first 3 steps, as on the web's first screen: short title, then how to do it. */
+type First = ReturnType<typeof firstScreen>;
+/** The first steps' titles, as on the web's first screen (the shared lib/plan/nextSteps.ts firstScreen). */
 export function firstStepItems(doc: PlanDocument): string[] {
-  return weekRows(doc).slice(0, START_WITH).map((i) => i.title ?? i.text);
+  return firstScreen(doc).items.map((i) => i.title ?? i.text);
 }
-function firstSteps(doc: PlanDocument): string {
-  const items = weekRows(doc).slice(0, START_WITH);
+function firstSteps(fs: First): string {
+  const items = fs.items;
   if (!items.length) return "";
-  const more = weekRows(doc).length > items.length;
   return `<p style="margin:16px 0 2px;font-size:17px;font-weight:700">${esc(REASSURANCE)}</p>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:12px 0 4px"><tr><td class="tn" data-first-steps style="background:${C.tint};border-radius:10px;padding:14px 16px">
-<p style="margin:0;font-weight:700;font-size:18px">Start with these ${items.length}</p>${more ? `<p style="margin:0 0 4px">${muted("Everything else can wait.")}</p>` : ""}
+<p style="margin:0;font-weight:700;font-size:18px">${esc(fs.title)}</p>${fs.note ? `<p style="margin:0 0 4px">${muted(esc(fs.note))}</p>` : ""}
 ${items
   .map(
     (t) =>
@@ -156,6 +149,7 @@ ${items
 export function renderPlanEmail(doc: PlanDocument, meta: EmailMeta & { planUrl: string; pdfAttached: boolean; planId?: string; diyTips?: boolean }): { subject: string; html: string; text: string } {
   // The web's chapter order (Do now, Supplies, Power & heat, People & plans); sections keep their numbers.
   const ordered = groupIntoChapters(doc.sections);
+  const fs = firstScreen(doc);
   const toc = ordered.map((ch) => `${esc(ch.title)}: ${ch.items.map((s) => `${s.number}. ${esc(s.title)}`).join(", ")}`).join("<br>");
   const sections = ordered
     .map(
@@ -165,13 +159,13 @@ export function renderPlanEmail(doc: PlanDocument, meta: EmailMeta & { planUrl: 
           .map((s) => {
             const blocks = s.id === "gear" ? s.blocks.map((b) => (b.type === "table" ? { ...b, columns: ["Item", "Look for", "Price"], rows: b.rows.map((r) => [r[0], r[1], r[3]]) } : b)) : s.blocks;
             const ctx = { appUrl: meta.appUrl, planId: meta.planId, seen: new Set<string>(), diyTips: !!meta.diyTips };
-            return `<h3 class="s">${s.number}. ${esc(s.title)}</h3><p class="sm tn">${esc(s.summary)}</p>${blocks.map((b) => block(b, ctx)).join("")}`;
+            return `<h3 style="margin:22px 0 4px;font-size:17px;border-top:1px solid ${C.line};padding-top:14px">${s.number}. ${esc(s.title)}</h3><p class="tn" style="margin:4px 0 8px;background:${C.tint};padding:10px 12px">${esc(s.summary)}</p>${blocks.map((b) => block(b, ctx)).join("")}`;
           })
           .join(""),
     )
     .join("");
   const body = `<h1 style="margin:0 0 4px;font-size:24px;line-height:1.25">${esc(doc.title)}</h1><p style="margin:0">${muted(esc(doc.subtitle), 15)}</p>
-${firstSteps(doc)}
+${firstSteps(fs)}
 ${button(meta.planUrl, "Open your plan")}
 <p style="margin:0 0 8px">${muted(`${meta.pdfAttached ? "Attached: your full plan as a PDF, plus a one-page checklist for the fridge. " : ""}General guidance, not professional advice. Full disclaimer at the end.`, 13)}</p>
 <p style="margin:12px 0 0;font-size:13px">${muted(`<strong>In this plan</strong><br>${toc}`, 13)}</p>
@@ -179,8 +173,8 @@ ${sections}
 <h2 style="margin:28px 0 4px;font-size:17px">Sources &amp; disclaimers</h2><p style="margin:4px 0 8px">${muted(esc(doc.disclaimer), 13)}</p>${doc.affiliateDisclosure ? `<p style="margin:8px 0">${muted(`<strong>Affiliate disclosure:</strong> ${esc(doc.affiliateDisclosure)}`, 13)}</p>` : ""}<ul style="margin:4px 0;padding-left:20px;font-size:14px">${doc.sources.map((s) => `<li>${link(s.url, s.name)}</li>`).join("")}</ul>`;
   return {
     subject: planSubject(doc),
-    html: shell(doc.title, body, { ...meta, preheader: `${REASSURANCE} Start with these ${Math.min(START_WITH, weekRows(doc).length)}.` }),
-    text: planToText(doc, meta),
+    html: shell(doc.title, body, { ...meta, preheader: fs.items.length ? `${REASSURANCE} ${fs.title}.` : doc.subtitle }),
+    text: planToText(doc, meta, fs),
   };
 }
 
@@ -192,12 +186,12 @@ export function planSubject(doc: PlanDocument): string {
 }
 
 /** The plain-text version matches the HTML: the reassurance and the first 3 steps first, then the chapters in web order. */
-export function planToText(doc: PlanDocument, meta: EmailMeta & { planUrl: string; planId?: string }): string {
-  const first = weekRows(doc).slice(0, START_WITH);
+export function planToText(doc: PlanDocument, meta: EmailMeta & { planUrl: string; planId?: string }, fs: First = firstScreen(doc)): string {
+  const first = fs.items;
   const lines = [doc.title, doc.subtitle, ""];
   if (first.length) {
-    lines.push(REASSURANCE, "", `START WITH THESE ${first.length}`);
-    if (weekRows(doc).length > first.length) lines.push("Everything else can wait.");
+    lines.push(REASSURANCE, "", fs.title.toUpperCase());
+    if (fs.note) lines.push(fs.note);
     for (const t of first) {
       lines.push(`[ ] ${t.title ?? t.text}`);
       if (t.title && t.title !== t.text) lines.push(`    ${t.text}`);

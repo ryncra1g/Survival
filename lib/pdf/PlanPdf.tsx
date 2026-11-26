@@ -6,7 +6,7 @@ import { BRAND } from "@/lib/brand";
 import { KIND_LABEL, kindLabelsAt } from "@/lib/plan/kinds";
 import { CHAPTER_ICON, ICON_PATHS, SECTION_ICON, type IconName } from "@/lib/icons";
 import { groupIntoChapters } from "@/lib/plan/chapters";
-import { REASSURANCE, START_WITH } from "@/lib/plan/nextSteps";
+import { firstScreen, REASSURANCE } from "@/lib/plan/nextSteps";
 import { STAGE } from "@/lib/plan/priority";
 
 /**
@@ -178,8 +178,12 @@ function BlockView({ b }: { b: Block }) {
  * UX-7 / off-site pass: the PDF follows the web's chapter order (Do now, Supplies, Power & heat, People & plans), so the
  * Priority list comes first. Sections keep the plan's own numbers, because the text refers to them ("section 5").
  */
+export function pdfChapters(doc: PlanDocument) {
+  return groupIntoChapters(doc.sections);
+}
+/** The sections in the order the PDF renders them (tests/priority.test.ts checks this order). */
 export function pdfSections(doc: PlanDocument): PlanDocument["sections"] {
-  return groupIntoChapters(doc.sections).flatMap((ch) => ch.items);
+  return pdfChapters(doc).flatMap((ch) => ch.items);
 }
 
 /** The same line icon as on the web (lib/icons.ts), in the brand blue (prints dark grey in black and white). */
@@ -191,37 +195,36 @@ function PdfIcon({ name, size = 14 }: { name: IconName; size?: number }) {
   );
 }
 
-type Item = Extract<Block, { type: "checklist" }>["items"][number];
-/** "This week" in plan order: the priority list's first checklist after the "This week" heading. */
-export function weekItems(doc: PlanDocument): Item[] {
-  const blocks = doc.sections.find((x) => x.id === "priorities")?.blocks ?? [];
-  const at = blocks.findIndex((b) => b.type === "subheading" && b.text === STAGE.week);
-  const list = blocks.slice(at + 1).find((b) => b.type === "checklist");
-  return at >= 0 && list?.type === "checklist" ? list.items : [];
-}
+/** "This week" in plan order, from the one shared list (lib/plan/nextSteps.ts priorityItems). */
+export const weekItems = (doc: PlanDocument) => firstScreen(doc).week;
 
 /** Page 1: the web's first screen on paper. The reassurance, the first 3 with their how-to, then the rest of This week. */
 function FirstPage({ doc }: { doc: PlanDocument }) {
-  const week = weekItems(doc);
-  const first = week.slice(0, START_WITH);
-  const rest = week.slice(START_WITH);
+  // The web's own rules: the same steps, heading and note as the first screen (code review).
+  const fs = firstScreen(doc);
+  const first = fs.items;
+  if (!first.length) return null;
+  const rest = fs.week.filter((it) => !first.includes(it));
   return (
     <View>
       <Text style={s.reassure}>{REASSURANCE}</Text>
-      <Text style={s.start}>Start with these {first.length}</Text>
-      {rest.length > 0 ? <Text style={s.startNote}>Everything else can wait.</Text> : null}
+      <Text style={s.start}>{fs.title}</Text>
+      {fs.note ? <Text style={s.startNote}>{fs.note}</Text> : null}
       {first.map((it) => (
         <View key={it.id} style={s.card} wrap={false}>
           <View style={{ flexDirection: "row" }}>
             <View style={[s.box, { width: 12, height: 12, marginTop: 2.5 }]} />
             <Text style={[s.cardTitle, { flex: 1 }]}>{pdfSafe(it.title ?? it.text)}</Text>
           </View>
+          {/* "HOW TO DO IT" only when there is something under it (code review). */}
+          {(it.title && it.title !== it.text) || it.why || it.link ? (
           <View style={{ marginLeft: 20 }}>
             <Text style={s.howLabel}>HOW TO DO IT</Text>
             {it.title && it.title !== it.text ? <Text style={s.how}>{pdfSafe(it.text)}</Text> : null}
             {it.why ? <Text style={[s.how, { color: muted }]}>{pdfSafe(it.why)}</Text> : null}
             {it.link ? <Text style={[s.link, { marginTop: 3 }]}>{`${pdfSafe(it.link.label)}: ${it.link.url}`}</Text> : null}
           </View>
+          ) : null}
         </View>
       ))}
       {rest.length > 0 ? (
@@ -242,12 +245,15 @@ function FirstPage({ doc }: { doc: PlanDocument }) {
   );
 }
 
-/** The priority list without its This week part, which is on page 1. */
-function withoutWeek(blocks: Block[]): Block[] {
+/**
+ * The priority list without its This week heading and checklist, which are on page 1. Only those two blocks are
+ * replaced (anything else stays); with no week list, nothing changes (code review).
+ */
+function withoutWeek(blocks: Block[], onPage1: boolean): Block[] {
   const at = blocks.findIndex((b) => b.type === "subheading" && b.text === STAGE.week);
-  if (at < 0) return blocks;
-  const listAt = blocks.findIndex((b, i) => i > at && b.type === "checklist");
-  return [...blocks.slice(0, at), { type: "paragraph", text: "This week's steps are at the start of this plan." }, ...blocks.slice(listAt + 1)];
+  const listAt = at < 0 ? -1 : blocks.findIndex((b, i) => i > at && b.type === "checklist");
+  if (!onPage1 || at < 0 || listAt < 0) return blocks;
+  return blocks.flatMap((b, i): Block[] => (i === at ? [{ type: "paragraph", text: "This week's steps are at the start of this plan." }] : i === listAt ? [] : [b]));
 }
 
 export function PlanPdf({ doc, diyTips = false }: { doc: PlanDocument; diyTips?: boolean }) {
@@ -259,7 +265,7 @@ export function PlanPdf({ doc, diyTips = false }: { doc: PlanDocument; diyTips?:
         <Text style={s.sub}>{pdfSafe(doc.subtitle)} · Generated {doc.generatedAt.slice(0, 10)}</Text>
         <Text style={{ fontSize: 9.5, color: muted }}>General guidance, not professional advice. Full disclaimer and sources at the end.</Text>
         <FirstPage doc={doc} />
-        {groupIntoChapters(doc.sections).map((ch, ci) => (
+        {pdfChapters(doc).map((ch, ci) => (
           // The plan proper starts on a new page, after the first-steps page.
           <View key={ch.id} break={ci === 0}>
             <View style={s.chapter} minPresenceAhead={80}>
@@ -267,7 +273,7 @@ export function PlanPdf({ doc, diyTips = false }: { doc: PlanDocument; diyTips?:
               <Text style={s.chapterText}>{ch.title}</Text>
             </View>
             {ch.items.map((sec) => {
-              const blocks = sec.id === "priorities" ? withoutWeek(sec.blocks) : sec.blocks;
+              const blocks = sec.id === "priorities" ? withoutWeek(sec.blocks, firstScreen(doc).items.length > 0) : sec.blocks;
               const labels = kindLabelsAt(blocks);
               return (
                 <View key={sec.id}>

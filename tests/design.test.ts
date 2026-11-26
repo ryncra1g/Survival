@@ -105,7 +105,7 @@ describe("DESIGN.md C1 / C2 / T9: every persona's plan", () => {
 
 /** C3: red is for safety only. Every use of the danger color is a safety callout, a "Don't do this" list or the CO box. */
 describe("DESIGN.md C3: red only for real safety warnings", () => {
-  const RED = /\bdanger\b|--danger|text-danger|border-danger|bg-danger|\bred-\d{3}\b|#a1261b|#f08a7e|#ff0000|\bcolor:\s*red\b/i;
+  const RED = /\bdanger\b|--danger|text-danger|border-danger|bg-danger|\bred-\d{3}\b|#a1261b|#f08a7e|#7a1d14|#ff0000|\bcolor:\s*red\b/i;
   const SAFETY_USE = /tone|toneCls|Don(.|&apos;)t do this|dontDo|Carbon monoxide|\bco:|--danger:|--color-danger|danger: "#a1261b"|.dg{color:#f08a7e/; // .dg = the email's safety-callout class
   const ALLOWED = new Set(["components/PlanView.tsx", "lib/email/render.ts", "lib/pdf/PlanPdf.tsx", "lib/pdf/FridgeChecklist.tsx", "app/globals.css"].map((f) => f.replace(/\//g, "\\")).concat(["components/PlanView.tsx", "lib/email/render.ts", "lib/pdf/PlanPdf.tsx", "lib/pdf/FridgeChecklist.tsx", "app/globals.css"]));
   const styled = [...SOURCES, "app/globals.css"];

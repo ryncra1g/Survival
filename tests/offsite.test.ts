@@ -139,3 +139,41 @@ describe("emails pass the design copy checks", () => {
     }
   });
 });
+
+describe("code review follow-ups (off-site pass)", () => {
+  it("print and email use the web's first-screen rules: 'this one' for one step, no block for none, 'can wait' when more follow", async () => {
+    const { firstScreen } = await import("@/lib/plan/nextSteps");
+    const { document: doc } = await buildPlan(PERSONAS[0].a);
+    const pr = doc.sections.find((s) => s.id === "priorities")!;
+    // As on the web, the first screen takes the first 3 priority steps across stages: one This-week step still shows 3.
+    const weekList = pr.blocks.find((b) => b.type === "checklist")!;
+    if (weekList.type !== "checklist") throw new Error("no week list");
+    const oneWeek = { ...doc, sections: doc.sections.map((s) => (s === pr ? { ...s, blocks: s.blocks.map((b) => (b === weekList ? { ...weekList, items: weekList.items.slice(0, 1) } : b)) } : s)) };
+    expect(firstScreen(oneWeek).title).toBe("Start with these 3");
+    expect(firstScreen(oneWeek).note).toBe("Everything else can wait.");
+    // A plan with a single priority step: "Start with this one", and no "can wait" (nothing follows).
+    const one = { ...doc, sections: doc.sections.map((s) => (s === pr ? { ...s, blocks: [{ type: "subheading" as const, text: "This week" }, { ...weekList, items: weekList.items.slice(0, 1) }] } : s)) };
+    expect(firstScreen(one).title).toBe("Start with this one");
+    expect(firstScreen(one).note).toBeNull();
+    const e1 = renderPlanEmail(one, { ...meta, planUrl: "p", pdfAttached: false });
+    expect(e1.html).toContain("Start with this one");
+    expect(e1.text).toContain("START WITH THIS ONE");
+    expect(squash((await pageTexts(await renderPlanPdf(one)))[0])).toContain(squash("Start with this one"));
+    const none = { ...doc, sections: doc.sections.filter((s) => s.id !== "priorities") };
+    expect(firstScreen(none).items).toEqual([]);
+    const e0 = renderPlanEmail(none, { ...meta, planUrl: "p", pdfAttached: false });
+    expect(e0.html).not.toMatch(/Start with these 0|data-first-steps/);
+    expect(squash((await pageTexts(await renderPlanPdf(none)))[0])).not.toContain(squash("Start with these"));
+    expect((await PDFDocument.load(await renderFridgeChecklist(none))).getPageCount()).toBe(1);
+  });
+  it("dark mode keeps the safety red and muted text inside the body (selectors beat .tx p)", () => {
+    const e = renderConfirmEmail("https://link", meta);
+    expect(e.html).toMatch(/\.tx \.dg,\.dg\{color:#f08a7e!important\}/);
+    expect(e.html).toMatch(/\.tx \.mu,\.mu\{color:#a2afbc!important\}/);
+  });
+  it("the PDF renders in the order tests/priority.test.ts checks", async () => {
+    const { pdfChapters, pdfSections } = await import("@/lib/pdf/PlanPdf");
+    const { document: doc } = await buildPlan();
+    expect(pdfSections(doc).map((s) => s.id)).toEqual(pdfChapters(doc).flatMap((c) => c.items.map((s) => s.id)));
+  });
+});

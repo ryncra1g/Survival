@@ -14,7 +14,8 @@ import { HelpStrip, productIndex, resolveStep, StepExtras, type StepView } from 
 import { matchMaterials } from "@/lib/tips/match";
 import { TIP_MATERIALS } from "@/lib/tips/library";
 import { KIND_LABEL, kindLabelsAt, kindOf, type Kind } from "@/lib/plan/kinds";
-import { COLLAPSED_STAGES, STAGES } from "@/lib/plan/priority";
+import { COLLAPSED_STAGES } from "@/lib/plan/priority";
+import { priorityItems } from "@/lib/plan/nextSteps";
 
 /** D8: a small label where the kind of content changes: Good to know / To do / To have. */
 function KindLabel({ kind }: { kind: Kind }) {
@@ -337,11 +338,6 @@ export function stageSegments(blocks: Block[]): { stage: string | null; blocks: 
 
 /** Every Priority-list step with its stage, in plan order, for the dashboard's "Next up". */
 function prioritySteps(doc: PlanDocument, ctx: Ctx): PriorityStep[] {
-  const out: PriorityStep[] = [];
-  let stage = "";
-  for (const b of doc.sections.find((s) => s.id === "priorities")?.blocks ?? []) {
-    if (b.type === "subheading") stage = b.text;
-    else if (b.type === "checklist" && STAGES.includes(stage)) for (const i of b.items) out.push({ stage, step: resolveStep(i, ctx.products, ctx.href) });
-  }
-  return out;
+  // The same list the PDF, the fridge checklist and the email start from (lib/plan/nextSteps.ts priorityItems).
+  return priorityItems(doc).map(({ stage, step }) => ({ stage, step: resolveStep(step, ctx.products, ctx.href) }));
 }

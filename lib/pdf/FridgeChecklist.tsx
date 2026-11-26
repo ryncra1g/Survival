@@ -2,9 +2,9 @@ import React from "react";
 import { Document, Page, StyleSheet, Text, View, renderToBuffer } from "@react-pdf/renderer";
 import type { Block, PlanDocument } from "@/lib/plan/document";
 import { CO_RULE } from "@/lib/safety/required";
-import { pdfSafe, weekItems } from "./PlanPdf";
+import { pdfSafe } from "./PlanPdf";
 import { BRAND } from "@/lib/brand";
-import { START_WITH } from "@/lib/plan/nextSteps";
+import { firstScreen } from "@/lib/plan/nextSteps";
 
 /**
  * One-page "put it on the fridge" sheet (off-site design pass), readable from arm's length and black-and-white safe:
@@ -44,16 +44,17 @@ const firstChecklist = (doc: PlanDocument, sectionId: string) =>
 
 /** What goes on the sheet, in order. Exported so tests can check it against the plan. */
 export function fridgeContent(doc: PlanDocument) {
-  const first = weekItems(doc).slice(0, START_WITH).map((i) => i.title ?? i.text);
+  const fs = firstScreen(doc);
+  const first = fs.items.map((i) => i.title ?? i.text);
   const amounts = (doc.overview?.stats ?? []).filter((st) => ["water", "food", "fuel", "cash"].includes(st.key)).map((st) => ({ value: st.value, label: st.label }));
   const day0 = firstChecklist(doc, "day0").slice(0, DAY0_ON_FRIDGE).map((i) => i.text);
   const pets = doc.sections.some((x) => x.id === "pets");
   const contacts = ["Out-of-area contact", "Meeting place near home", "Meeting place outside the neighborhood", "Doctor / pharmacy", ...(pets ? ["Vet"] : []), "Utility outage line"];
-  return { first, amounts, day0, contacts };
+  return { first, heading: fs.title, amounts, day0, contacts };
 }
 
 export function FridgeChecklist({ doc }: { doc: PlanDocument }) {
-  const { first, amounts, day0, contacts } = fridgeContent(doc);
+  const { first, heading, amounts, day0, contacts } = fridgeContent(doc);
   return (
     <Document title={`${BRAND.name} fridge checklist`} author={BRAND.name}>
       <Page size="LETTER" style={s.page}>
@@ -62,7 +63,7 @@ export function FridgeChecklist({ doc }: { doc: PlanDocument }) {
           <Text style={s.sub}>{pdfSafe(doc.subtitle)}</Text>
         </View>
 
-        <Text style={[s.h, { marginTop: 2 }]}>Start with these {first.length}</Text>
+        {first.length > 0 ? <Text style={[s.h, { marginTop: 2 }]}>{heading}</Text> : null}
         {first.map((t, i) => (
           <View key={i} style={s.row} wrap={false}>
             <View style={s.bigBox} />
