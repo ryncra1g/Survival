@@ -1,43 +1,67 @@
 import React from "react";
-import { Document, Page, StyleSheet, Text, View, renderToBuffer } from "@react-pdf/renderer";
+import { Document, Font, Page, Path, StyleSheet, Svg, Text, View, renderToBuffer } from "@react-pdf/renderer";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import type { Block, PlanDocument } from "@/lib/plan/document";
 import { BRAND } from "@/lib/brand";
 import { KIND_LABEL, kindLabelsAt } from "@/lib/plan/kinds";
+import { CHAPTER_ICON, ICON_PATHS, SECTION_ICON, type IconName } from "@/lib/icons";
+import { groupIntoChapters } from "@/lib/plan/chapters";
+import { firstScreen, REASSURANCE } from "@/lib/plan/nextSteps";
+import { STAGE } from "@/lib/plan/priority";
 
-/** Server-side PDF of the same PlanDocument structure. Uses built-in Helvetica (no font fetch). */
-const ink = "#1c2430";
-const muted = "#5b6573";
-const line = "#d5dae0";
-const brand = "#b3471d";
-const tone = { danger: "#a1261b", warning: "#8a5a00", info: "#1f4f7a" };
+/**
+ * Server-side PDF of the same PlanDocument structure. Uses built-in Helvetica (no font fetch).
+ * Off-site design pass: page 1 mirrors the web's first screen; chapters and icons as on the web; 11pt body text with
+ * more white space; prints well in black and white (dark ink, light tints, callouts marked by weight and a label).
+ */
+// No hyphenation: "batter-ies" is harder to read at arm's length (the fridge sheet imports this module too).
+Font.registerHyphenationCallback((word) => [word]);
+
+const ink = "#14202c";
+const muted = "#4a5663";
+const line = "#cfd5dc";
+const brand = "#1e3a5c";
+const tint = "#eef2f6";
+const tone = { danger: "#7a1d14", warning: "#5c3a00", info: "#1e3a5c" };
 
 const s = StyleSheet.create({
-  page: { paddingTop: 36, paddingBottom: 48, paddingHorizontal: 36, fontSize: 9.5, fontFamily: "Helvetica", color: ink, lineHeight: 1.35 },
+  page: { paddingTop: 48, paddingBottom: 60, paddingHorizontal: 54, fontSize: 11, fontFamily: "Helvetica", color: ink, lineHeight: 1.5 },
   brand: { fontSize: 11, color: brand, fontFamily: "Helvetica-Bold" },
-  h1: { fontSize: 22, fontFamily: "Helvetica-Bold", marginTop: 6, marginBottom: 6, lineHeight: 1.2 },
-  sub: { fontSize: 10, color: muted, marginTop: 2, marginBottom: 10 },
-  disclaimer: { fontSize: 8.5, color: muted, borderWidth: 1, borderColor: line, padding: 6, marginBottom: 8 },
-  h2: { fontSize: 14, fontFamily: "Helvetica-Bold", marginTop: 14, marginBottom: 3, paddingTop: 8, borderTopWidth: 1.5, borderTopColor: line },
-  summary: { fontSize: 10, backgroundColor: "#fbf3ea", padding: 6, marginBottom: 6 },
-  p: { marginVertical: 3 },
-  subheading: { fontFamily: "Helvetica-Bold", marginTop: 8, marginBottom: 2 },
-  bulletRow: { flexDirection: "row", marginVertical: 1.5 },
-  bulletDot: { width: 10 },
-  checkRow: { flexDirection: "row", marginVertical: 2, alignItems: "flex-start" },
-  box: { width: 8, height: 8, flexShrink: 0, borderWidth: 1, borderColor: ink, marginRight: 6, marginTop: 1.5 },
-  caption: { fontFamily: "Helvetica-Bold", color: muted, fontSize: 8.5, marginTop: 6, marginBottom: 2 },
-  table: { borderTopWidth: 1, borderTopColor: line, marginVertical: 3 },
+  h1: { fontSize: 24, fontFamily: "Helvetica-Bold", marginTop: 8, marginBottom: 4, lineHeight: 1.2 },
+  sub: { fontSize: 11, color: muted, marginTop: 2, marginBottom: 4 },
+  disclaimer: { fontSize: 9.5, color: muted, borderWidth: 1, borderColor: line, padding: 8, marginBottom: 10 },
+  reassure: { fontSize: 14, fontFamily: "Helvetica-Bold", marginTop: 18, marginBottom: 4, lineHeight: 1.35 },
+  start: { fontSize: 16, fontFamily: "Helvetica-Bold", marginTop: 12, marginBottom: 2 },
+  startNote: { fontSize: 11, color: muted, marginBottom: 6 },
+  card: { borderWidth: 1, borderColor: line, borderRadius: 6, padding: 10, marginVertical: 5 },
+  cardTitle: { fontSize: 12.5, fontFamily: "Helvetica-Bold", lineHeight: 1.35 },
+  how: { fontSize: 10.5, marginTop: 3 },
+  howLabel: { fontFamily: "Helvetica-Bold", color: muted, fontSize: 8.5, letterSpacing: 0.4, marginTop: 5 },
+  week: { fontSize: 14, fontFamily: "Helvetica-Bold", marginTop: 16, marginBottom: 4 },
+  chapter: { flexDirection: "row", alignItems: "center", marginTop: 26, marginBottom: 2, paddingTop: 10, borderTopWidth: 2, borderTopColor: brand },
+  chapterText: { fontSize: 20, fontFamily: "Helvetica-Bold", color: brand, marginLeft: 8 },
+  h2: { flexDirection: "row", alignItems: "center", marginTop: 18, marginBottom: 6 },
+  h2Text: { fontSize: 15, fontFamily: "Helvetica-Bold", marginLeft: 6 },
+  summary: { fontSize: 11, backgroundColor: tint, padding: 10, marginBottom: 8, borderRadius: 4 },
+  p: { marginVertical: 4 },
+  subheading: { fontFamily: "Helvetica-Bold", marginTop: 10, marginBottom: 3 },
+  bulletRow: { flexDirection: "row", marginVertical: 2 },
+  bulletDot: { width: 12 },
+  checkRow: { flexDirection: "row", marginVertical: 3, alignItems: "flex-start" },
+  box: { width: 10, height: 10, flexShrink: 0, borderWidth: 1.2, borderColor: ink, marginRight: 8, marginTop: 3 },
+  caption: { fontFamily: "Helvetica-Bold", color: muted, fontSize: 10, marginTop: 8, marginBottom: 3 },
+  table: { borderTopWidth: 1, borderTopColor: line, marginVertical: 4, fontSize: 10 },
   tr: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: line },
-  th: { fontFamily: "Helvetica-Bold", backgroundColor: "#f4f4f1" },
-  td: { padding: 3, flexGrow: 1, flexShrink: 1, width: 1 },
-  callout: { borderLeftWidth: 3, backgroundColor: "#faf8f5", padding: 6, marginVertical: 4 },
-  kind: { fontFamily: "Helvetica-Bold", fontSize: 7, color: muted, marginTop: 6, marginBottom: 1, letterSpacing: 0.5 },
-  footer: { position: "absolute", bottom: 20, left: 36, right: 36, fontSize: 7.5, color: muted, textAlign: "center" },
+  th: { fontFamily: "Helvetica-Bold", backgroundColor: tint },
+  td: { padding: 4, flexGrow: 1, flexShrink: 1, width: 1 },
+  callout: { borderLeftWidth: 2, borderColor: ink, backgroundColor: tint, padding: 8, marginVertical: 6 },
+  kind: { fontFamily: "Helvetica-Bold", fontSize: 8, color: muted, marginTop: 8, marginBottom: 2, letterSpacing: 0.5 },
+  link: { color: tone.info, fontSize: 9.5 },
+  footer: { position: "absolute", bottom: 24, left: 54, right: 54, fontSize: 8.5, color: muted, textAlign: "center" },
 });
 
 /** Helvetica only covers WinAnsi; map the few symbols we use that it lacks. */
-export const pdfSafe = (t: string) => t.replace(/≤/g, "<=").replace(/≥/g, ">=").replace(/→/g, "->").replace(/☐/g, "[ ]").replace(/[  ]/g, " ");
+export const pdfSafe = (t: string) => t.replace(/≤/g, "<=").replace(/≥/g, ">=").replace(/→/g, "->").replace(/☐/g, "[ ]").replace(/[  ]/g, " ");
 
 function Table({ columns, rows, widths }: { columns: string[]; rows: string[][]; widths?: number[] }) {
   const w = (i: number) => (widths ? { flexGrow: widths[i] } : {});
@@ -84,7 +108,7 @@ function BlockView({ b }: { b: Block }) {
               <View style={s.box} />
               <Text style={{ flex: 1 }}>
                 {pdfSafe(it.text)}
-                {it.link ? <Text style={{ color: tone.info, fontSize: 8.5 }}>{`\n${pdfSafe(it.link.label)}: ${it.link.url}`}</Text> : null}
+                {it.link ? <Text style={s.link}>{`\n${pdfSafe(it.link.label)}: ${it.link.url}`}</Text> : null}
               </Text>
             </View>
           ))}
@@ -123,7 +147,7 @@ function BlockView({ b }: { b: Block }) {
           <Text style={s.caption}>What you need</Text>
           {b.note ? <Text style={s.p}>{pdfSafe(b.note)}</Text> : null}
           {b.links.map((l) => (
-            <Text key={l.url} style={{ fontSize: 8.5, color: tone.info }}>{`${pdfSafe(l.label)}: ${l.url}`}</Text>
+            <Text key={l.url} style={s.link}>{`${pdfSafe(l.label)}: ${l.url}`}</Text>
           ))}
         </View>
       ) : null;
@@ -137,8 +161,10 @@ function BlockView({ b }: { b: Block }) {
         </View>
       );
     case "callout":
+      // Black-and-white safe: a safety warning is marked by a thick rule and a "SAFETY" label, not by its color.
       return (
-        <View style={[s.callout, { borderLeftColor: tone[b.tone] }]} wrap={false}>
+        <View style={[s.callout, { borderLeftColor: tone[b.tone], borderLeftWidth: b.tone === "danger" ? 5 : 2 }]} wrap={false}>
+          {b.tone === "danger" ? <Text style={[s.kind, { marginTop: 0 }]}>SAFETY</Text> : null}
           <Text>
             <Text style={{ fontFamily: "Helvetica-Bold", color: tone[b.tone] }}>{pdfSafe(b.title)}. </Text>
             {pdfSafe(b.text)}
@@ -149,12 +175,85 @@ function BlockView({ b }: { b: Block }) {
 }
 
 /**
- * UX-7: the PDF follows the web order: the Priority list ("This week" first) on page 1, then the rest of the plan.
- * Sections keep the plan's own numbers, because the text refers to them ("section 5").
+ * UX-7 / off-site pass: the PDF follows the web's chapter order (Do now, Supplies, Power & heat, People & plans), so the
+ * Priority list comes first. Sections keep the plan's own numbers, because the text refers to them ("section 5").
  */
+export function pdfChapters(doc: PlanDocument) {
+  return groupIntoChapters(doc.sections);
+}
+/** The sections in the order the PDF renders them (tests/priority.test.ts checks this order). */
 export function pdfSections(doc: PlanDocument): PlanDocument["sections"] {
-  const first = doc.sections.filter((s) => s.id === "priorities");
-  return [...first, ...doc.sections.filter((s) => s.id !== "priorities")];
+  return pdfChapters(doc).flatMap((ch) => ch.items);
+}
+
+/** The same line icon as on the web (lib/icons.ts), in the brand blue (prints dark grey in black and white). */
+function PdfIcon({ name, size = 14 }: { name: IconName; size?: number }) {
+  return (
+    <Svg viewBox="0 0 24 24" style={{ width: size, height: size }}>
+      <Path d={ICON_PATHS[name]} stroke={brand} strokeWidth={1.75} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  );
+}
+
+/** "This week" in plan order, from the one shared list (lib/plan/nextSteps.ts priorityItems). */
+export const weekItems = (doc: PlanDocument) => firstScreen(doc).week;
+
+/** Page 1: the web's first screen on paper. The reassurance, the first 3 with their how-to, then the rest of This week. */
+function FirstPage({ doc }: { doc: PlanDocument }) {
+  // The web's own rules: the same steps, heading and note as the first screen (code review).
+  const fs = firstScreen(doc);
+  const first = fs.items;
+  if (!first.length) return null;
+  const rest = fs.week.filter((it) => !first.includes(it));
+  return (
+    <View>
+      <Text style={s.reassure}>{REASSURANCE}</Text>
+      <Text style={s.start}>{fs.title}</Text>
+      {fs.note ? <Text style={s.startNote}>{fs.note}</Text> : null}
+      {first.map((it) => (
+        <View key={it.id} style={s.card} wrap={false}>
+          <View style={{ flexDirection: "row" }}>
+            <View style={[s.box, { width: 12, height: 12, marginTop: 2.5 }]} />
+            <Text style={[s.cardTitle, { flex: 1 }]}>{pdfSafe(it.title ?? it.text)}</Text>
+          </View>
+          {/* "HOW TO DO IT" only when there is something under it (code review). */}
+          {(it.title && it.title !== it.text) || it.why || it.link ? (
+          <View style={{ marginLeft: 20 }}>
+            <Text style={s.howLabel}>HOW TO DO IT</Text>
+            {it.title && it.title !== it.text ? <Text style={s.how}>{pdfSafe(it.text)}</Text> : null}
+            {it.why ? <Text style={[s.how, { color: muted }]}>{pdfSafe(it.why)}</Text> : null}
+            {it.link ? <Text style={[s.link, { marginTop: 3 }]}>{`${pdfSafe(it.link.label)}: ${it.link.url}`}</Text> : null}
+          </View>
+          ) : null}
+        </View>
+      ))}
+      {rest.length > 0 ? (
+        <View>
+          <Text style={s.week}>The rest of {STAGE.week.toLowerCase()}</Text>
+          {rest.map((it) => (
+            <View key={it.id} style={s.checkRow} wrap={false}>
+              <View style={s.box} />
+              <Text style={{ flex: 1 }}>
+                {pdfSafe(it.text)}
+                {it.link ? <Text style={s.link}>{`\n${pdfSafe(it.link.label)}: ${it.link.url}`}</Text> : null}
+              </Text>
+            </View>
+          ))}
+        </View>
+      ) : null}
+    </View>
+  );
+}
+
+/**
+ * The priority list without its This week heading and checklist, which are on page 1. Only those two blocks are
+ * replaced (anything else stays); with no week list, nothing changes (code review).
+ */
+function withoutWeek(blocks: Block[], onPage1: boolean): Block[] {
+  const at = blocks.findIndex((b) => b.type === "subheading" && b.text === STAGE.week);
+  const listAt = at < 0 ? -1 : blocks.findIndex((b, i) => i > at && b.type === "checklist");
+  if (!onPage1 || at < 0 || listAt < 0) return blocks;
+  return blocks.flatMap((b, i): Block[] => (i === at ? [{ type: "paragraph", text: "This week's steps are at the start of this plan." }] : i === listAt ? [] : [b]));
 }
 
 export function PlanPdf({ doc, diyTips = false }: { doc: PlanDocument; diyTips?: boolean }) {
@@ -164,25 +263,39 @@ export function PlanPdf({ doc, diyTips = false }: { doc: PlanDocument; diyTips?:
         <Text style={s.brand}>{BRAND.name}</Text>
         <Text style={s.h1}>{pdfSafe(doc.title)}</Text>
         <Text style={s.sub}>{pdfSafe(doc.subtitle)} · Generated {doc.generatedAt.slice(0, 10)}</Text>
-        <Text style={{ fontSize: 8, color: muted, marginBottom: 6 }}>General guidance, not professional advice. Full disclaimer and sources at the end.</Text>
-        {pdfSections(doc).map((sec) => (
-          <View key={sec.id}>
-            <Text style={s.h2} minPresenceAhead={60}>
-              {sec.number}. {pdfSafe(sec.title)}
-            </Text>
-            <Text style={s.summary}>{pdfSafe(sec.summary)}</Text>
-            {(() => {
-              const labels = kindLabelsAt(sec.blocks);
-              return sec.blocks.map((b, i) => (
-                <View key={i}>
-                  {labels[i] && <Text style={s.kind}>{KIND_LABEL[labels[i]].toUpperCase()}</Text>}
-                  {b.type === "tips" ? diyTips && <TipsPdf b={b} /> : <BlockView b={b} />}
+        <Text style={{ fontSize: 9.5, color: muted }}>General guidance, not professional advice. Full disclaimer and sources at the end.</Text>
+        <FirstPage doc={doc} />
+        {pdfChapters(doc).map((ch, ci) => (
+          // The plan proper starts on a new page, after the first-steps page.
+          <View key={ch.id} break={ci === 0}>
+            <View style={s.chapter} minPresenceAhead={80}>
+              <PdfIcon name={CHAPTER_ICON[ch.id] ?? "checklist"} size={20} />
+              <Text style={s.chapterText}>{ch.title}</Text>
+            </View>
+            {ch.items.map((sec) => {
+              const blocks = sec.id === "priorities" ? withoutWeek(sec.blocks, firstScreen(doc).items.length > 0) : sec.blocks;
+              const labels = kindLabelsAt(blocks);
+              return (
+                <View key={sec.id}>
+                  <View style={s.h2} minPresenceAhead={60}>
+                    {SECTION_ICON[sec.id] ? <PdfIcon name={SECTION_ICON[sec.id]} /> : null}
+                    <Text style={s.h2Text}>
+                      {sec.number}. {pdfSafe(sec.title)}
+                    </Text>
+                  </View>
+                  <Text style={s.summary}>{pdfSafe(sec.summary)}</Text>
+                  {blocks.map((b, i) => (
+                    <View key={i}>
+                      {labels[i] ? <Text style={s.kind}>{KIND_LABEL[labels[i]].toUpperCase()}</Text> : null}
+                      {b.type === "tips" ? diyTips && <TipsPdf b={b} /> : <BlockView b={b} />}
+                    </View>
+                  ))}
                 </View>
-              ));
-            })()}
+              );
+            })}
           </View>
         ))}
-        <Text style={s.h2}>Sources &amp; disclaimers</Text>
+        <Text style={[s.h2Text, { marginTop: 24, marginLeft: 0 }]}>Sources &amp; disclaimers</Text>
         <Text style={s.disclaimer}>{pdfSafe(doc.disclaimer)}</Text>
         {doc.affiliateDisclosure ? <Text style={s.disclaimer}>Affiliate disclosure: {pdfSafe(doc.affiliateDisclosure)}</Text> : null}
         {doc.sources.map((src) => (
@@ -206,9 +319,9 @@ export async function addPageNumbers(pdf: Uint8Array): Promise<Buffer> {
   const pages = out.getPages();
   pages.forEach((page, i) => {
     const label = `Page ${i + 1} of ${pages.length}`;
-    const size = 7.5;
+    const size = 8.5;
     const { width } = page.getSize();
-    page.drawText(label, { x: width - 36 - font.widthOfTextAtSize(label, size), y: 25.5, size, font, color: rgb(0.36, 0.4, 0.45) });
+    page.drawText(label, { x: width - 54 - font.widthOfTextAtSize(label, size), y: 24, size, font, color: rgb(0.29, 0.34, 0.39) });
   });
   return Buffer.from(await out.save());
 }
@@ -223,7 +336,7 @@ function TipsPdf({ b }: { b: Extract<Block, { type: "tips" }> }) {
           {pdfSafe(`${t.situation} ${t.steps.join(" ")} (${t.source.label}: ${t.source.url})`)}
         </Text>
       ))}
-      {b.dontDo.length > 0 && <Text style={s.p}>{pdfSafe(`Don't do this: ${b.dontDo.join(" ")}`)}</Text>}
+      {b.dontDo.length > 0 ? <Text style={s.p}>{pdfSafe(`Don't do this: ${b.dontDo.join(" ")}`)}</Text> : null}
     </View>
   );
 }
