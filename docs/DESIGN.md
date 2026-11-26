@@ -95,6 +95,16 @@ A calm, knowledgeable neighbor.
 | V6 | Illustrations are inline SVG, home-themed or abstract, no disaster imagery and no faces, under 15 KB. No image file over 30 KB. Lighthouse performance stays at 95+. | `tests/design.test.ts`, `/ux-pass` Lighthouse |
 | V7 | Spacing does the separating: cards on the page background without borders, at least 12px between cards and 32px between chapters. Step text at body size (17px); lines capped at about 65 characters. | `/ux-pass` screenshots |
 
+## Off the website (PDFs and emails)
+
+| ID | Rule | How it's checked |
+|---|---|---|
+| O1 | The plan PDF's page 1 mirrors the web's first screen: the reassurance, "Start with these 3" (short titles with how-to), then the rest of This week. Chapters and icons as on the web. Body text 11–12pt; page numbers on every page. | `tests/offsite.test.ts` (page 1 text) |
+| O2 | Everything printed works in black and white: dark ink, light tints only, safety callouts marked by a thick rule and a "SAFETY" label, never by color alone. No hyphenation. | review of `docs/review/design-3/` |
+| O3 | The fridge checklist is exactly one page, readable from arm's length (12pt and up, 15pt for the first 3): the first 3 steps, the key amounts, contacts with blanks, Day 0 essentials, the CO rule. | `tests/offsite.test.ts` (every persona) |
+| O4 | Emails: calm subjects (no urgency words, no "now" or "today", no exclamation marks), exactly one amber button, the first 3 steps near the top of the plan email, a matching plain-text version, no Amazon links, the mailing address and unsubscribe in HTML and text. | `tests/offsite.test.ts` |
+| O5 | Emails render at 375px and in dark mode: `color-scheme: light dark`, a dark palette for clients that support it, a 600px max width, and no sideways scroll. | `tests/offsite.test.ts`, `scripts/email-shot.ts` |
+
 ## Scoring (used by `/ux-pass`)
 
 Each screen gets 1–5 on **Calm, Trust, Ease, Clarity**, with one line of evidence per score.

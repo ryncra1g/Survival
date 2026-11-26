@@ -60,32 +60,7 @@ const show = (hits: Copy[]) => hits.map((h) => `${h.file}:${h.line}  ${h.text.tr
  * C1: fear and urgency. Safety instructions may be direct ("Leave by the route officials give"); they're in the plan's
  * danger callouts and decision triggers, which the plan check below skips, and they're never in UI copy.
  */
-const URGENCY = [
-  /\bact now\b/i,
-  /\bdon'?t wait\b/i,
-  /\bhurry\b/i,
-  /\bbefore it'?s too late\b/i,
-  /\bdisaster (could|can|will|may) strike\b/i,
-  /\bwhen disaster strikes\b/i,
-  /\bcount ?down\b/i,
-  /\blimited time\b/i,
-  /\bonly \d+ left\b/i,
-  /\bpanic\b/i,
-  /\bterrif(y|ying|ied)\b/i,
-  /\bscary\b/i,
-  /\bdoomsday\b/i,
-  /\bapocalyp/i,
-  /\burgent(ly)?\b/i,
-  /\bimmediately\b/i,
-  /\bdon'?t miss\b/i,
-  /\bwhat are you waiting for\b/i,
-];
-/** C2: an exclamation mark ending a word ("Done!"), not code ("!important", "!=", "<!doctype"). */
-const EXCLAIM = /[\p{L}\p{N})"'’]!(?=\s|$|["'’)<])/u;
-/** T9: no precision claims about planning estimates. */
-const EXACT = /\bexact(ly)?\b/i;
-/** T8: errors never blame. */
-const BLAME = /\b(invalid|failed|wrong|illegal|not allowed|you must)\b/i;
+import { BLAME, EXACT, EXCLAIM, URGENCY } from "./helpers/copyRules";
 
 describe("DESIGN.md C1 / C2 / T9: product copy", () => {
   it("finds the app's copy", () => {
@@ -131,7 +106,7 @@ describe("DESIGN.md C1 / C2 / T9: every persona's plan", () => {
 /** C3: red is for safety only. Every use of the danger color is a safety callout, a "Don't do this" list or the CO box. */
 describe("DESIGN.md C3: red only for real safety warnings", () => {
   const RED = /\bdanger\b|--danger|text-danger|border-danger|bg-danger|\bred-\d{3}\b|#a1261b|#f08a7e|#ff0000|\bcolor:\s*red\b/i;
-  const SAFETY_USE = /tone|toneCls|Don(.|&apos;)t do this|dontDo|Carbon monoxide|\bco:|--danger:|--color-danger|danger: "#a1261b"/;
+  const SAFETY_USE = /tone|toneCls|Don(.|&apos;)t do this|dontDo|Carbon monoxide|\bco:|--danger:|--color-danger|danger: "#a1261b"|.dg{color:#f08a7e/; // .dg = the email's safety-callout class
   const ALLOWED = new Set(["components/PlanView.tsx", "lib/email/render.ts", "lib/pdf/PlanPdf.tsx", "lib/pdf/FridgeChecklist.tsx", "app/globals.css"].map((f) => f.replace(/\//g, "\\")).concat(["components/PlanView.tsx", "lib/email/render.ts", "lib/pdf/PlanPdf.tsx", "lib/pdf/FridgeChecklist.tsx", "app/globals.css"]));
   const styled = [...SOURCES, "app/globals.css"];
   it("only the safety renderers use red, and only for safety blocks", () => {
