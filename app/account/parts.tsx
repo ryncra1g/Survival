@@ -1,3 +1,4 @@
+import { Notice } from "@/components/Notice";
 import { shortDate } from "@/lib/plan/format";
 import Link from "next/link";
 import { DeleteData, EditAnswersButton, FollowupToggle, LoginForm, SignOut } from "@/components/AccountActions";
@@ -13,7 +14,7 @@ export async function AccountActions({ searchParams }: { searchParams: Record<st
     return (
       <div className="mx-auto max-w-md px-4 py-10 space-y-4">
         <h1 className="text-2xl font-bold">Open your plan</h1>
-        {searchParams.link === "expired" && <p role="alert" className="card p-3 border-warn">That link has expired or was already used. Request a new one below.</p>}
+        {searchParams.link === "expired" && <Notice tone="info">That link has expired or was already used. Request a new one below.</Notice>}
         {session?.scope === "draft" && <p className="card p-3">Check your inbox for the confirmation link we sent — it signs you in and emails your plan.</p>}
         <p className="text-muted">Enter your email and we&apos;ll send a one-time sign-in link. No passwords.</p>
         <LoginForm />
@@ -28,7 +29,7 @@ export async function AccountActions({ searchParams }: { searchParams: Record<st
       <div>
         <h1 className="text-2xl font-bold">My plan</h1>
         <p className="text-muted">{user.email}</p>
-        {searchParams.confirmed && <p className="mt-3 card p-3 border-ok" role="status">✓ Email confirmed.</p>}
+        {searchParams.confirmed && <Notice tone="success" className="mt-3">Email confirmed.</Notice>}
       </div>
 
       <section className="card p-5 space-y-3">

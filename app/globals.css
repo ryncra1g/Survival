@@ -20,6 +20,9 @@
   --warn: #7a4b00;
   --info: #1e3a5c;
   --ok: #2d6436;
+  /* Visual calm pass: soft tints behind notices (lib Notice). Text on them stays --ink (>= 7:1). */
+  --warn-soft: #fbf1df;
+  --ok-soft: #e4f1e5;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -37,6 +40,8 @@
     --warn: #e8bd62;
     --info: #9fc3ea;
     --ok: #8fd19b;
+    --warn-soft: #2a2213;
+    --ok-soft: #15251a;
     color-scheme: dark;
   }
 }
@@ -55,6 +60,8 @@
   --warn: #e8bd62;
   --info: #9fc3ea;
   --ok: #8fd19b;
+  --warn-soft: #2a2213;
+  --ok-soft: #15251a;
   color-scheme: dark;
 }
 
@@ -73,6 +80,8 @@
   --color-warn: var(--warn);
   --color-info: var(--info);
   --color-ok: var(--ok);
+  --color-warn-soft: var(--warn-soft);
+  --color-ok-soft: var(--ok-soft);
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 

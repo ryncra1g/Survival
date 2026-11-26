@@ -1,4 +1,5 @@
 "use client";
+import { Notice } from "./Notice";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { areaName } from "@/lib/zip/states";
@@ -104,7 +105,7 @@ function ConsentBox({ id, checked, onChange, children, error }: { id: string; ch
         />
         <span>{children}</span>
       </label>
-      {error && <p id={`${id}-error`} role="alert" className="mt-1.5 text-sm font-medium text-warn">{error}</p>}
+      {error && <Notice tone="error" size="sm" id={`${id}-error`}>{error}</Notice>}
     </div>
   );
 }
@@ -180,7 +181,7 @@ const SCREENS: Screen[] = [
           <label htmlFor="zip" className="font-semibold">ZIP code</label>
           <p className="text-sm text-muted">Used for your climate and local hazards. We never ask for your street address.</p>
           <input id="zip" className="input mt-2 text-lg tracking-widest max-w-[10rem]" inputMode="numeric" autoComplete="postal-code" maxLength={5} value={a.zip} onChange={(e) => set({ zip: e.target.value.replace(/\D/g, "").slice(0, 5) })} aria-invalid={fieldErr ? true : undefined} aria-describedby={fieldErr ? "zip-error zip-area" : "zip-area"} />
-          {fieldErr && <p id="zip-error" role="alert" className="mt-1.5 text-sm font-medium text-warn">{fieldErr}</p>}
+          {fieldErr && <Notice tone="error" size="sm" id="zip-error" className="max-w-sm">{fieldErr}</Notice>}
           <ZipArea zip={a.zip} />
         </div>
         <Group label="Plan for an outage or disruption lasting…">
@@ -540,7 +541,8 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
   const [error, setError] = useState("");
   const [fieldErr, setFieldErr] = useState("");
   // DA-4: a failed build or save scrolls its message into view, so it's never hidden under the sticky bar.
-  const errorRef = useRef<HTMLParagraphElement>(null);
+  const errorRef = useRef<HTMLDivElement>(null);
+  const [buildFailed, setBuildFailed] = useState(false);
   useEffect(() => {
     if (!error) return;
     const still = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -606,6 +608,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
   const screen = visible[cur];
   const set = (patch: Partial<Draft>) => {
     setError("");
+    setBuildFailed(false);
     setFieldErr("");
     setConsentErr(null);
     setA((prev) => ({ ...prev, ...patch }));
@@ -645,6 +648,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
       router.push(`/plan/${j.planId}`);
     } catch (e) {
       setGenerating(false);
+      setBuildFailed(true);
       setError(errorFromThrown(e, ERR.build));
     }
   }
@@ -702,7 +706,12 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
           </ConsentBox>
         </div>
       )}
-      {error && <p ref={errorRef} role="alert" className="mt-4 text-warn font-medium scroll-mb-40">{error}</p>}
+      {error && (
+        <div ref={errorRef} className="mt-4 scroll-mb-40">
+          {/* Item 5: a real retry when the build failed; otherwise the fix is on this screen. */}
+          <Notice tone="error" action={buildFailed ? { label: "Try again", onClick: () => void build() } : undefined}>{error}</Notice>
+        </div>
+      )}
       <div className="mt-6 sticky bottom-0 bg-bg pt-2 pb-3">
         {last && (() => {
           const p = parsedAnswers();
