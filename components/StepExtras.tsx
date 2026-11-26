@@ -6,7 +6,7 @@ import { BRAND } from "@/lib/brand";
 type ChecklistItem = Extract<Block, { type: "checklist" }>["items"][number];
 type Product = Extract<Block, { type: "products" }>["items"][number];
 export interface StepBuy { itemId: string; name: string; price: string; href: string }
-export interface StepView { id: string; text: string; why?: string; buy?: StepBuy; link?: { label: string; url: string }; see?: { label: string; anchor: string } }
+export interface StepView { id: string; text: string; title?: string; why?: string; buy?: StepBuy; link?: { label: string; url: string }; see?: { label: string; anchor: string } }
 
 /** Every buyable product in this plan, by catalog id. Only these get Buy buttons, so we never sell what a household already has. */
 export function productIndex(doc: PlanDocument): Map<string, Product> {
@@ -17,7 +17,7 @@ export function productIndex(doc: PlanDocument): Map<string, Product> {
 
 export function resolveStep(it: ChecklistItem, products: Map<string, Product>, href: (itemId: string) => string): StepView {
   const p = it.buy?.map((id) => products.get(id)).find(Boolean);
-  return { id: it.id, text: it.text, why: it.why, link: it.link, see: it.see, buy: p ? { itemId: p.itemId, name: p.name, price: p.price, href: href(p.itemId) } : undefined };
+  return { id: it.id, text: it.text, ...(it.title ? { title: it.title } : {}), why: it.why, link: it.link, see: it.see, buy: p ? { itemId: p.itemId, name: p.name, price: p.price, href: href(p.itemId) } : undefined };
 }
 
 
@@ -41,8 +41,11 @@ export function BuyNote({ affiliate, className = "" }: { affiliate: boolean; cla
 /** "Typical $20–$40 each" → "$20–$40". */
 const shortPrice = (p: string) => p.replace(/^Typical\s+/i, "").replace(/\s+each$/i, "");
 
-/** Why line, Buy button and official link under a step. Server-safe (no hooks). */
-export function StepExtras({ step }: { step: StepView }) {
+/**
+ * Why line, Buy button and official link under a step. Server-safe (no hooks).
+ * `buyNote` (visual calm pass, item 3): "Prices are estimates." right beside this step's Buy box, and hidden with it.
+ */
+export function StepExtras({ step, buyNote }: { step: StepView; buyNote?: { affiliate: boolean } }) {
   if (!step.why && !step.buy && !step.link && !step.see) return null;
   return (
     <span className="mt-1 block">
@@ -51,9 +54,12 @@ export function StepExtras({ step }: { step: StepView }) {
         <span className="mt-2 flex flex-wrap items-center gap-2">
           {step.buy && (
             <BuyIfNeeded itemId={step.buy.itemId}>
-            <a href={step.buy.href} target="_blank" rel="sponsored nofollow noopener" className="inline-block min-h-[44px] rounded-lg border border-line bg-surface px-3 py-2.5 text-sm font-semibold text-brand no-underline leading-snug" aria-label={`Buy ${lowerFirst(step.buy.name)}, ${shortPrice(step.buy.price)} (opens a store)`}>
-              Buy {lowerFirst(step.buy.name)} <span className="font-normal text-muted whitespace-nowrap">· {shortPrice(step.buy.price)}</span>
-            </a>
+              <span className="flex w-full flex-col items-start gap-1">
+                <a href={step.buy.href} target="_blank" rel="sponsored nofollow noopener" className="inline-block min-h-[44px] rounded-lg border border-line bg-surface px-3 py-2.5 text-sm font-semibold text-brand no-underline leading-snug" aria-label={`Buy ${lowerFirst(step.buy.name)}, ${shortPrice(step.buy.price)} (opens a store)`}>
+                  Buy {lowerFirst(step.buy.name)} <span className="font-normal text-muted whitespace-nowrap">· {shortPrice(step.buy.price)}</span>
+                </a>
+                {buyNote && <BuyNote affiliate={buyNote.affiliate} />}
+              </span>
             </BuyIfNeeded>
           )}
           {step.see && (

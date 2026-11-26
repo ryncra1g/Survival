@@ -4,7 +4,8 @@ import { ChecksProvider } from "./ChecksContext";
 import { CompareOptions } from "./CompareOptions";
 import { SectionNav } from "./SectionNav";
 import { BuyIfNeeded } from "./BuyIfNeeded";
-import { Dashboard, type PriorityStep } from "./Dashboard";
+import { Dashboard, PlanOverview, type PriorityStep } from "./Dashboard";
+import { CHAPTER_ICON, Icon, SECTION_ICON } from "./Icon";
 import { Chevron } from "./Chevron";
 import { groupIntoChapters } from "@/lib/plan/chapters";
 import { BRAND } from "@/lib/brand";
@@ -85,7 +86,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
         <div className="my-4">
           {b.caption && <h4 className="mt-5 mb-2 font-semibold">{b.caption}</h4>}
           {b.compact && <p className="text-sm text-muted -mt-1 mb-2">What to look for is in <a href="#gear" className="tap-inline underline">Recommended gear</a>.</p>}
-          {ctx.affiliate && b.items.some((i) => i.buyable) && <p className="text-sm text-ink mb-2" data-testid="affiliate-disclosure"><strong>Affiliate links:</strong> {BRAND.name} may earn a commission if you buy through these Buy links, at no extra cost to you. <a href="/sources#affiliate" className="underline">Details</a></p>}
+          {ctx.affiliate && b.items.some((i) => i.buyable) && <p className="text-sm text-ink mb-2" data-testid="affiliate-disclosure"><strong>Affiliate links:</strong> {BRAND.name} may earn a commission if you buy through these Buy links, at no extra cost to you. <a href="/sources#affiliate" className="tap-inline underline">Details</a></p>}
           <ul className="divide-y divide-line border-y border-line">
             {b.items.map((i) => (
               <li key={i.itemId} className={`${b.compact ? "py-2 items-center" : "py-3 items-start"} flex gap-3`}>
@@ -203,6 +204,7 @@ export function PlanView({
   sync = false,
   onChoose,
   afterDashboard,
+  top,
   diyTips = false,
   inventoryBase,
   ownedNames,
@@ -214,6 +216,8 @@ export function PlanView({
   diyTips?: boolean;
   /** Shown right under the dashboard (e.g. email, PDF, change an answer), before the plan chapters. */
   afterDashboard?: React.ReactNode;
+  /** The plan's title block. With the dashboard it makes up the phone's first screen (visual calm pass, item 1). */
+  top?: React.ReactNode;
   doc: PlanDocument;
   planId: string;
   buyHref?: (itemId: string) => string;
@@ -227,25 +231,34 @@ export function PlanView({
   return (
     <ChecksProvider planId={planId} initial={checks} sync={sync}>
       <article>
-        <Dashboard
-          overview={doc.overview}
-          priority={prioritySteps(doc, ctx)}
-          affiliate={ctx.affiliate}
-          buyHref={Object.fromEntries([...ctx.products.keys()].map((id) => [id, ctx.href(id)]))}
-        />
+        {/* Visual calm pass: the first screen is the reassurance and 3 steps; everything else starts below it. */}
+        {/* On phones the title and "Start with these 3" fill exactly one screen (100svh minus the site header and the
+            page's top padding), so the numbers, shopping list and saving always start below the fold. */}
+        <div className="max-sm:min-h-[calc(100svh-5.25rem)]" data-testid="first-screen">
+          {top}
+          <Dashboard priority={prioritySteps(doc, ctx)} affiliate={ctx.affiliate} />
+        </div>
+        <PlanOverview overview={doc.overview} affiliate={ctx.affiliate} buyHref={Object.fromEntries([...ctx.products.keys()].map((id) => [id, ctx.href(id)]))} />
         {afterDashboard}
         <SectionNav chapters={chapters.map((ch) => ({ id: ch.id, title: ch.title, short: ch.short, sections: ch.items.map((x) => ({ id: x.id, title: SHORT[x.id] ?? x.title })) }))} />
         {chapters.map((ch) => (
-          <section key={ch.id} id={`ch-${ch.id}`} data-chapter={ch.id} aria-labelledby={`ch-${ch.id}-h`} className="scroll-mt-16 pt-4">
-            <h2 id={`ch-${ch.id}-h`} className="text-2xl font-bold text-brand mt-4">{ch.title}</h2>
+          <section key={ch.id} id={`ch-${ch.id}`} data-chapter={ch.id} aria-labelledby={`ch-${ch.id}-h`} className="scroll-mt-16 pt-8">
+            {/* Visual calm pass: one icon set (components/Icon.tsx), more room between chapters and cards, fewer borders. */}
+            <h2 id={`ch-${ch.id}-h`} className="mt-4 flex items-center gap-2 text-2xl font-bold text-brand">
+              <Icon name={CHAPTER_ICON[ch.id] ?? "checklist"} className="size-6" />
+              {ch.title}
+            </h2>
             {/* D10: one card per section, 2 across on phones, with its key number. Tapping a card opens it full
                 width (grid-column 1 / -1); dense flow fills the gap it leaves. Works without JavaScript. */}
-            <div className="mt-3 grid grid-cols-2 gap-2 sm:gap-3 [grid-auto-flow:dense]" data-testid="section-cards">
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-4 [grid-auto-flow:dense]" data-testid="section-cards">
             {ch.items.map((s) => (
-              <details key={s.id} id={s.id} data-section open={OPEN_SECTIONS.has(s.id)} className="group card min-w-0 scroll-mt-20 open:col-span-2">
+              <details key={s.id} id={s.id} data-section open={OPEN_SECTIONS.has(s.id)} className="group min-w-0 scroll-mt-20 rounded-xl bg-surface open:col-span-2">
                 <summary className="list-none cursor-pointer p-3 sm:p-4 h-full group-open:h-auto flex flex-col [&::-webkit-details-marker]:hidden">
                   <span className="flex items-start justify-between gap-2">
-                    <h3 id={`${s.id}-h`} className="font-bold leading-snug group-open:text-lg">{s.title}</h3>
+                    <h3 id={`${s.id}-h`} className="flex items-start gap-2 font-bold leading-snug group-open:text-lg">
+                      {SECTION_ICON[s.id] && <Icon name={SECTION_ICON[s.id]} className="mt-0.5 size-5 text-brand" />}
+                      <span className="min-w-0">{s.title}</span>
+                    </h3>
                     <Chevron />
                   </span>
                   {s.key ? (
@@ -259,7 +272,7 @@ export function PlanView({
                   {/* Opened: the full summary in the tinted box. */}
                   <span className="hidden group-open:block mt-3 rounded bg-brand-soft p-3 text-ink">{s.summary}</span>
                 </summary>
-                <div className="px-4 sm:px-6 pb-5">
+                <div className="px-4 sm:px-6 pb-6 [&_p]:max-w-[65ch] [&_li]:max-w-[65ch]">
                   {s.id === "evacuation" && isId(planId) && (
                     <p className="mt-3 no-print"><a href={`/plan/${planId}/places`} className="btn-ghost border border-line text-sm px-3 min-h-[44px] inline-flex items-center">Add your backup destination (printable)</a></p>
                   )}

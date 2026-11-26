@@ -1,3 +1,4 @@
+import { Notice } from "@/components/Notice";
 import type { Metadata } from "next";
 import { Subtitle } from "@/components/Subtitle";
 import Link from "next/link";
@@ -39,15 +40,15 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
   const emailStatus = !user ? (
     <SaveBar planId={plan.id} siteKey={siteKey} accounts={flags().accounts} />
   ) : emailed || plan.emailed_at ? (
-    <p className="card p-3 border-ok">✓ Your plan, PDF and fridge checklist are on their way to {user.email}.</p>
+    <Notice tone="success" live={false}>Your plan, PDF and fridge checklist are on their way to {user.email}.</Notice>
   ) : confirmed ? (
-    <p className="card p-3">Your copy will be emailed to {user.email} shortly.</p>
+    <Notice tone="info" live={false}>Your copy will be emailed to {user.email} shortly.</Notice>
   ) : (
-    <div className="card p-3 border-warn">
+    <Notice tone="info" live={false}>
       <strong>Check your inbox:</strong> tap the link in our email and we&apos;ll send this plan with a printable PDF and fridge checklist.
       <ResendConfirm email={user.email} />
       <DemoLinkBanner />
-    </div>
+    </Notice>
   );
 
   // Accounts track (ACCOUNTS_ENABLED): the inventory feeds the shopping list, links "To have" items and tips.
@@ -67,16 +68,17 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
           <a href={`/plan/${plan.id}#ch-do-now`} className="flex min-h-[44px] items-center justify-center rounded-lg px-2 py-2 text-center text-sm font-semibold">Report</a>
         </nav>
       )}
-      <h1 className="text-3xl font-bold">{doc.title}</h1>
-      <Subtitle text={doc.subtitle} />
-      <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="/sources" className="tap-inline underline">Sources &amp; safety</a></p>
-      <div className="mt-3 flex flex-wrap gap-2 no-print">
-        <ShareMenu planId={plan.id} email={!user} extra={<><a href={`/api/plans/${plan.id}/calendar`} className="flex w-full min-h-11 items-center rounded-md px-3 text-sm hover:bg-line/40">Add to my calendar</a><CopyForAI variant="menu" planId={plan.id} text={aiText} /></>} />
-        {session?.scope === "full" && <Link href="/account" className="btn-ghost border border-line text-sm px-3 min-h-[44px]">Change my answers</Link>}
-      </div>
 
       {/* Dashboard first (what to do next); then ways to keep the plan; then the plan itself. */}
       <PlanView
+        top={
+          <>
+            {/* Visual calm pass: a compact title, so the first screen is the reassurance and the 3 steps. */}
+            <h1 className="text-2xl font-bold">{doc.title}</h1>
+            <Subtitle text={doc.subtitle} />
+            <p className="mt-1 text-xs text-muted">General guidance, not professional advice. <a href="/sources" className="tap-inline underline">Sources &amp; safety</a></p>
+          </>
+        }
         doc={doc}
         planId={plan.id}
         checks={checks}
@@ -85,17 +87,21 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
         inventoryBase={accounts ? `/plan/${plan.id}/inventory` : undefined}
         ownedNames={ownedNames}
         afterDashboard={
-          <div className="no-print">
-            <div className="mt-5">{emailStatus}</div>
+          <div className="no-print mt-10 space-y-6">
+            <div className="flex flex-wrap gap-2">
+              <ShareMenu planId={plan.id} email={!user} extra={<><a href={`/api/plans/${plan.id}/calendar`} className="flex w-full min-h-11 items-center rounded-md px-3 text-sm hover:bg-line/40">Add to my calendar</a><CopyForAI variant="menu" planId={plan.id} text={aiText} /></>} />
+              {session?.scope === "full" && <Link href="/account" className="btn-ghost border border-line text-sm px-3 min-h-[44px]">Change my answers</Link>}
+            </div>
+            <div>{emailStatus}</div>
             {/* D7 (accounts track): switch or mix food from the Overview; the calorie total stays the same. */}
             {accounts && foodLevels && foodLevels.type === "levelchoice" && (
-              <section className="mt-4 card p-4" data-testid="food-mix-card">
+              <section className="card p-4" data-testid="food-mix-card">
                 <h2 className="font-bold">Your food</h2>
                 <CompareOptions planId={plan.id} group="food" levels={foodLevels.levels} back="food" budget={doc.overview?.budget} />
               </section>
             )}
             {/* D12 / D12b: stay ready without an account. */}
-            <section className="mt-4 card p-4" aria-labelledby="stay-h" data-testid="stay-ready">
+            <section className="card p-4" aria-labelledby="stay-h" data-testid="stay-ready">
               <h2 id="stay-h" className="font-bold">Stay ready</h2>
               <div className="mt-2 flex flex-wrap gap-2">
                 <a href={`/api/plans/${plan.id}/calendar`} className="btn-ghost border border-line text-sm px-3 min-h-[44px] inline-flex items-center">Add to my calendar</a>

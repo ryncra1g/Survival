@@ -1,34 +1,49 @@
 /**
- * The dashboard's "Start with these 3" (design audit DA-1). Pure, so tests can check the reassurance is true:
- * the steps shown are the first open steps in the plan's own priority order, and "Everything else can wait."
- * appears only when there are more open steps after them.
+ * The dashboard's first screen (design audit DA-1, visual calm pass). Pure, so tests can check every promise is true:
+ * - "Start with these 3" are the plan's own first 3 steps, and they stay put (ticked ones show Undo) until all 3 are done.
+ * - "Everything else can wait." appears only when more open steps follow.
+ * - One count only: "0 of 3 done" while on the first 3, then "This week: N of 10".
  */
 export const START_WITH = 3;
 
 export type Staged = { stage: string; step: { id: string } };
 
 export function nextSteps<T extends Staged>(priority: T[], checks: Record<string, boolean>) {
-  const open = priority.filter((p) => !checks[p.step.id]);
-  // Progress is shown for the current stage (this week, then this month…): a near goal, not 0 of 80.
+  const done = (p: T) => !!checks[p.step.id];
+  const open = priority.filter((p) => !done(p));
   const stage = open[0]?.stage;
   const inStage = priority.filter((p) => p.stage === stage);
+  const stageDone = inStage.filter(done).length;
+  const firstThree = priority.slice(0, START_WITH);
+  const firstDone = firstThree.filter(done).length;
+  /** Still working on the first 3: they stay on screen, ticked or not. */
+  const onFirst = firstThree.length > 0 && firstDone < firstThree.length;
+  const shown = onFirst ? firstThree : open.slice(0, START_WITH);
+  const shownOpen = shown.filter((p) => !done(p));
   return {
     open,
     stage,
     inStage,
-    stageDone: inStage.filter((p) => checks[p.step.id]).length,
-    startWith: open.slice(0, START_WITH),
+    stageDone,
+    onFirst,
+    /** The cards on the first screen. */
+    shown,
+    /** The open steps of this stage that aren't on screen: "See the rest of this week (N more)". */
+    rest: inStage.filter((p) => !done(p) && !shown.includes(p)),
+    /** Kept for callers: the open steps among the cards. */
+    startWith: shownOpen,
+    /** The one count on screen. */
+    count: onFirst ? `${firstDone} of ${firstThree.length} done` : stage ? `${stage}: ${stageDone} of ${inStage.length}` : null,
     /** Nothing ticked yet: the plan opens with reassurance before any counts. */
     fresh: priority.length > 0 && open.length === priority.length,
   };
 }
 
-/** Heading and note above the first steps. The note is only shown when it's true (more open steps follow). */
-export function startHeading(shown: number, openTotal: number): { title: string; note: string | null } {
-  return {
-    title: shown === 1 ? "Start with this one" : `Start with these ${shown}`,
-    note: openTotal > shown ? "Everything else can wait." : null,
-  };
+/** Heading and note above the cards. The note is only shown when it's true (more open steps follow). */
+export function startHeading(onFirst: boolean, shownOpen: number, openTotal: number, shownTotal = shownOpen): { title: string; note: string | null } {
+  const n = onFirst ? shownTotal : shownOpen;
+  const title = onFirst ? (n === 1 ? "Start with this one" : `Start with these ${n}`) : n === 1 ? "Next, this one" : `Next, these ${n}`;
+  return { title, note: openTotal > shownOpen ? "Everything else can wait." : null };
 }
 
 export const REASSURANCE = "Your plan is ready. You don't need to do this all at once.";
