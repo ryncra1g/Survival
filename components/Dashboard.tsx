@@ -21,7 +21,7 @@ export type PriorityStep = { stage: string; step: StepView };
  * three compact step cards (details behind "How to do it"), and one quiet link to the rest of the week. Nothing else:
  * the numbers and the shopping list are in <PlanOverview> below. Ticks sync like the checklists (ChecksProvider).
  */
-export function Dashboard({ priority, affiliate = false }: { priority: PriorityStep[]; affiliate?: boolean }) {
+export function Dashboard({ priority, affiliate = false, top }: { priority: PriorityStep[]; affiliate?: boolean; top?: React.ReactNode }) {
   const { checks, toggle } = useChecks();
   // A step ticked from "the rest of the week" stays a few seconds, struck through, with Undo.
   const [justDone, setJustDone] = useState<string[]>([]);
@@ -30,11 +30,11 @@ export function Dashboard({ priority, affiliate = false }: { priority: PriorityS
     const t = setTimeout(() => setJustDone([]), 5000);
     return () => clearTimeout(t);
   }, [justDone]);
-  const { open, stage, onFirst, shown, rest, startWith, count, fresh } = nextSteps(priority, checks);
+  // Just-ticked steps keep their place (with Undo) for a few seconds: lib/plan/nextSteps.ts `linger`.
+  const { open, stage, onFirst, shown, rest, startWith, count, fresh } = nextSteps(priority, checks, justDone);
   const heading = startHeading(onFirst, startWith.length, open.length, shown.length);
-  const lingering = priority.filter((p) => justDone.includes(p.step.id) && !shown.includes(p) && !rest.includes(p));
 
-  const card = ({ step }: PriorityStep, rest = false) => {
+  const card = ({ step, stage: s }: PriorityStep, rest = false) => {
     const done = !!checks[step.id];
     const title = step.title ?? step.text;
     const detail = step.title && step.title !== step.text;
@@ -56,7 +56,11 @@ export function Dashboard({ priority, affiliate = false }: { priority: PriorityS
             />
           </label>
           <div className="min-w-0 flex-1 pt-2.5 pb-1">
-            <p className={done ? "text-muted line-through" : "font-medium"}>{title}</p>
+            <p className={done ? "text-muted line-through" : "font-medium"}>
+              {title}
+              {/* A card from a later stage (e.g. This month) says so, next to the count for this one. */}
+              {!done && s !== stage && <span className="ml-2 whitespace-nowrap rounded bg-bg px-1.5 py-0.5 text-xs font-normal text-muted">{s}</span>}
+            </p>
             {done ? (
               <p className="text-sm" role="status">
                 Done.{" "}
@@ -84,6 +88,10 @@ export function Dashboard({ priority, affiliate = false }: { priority: PriorityS
   };
 
   return (
+    // On phones the title and 3 cards fill exactly one screen, so everything else starts below the fold. Only with 3
+    // cards: with fewer (or everything done) the page just flows on, with no empty screen (code review).
+    <div className={shown.length >= 3 ? "max-sm:min-h-[calc(100svh-5.25rem)]" : ""} data-testid="first-screen">
+    {top}
     <section aria-labelledby="dash-h" className="mt-3" data-testid="dashboard">
       <h2 id="dash-h" className="sr-only">Your plan at a glance</h2>
 
@@ -103,7 +111,7 @@ export function Dashboard({ priority, affiliate = false }: { priority: PriorityS
             {count && <span className="tabular text-sm text-muted shrink-0" data-testid="stage-progress">{count}</span>}
           </div>
           {heading.note && <p className="text-sm text-muted" data-testid="can-wait">{heading.note}</p>}
-          <ul className="mt-3 space-y-3">{[...shown, ...lingering].map((p) => card(p))}</ul>
+          <ul className="mt-3 space-y-3">{shown.map((p) => card(p))}</ul>
           {rest.length > 0 && (
             <details className="mt-2" data-testid="more-this-stage">
               <summary className="tap list-none cursor-pointer text-brand underline [&::-webkit-details-marker]:hidden" data-testid="more-this-stage-toggle">
@@ -113,11 +121,14 @@ export function Dashboard({ priority, affiliate = false }: { priority: PriorityS
               <a href="#priorities" className="tap mt-2 text-sm underline no-print">This month, Later and the full priority list</a>
             </details>
           )}
+          {/* Always reachable, even when nothing else is left in this stage (code review). */}
+          {rest.length === 0 && <a href="#priorities" className="tap mt-1 text-sm underline no-print">This month, Later and the full priority list</a>}
         </div>
       ) : (
         <p className="font-semibold">Every priority step is done. Keep the plan up to date with the maintenance calendar.</p>
       )}
     </section>
+    </div>
   );
 }
 

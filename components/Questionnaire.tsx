@@ -601,6 +601,9 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
 
   useEffect(() => {
     heading.current?.focus();
+    // A new screen starts clean: an error (and its "Try again") belongs to the screen it happened on (code review).
+    setError("");
+    setBuildFailed(false);
   }, [step]);
 
   // DA-8: one clamped position for the screen, the count, the progress bar and the buttons.
@@ -657,6 +660,7 @@ export function Questionnaire({ id, initial, onGenerate }: { id: string; initial
   function showValidation(): boolean {
     const msg = screen.valid?.(a);
     if (!msg) return true;
+    setBuildFailed(false);
     if (screen.field) {
       setFieldErr(msg);
       document.getElementById(screen.field)?.focus();

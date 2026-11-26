@@ -80,3 +80,32 @@ describe("first plan screen: Start with these 3, one count", () => {
     expect(REASSURANCE).not.toMatch(/!/);
   });
 });
+
+describe("code review follow-ups", () => {
+  const steps = ["a", "b", "c", "d", "e"].map((id, i) => ({ stage: i < 4 ? STAGE.week : STAGE.month, step: { id } }));
+  it("a just-ticked step keeps its place with Undo, even the third of the first 3 and the last one", () => {
+    const third = nextSteps(steps, tick(["a", "b", "c"]), ["c"]);
+    expect(third.onFirst).toBe(true);
+    expect(third.shown.map((s) => s.step.id)).toEqual(["a", "b", "c"]);
+    expect(third.count).toBe("3 of 3 done");
+    const last = nextSteps(steps, tick(["a", "b", "c", "d", "e"]), ["e"]);
+    expect(last.shown.map((s) => s.step.id)).toEqual(["e"]);
+    expect(last.stage).toBe(STAGE.month);
+    // Without the linger the moment is over: nothing left, no stage.
+    expect(nextSteps(steps, tick(["a", "b", "c", "d", "e"])).stage).toBeUndefined();
+  });
+  it("cards can cross into the next stage (the card shows its stage label)", () => {
+    const n = nextSteps(steps, tick(["a", "b", "c"]));
+    expect(n.shown.map((s) => `${s.step.id}:${s.stage}`)).toEqual([`d:${STAGE.week}`, `e:${STAGE.month}`]);
+    expect(n.stage).toBe(STAGE.week);
+  });
+  it("the safety linter reads step titles too", async () => {
+    const { lintDocument } = await import("@/lib/safety/linter");
+    const { document: doc } = await buildPlan(PERSONAS[0].a);
+    const pr = doc.sections.find((s) => s.id === "priorities")!;
+    const list = pr.blocks.find((b) => b.type === "checklist")!;
+    if (list.type !== "checklist") throw new Error("no checklist");
+    const bad = { ...doc, sections: doc.sections.map((s) => (s === pr ? { ...s, blocks: s.blocks.map((b) => (b === list ? { ...list, items: [{ ...list.items[0], title: "Run your generator in the garage" }, ...list.items.slice(1)] } : b)) } : s)) };
+    expect(lintDocument(bad).length).toBeGreaterThan(lintDocument(doc).length);
+  });
+});

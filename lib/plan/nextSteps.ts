@@ -8,17 +8,22 @@ export const START_WITH = 3;
 
 export type Staged = { stage: string; step: { id: string } };
 
-export function nextSteps<T extends Staged>(priority: T[], checks: Record<string, boolean>) {
+/**
+ * `linger`: steps ticked in the last few seconds. They keep their place (with Undo) until the moment passes, so a
+ * tick never makes the card jump away from under the finger, even the last one (code review).
+ */
+export function nextSteps<T extends Staged>(priority: T[], checks: Record<string, boolean>, linger: string[] = []) {
   const done = (p: T) => !!checks[p.step.id];
   const open = priority.filter((p) => !done(p));
-  const stage = open[0]?.stage;
+  const onScreen = priority.filter((p) => !done(p) || linger.includes(p.step.id));
+  const stage = (open[0] ?? onScreen[0])?.stage;
   const inStage = priority.filter((p) => p.stage === stage);
   const stageDone = inStage.filter(done).length;
   const firstThree = priority.slice(0, START_WITH);
   const firstDone = firstThree.filter(done).length;
   /** Still working on the first 3: they stay on screen, ticked or not. */
-  const onFirst = firstThree.length > 0 && firstDone < firstThree.length;
-  const shown = onFirst ? firstThree : open.slice(0, START_WITH);
+  const onFirst = firstThree.length > 0 && (firstDone < firstThree.length || firstThree.some((p) => linger.includes(p.step.id)));
+  const shown = onFirst ? firstThree : onScreen.slice(0, START_WITH);
   const shownOpen = shown.filter((p) => !done(p));
   return {
     open,
@@ -29,7 +34,7 @@ export function nextSteps<T extends Staged>(priority: T[], checks: Record<string
     /** The cards on the first screen. */
     shown,
     /** The open steps of this stage that aren't on screen: "See the rest of this week (N more)". */
-    rest: inStage.filter((p) => !done(p) && !shown.includes(p)),
+    rest: inStage.filter((p) => (!done(p) || linger.includes(p.step.id)) && !shown.includes(p)),
     /** Kept for callers: the open steps among the cards. */
     startWith: shownOpen,
     /** The one count on screen. */

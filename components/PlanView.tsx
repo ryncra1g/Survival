@@ -232,12 +232,7 @@ export function PlanView({
     <ChecksProvider planId={planId} initial={checks} sync={sync}>
       <article>
         {/* Visual calm pass: the first screen is the reassurance and 3 steps; everything else starts below it. */}
-        {/* On phones the title and "Start with these 3" fill exactly one screen (100svh minus the site header and the
-            page's top padding), so the numbers, shopping list and saving always start below the fold. */}
-        <div className="max-sm:min-h-[calc(100svh-5.25rem)]" data-testid="first-screen">
-          {top}
-          <Dashboard priority={prioritySteps(doc, ctx)} affiliate={ctx.affiliate} />
-        </div>
+        <Dashboard priority={prioritySteps(doc, ctx)} affiliate={ctx.affiliate} top={top} />
         <PlanOverview overview={doc.overview} affiliate={ctx.affiliate} buyHref={Object.fromEntries([...ctx.products.keys()].map((id) => [id, ctx.href(id)]))} />
         {afterDashboard}
         <SectionNav chapters={chapters.map((ch) => ({ id: ch.id, title: ch.title, short: ch.short, sections: ch.items.map((x) => ({ id: x.id, title: SHORT[x.id] ?? x.title })) }))} />

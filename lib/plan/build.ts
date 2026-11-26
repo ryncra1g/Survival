@@ -425,15 +425,17 @@ export function buildDraft(cp: ComputedPlan, c: RuleConstants): PlanDraft {
   if (hazardStep) week.push(hazardStep);
   if (h.elderlyOrMobility)
     week.push({ title: "Register for help if you must leave", text: "Register anyone with mobility or medical needs with your county's special-needs (access & functional needs) registry or shelter program, and arrange who will help them evacuate." });
+  // One expression for the title and the text, so a rule change can't make them disagree (code review).
+  const coAlarms = n(a.floors + (a.hasBasement ? 1 : 0) + 1);
   week.push({
-    title: `Test or install CO alarms: ${n(a.floors + (a.hasBasement ? 1 : 0) + 1)}`,
-    text: `Test or install CO alarms: ${n(a.floors + (a.hasBasement ? 1 : 0) + 1)} (one per level plus outside sleeping areas).`,
+    title: `Test or install CO alarms: ${coAlarms}`,
+    text: `Test or install CO alarms: ${coAlarms} (one per level plus outside sleeping areas).`,
     why: "Carbon monoxide from generators, heaters and grills is one of the most common ways people die after storms and outages, and an alarm is the cheapest life-saver in this plan.",
     buy: ["co-alarm"],
   });
   week.push({
     title: `Store 3 days of water: ${n(w.threeDayGal)} gallons`,
-    text: `Store your first 3 days of water: ${n(w.threeDayGal)} gallons.`,
+    text: `Store your first 3 days of water: ${n(w.threeDayGal)} gallons.`, // same n(w.threeDayGal); tests/nextSteps.test.ts checks title numbers are in the text
     why: "Taps can stop or become unsafe in an outage, and water is the one supply you can't go without for 3 days.",
     buy: ["water-jug", "water-bricks", "water-gallons", "water-drum"],
   });
