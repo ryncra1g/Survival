@@ -247,7 +247,7 @@ export function PlanView({
                 width (grid-column 1 / -1); dense flow fills the gap it leaves. Works without JavaScript. */}
             <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-4 [grid-auto-flow:dense]" data-testid="section-cards">
             {ch.items.map((s) => (
-              <details key={s.id} id={s.id} data-section open={OPEN_SECTIONS.has(s.id)} className="group min-w-0 scroll-mt-20 rounded-xl bg-surface open:col-span-2">
+              <details key={s.id} id={s.id} data-section open={OPEN_SECTIONS.has(s.id)} className="group min-w-0 scroll-mt-20 rounded-xl bg-surface open:col-span-2 [&:not([open])]:overflow-hidden">
                 <summary className="list-none cursor-pointer p-3 sm:p-4 h-full group-open:h-auto flex flex-col [&::-webkit-details-marker]:hidden">
                   <span className="flex items-start justify-between gap-2">
                     <h3 id={`${s.id}-h`} className="flex items-start gap-2 font-bold leading-snug group-open:text-lg">

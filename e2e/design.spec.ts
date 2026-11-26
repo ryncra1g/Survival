@@ -103,6 +103,8 @@ test("visual calm pass: the first plan screen at 375×812 is the reassurance and
   const cards = page.getByTestId("step-card");
   await expect(cards).toHaveCount(3);
   await expect(page.getByTestId("stage-progress")).toHaveText("0 of 3 done");
+  // No sideways scroll at 375px (closed section cards keep their layout in Chromium; they clip it).
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   const fold = 812;
   // The 3 cards and the quiet "See the rest" link are fully on the first screen…
   for (let i = 0; i < 3; i++) expect((await cards.nth(i).boundingBox())!.y + (await cards.nth(i).boundingBox())!.height, `card ${i + 1}`).toBeLessThanOrEqual(fold);
