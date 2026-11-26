@@ -94,3 +94,27 @@ test("design: the questionnaire, the plan and its error and empty states", async
   expect(await redOutsideSafety(page), "plan: red outside a safety warning").toEqual([]);
   expect(await page.locator("[data-safety]").count()).toBeGreaterThan(0);
 });
+
+test("visual calm pass: the first plan screen at 375×812 is the reassurance and 3 steps, nothing else", async ({ page }) => {
+  const planId = await newPlan(page);
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto(`/plan/${planId}`);
+  await expect(page.getByTestId("reassurance")).toBeVisible();
+  const cards = page.getByTestId("step-card");
+  await expect(cards).toHaveCount(3);
+  await expect(page.getByTestId("stage-progress")).toHaveText("0 of 3 done");
+  const fold = 812;
+  // The 3 cards and the quiet "See the rest" link are fully on the first screen…
+  for (let i = 0; i < 3; i++) expect((await cards.nth(i).boundingBox())!.y + (await cards.nth(i).boundingBox())!.height, `card ${i + 1}`).toBeLessThanOrEqual(fold);
+  const more = (await page.getByTestId("more-this-stage-toggle").boundingBox())!;
+  expect(more.y + more.height).toBeLessThanOrEqual(fold);
+  await expect(page.getByTestId("more-this-stage-toggle")).toHaveText(/^See the rest of this week \(\d+ more\)$/);
+  // …and nothing else starts above the fold: numbers, shopping list, Share menu, save bar.
+  for (const id of ["plan-overview", "share-menu", "save-bar"]) {
+    const box = await page.getByTestId(id).first().boundingBox();
+    expect(box?.y ?? fold, id).toBeGreaterThanOrEqual(fold);
+  }
+  // Item 2: no gear count until something is ticked; item 3: no price note on the first screen.
+  await expect(page.getByTestId("overall-progress")).toHaveCount(0);
+  expect(await page.getByTestId("dashboard").getByTestId("buy-note").evaluateAll((els) => els.filter((e) => e.checkVisibility()).length)).toBe(0);
+});
