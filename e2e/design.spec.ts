@@ -120,3 +120,19 @@ test("visual calm pass: the first plan screen at 375×812 is the reassurance and
   await expect(page.getByTestId("overall-progress")).toHaveCount(0);
   expect(await page.getByTestId("dashboard").getByTestId("buy-note").evaluateAll((els) => els.filter((e) => e.checkVisibility()).length)).toBe(0);
 });
+
+test("Compare options uses the full width of its card at 375px, so option names stay short", async ({ page }) => {
+  const planId = await newPlan(page);
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto(`/plan/${planId}#gear`);
+  const box = page.locator("details#gear").getByTestId("compare-options").filter({ hasText: "7-gallon" }).first();
+  await box.getByText("Compare options").click();
+  const card = (await page.locator("details#gear").boundingBox())!;
+  const cmp = (await box.boundingBox())!;
+  // The box spans the card's content (card minus its 16px padding each side), not a column beside Buy.
+  expect(cmp.width).toBeGreaterThanOrEqual(card.width - 2 * 16 - 2);
+  const lines = await box.locator("li p.font-semibold").evaluateAll((ps) => ps.map((p) => Math.round(p.getBoundingClientRect().height / parseFloat(getComputedStyle(p).lineHeight))));
+  expect(lines.length).toBeGreaterThan(0);
+  for (const n of lines) expect(n).toBeLessThanOrEqual(2);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+});

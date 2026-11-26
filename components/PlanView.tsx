@@ -89,7 +89,7 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
           {ctx.affiliate && b.items.some((i) => i.buyable) && <p className="text-sm text-ink mb-2" data-testid="affiliate-disclosure"><strong>Affiliate links:</strong> {BRAND.name} may earn a commission if you buy through these Buy links, at no extra cost to you. <a href="/sources#affiliate" className="tap-inline underline">Details</a></p>}
           <ul className="divide-y divide-line border-y border-line">
             {b.items.map((i) => (
-              <li key={i.itemId} className={`${b.compact ? "py-2 items-center" : "py-3 items-start"} flex gap-3`}>
+              <li key={i.itemId} className={`${b.compact ? "py-2 items-center" : "py-3 items-start"} flex flex-wrap gap-x-3`}>
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold">
                     {i.name} {i.qty && <span className="text-muted font-normal whitespace-nowrap">{i.qty}</span>} {i.later && <span className="text-xs align-middle rounded px-1.5 py-0.5 bg-bg border border-line font-normal">when budget allows</span>}
@@ -97,7 +97,6 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
                   {!b.compact && <p className="text-sm text-muted mt-0.5">{i.spec}</p>}
                   <p className="text-sm mt-0.5">{i.price}{!b.compact && i.models.length ? ` · e.g. ${i.models.join("; ")}` : ""}</p>
                   {ctx.inventoryHref && <a href={ctx.inventoryHref(i.itemId)} className="text-sm underline no-print" data-testid="to-have-inventory">In my inventory</a>}
-                  {!b.compact && i.levels && i.group && <CompareOptions planId={planId} group={i.group} levels={i.levels} back={sectionId} budget={ctx.budget} models={i.models} onChoose={onChoose} />}
                 </div>
                 {i.buyable && (
                   <BuyIfNeeded itemId={i.itemId}>
@@ -105,6 +104,12 @@ function BlockView({ b, planId, buyHref, sectionId, onChoose, ctx }: { b: Block;
                     Buy
                   </a>
                   </BuyIfNeeded>
+                )}
+                {/* Its own full-width row under the item (not the text column beside Buy), so option names don't wrap on phones. */}
+                {!b.compact && i.levels && i.group && (
+                  <div className="basis-full min-w-0">
+                    <CompareOptions planId={planId} group={i.group} levels={i.levels} back={sectionId} budget={ctx.budget} models={i.models} onChoose={onChoose} />
+                  </div>
                 )}
               </li>
             ))}
